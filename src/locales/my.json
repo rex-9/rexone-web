@@ -1,0 +1,42 @@
+{
+  "sign_in_title": "လော့ဂ်အင်",
+  "sign_in_email_or_username_label": "အီးမေးလ် သို့မဟုတ် အသုံးပြုသူအမည်",
+  "sign_in_password_label": "စကားဝှက်",
+  "sign_in_button": "လော့ဂ်အင်",
+  "sign_in_sign_up_prompt": "အကောင့်မရှိဘူးလား?",
+  "sign_in_sign_up_link": "အကောင့်ဖွင့်ရန်",
+  "sign_in_forgot_password_prompt": "စကားဝှက်မေ့သွားပြီလား?",
+  "sign_in_forgot_password_link": "စကားဝှက်ပြန်သတ်မှတ်ရန်",
+  "sign_in_google_failure": "Google အတည်ပြုမှု မအောင်မြင်ပါ!",
+
+  "sign_up_title": "မှတ်ပုံတင်ရန်",
+  "sign_up_username_label": "အသုံးပြုသူအမည်",
+  "sign_up_email_label": "အီးမေးလ်",
+  "sign_up_password_label": "စကားဝှက်",
+  "sign_up_password_confirmation_label": "စကားဝှက်အတည်ပြုခြင်း",
+  "sign_up_button": "မှတ်ပုံတင်ရန်",
+  "sign_up_sign_in_prompt": "အကောင့်ရှိပြီးသားလား?",
+  "sign_up_sign_in_link": "လော့ဂ်အင်",
+
+  "sign_out_button": "ထွက်ရန်",
+
+  "home": "မူလစာမျက်နှာ",
+  "go_back": "ပြန်သွားရန်",
+  "submit": "တင်သွင်းရန်",
+
+  "### ANAPANA_MODULE": "### ANAPANA_MODULE",
+  "anapana_timer_title": "အာနာပါန အကြားကာလ အချိန်သတိပေးနာရီ",
+  "timer_start_time": "စတင်ချိန်",
+  "timer_end_time": "အဆုံးချိန်",
+  "timer_interval": "အကြားကာလ",
+  "timer_unit": "ယူနစ်",
+  "timer_start": "စတင်ရန်",
+  "timer_reset": "ပြန်လည်သတ်မှတ်ရန်",
+  "timer_test_interval_sound": "အကြားကာလ အသံစမ်းသပ်ရန်",
+  "timer_test_ending_sound": "အဆုံးသတ် အသံစမ်းသပ်ရန်",
+  "timer_seconds": "စက္ကန့်",
+  "timer_minutes": "မိနစ်",
+  "timer_hours": "နာရီ",
+  "welcome_donations": "ဓမ္မမိတ်ဆွေ၏ အာနာပါန သမာဓိထူထောင်ရာတွင် အကျိုးပြုပါက ပရောဂျက် အနာဂတ်နှင့် ပြုပြင်ထိန်းသိမ်းမှုအတွက် ကုသိုလ် ပါဝင်လှူဒါန်းနိုင်ပါသည်။ 🙏🙇🙏",
+  "timer_start_message": "သတိ လေ့ကျင့်မှုကို စတင်ကြပါစို့!"
+}

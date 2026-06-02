@@ -1,0 +1,12 @@
+export { default as ResetPassword } from "./auth/ResetPassword";
+export { default as ForgotPassword } from "./auth/ForgotPassword";
+export { default as ConfirmEmail } from "./auth/ConfirmEmail";
+export { default as SignIn } from "./auth/SignIn";
+export { default as SignOut } from "./auth/SignOut";
+export { default as SignUp } from "./auth/SignUp";
+export { default as RootPage } from "./RootPage";
+export { default as HomePage } from "./HomePage";
+export { default as ProfilePage } from "./ProfilePage";
+export { default as LayoutPage } from "./LayoutPage";
+export { default as NotFoundPage } from "./NotFoundPage";
+export { default as LandingPage } from "./LandingPage";

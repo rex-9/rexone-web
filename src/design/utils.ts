@@ -1,0 +1,84 @@
+/**
+ * Meritbox Design System - Utility Functions
+ *
+ * Helper functions for working with design tokens
+ */
+
+import { colors, spacing, radius, shadows, typography } from "./atoms";
+
+/**
+ * Get a color value from the color tokens
+ * @example getColor('gold', 500) => '#F8D57E'
+ */
+export function getColor(
+  palette: "gold" | "blue" | "navy" | "gray",
+  shade: string | number
+): string {
+  return colors[palette][shade as keyof (typeof colors)[typeof palette]];
+}
+
+/**
+ * Get a semantic color value
+ * @example getSemanticColor('success') => '#4CAF50'
+ */
+export function getSemanticColor(
+  color: "success" | "warning" | "error" | "info"
+): string {
+  return colors.semantic[color];
+}
+
+/**
+ * Get a spacing value
+ * @example getSpacing(16) => '16px'
+ */
+export function getSpacing(value: keyof typeof spacing): string {
+  return spacing[value];
+}
+
+/**
+ * Get a radius value
+ * @example getRadius('m') => '12px'
+ */
+export function getRadius(value: keyof typeof radius): string {
+  return radius[value];
+}
+
+/**
+ * Get a shadow value
+ * @example getShadow('s') => '0px 2px 6px rgba(0, 0, 0, 0.08)'
+ */
+export function getShadow(value: keyof typeof shadows): string {
+  return shadows[value];
+}
+
+/**
+ * Get typography styles for a specific size
+ * @example getTypography('h1') => { fontSize: '32px', lineHeight: '40px', fontWeight: 600 }
+ */
+export function getTypography(size: keyof typeof typography.fontSize) {
+  return typography.fontSize[size];
+}
+
+/**
+ * Create a CSS variable reference
+ * @example cssVar('gold-500') => 'var(--mb-gold-500)'
+ */
+export function cssVar(token: string): string {
+  return `var(--mb-${token})`;
+}
+
+/**
+ * Convert pixel value to rem
+ * @example pxToRem(16) => '1rem'
+ */
+export function pxToRem(pixels: number, baseFontSize: number = 16): string {
+  return `${pixels / baseFontSize}rem`;
+}
+
+/**
+ * Convert rem to pixels
+ * @example remToPx('1rem') => 16
+ */
+export function remToPx(rem: string, baseFontSize: number = 16): number {
+  return parseFloat(rem) * baseFontSize;
+}

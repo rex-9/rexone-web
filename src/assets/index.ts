@@ -5,18 +5,29 @@ import banner from "./images/banner.png";
 import sample from "./videos/sample.mp4";
 
 // Import icons
-import insta from "./icons/instagram.svg";
-import tipLightBulb from "./icons/tip_light_bulb.svg";
+import insta from "./icons/instagram.svg"; // Asset icons
+import {
+  MoonIcon,
+  SunIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  XCircleIcon,
+  HeartIcon,
+} from "./icons"; // Lib icons
+
+// Import sounds
+// ANAPANA MODULE
+import note from "./sounds/note.mp3";
 
 // Define TypeScript interfaces
-export interface IAsset {
+interface AssetProps {
   src: string;
   alt: string;
   title: string;
 }
 
 // Add images and icons here
-const images: Record<string, IAsset> = {
+const images: Record<string, AssetProps> = {
   banner: {
     src: banner,
     alt: "banner image alt",
@@ -25,7 +36,8 @@ const images: Record<string, IAsset> = {
 };
 
 const icons: {
-  asset: Record<string, IAsset>;
+  asset: Record<string, AssetProps>;
+  lib: Record<string, React.ComponentType>;
 } = {
   asset: {
     insta: {
@@ -33,15 +45,18 @@ const icons: {
       alt: "instagram icon alt",
       title: "instagram icon title",
     },
-    tipLightBulb: {
-      src: tipLightBulb,
-      alt: "tip light bulb icon alt",
-      title: "tip light bulb icon title",
-    },
+  },
+  lib: {
+    sun: SunIcon,
+    moon: MoonIcon,
+    checkCircle: CheckCircleIcon,
+    exclamationCircle: ExclamationCircleIcon,
+    xCircle: XCircleIcon,
+    heart: HeartIcon,
   },
 };
 
-const videos: Record<string, IAsset> = {
+const videos: Record<string, AssetProps> = {
   sample: {
     src: sample,
     alt: "sample video alt",
@@ -49,4 +64,12 @@ const videos: Record<string, IAsset> = {
   },
 };
 
-export default { images, icons, videos };
+const sounds: Record<string, AssetProps> = {
+  note: {
+    src: note,
+    alt: "note sound alt",
+    title: "note sound title",
+  },
+};
+
+export default { images, icons, videos, sounds };

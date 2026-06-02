@@ -1,16 +1,28 @@
 import AppRoutes from "../AppRoutes";
-import { AuthApiResponse, GeneralApiResponse } from "../models";
-import api from "./api.service";
+import { IApiAuthResponse, IApiResponse, IUser } from "../models";
+import { api } from "../services";
 
 class UserService {
-  async getCurrentUser(): Promise<GeneralApiResponse<AuthApiResponse>> {
-    const response = await api.get<AuthApiResponse>(
-      AppRoutes.server.protected.GET_CURRENT_USER
+  async peekUser(
+    email: string,
+  ): Promise<IApiResponse<IApiAuthResponse<{ user_exists: boolean }>>> {
+    const response = await api.get<IApiAuthResponse<{ user_exists: boolean }>>(
+      AppRoutes.server.protected.PEEK_USER,
+      { email },
     );
     return response;
   }
 
-  async uploadImage(file: File): Promise<GeneralApiResponse<{ url: string }>> {
+  async getCurrentUser(): Promise<
+    IApiResponse<IApiAuthResponse<{ user: IUser; token: string }>>
+  > {
+    const response = await api.get<
+      IApiAuthResponse<{ user: IUser; token: string }>
+    >(AppRoutes.server.protected.GET_CURRENT_USER);
+    return response;
+  }
+
+  async uploadImage(file: File): Promise<IApiResponse<{ url: string }>> {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -21,7 +33,7 @@ class UserService {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
     return response;
   }

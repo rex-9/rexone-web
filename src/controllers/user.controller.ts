@@ -1,14 +1,26 @@
 import { userService } from "../services";
-import { GeneralApiResponse } from "../models";
-import { User } from "../models/user.model";
+import { IApiResponse, IUser } from "../models";
 
 class UserController {
+  async peekUser(
+    email: string,
+    setError: (message: string) => void,
+  ): Promise<boolean | undefined> {
+    const response = await userService.peekUser(email);
+    const userExists = response.data?.data?.user_exists;
+    if (userExists == undefined) {
+      console.error("Error peeking user:");
+      setError("Failed to peek user");
+    }
+    return userExists;
+  }
+
   async getCurrentUser(
-    setCurrentUser: (user: User | null) => void
+    setCurrentUser: (user: IUser | null) => void,
   ): Promise<void> {
     try {
       const response = await userService.getCurrentUser();
-      const user = response.data?.user;
+      const user = response.data?.data?.user;
       setCurrentUser(user || null);
     } catch (error) {
       console.error("Error fetching current user:", error);
@@ -17,7 +29,7 @@ class UserController {
 
   async uploadImage(file: File): Promise<void> {
     try {
-      const response: GeneralApiResponse<{ url: string }> =
+      const response: IApiResponse<{ url: string }> =
         await userService.uploadImage(file);
       console.log("Image uploaded:", response.data?.url);
     } catch (error) {

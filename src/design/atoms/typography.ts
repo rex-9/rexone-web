@@ -1,0 +1,98 @@
+/**
+ * Meritbox Design System - Typography Tokens
+ *
+ * Human, soft, emotional typography system
+ * UI Font: Inter / SF Pro (system)
+ * Headers / Emotional text: Cormorant Garamond
+ */
+
+export const typography = {
+  // Font Family
+  fontFamily: {
+    primary:
+      'Inter, -apple-system, BlinkMacSystemFont, "SF Pro", Helvetica, Arial, sans-serif',
+    display: '"Cormorant Garamond", "Playfair Display", Georgia, serif',
+    handwritten: '"Satisfy", "Caveat", cursive', // Optional handwritten accents
+    fallback: "SF Pro, Helvetica, Arial, sans-serif",
+  },
+
+  // Font Weights
+  fontWeight: {
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+    bold: 700,
+  },
+
+  // Font Scale
+  fontSize: {
+    // Display
+    displayXL: {
+      fontSize: "56px",
+      lineHeight: "64px",
+      fontWeight: 700,
+    },
+    displayL: {
+      fontSize: "48px",
+      lineHeight: "56px",
+      fontWeight: 700,
+    },
+    displayM: {
+      fontSize: "36px",
+      lineHeight: "44px",
+      fontWeight: 600,
+    },
+
+    // Headings
+    h1: {
+      fontSize: "32px",
+      lineHeight: "40px",
+      fontWeight: 600,
+    },
+    h2: {
+      fontSize: "28px",
+      lineHeight: "36px",
+      fontWeight: 600,
+    },
+    h3: {
+      fontSize: "24px",
+      lineHeight: "32px",
+      fontWeight: 600,
+    },
+    h4: {
+      fontSize: "20px",
+      lineHeight: "28px",
+      fontWeight: 500,
+    },
+
+    // Body
+    bodyL: {
+      fontSize: "18px",
+      lineHeight: "28px",
+      fontWeight: 400,
+    },
+    bodyM: {
+      fontSize: "16px",
+      lineHeight: "24px",
+      fontWeight: 400,
+    },
+    bodyS: {
+      fontSize: "14px",
+      lineHeight: "20px",
+      fontWeight: 400,
+    },
+
+    // Caption
+    caption: {
+      fontSize: "12px",
+      lineHeight: "16px",
+      fontWeight: 400,
+    },
+  },
+} as const;
+
+export type TypographyToken = typeof typography;
+export type FontWeight =
+  (typeof typography.fontWeight)[keyof typeof typography.fontWeight];
+export type FontSize = keyof typeof typography.fontSize;

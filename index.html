@@ -2,10 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Set theme immediately -->
+    <script>
+      (function() {
+        const savedTheme = localStorage.getItem('theme');
+        const theme = savedTheme ? JSON.parse(savedTheme) : 'day';
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
     <!-- #TODO: replace with actual product info -->
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    <!-- Meritbox Design System Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Satisfy&display=swap" rel="stylesheet" />
+    <title>meritbox.me</title>
     <link rel="canonical" href="https://yourwebsite.com" />
     <!-- Open Graph Meta Tags for Social Media -->
     <meta property="og:title" content="Your App Title" />

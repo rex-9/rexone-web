@@ -1,2 +1,2 @@
-export { AuthProvider, useAuth } from "../contexts/AuthContext";
-export { LoadingProvider, useLoading } from "../contexts/LoadingContext";
+export { AuthProvider, useAuth } from "./AuthContext";
+export { LoadingProvider, useLoading } from "./LoadingContext";

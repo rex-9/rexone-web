@@ -1,4 +1,4 @@
-# auth-service-web
+# meritbox-web
 
 <a name="readme-top"></a>
 
@@ -10,9 +10,9 @@
 
 # 📗 Table of Contents
 
-- [auth-service-web](#auth-service-web)
+- [meritbox-web](#meritbox-web)
 - [📗 Table of Contents](#-table-of-contents)
-- [📖 Auth Service Web ](#-auth-service-web-)
+- [📖 Auth Service Web ](#-meritbox-web-)
   - [🚀 Featuring!](#-featuring)
     - [🌟 Modern Tech Stack](#-modern-tech-stack)
     - [🗃️ State Management \& Storage](#️-state-management--storage)
@@ -30,7 +30,7 @@
 
 # 📖 Auth Service Web <a name="about-project"></a>
 
-**Auth Service Web** is a robust frontend framework for authenticated web applications, offering a solid foundation for diverse product development needs. This repository also serves as an excellent learning resource for anyone looking to master frontend web development. It emphasizes best practices on the client side, enabling developers to write simple yet clean code. You can find the corresponding backend application here: [Auth Service Api](https://github.com/rex-9/auth-service-api).
+**Auth Service Web** is a robust frontend framework for authenticated web applications, offering a solid foundation for diverse product development needs. This repository also serves as an excellent learning resource for anyone looking to master frontend web development. It emphasizes best practices on the client side, enabling developers to write simple yet clean code. You can find the corresponding backend application here: [Auth Service Api](https://github.com/rex-9/meritbox-api).
 
 ## 🚀 Featuring!
 
@@ -53,7 +53,7 @@
 ### 🔐 Authentication & Security
 
 - **Email-Password Authentication**: Securely authenticate users with email and password.
-- **Google Authentication**: Provide a seamless login experience with Google OAuth.
+- **Google Authentication**: Provide a seamless sign in experience with Google OAuth.
 - **Forgot Password & Reset Password**: Allow users to recover their accounts with ease.
 - **Email Confirmation**: Verify user email addresses to enhance security.
 
@@ -108,13 +108,13 @@ Clone this repository or download as a zip file to your desired folder:
 
 ```sh
   cd my-folder
-  git clone git@github.com:rex-9/auth-service-web.git
+  git clone git@github.com:rex-9/meritbox-web.git
 ```
 
 Enter the Root level of the project
 
 ```sh
-  cd auth-service-web
+  cd meritbox-web
 ```
 
 Install the dependencies using yarn or npm:
@@ -135,7 +135,7 @@ run the app.
 
 If you like this project, please consider giving it a star on GitHub and buying me a coffee to support its development: 🌟
 
-[![GitHub Stars](https://img.shields.io/github/stars/rex-9/auth-service-web.svg?style=social&label=Star)](https://github.com/rex-9/auth-service-web)
+[![GitHub Stars](https://img.shields.io/github/stars/rex-9/meritbox-web.svg?style=social&label=Star)](https://github.com/rex-9/meritbox-web)
 
 <div align="center">
   <a href="https://buymeacoffee.com/rex9" target="_blank">

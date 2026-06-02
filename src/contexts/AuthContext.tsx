@@ -1,16 +1,44 @@
-import React, { createContext, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  ReactNode,
+  useReducer,
+} from "react";
 import { useAtom } from "jotai";
-import { User } from "../models/user.model";
+import { IUser } from "../models/user.model";
 import atoms from "../atoms";
+import {
+  TGoogleSsoAction,
+  IGoogleSsoState,
+  googleSsoStateReducer,
+  initialGoogleSsoState,
+} from "../reducers/googleSso.reducer";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
-  currentUser: User | null;
-  setCurrentUser: (user: User | null) => void;
-  login: (token: string, user: User) => void;
-  logout: () => void;
+  currentUser: IUser | null;
+  googleSsoState: IGoogleSsoState;
+  setCurrentUser: (user: IUser | null) => void;
+  signin: (token: string, user: IUser) => void;
+  signout: () => void;
+  dispatchGoogleSsoAction: (action: TGoogleSsoAction) => void;
 }
+
+const fallbackAuthContext: AuthContextType = {
+  isAuthenticated: false,
+  token: null,
+  currentUser: null,
+  googleSsoState: initialGoogleSsoState,
+  setCurrentUser: () => {},
+  signin: () => {},
+  signout: () => {},
+  dispatchGoogleSsoAction: () => {},
+};
+
+let hasWarnedMissingAuthProvider = false;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -19,39 +47,67 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [token, setToken] = useAtom(atoms.tokenAtom);
   const [currentUser, setCurrentUser] = useAtom(atoms.currentUserAtom);
+  const [googleSsoState, dispatchGoogleSsoAction] = useReducer(
+    googleSsoStateReducer,
+    initialGoogleSsoState,
+  );
 
-  let isAuthenticated = !!token;
+  const isAuthenticated = !!token;
 
-  const login = (token: string, user: User) => {
-    setToken(token);
-    setCurrentUser(user);
-  };
+  const signin = useCallback(
+    (token: string, user: IUser) => {
+      setToken(token);
+      setCurrentUser(user);
+      dispatchGoogleSsoAction({ type: "VERIFY_GOOGLE_SUCCESS_AUTHENTICATED" });
+    },
+    [setToken, setCurrentUser],
+  );
 
-  const logout = () => {
+  const signout = useCallback(() => {
     setToken(null);
     setCurrentUser(null);
-  };
+    dispatchGoogleSsoAction({ type: "RESET" });
+  }, [setToken, setCurrentUser]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        isAuthenticated,
-        token,
-        currentUser,
-        setCurrentUser,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      isAuthenticated,
+      token,
+      currentUser,
+      googleSsoState,
+      setCurrentUser,
+      signin,
+      signout,
+      dispatchGoogleSsoAction,
+    }),
+    [
+      isAuthenticated,
+      token,
+      currentUser,
+      googleSsoState,
+      setCurrentUser,
+      signin,
+      signout,
+      dispatchGoogleSsoAction,
+    ],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    if (
+      !hasWarnedMissingAuthProvider &&
+      typeof console !== "undefined"
+    ) {
+      hasWarnedMissingAuthProvider = true;
+      console.warn(
+        "useAuth called outside AuthProvider; using fallback context.",
+      );
+    }
+    return fallbackAuthContext;
   }
   return context;
 };

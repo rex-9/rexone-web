@@ -1,24 +1,22 @@
-import atomStorageService from "./services/atom-storage.service";
-import { User } from "./models";
-import { Toast } from "./models/Toast";
-import { atom } from "jotai";
+import AtomStorageService from "./services/atomStorage.service";
+import { IMarker, IUser } from "./models";
 
 class Atoms {
+  private atomStorageService = new AtomStorageService();
+
   // Define atoms here
-  themeAtom = atomStorageService.getAtom<string>("theme", "light");
-  tokenAtom = atomStorageService.getAtom<string | null>("token", null);
-  currentUserAtom = atomStorageService.getAtom<User | null>("user", null);
+  // Theme: "auto" | "day" | "night"
+  themeAtom = this.atomStorageService.getAtom<string>("theme", "auto");
+  tokenAtom = this.atomStorageService.getAtom<string | null>("token", null);
+  currentUserAtom = this.atomStorageService.getAtom<IUser | null>("user", null);
 
-  // For toasts, we should use a regular atom since we don't need persistence
-  // and it will be cleared on page refresh (which is usually desired for notifications)
-  toastsAtom = atom<Toast[]>([]);
-
-  // E.g. session storage atom
-  // sessionAtom = atomStorageService.getAtom<string | null>(
-  //   "session-atom",
-  //   null,
-  //   StorageType.SESSION
-  // );
+  // ANAPANA MODULE
+  markersAtom = this.atomStorageService.getAtom<IMarker[]>("markers", []);
+  startTimeAtom = this.atomStorageService.getAtom<string>(
+    "startTime",
+    "00:00:00",
+  );
+  endTimeAtom = this.atomStorageService.getAtom<string>("endTime", "00:00:00");
 }
 
 export default new Atoms();
