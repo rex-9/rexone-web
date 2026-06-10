@@ -1,14 +1,21 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import LayoutPage from "../LayoutPage";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Redirect to home with dialog=auth param
-    navigate("/?dialog=auth", { replace: true });
-  }, [navigate]);
+    const next = searchParams.get("next");
+    const nextQuery =
+      next && next.startsWith("/") && !next.startsWith("//")
+        ? `&next=${encodeURIComponent(next)}`
+        : "";
+
+    // Redirect to home with dialog=auth param.
+    navigate(`/?dialog=auth${nextQuery}`, { replace: true });
+  }, [navigate, searchParams]);
 
   return (
     <LayoutPage>

@@ -15,6 +15,21 @@ const LandingPage: React.FC = () => {
     <>
       Landing Page
       <div className="w-48 flex flex-col justify-center items-center">
+        <Button
+          variant="secondary"
+          className="mb-3"
+          onClick={() =>
+            navigate(
+              isAuthenticated
+                ? AppRoutes.client.public.PAYMENT
+                : `${AppRoutes.client.public.SIGN_IN}?next=${encodeURIComponent(
+                    AppRoutes.client.public.PAYMENT,
+                  )}`,
+            )
+          }
+        >
+          Pay Now
+        </Button>
         {isAuthenticated ? (
           <SignOutBtn />
         ) : (

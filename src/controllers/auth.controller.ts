@@ -281,6 +281,7 @@ class AuthController {
     setMessage: (message: string) => void,
     signin: (token: string, user: IUser) => void,
     navigate: (url: string) => void,
+    redirectPath?: string,
   ): Promise<IPasscodeSignInResult> {
     try {
       const response = await authService.signInWithEmailOrUsername(
@@ -294,7 +295,7 @@ class AuthController {
       if (status?.success && data?.token && data?.user) {
         setMessage(status.message);
         signin(data.token, data.user);
-        navigate(AppRoutes.client.protected.HOME);
+        navigate(redirectPath || AppRoutes.client.protected.HOME);
         return {
           success: true,
           shouldCountAttempt: false,

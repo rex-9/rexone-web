@@ -13,6 +13,8 @@ import {
   HomePage,
   RootPage,
   ProfilePage,
+  PaymentPage,
+  PaymentStatusPage,
 } from "../design/pages";
 import {
   Route,
@@ -35,8 +37,32 @@ const RouteManager = () => {
       >
         <Route path={AppRoutes.client.public.ROOT}>
           <Route index element={<RootPage />} />
+            <Route
+              path={AppRoutes.client.public.PAYMENT_SUCCESS}
+              element={<PaymentStatusPage />}
+            />
+            <Route
+              path={AppRoutes.client.public.PAYMENT_CANCEL}
+              element={<PaymentStatusPage />}
+            />
+            <Route
+              path={AppRoutes.client.public.PAYMENT_ERROR}
+              element={<PaymentStatusPage />}
+            />
+            <Route
+              path={`${AppRoutes.client.public.PAYMENT_STATUS}/:id`}
+              element={<PaymentStatusPage />}
+            />
+            <Route
+              path={AppRoutes.client.public.PAYMENT_STATUS}
+              element={<PaymentStatusPage />}
+            />
           <Route element={<AnapanaPage />} /> {/* // ANAPANA MODULE */}
           <Route element={<ProtectedRoute />}>
+            <Route
+              path={AppRoutes.client.public.PAYMENT}
+              element={<PaymentPage />}
+            />
             <Route
               path={AppRoutes.client.protected.SIGN_OUT}
               element={<SignOut />}

@@ -6,9 +6,13 @@ import { AppLocales } from "../../locales/app_locales";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef } from "react";
 import { userController } from "../../controllers";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../AppRoutes";
+import Button from "../molecules/Button";
 
 const HomePage: React.FC = () => {
   const { currentUser, setCurrentUser } = useAuth();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const hasFetchedCurrentUserRef = useRef(false);
 
@@ -27,6 +31,9 @@ const HomePage: React.FC = () => {
       <Typography className="text-xl font-bold" variant="primary">
         {t(AppLocales.Home)}
       </Typography>
+      <Button onClick={() => navigate(AppRoutes.client.public.PAYMENT)}>
+        Pay Now
+      </Button>
       {currentUser && <p>Welcome, {currentUser.email}!</p>}
       <VideoPlayer
         video={assets.videos.sample}

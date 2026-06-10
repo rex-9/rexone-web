@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   ReactNode,
   useReducer,
@@ -42,6 +43,21 @@ let hasWarnedMissingAuthProvider = false;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const readStoredToken = (): string | null => {
+  if (typeof window === "undefined") return null;
+
+  const raw = window.localStorage.getItem("token");
+  if (!raw) return null;
+
+  // Support both atomWithStorage JSON and legacy raw string values.
+  try {
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "string" && parsed.trim() ? parsed : null;
+  } catch {
+    return raw.trim() ? raw : null;
+  }
+};
+
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -52,7 +68,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     initialGoogleSsoState,
   );
 
-  const isAuthenticated = !!token;
+  const hydratedToken = token || readStoredToken();
+  const isAuthenticated = !!hydratedToken;
+
+  useEffect(() => {
+    if (!token && hydratedToken) {
+      setToken(hydratedToken);
+    }
+  }, [hydratedToken, setToken, token]);
 
   const signin = useCallback(
     (token: string, user: IUser) => {
@@ -72,7 +95,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const value = useMemo(
     () => ({
       isAuthenticated,
-      token,
+      token: hydratedToken,
       currentUser,
       googleSsoState,
       setCurrentUser,
@@ -82,7 +105,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }),
     [
       isAuthenticated,
-      token,
+      hydratedToken,
       currentUser,
       googleSsoState,
       setCurrentUser,

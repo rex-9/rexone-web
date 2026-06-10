@@ -6,6 +6,12 @@ class AppConfig {
     import.meta.env.VITE_REACT_APP_SERVER_BASE_URL || "http://localhost:3000";
   static readonly CLIENT_BASE_URL =
     import.meta.env.VITE_REACT_APP_CLIENT_BASE_URL || "http://localhost:4002";
+  static readonly STRIPE_PUBLISHABLE_KEY =
+    import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+  static readonly STRIPE_PRODUCT_ID =
+    import.meta.env.VITE_STRIPE_PRODUCT_ID ||'';
+  static readonly STRIPE_PRICE_ID =
+    import.meta.env.VITE_STRIPE_PRICE_ID ||'';
 }
 
 export default AppConfig;

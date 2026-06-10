@@ -135,6 +135,18 @@ export const AuthDialog: React.FC = () => {
 
   const isOpen = searchParams.get("dialog") === "auth";
 
+  const getPostSignInRoute = (): string => {
+    const next = searchParams.get("next");
+    if (!next) return AppRoutes.client.protected.HOME;
+
+    // Only allow app-relative redirects.
+    if (!next.startsWith("/") || next.startsWith("//")) {
+      return AppRoutes.client.protected.HOME;
+    }
+
+    return next;
+  };
+
   const getStepFromUrl = (): AuthStep => {
     const stepParam = searchParams.get("step");
 
@@ -455,7 +467,7 @@ export const AuthDialog: React.FC = () => {
         });
         dispatchGoogleSsoAction({ type: "CLEAR_CHALLENGE_TOKEN" });
         setGooglePasscodeSetupRequired(false);
-        navigate(AppRoutes.client.protected.HOME);
+        navigate(getPostSignInRoute());
         return;
       }
 
@@ -555,6 +567,7 @@ export const AuthDialog: React.FC = () => {
         setMessage,
         signin,
         navigate,
+        getPostSignInRoute(),
       );
 
       if (result.success) {
@@ -915,7 +928,7 @@ export const AuthDialog: React.FC = () => {
           dispatchGoogleSsoAction({
             type: "VERIFY_GOOGLE_SUCCESS_AUTHENTICATED",
           });
-          navigate(AppRoutes.client.protected.HOME);
+          navigate(getPostSignInRoute());
           return;
         }
 

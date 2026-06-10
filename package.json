@@ -20,6 +20,8 @@
     "@headlessui/react": "^2.2.10",
     "@heroicons/react": "^2.2.0",
     "@react-oauth/google": "^0.13.5",
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
     "autoprefixer": "^10.4.20",
     "axios": "^1.16.1",
     "i18next": "^26.2.0",
