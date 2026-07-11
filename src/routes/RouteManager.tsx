@@ -1,7 +1,7 @@
 import AppRoutes from "../AppRoutes";
 import { ProtectedRoute, PublicRoute } from ".";
 import { Outlet } from "react-router-dom";
-import { AuthDialog } from "../design/molecules";
+import { AuthDialog } from "../design/components";
 import {
   SignIn,
   SignUp,

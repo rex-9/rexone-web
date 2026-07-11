@@ -36,8 +36,8 @@ export const ExampleDirectUsage = () => {
 export const ExampleUtilityFunctions = () => {
   const gold = getColor("gold", 500);
   const padding = getSpacing(16);
-  const borderRadius = getRadius("m");
-  const shadow = getShadow("s");
+  const borderRadius = getRadius("md");
+  const shadow = getShadow("sm");
 
   return (
     <div

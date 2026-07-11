@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Toast } from "../design/molecules";
+import { Toast } from "../design/components";
 
 type ToastType = "info" | "success" | "warning" | "error";
 

@@ -6,7 +6,7 @@ import atoms from "../../../atoms";
 import { AppLocales } from "../../../locales/app_locales";
 import assets from "../../../assets";
 import { DropdownPicker } from "../../../design";
-import { Button, Input } from "../../../design/molecules";
+import { Button, Input } from "../../../design/components";
 import { useTranslation } from "react-i18next";
 
 const MarkerPopup: React.FC = () => {

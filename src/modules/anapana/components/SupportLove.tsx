@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../../../design/molecules";
+import { Button } from "../../../design/components";
 import assets from "../../../assets";
 import { AppLocales } from "../../../locales/app_locales";
 

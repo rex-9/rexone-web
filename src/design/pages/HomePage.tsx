@@ -1,4 +1,4 @@
-import { SignOutBtn, VideoPlayer, Asset, Typography } from "../molecules";
+import { SignOutBtn, VideoPlayer, Asset, Typography } from "../components";
 import LayoutPage from "./LayoutPage";
 import { useAuth } from "../../contexts";
 import assets from "../../assets";

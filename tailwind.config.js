@@ -1,4 +1,5 @@
-import { colors, typography, spacing, radius, shadows } from './src/design/atoms';
+// tailwind.config.js
+import { colors, typography, spacing, radius, shadows, motion } from './src/design/elements';
 import daisyui from 'daisyui';
 import plugin from 'tailwindcss/plugin';
 
@@ -21,9 +22,9 @@ export default {
           '--color-accent-content': colors.navy[900],
           '--color-neutral': colors.gray[700],
           '--color-neutral-content': '#FFFFFF',
-          '--color-base-100': colors.bg.primary,
-          '--color-base-200': colors.bg.secondary,
-          '--color-base-300': colors.bg.tertiary,
+          '--color-base-100': colors.day.bg.primary,
+          '--color-base-200': colors.day.bg.secondary,
+          '--color-base-300': colors.day.bg.tertiary,
           '--color-base-content': colors.navy[900],
           '--color-info': colors.semantic.info,
           '--color-success': colors.semantic.success,
@@ -53,7 +54,7 @@ export default {
   ],
   theme: {
     extend: {
-      // Meritbox Design System Colors
+      // ===== COLORS =====
       colors: {
         gold: colors.gold,
         blue: colors.blue,
@@ -62,82 +63,37 @@ export default {
         grey: colors.gray, // British spelling alias
       },
 
-      // Typography from Meritbox Design System
-      fontFamily: {
-        sans: [typography.fontFamily.primary],
-        primary: [typography.fontFamily.primary],
-        display: [typography.fontFamily.display],
-        handwritten: [typography.fontFamily.handwritten],
-      },
+      // ===== TYPOGRAPHY =====
+      fontFamily: typography.fontFamily,
+      fontWeight: typography.fontWeight,
+      fontSize: typography.fontSize,
 
-      fontSize: {
-        // Display
-        'display-xl': [typography.fontSize.displayXL.fontSize, {
-          lineHeight: typography.fontSize.displayXL.lineHeight,
-          fontWeight: typography.fontSize.displayXL.fontWeight,
-        }],
-        'display-l': [typography.fontSize.displayL.fontSize, {
-          lineHeight: typography.fontSize.displayL.lineHeight,
-          fontWeight: typography.fontSize.displayL.fontWeight,
-        }],
-        'display-m': [typography.fontSize.displayM.fontSize, {
-          lineHeight: typography.fontSize.displayM.lineHeight,
-          fontWeight: typography.fontSize.displayM.fontWeight,
-        }],
-
-        // Headings
-        'h1': [typography.fontSize.h1.fontSize, {
-          lineHeight: typography.fontSize.h1.lineHeight,
-          fontWeight: typography.fontSize.h1.fontWeight,
-        }],
-        'h2': [typography.fontSize.h2.fontSize, {
-          lineHeight: typography.fontSize.h2.lineHeight,
-          fontWeight: typography.fontSize.h2.fontWeight,
-        }],
-        'h3': [typography.fontSize.h3.fontSize, {
-          lineHeight: typography.fontSize.h3.lineHeight,
-          fontWeight: typography.fontSize.h3.fontWeight,
-        }],
-        'h4': [typography.fontSize.h4.fontSize, {
-          lineHeight: typography.fontSize.h4.lineHeight,
-          fontWeight: typography.fontSize.h4.fontWeight,
-        }],
-
-        // Body
-        'body-l': [typography.fontSize.bodyL.fontSize, {
-          lineHeight: typography.fontSize.bodyL.lineHeight,
-          fontWeight: typography.fontSize.bodyL.fontWeight,
-        }],
-        'body-m': [typography.fontSize.bodyM.fontSize, {
-          lineHeight: typography.fontSize.bodyM.lineHeight,
-          fontWeight: typography.fontSize.bodyM.fontWeight,
-        }],
-        'body-s': [typography.fontSize.bodyS.fontSize, {
-          lineHeight: typography.fontSize.bodyS.lineHeight,
-          fontWeight: typography.fontSize.bodyS.fontWeight,
-        }],
-
-        // Caption
-        'caption': [typography.fontSize.caption.fontSize, {
-          lineHeight: typography.fontSize.caption.lineHeight,
-          fontWeight: typography.fontSize.caption.fontWeight,
-        }],
-      },
-
-      fontWeight: {
-        light: typography.fontWeight.light,
-        regular: typography.fontWeight.regular,
-        normal: typography.fontWeight.regular,
-        medium: typography.fontWeight.medium,
-        semibold: typography.fontWeight.semibold,
-        bold: typography.fontWeight.bold,
-      },
-
+      // ===== SPACING =====
       spacing: spacing,
 
+      // ===== RADIUS =====
       borderRadius: radius,
 
+      // ===== SHADOWS =====
       boxShadow: shadows,
+
+      // ===== ANIMATIONS =====
+      keyframes: {
+        fadeRise: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        glowPulse: {
+          '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+          '50%': { opacity: '1', transform: 'scale(1.05)' },
+        },
+      },
+      animation: {
+        'fade-rise': `fadeRise ${motion.duration.normal}ms ${motion.easing.easeOut}`,
+        'glow-pulse': `glowPulse ${motion.duration.slower}ms ease-in-out infinite`,
+        'fade-in': `fadeRise ${motion.duration.fast}ms ${motion.easing.easeIn}`,
+        'slide-up': `fadeRise ${motion.duration.slow}ms ${motion.easing.easeOut}`,
+      },
     },
   },
   daisyui: {

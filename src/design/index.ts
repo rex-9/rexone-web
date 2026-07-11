@@ -5,14 +5,11 @@
  * Import from here: import { colors, typography, spacing } from '@/design-system'
  */
 
-// Export all atoms
-export * from "./atoms";
+// Export all elements
+export * from "./elements";
 
-// Export types
-export * from "./types";
-
-// Export all molecules
-export * from "./molecules";
+// Export all components
+export * from "./components";
 
 // Export all pages
 export * from "./pages";

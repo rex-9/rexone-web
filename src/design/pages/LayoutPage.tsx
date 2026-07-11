@@ -1,6 +1,6 @@
 import React from "react";
 import { useAxiosInterceptor } from "../../services";
-import { NavBar } from "../molecules";
+import { NavBar } from "../components";
 
 interface PageLayoutProps {
   children: React.ReactNode;

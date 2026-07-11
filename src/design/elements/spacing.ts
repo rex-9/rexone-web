@@ -1,7 +1,9 @@
+// src/design/elements/spacing.ts
+
 /**
  * Meritbox Design System - Spacing Tokens
  *
- * 8-based spacing scale for consistent spacing throughout the system
+ * 8-based spacing scale
  */
 
 export const spacing = {
@@ -18,6 +20,3 @@ export const spacing = {
   64: "64px",
   80: "80px",
 } as const;
-
-export type SpacingToken = typeof spacing;
-export type SpacingValue = keyof typeof spacing;

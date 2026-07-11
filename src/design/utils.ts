@@ -4,7 +4,7 @@
  * Helper functions for working with design tokens
  */
 
-import { colors, spacing, radius, shadows, typography } from "./atoms";
+import { colors, spacing, radius, shadows, typography } from "./elements";
 
 /**
  * Get a color value from the color tokens
@@ -12,7 +12,7 @@ import { colors, spacing, radius, shadows, typography } from "./atoms";
  */
 export function getColor(
   palette: "gold" | "blue" | "navy" | "gray",
-  shade: string | number
+  shade: string | number,
 ): string {
   return colors[palette][shade as keyof (typeof colors)[typeof palette]];
 }
@@ -22,7 +22,7 @@ export function getColor(
  * @example getSemanticColor('success') => '#4CAF50'
  */
 export function getSemanticColor(
-  color: "success" | "warning" | "error" | "info"
+  color: "success" | "warning" | "error" | "info",
 ): string {
   return colors.semantic[color];
 }
