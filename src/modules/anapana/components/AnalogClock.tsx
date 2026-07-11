@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import "react-clock/dist/Clock.css";
 import Clock from "react-clock";
 import atoms from "../../../atoms";
-import assets from "../../../assets";
+import { sounds } from "../../../assets";
 
 const AnalogClock: React.FC = () => {
   const [value, setValue] = useState(new Date());
@@ -59,7 +59,7 @@ const AnalogClock: React.FC = () => {
       markerTimes,
       " | ",
       "current time ===>",
-      currentTime
+      currentTime,
     );
     if (markerTimes.includes(currentTime)) {
       playSound();
@@ -90,9 +90,12 @@ const AnalogClock: React.FC = () => {
 
     requestWakeLock();
 
-    const wakeLockInterval = setInterval(() => {
-      requestWakeLock();
-    }, 5 * 60 * 1000); // 5 minutes
+    const wakeLockInterval = setInterval(
+      () => {
+        requestWakeLock();
+      },
+      5 * 60 * 1000,
+    ); // 5 minutes
 
     return () => {
       clearInterval(wakeLockInterval);
@@ -104,7 +107,7 @@ const AnalogClock: React.FC = () => {
 
   const playSound = () => {
     if (audioAllowed) {
-      const audio = new Audio(assets.sounds.note.src);
+      const audio = new Audio(sounds.note.src);
       audio.play();
     }
   };
@@ -132,7 +135,7 @@ const AnalogClock: React.FC = () => {
   const generateMarkerTimes = (
     startTime: string,
     endTime: string,
-    interval: number
+    interval: number,
   ) => {
     const [startHours, startMinutes] = startTime.split(":").map(Number);
     const [endHours, endMinutes] = endTime.split(":").map(Number);
@@ -152,7 +155,7 @@ const AnalogClock: React.FC = () => {
         times.push(
           `${hours.toString().padStart(2, "0")}:${minutes
             .toString()
-            .padStart(2, "0")}`
+            .padStart(2, "0")}`,
         );
       }
     }

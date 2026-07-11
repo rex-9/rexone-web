@@ -1,11 +1,16 @@
-// Import images
+// src/assets/index.ts
+
+// ============================================================
+// IMPORT ASSETS
+// ============================================================
+
+// Images
 import banner from "./images/banner.png";
 
-// Import videos
-import sample from "./videos/sample.mp4";
+// Icons (Asset files like SVG)
+import instagramIcon from "./icons/instagram.svg";
 
-// Import icons
-import insta from "./icons/instagram.svg"; // Asset icons
+// Icons (Library components - Heroicons, Lucide, etc.)
 import {
   MoonIcon,
   SunIcon,
@@ -13,63 +18,61 @@ import {
   ExclamationCircleIcon,
   XCircleIcon,
   HeartIcon,
-} from "./icons"; // Lib icons
+  LanguageIcon,
+  UserIcon,
+  HomeIcon,
+} from "./icons";
 
-// Import sounds
-// ANAPANA MODULE
-import note from "./sounds/note.mp3";
+// Videos
+import sampleVideo from "./videos/sample.mp4";
 
-// Define TypeScript interfaces
-interface AssetProps {
-  src: string;
-  alt: string;
-  title: string;
-}
+// Sounds
+import noteSound from "./sounds/note.mp3";
 
-// Add images and icons here
-const images: Record<string, AssetProps> = {
-  banner: {
-    src: banner,
-    alt: "banner image alt",
-    title: "banner image title",
-  },
-};
+// ============================================================
+// IMAGE ASSETS (for Asset component)
+// ============================================================
 
-const icons: {
-  asset: Record<string, AssetProps>;
-  lib: Record<string, React.ComponentType>;
-} = {
-  asset: {
-    insta: {
-      src: insta,
-      alt: "instagram icon alt",
-      title: "instagram icon title",
-    },
-  },
-  lib: {
-    sun: SunIcon,
-    moon: MoonIcon,
-    checkCircle: CheckCircleIcon,
-    exclamationCircle: ExclamationCircleIcon,
-    xCircle: XCircleIcon,
-    heart: HeartIcon,
-  },
-};
+export const images = {
+  banner: { src: banner, alt: "Banner image", title: "Meritbox Banner" },
+} as const;
 
-const videos: Record<string, AssetProps> = {
-  sample: {
-    src: sample,
-    alt: "sample video alt",
-    title: "sample video title",
-  },
-};
+// ============================================================
+// ICON ASSETS (for Asset component)
+// ============================================================
 
-const sounds: Record<string, AssetProps> = {
-  note: {
-    src: note,
-    alt: "note sound alt",
-    title: "note sound title",
-  },
-};
+export const icons = {
+  instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
+} as const;
 
-export default { images, icons, videos, sounds };
+// ============================================================
+// VIDEO ASSETS (for VideoPlayer component)
+// ============================================================
+
+export const videos = {
+  sample: { src: sampleVideo, alt: "Sample video", title: "Sample Video" },
+} as const;
+
+// ============================================================
+// SOUND ASSETS
+// ============================================================
+
+export const sounds = {
+  note: { src: noteSound, alt: "Note sound", title: "Note" },
+} as const;
+
+// ============================================================
+// ICON LIBRARY COMPONENTS (for direct use)
+// ============================================================
+
+export const iconsLib = {
+  sun: SunIcon,
+  moon: MoonIcon,
+  check: CheckCircleIcon,
+  warning: ExclamationCircleIcon,
+  error: XCircleIcon,
+  heart: HeartIcon,
+  language: LanguageIcon,
+  user: UserIcon,
+  home: HomeIcon,
+} as const;

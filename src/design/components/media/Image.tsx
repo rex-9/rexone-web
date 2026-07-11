@@ -1,16 +1,13 @@
+// src/components/Media/Image.tsx
 import React from "react";
 
-export interface AssetProps {
-  asset: {
-    src: string;
-    alt: string;
-    title?: string;
-  };
+interface ImageProps {
+  asset: { src: string; alt: string; title?: string };
   className?: string;
   onError?: () => void;
 }
 
-export const Asset: React.FC<AssetProps> = ({ asset, className, onError }) => {
+export const Image: React.FC<ImageProps> = ({ asset, className, onError }) => {
   return (
     <img
       src={asset.src}
@@ -19,9 +16,7 @@ export const Asset: React.FC<AssetProps> = ({ asset, className, onError }) => {
       title={asset.title ?? asset.alt}
       className={className}
       loading="lazy"
-      onError={onError ?? undefined}
+      onError={onError}
     />
   );
 };
-
-export default Asset;

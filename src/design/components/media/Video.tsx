@@ -1,46 +1,35 @@
+// src/components/Media/Video.tsx
 import React from "react";
 
-export interface VideoProps {
-  video: {
-    src: string;
-    alt: string;
-    title: string;
-  };
+interface VideoProps {
+  asset: { src: string; alt: string; title?: string };
   controls?: boolean;
   autoplay?: boolean;
   loop?: boolean;
   muted?: boolean;
-  width?: string;
-  height?: string;
   className?: string;
 }
 
-export const VideoPlayer: React.FC<VideoProps> = ({
-  video,
+export const Video: React.FC<VideoProps> = ({
+  asset,
   controls = true,
   autoplay = false,
   loop = false,
   muted = false,
-  width = "100%",
-  height = "auto",
   className = "",
 }) => {
   return (
     <video
       className={className}
-      width={width}
-      height={height}
       controls={controls}
       autoPlay={autoplay}
       loop={loop}
       muted={muted}
-      aria-label={video.alt}
-      title={video.title}
+      aria-label={asset.alt}
+      title={asset.title ?? asset.alt}
     >
-      <source src={video.src} type="video/mp4" />
+      <source src={asset.src} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   );
 };
-
-export default VideoPlayer;

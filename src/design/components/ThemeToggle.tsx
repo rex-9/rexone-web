@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useAtom } from "jotai";
 import { Button } from ".";
 import atoms from "../../atoms";
-import assets from "../../assets";
+import { iconsLib } from "../../assets";
 
 export const ThemeToggle: FC = () => {
   const [theme, setTheme] = useAtom(atoms.themeAtom);
@@ -21,11 +21,7 @@ export const ThemeToggle: FC = () => {
       className="w-10 h-10 flex items-center justify-center"
     >
       <span className="w-5 h-5 flex items-center justify-center">
-        {resolvedTheme === "night" ? (
-          <assets.icons.lib.sun />
-        ) : (
-          <assets.icons.lib.moon />
-        )}
+        {resolvedTheme === "night" ? <iconsLib.sun /> : <iconsLib.moon />}
       </span>
     </Button>
   );

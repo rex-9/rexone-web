@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../../design/components";
-import assets from "../../../assets";
+import { iconsLib } from "../../../assets";
 import { AppLocales } from "../../../locales/app_locales";
 
 const SupportLove: React.FC = () => {
@@ -15,11 +15,7 @@ const SupportLove: React.FC = () => {
         className="p-8 !px-8 min-w-[40px] min-h-[40px] flex items-center justify-center"
       >
         <span className="w-5 h-5 flex items-center justify-center">
-          {!showSnackbar ? (
-            <assets.icons.lib.heart />
-          ) : (
-            <assets.icons.lib.xCircle />
-          )}
+          {!showSnackbar ? <iconsLib.heart /> : <iconsLib.error />}
         </span>
       </Button>
       {showSnackbar && (

@@ -17,14 +17,14 @@ export { AlertMessage, type AlertMessageProps } from "./AlertMessage";
 export { ThemeToggle } from "./ThemeToggle";
 export { LanguageSwitcher } from "./LanguageSwitcher";
 export { LoadingOverlay } from "./LoadingOverlay";
-export { Asset, type AssetProps } from "./Asset";
-export { VideoPlayer, type VideoProps } from "./VideoPlayer";
+export { Image } from "./media/Image";
+export { Video } from "./media/Video";
 export { Typography, type TypographyProps } from "./Typography";
 export { TextLink, type TextLinkProps } from "./TextLink";
 export { DropdownPicker, type DropdownPickerProps } from "./DropdownPicker";
 export { NavBar } from "./NavBar";
 export { ProfileAvatar, type ProfileAvatarProps } from "./ProfileAvatar";
 export {
-	PasscodeBoxesInput,
-	type IPasscodeBoxesInput,
+  PasscodeBoxesInput,
+  type IPasscodeBoxesInput,
 } from "./PasscodeBoxesInput";

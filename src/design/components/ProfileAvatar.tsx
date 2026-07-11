@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts";
-import { Asset } from "../";
+import { Image } from "../";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
 
@@ -35,7 +35,7 @@ export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ className }) => {
       onClick={() => navigate(AppRoutes.client.protected.PROFILE)}
     >
       {profile_pic_url && !imageError ? (
-        <Asset
+        <Image
           asset={{ src: profile_pic_url, alt: `${username}'s profile` }}
           className="w-10 h-10 rounded-full"
           onError={handleImageError}

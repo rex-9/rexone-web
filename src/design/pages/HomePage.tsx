@@ -1,7 +1,7 @@
-import { SignOutBtn, VideoPlayer, Asset, Typography } from "../components";
+import { SignOutBtn, Video, Image, Typography } from "../components";
 import LayoutPage from "./LayoutPage";
 import { useAuth } from "../../contexts";
-import assets from "../../assets";
+import { icons, images, videos } from "../../assets";
 import { AppLocales } from "../../locales/app_locales";
 import { useTranslation } from "react-i18next";
 import { useEffect, useRef } from "react";
@@ -22,20 +22,18 @@ const HomePage: React.FC = () => {
 
   return (
     <LayoutPage>
-      {<Asset asset={assets.icons.asset.insta} className="w-8" />}
-      {<Asset asset={assets.images.banner} className="w-96" />}
+      {<Image asset={icons.instagram} className="w-8" />}
+      {<Image asset={images.banner} className="w-96" />}
       <Typography className="text-xl font-bold" variant="primary">
         {t(AppLocales.Home)}
       </Typography>
       {currentUser && <p>Welcome, {currentUser.email}!</p>}
-      <VideoPlayer
-        video={assets.videos.sample}
+      <Video
+        asset={videos.sample}
         controls={true}
         autoplay={false}
         muted={false}
         className="w-96"
-        // width="640px"
-        // height="360px"
       />
       <SignOutBtn />
     </LayoutPage>

@@ -5,6 +5,9 @@ import {
   ExclamationCircleIcon,
   XCircleIcon,
   HeartIcon,
+  LanguageIcon,
+  UserIcon,
+  HomeIcon,
 } from "@heroicons/react/24/solid";
 
 export {
@@ -14,4 +17,7 @@ export {
   ExclamationCircleIcon,
   XCircleIcon,
   HeartIcon,
+  LanguageIcon,
+  UserIcon,
+  HomeIcon,
 };
