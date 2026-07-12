@@ -1,76 +1,103 @@
-import React from "react";
-import { Button, TextInput, TextLink } from "..";
+// src/design/components/auth/ForgotPasswordDialog.tsx
 
-export interface IForgotPasswordDialog {
+import React, { useState } from "react";
+import { useCountdown } from "../../../hooks";
+import { authController } from "../../../controllers";
+import { Button, Dialog, TextInput, TextLink } from "..";
+import { useToast } from "../../../contexts";
+import { AuthStep } from "./type";
+
+interface ForgotPasswordDialogProps {
   email: string;
-  message: string;
-  error: string;
-  isLoading: boolean;
-  resendCountdownActive: boolean;
-  resendCountdownSecondsLeft: number;
-  onEmailChange: (value: string) => void;
-  onSubmit: (event: React.FormEvent) => void;
-  onBackToSignin: () => void;
+  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  updateUrl: (params: Record<string, string | null>) => void;
+  onClose: () => void;
+  onBack: () => void;
 }
 
-export const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
+export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
   email,
-  message,
-  error,
-  isLoading,
-  resendCountdownActive,
-  resendCountdownSecondsLeft,
-  onEmailChange,
-  onSubmit,
-  onBackToSignin,
+  navigateToStep,
+  updateUrl,
+  onClose,
+  onBack,
 }) => {
-  return (
-    <div className="space-y-16">
-      <div className="text-center">
-        <p className="text-body-m text-base-content opacity-70">
-          Enter your email and we will send you a link to reset your passcode.
-        </p>
-      </div>
+  const toast = useToast();
+  const [localEmail, setLocalEmail] = useState(email);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const cooldown = useCountdown(0);
+  const isCooldown = cooldown.isActive;
+  const secondsLeft = cooldown.secondsLeft;
 
-      <form onSubmit={onSubmit} className="space-y-16">
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    await authController.sendForgotPasswordMail(
+      localEmail,
+      setError,
+      setMessage,
+      () => cooldown.start(60),
+    );
+    setIsLoading(false);
+    if (!error) {
+      toast.showToast("success", "Reset link sent to your email.");
+    }
+  };
+
+  return (
+    <Dialog
+      isOpen={true}
+      onClose={onClose}
+      onBack={onBack}
+      title="Reset Passcode"
+      className="max-w-md"
+    >
+      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+        Enter your email to receive a reset link.
+      </p>
+      <form onSubmit={handleSubmit} className="space-y-16">
         <TextInput
-          id="email"
+          id="forgot-email"
           type="email"
-          value={email}
-          onChange={(event) => onEmailChange(event.target.value)}
+          value={localEmail}
+          onChange={(e) => {
+            setLocalEmail(e.target.value);
+            updateUrl({ email: e.target.value });
+          }}
           placeholder="your@email.com"
           label="Email"
           required
           fullWidth
           disabled={isLoading}
         />
-
         <Button
           variant="primary"
           type="submit"
           fullWidth
-          disabled={isLoading || resendCountdownActive}
+          disabled={isLoading || isCooldown}
         >
-          {resendCountdownActive
-            ? `Resend in ${resendCountdownSecondsLeft}s`
+          {isCooldown
+            ? `Resend in ${secondsLeft}s`
             : isLoading
               ? "Sending..."
               : "Send Passcode Reset Link"}
         </Button>
       </form>
-
       {message && (
         <p className="text-caption text-success text-center">{message}</p>
       )}
       {error && <p className="text-caption text-error text-center">{error}</p>}
-
       <div className="text-center">
         <TextLink
           label="Back to Sign In"
-          onClick={onBackToSignin}
+          onClick={() =>
+            navigateToStep("signin-passcode", { email: localEmail })
+          }
           className="text-body-s"
         />
       </div>
-    </div>
+    </Dialog>
   );
 };

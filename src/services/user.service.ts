@@ -3,13 +3,20 @@ import { IApiAuthResponse, IApiResponse, IUser } from "../models";
 import { api } from "../services";
 
 class UserService {
-  async peekUser(
-    email: string,
-  ): Promise<IApiResponse<IApiAuthResponse<{ user_exists: boolean }>>> {
-    const response = await api.get<IApiAuthResponse<{ user_exists: boolean }>>(
-      AppRoutes.server.protected.PEEK_USER,
-      { email },
-    );
+  async peekUser(email: string): Promise<
+    IApiResponse<
+      IApiAuthResponse<{
+        user_exists: boolean;
+        confirmed: boolean;
+      }>
+    >
+  > {
+    const response = await api.get<
+      IApiAuthResponse<{
+        user_exists: boolean;
+        confirmed: boolean;
+      }>
+    >(AppRoutes.server.protected.PEEK_USER, { email });
     return response;
   }
 

@@ -8,22 +8,8 @@ import { IApiAuthResponse, IApiResponse } from "../models";
 
 const PLATFORM_HEADER_VALUE = "web";
 const SKIP_LOADING_HEADER = "X-Skip-Loading";
-const SESSION_VERIFY_MIN_INTERVAL_MS = 10_000;
 const SESSION_REPLACED_MESSAGE =
   "Your session was replaced by a newer sign in on this platform.";
-let lastSessionVerifyAtMs = 0;
-
-const shouldRunProactiveSessionCheck = (): boolean => {
-  if (typeof window === "undefined") return false;
-
-  const pathname = window.location.pathname;
-  const protectedPaths = Object.values(AppRoutes.client.protected);
-
-  return protectedPaths.some((path) => {
-    if (path === "/") return pathname === "/";
-    return pathname === path || pathname.startsWith(`${path}/`);
-  });
-};
 
 // Create an axios instance
 const axiosInstance = axios.create({
@@ -103,8 +89,6 @@ export const useAxiosInterceptor = () => {
   const { token, signout } = useAuth();
 
   useEffect(() => {
-    let isSessionCheckInFlight = false;
-
     const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
         const headers = AxiosHeaders.from(config.headers);
@@ -148,10 +132,6 @@ export const useAxiosInterceptor = () => {
         const shouldSkipLoading =
           String(errorHeaders.get(SKIP_LOADING_HEADER) ?? "") === "true";
         const hasAuthHeader = Boolean(errorHeaders.get("Authorization"));
-        const requestUrl = String(error?.config?.url || "");
-        const isSessionValidationRequest = requestUrl.includes(
-          AppRoutes.server.protected.GET_CURRENT_USER,
-        );
         const isSessionReplacedError =
           serverError === "Active session not found";
 
@@ -160,7 +140,7 @@ export const useAxiosInterceptor = () => {
           error?.response?.status === 401 &&
           !!token &&
           hasAuthHeader &&
-          (isSessionReplacedError || isSessionValidationRequest)
+          isSessionReplacedError
         ) {
           signout();
 
@@ -185,49 +165,7 @@ export const useAxiosInterceptor = () => {
       },
     );
 
-    const verifySession = async () => {
-      if (!token || isSessionCheckInFlight) return;
-      if (!shouldRunProactiveSessionCheck()) return;
-
-      const now = Date.now();
-      if (now - lastSessionVerifyAtMs < SESSION_VERIFY_MIN_INTERVAL_MS) {
-        return;
-      }
-
-      lastSessionVerifyAtMs = now;
-
-      isSessionCheckInFlight = true;
-      try {
-        await axiosInstance.get(AppRoutes.server.protected.GET_CURRENT_USER, {
-          headers: {
-            [SKIP_LOADING_HEADER]: "true",
-          },
-        });
-      } catch {
-        // 401 for this validation request is handled by the response interceptor.
-      } finally {
-        isSessionCheckInFlight = false;
-      }
-    };
-
-    void verifySession();
-
-    const onVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        void verifySession();
-      }
-    };
-
-    const onFocus = () => {
-      void verifySession();
-    };
-
-    window.addEventListener("focus", onFocus);
-    document.addEventListener("visibilitychange", onVisibilityChange);
-
     return () => {
-      window.removeEventListener("focus", onFocus);
-      document.removeEventListener("visibilitychange", onVisibilityChange);
       axiosInstance.interceptors.request.eject(requestInterceptor);
       axiosInstance.interceptors.response.eject(responseInterceptor);
     };

@@ -13,10 +13,14 @@ class AuthService {
     signinKey: string,
     password: string,
   ): Promise<
-    IApiResponse<IApiAuthResponse<{ user: IUser; token: string } | undefined>>
+    IApiResponse<
+      IApiAuthResponse<
+        { user?: IUser; token?: string; otp_sent?: boolean } | undefined
+      >
+    >
   > {
     const response = await api.post<
-      IApiAuthResponse<{ user: IUser; token: string }>
+      IApiAuthResponse<{ user?: IUser; token?: string; otp_sent?: boolean }>
     >(AppRoutes.server.public.SIGN_IN_EMAIL, {
       user: { signin_key: signinKey, password },
     });

@@ -1,2 +1,2 @@
-export { useCountdown } from "./useCountdown.hook";
-export { useTheme } from "./useTheme.hook";
+export { useCountdown } from "./useCountdown";
+export { useTheme } from "./useTheme";

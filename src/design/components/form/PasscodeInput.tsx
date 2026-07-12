@@ -1,28 +1,48 @@
-import React, { useRef } from "react";
+// src/design/components/form/PasscodeInput.tsx
 
-export interface IPasscodeInput {
+import React, { useRef, useEffect } from "react";
+
+export interface PasscodeInputProps {
   idPrefix: string;
   value: string;
   onChange: (value: string) => void;
+  onComplete?: (value: string) => void;
   label: string;
   helperText?: string;
   error?: string;
   disabled?: boolean;
+  autoFocus?: boolean;
 }
 
-export const PasscodeInput: React.FC<IPasscodeInput> = ({
+export const PasscodeInput: React.FC<PasscodeInputProps> = ({
   idPrefix,
   value,
   onChange,
+  onComplete,
   label,
   helperText,
   error,
   disabled = false,
+  autoFocus = true,
 }) => {
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const digits = Array.from({ length: 6 }, (_, index) => value[index] || "");
   const displayText = error || helperText;
   const hasError = !!error;
+
+  // Auto-submit when 6 digits are entered
+  useEffect(() => {
+    if (value.length === 6 && onComplete && !disabled && !hasError) {
+      onComplete(value);
+    }
+  }, [value, onComplete, disabled, hasError]);
+
+  // Auto-focus first input
+  useEffect(() => {
+    if (autoFocus && !disabled && inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, [autoFocus, disabled]);
 
   const updateDigit = (index: number, nextValue: string) => {
     const digit = nextValue.replace(/\D/g, "").slice(-1);
@@ -31,6 +51,7 @@ export const PasscodeInput: React.FC<IPasscodeInput> = ({
     const merged = nextDigits.join("").slice(0, 6);
     onChange(merged);
 
+    // Move to next input
     if (digit && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -40,17 +61,20 @@ export const PasscodeInput: React.FC<IPasscodeInput> = ({
     event: React.KeyboardEvent<HTMLInputElement>,
     index: number,
   ) => {
+    // Backspace: go to previous input
     if (event.key === "Backspace" && !digits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
       return;
     }
 
+    // Left arrow
     if (event.key === "ArrowLeft" && index > 0) {
       event.preventDefault();
       inputRefs.current[index - 1]?.focus();
       return;
     }
 
+    // Right arrow
     if (event.key === "ArrowRight" && index < 5) {
       event.preventDefault();
       inputRefs.current[index + 1]?.focus();
@@ -80,6 +104,11 @@ export const PasscodeInput: React.FC<IPasscodeInput> = ({
     inputRefs.current[nextFocusIndex]?.focus();
   };
 
+  const handleFocus = (index: number) => {
+    // Select all text when focusing to allow quick re-entry
+    inputRefs.current[index]?.select();
+  };
+
   return (
     <div className="flex flex-col w-full">
       <label className="text-body-s font-medium text-base-content mb-8">
@@ -103,13 +132,26 @@ export const PasscodeInput: React.FC<IPasscodeInput> = ({
               onChange={(event) => updateDigit(index, event.target.value)}
               onKeyDown={(event) => handleKeyDown(event, index)}
               onPaste={(event) => handlePaste(event, index)}
+              onFocus={() => handleFocus(index)}
               disabled={disabled}
               aria-label={`${label} digit ${index + 1}`}
-              className={`w-[42px] sm:w-[46px] h-[50px] sm:h-[55px] rounded-m border-2 text-center text-body-l font-semibold font-primary tracking-[0.08em] transition-all duration-200 ease-out focus:outline-none focus:ring-2 focus:ring-primary ${
-                hasError
-                  ? "border-error focus:border-error focus:ring-error"
-                  : "border-base-300 focus:border-primary"
-              } ${disabled ? "opacity-50 cursor-not-allowed bg-base-200" : "bg-base-100"}`}
+              className={`
+                w-[42px] sm:w-[46px] h-[50px] sm:h-[55px]
+                rounded-m border-2 text-center
+                text-body-l font-semibold font-primary tracking-[0.08em]
+                transition-all duration-200 ease-out
+                focus:outline-none focus:ring-2 focus:ring-primary
+                ${
+                  hasError
+                    ? "border-error focus:border-error focus:ring-error"
+                    : "border-base-300 focus:border-primary"
+                }
+                ${
+                  disabled
+                    ? "opacity-50 cursor-not-allowed bg-base-200"
+                    : "bg-base-100"
+                }
+              `}
             />
             {index === 2 && (
               <span className="text-body-l font-semibold text-base-content opacity-70 px-[4px]">
@@ -122,9 +164,10 @@ export const PasscodeInput: React.FC<IPasscodeInput> = ({
 
       {displayText && (
         <span
-          className={`text-caption mt-6 ${
-            hasError ? "text-error" : "text-base-content opacity-60"
-          }`}
+          className={`
+            text-caption mt-6
+            ${hasError ? "text-error" : "text-base-content opacity-60"}
+          `}
         >
           {displayText}
         </span>

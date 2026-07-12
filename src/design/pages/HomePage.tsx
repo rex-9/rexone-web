@@ -4,21 +4,17 @@ import { useAuth } from "../../contexts";
 import { icons, images, videos } from "../../assets";
 import { AppLocales } from "../../locales/app_locales";
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef } from "react";
-import { userController } from "../../controllers";
 
 const HomePage: React.FC = () => {
-  const { currentUser, setCurrentUser } = useAuth();
+  const { currentUser } = useAuth();
   const { t } = useTranslation();
-  const hasFetchedCurrentUserRef = useRef(false);
 
   // No need just for the sample
-  useEffect(() => {
-    if (currentUser || hasFetchedCurrentUserRef.current) return;
+  // useEffect(() => {
+  //   if (currentUser) return;
 
-    hasFetchedCurrentUserRef.current = true;
-    userController.getCurrentUser(setCurrentUser);
-  }, [currentUser, setCurrentUser]);
+  //   userController.getCurrentUser(setCurrentUser);
+  // }, [currentUser, setCurrentUser]);
 
   return (
     <LayoutPage>

@@ -1,86 +1,98 @@
-import React from "react";
-import { Button, PasscodeInput, TextLink } from "..";
+// src/design/components/auth/SignupPasscodeCreateDialog.tsx
 
-export interface ISignupPasscodeCreateDialog {
+import React, { useState, useRef } from "react";
+import { Button, Dialog, PasscodeInput, TextLink } from "..";
+import { AuthStep } from "./type";
+
+interface SignupPasscodeCreateDialogProps {
   email: string;
   passcode: string;
-  passcodeError: string;
-  isLoading: boolean;
-  error: string;
-  onPasscodeChange: (value: string) => void;
-  onSubmit: (event: React.FormEvent) => void;
-  onUseDifferentEmail: () => void;
-  onForgotPasscode: () => void;
+  setPasscode: (value: string) => void;
+  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  onClose: () => void;
+  onBack: () => void;
 }
 
 export const SignupPasscodeCreateDialog: React.FC<
-  ISignupPasscodeCreateDialog
-> = ({
-  email,
-  passcode,
-  passcodeError,
-  isLoading,
-  error,
-  onPasscodeChange,
-  onSubmit,
-  onUseDifferentEmail,
-  onForgotPasscode,
-}) => {
-  return (
-    <div className="space-y-16">
-      <div className="text-center">
-        <p className="text-body-m text-base-content">
-          {email ? (
-            <>
-              Create a passcode for{" "}
-              <span className="font-semibold">{email}</span>
-            </>
-          ) : (
-            "Create your passcode"
-          )}
-        </p>
-        <p className="text-body-s text-base-content opacity-70 mt-4">
-          You will use this 6-digit passcode to sign in
-        </p>
-      </div>
+  SignupPasscodeCreateDialogProps
+> = ({ email, passcode, setPasscode, navigateToStep, onClose, onBack }) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [error, setError] = useState("");
 
-      <form onSubmit={onSubmit} className="space-y-16">
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passcode.length !== 6) {
+      setError("Passcode must be 6 digits");
+      return;
+    }
+
+    const extra: Record<string, string> = { email, passcode };
+    navigateToStep("signup-passcode-confirm", extra);
+  };
+
+  const triggerSubmit = () => {
+    if (formRef.current) {
+      const event = new Event("submit", { bubbles: true, cancelable: true });
+      formRef.current.dispatchEvent(event);
+    }
+  };
+
+  return (
+    <Dialog
+      isOpen={true}
+      onClose={onClose}
+      onBack={onBack}
+      title="Create Passcode"
+      className="max-w-md"
+    >
+      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+        Choose a 6-digit passcode you'll remember.
+      </p>
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
+        <div className="text-center">
+          <p className="text-body-m text-base-content">
+            Create a passcode for <span className="font-semibold">{email}</span>
+          </p>
+          <p className="text-body-s text-base-content opacity-70 mt-4">
+            You will use this 6-digit passcode to sign in
+          </p>
+        </div>
         <PasscodeInput
           idPrefix="create-passcode"
           value={passcode}
-          onChange={onPasscodeChange}
+          onChange={(value) => {
+            setPasscode(value);
+            setError("");
+          }}
+          onComplete={triggerSubmit}
           label="Create Passcode"
           helperText="Choose a 6-digit number you will remember"
-          error={passcodeError}
-          disabled={isLoading}
+          error={error}
+          disabled={false}
         />
-
         <Button
           variant="primary"
           type="submit"
           fullWidth
-          disabled={isLoading || passcode.length !== 6}
+          disabled={passcode.length !== 6}
         >
           Continue
         </Button>
-      </form>
-
-      <div className="text-center">
-        <TextLink
-          label="Use a different email"
-          onClick={onUseDifferentEmail}
-          className="text-body-s"
-        />
-        <div className="mt-4">
+        <div className="text-center">
           <TextLink
-            label="Forgot your passcode?"
-            onClick={onForgotPasscode}
+            label="Use a different email"
+            onClick={() => navigateToStep("initial")}
             className="text-body-s"
           />
+          <div className="mt-4">
+            <TextLink
+              label="Forgot your passcode?"
+              onClick={() => navigateToStep("forgot-passcode", { email })}
+              className="text-body-s"
+            />
+          </div>
         </div>
-      </div>
-
-      {error && <p className="text-caption text-error text-center">{error}</p>}
-    </div>
+      </form>
+    </Dialog>
   );
 };

@@ -20,6 +20,7 @@ export interface IPasscodeSignInResult {
   statusCode?: number;
   retryMeta?: IPasscodeRetryMeta;
   errorMessage?: string;
+  otpSent?: boolean;
 }
 
 export interface IGoogleSignInStartResult {
@@ -291,6 +292,17 @@ class AuthController {
       const retryMeta = this.extractPasscodeRetryMeta(response.data);
       const statusCode = status?.code;
 
+      if (statusCode === 200 && status?.success && data?.otp_sent) {
+        return {
+          success: false,
+          shouldCountAttempt: false,
+          statusCode,
+          otpSent: true,
+          retryMeta,
+          errorMessage: status?.message || "Verification code sent.",
+        };
+      }
+
       if (status?.success && data?.token && data?.user) {
         setMessage(status.message);
         signin(data.token, data.user);
@@ -474,6 +486,7 @@ class AuthController {
     setError: (message: string) => void,
     setMessage: (message: string) => void,
     signin: (token: string, user: IUser) => void,
+    navigate: (url: string) => void,
   ): Promise<void> {
     await apiHandler(
       "confirming email with code",
@@ -482,6 +495,7 @@ class AuthController {
       (data) => {
         setMessage(data.status.message);
         signin(data.data!.token, data.data!.user);
+        navigate(AppRoutes.client.protected.HOME);
       },
       () => setMessage(""),
     );
