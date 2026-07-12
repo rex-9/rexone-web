@@ -1,5 +1,5 @@
 import React from "react";
-import { useLoading } from "../../contexts/LoadingContext";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 export const LoadingOverlay: React.FC = () => {
   const { isLoading } = useLoading();
@@ -12,5 +12,3 @@ export const LoadingOverlay: React.FC = () => {
     </div>
   );
 };
-
-export default LoadingOverlay;

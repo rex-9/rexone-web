@@ -1,5 +1,5 @@
 import React from "react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
 export interface TypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export const Typography: React.FC<TypographyProps> = ({
   return (
     <p
       {...props}
-      className={clsx(
+      className={cn(
         variant === "primary" ? primaryClasses : secondaryClasses,
         className,
       )}
@@ -27,5 +27,3 @@ export const Typography: React.FC<TypographyProps> = ({
     </p>
   );
 };
-
-export default Typography;

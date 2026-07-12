@@ -6,8 +6,11 @@ import { AuthProvider, LoadingProvider } from "./contexts";
 import { RouteManager } from "./routes";
 import { MarkerProvider } from "./modules/anapana/contexts";
 import { ToastProvider } from "./contexts/ToastContext";
+import { useTheme } from "./hooks";
 
 const App: React.FC = () => {
+  useTheme();
+
   return (
     <GoogleOAuthProvider clientId={AppConfig.GOOGLE_CLIENT_ID}>
       <AuthProvider>

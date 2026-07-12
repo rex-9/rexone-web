@@ -5,7 +5,7 @@
  */
 
 import React, { useEffect } from "react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
 export type ToastType = "success" | "info" | "warning" | "error";
 
@@ -47,12 +47,12 @@ export const Toast: React.FC<ToastProps> = ({
 
   return (
     <div
-      className={clsx(
+      className={cn(
         "fixed top-16 left-1/2 transform -translate-x-1/2 z-50",
         "px-20 py-12 rounded-m shadow-m",
         "flex items-center gap-12",
         "animate-[fadeIn_200ms_ease-out]",
-        typeClasses[type]
+        typeClasses[type],
       )}
     >
       <span className="text-20">{icon || defaultIcons[type]}</span>
@@ -79,5 +79,3 @@ export const Toast: React.FC<ToastProps> = ({
     </div>
   );
 };
-
-export default Toast;

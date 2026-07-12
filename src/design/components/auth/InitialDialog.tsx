@@ -1,8 +1,5 @@
 import React from "react";
-import { AlertMessage } from "../AlertMessage";
-import { Button } from "../Button";
-import { GoogleBtn } from "../GoogleBtn";
-import { Input } from "../Input";
+import { AlertMessage, Button, GoogleButton, TextInput } from "..";
 
 export interface IInitialDialog {
   isLoading: boolean;
@@ -16,7 +13,7 @@ export interface IInitialDialog {
   onGoogleRetry: () => void;
 }
 
-const InitialDialog: React.FC<IInitialDialog> = ({
+export const InitialDialog: React.FC<IInitialDialog> = ({
   isLoading,
   isBlocked,
   email,
@@ -29,9 +26,9 @@ const InitialDialog: React.FC<IInitialDialog> = ({
 }) => {
   return (
     <div className="space-y-16">
-      <GoogleBtn onClick={onGoogleSignIn} isLoading={isLoading}>
+      <GoogleButton onClick={onGoogleSignIn} isLoading={isLoading}>
         Continue with Google
-      </GoogleBtn>
+      </GoogleButton>
       {isBlocked && (
         <div className="space-y-8">
           <AlertMessage
@@ -56,7 +53,7 @@ const InitialDialog: React.FC<IInitialDialog> = ({
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <Input
+        <TextInput
           id="email"
           type="email"
           value={email}
@@ -79,5 +76,3 @@ const InitialDialog: React.FC<IInitialDialog> = ({
     </div>
   );
 };
-
-export default InitialDialog;

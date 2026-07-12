@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { clsx } from "ts-clsx";
 import { useTranslation } from "react-i18next";
+import { cn } from "../../utils";
 
 export interface TextLinkProps {
   label: string;
@@ -18,9 +18,9 @@ export const TextLink: React.FC<TextLinkProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const linkClasses = clsx(
-    "text-primary hover:text-primary-focus hover:underline transition-colors",
-    "font-semibold",
+  const linkClasses = cn(
+    "text-gold-500 hover:text-gold-600 hover:underline transition-colors",
+    "font-semibold cursor-pointer",
     className,
   );
 
@@ -40,5 +40,3 @@ export const TextLink: React.FC<TextLinkProps> = ({
     </Link>
   );
 };
-
-export default TextLink;

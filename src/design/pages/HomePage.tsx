@@ -1,4 +1,4 @@
-import { SignOutBtn, Video, Image, Typography } from "../components";
+import { SignOutButton, Video, Image, Typography } from "../components";
 import LayoutPage from "./LayoutPage";
 import { useAuth } from "../../contexts";
 import { icons, images, videos } from "../../assets";
@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
         muted={false}
         className="w-96"
       />
-      <SignOutBtn />
+      <SignOutButton />
     </LayoutPage>
   );
 };

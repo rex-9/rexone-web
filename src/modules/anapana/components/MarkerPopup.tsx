@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
+import { useTranslation } from "react-i18next";
 import { useMarker } from "../contexts";
 import { useToast } from "../../../contexts/ToastContext";
 import atoms from "../../../atoms";
 import { AppLocales } from "../../../locales/app_locales";
 import { sounds } from "../../../assets";
-import { DropdownPicker } from "../../../design";
-import { Button, Input } from "../../../design/components";
-import { useTranslation } from "react-i18next";
+import { Dropdown, Button, TextInput } from "../../../design/components";
 
 const MarkerPopup: React.FC = () => {
   const { showToast } = useToast();
@@ -40,9 +39,13 @@ const MarkerPopup: React.FC = () => {
   };
 
   const unitOptions = [
-    { value: "minutes", label: AppLocales.TimerMinutes },
-    { value: "hours", label: AppLocales.TimerHours },
+    { value: "minutes", label: t(AppLocales.TimerMinutes) },
+    { value: "hours", label: t(AppLocales.TimerHours) },
   ];
+
+  const handleUnitChange = (value: string) => {
+    setUnit(value as "minutes" | "hours");
+  };
 
   return (
     <div className="w-80 mt-5 flex flex-col items-center justify-center">
@@ -58,8 +61,9 @@ const MarkerPopup: React.FC = () => {
           {t(AppLocales.TimerTestEndingSound)}
         </Button>
       </div>
+
       <div className="w-full mt-2">
-        <Input
+        <TextInput
           id="start-time"
           label={t(AppLocales.TimerStartTime)}
           type="time"
@@ -67,8 +71,9 @@ const MarkerPopup: React.FC = () => {
           onChange={(e) => setStartTime(e.target.value)}
         />
       </div>
+
       <div className="w-full mt-2">
-        <Input
+        <TextInput
           id="end-time"
           label={t(AppLocales.TimerEndTime)}
           type="time"
@@ -76,9 +81,10 @@ const MarkerPopup: React.FC = () => {
           onChange={(e) => setEndTime(e.target.value)}
         />
       </div>
+
       <div className="w-full flex items-center justify-between gap-2">
         <div className="w-1/2">
-          <Input
+          <TextInput
             id="interval"
             label={t(AppLocales.TimerInterval)}
             type="number"
@@ -87,13 +93,16 @@ const MarkerPopup: React.FC = () => {
             placeholder="Enter interval"
           />
         </div>
-        <DropdownPicker
-          className="w-1/2 mt-2"
-          options={unitOptions}
-          value={unit}
-          onChange={(value) => setUnit(value as "minutes" | "hours")}
-        />
+        <div className="w-1/2 mt-2">
+          <Dropdown
+            options={unitOptions}
+            value={unit}
+            onValueChange={handleUnitChange}
+            label={t(AppLocales.TimerUnit)}
+          />
+        </div>
       </div>
+
       <Button
         className="w-fit mt-2"
         variant="primary"
@@ -101,6 +110,7 @@ const MarkerPopup: React.FC = () => {
       >
         {t(AppLocales.TimerStart)}
       </Button>
+
       <Button className="w-fit mt-2" variant="tertiary" onClick={cleanMarkers}>
         {t(AppLocales.TimerReset)}
       </Button>

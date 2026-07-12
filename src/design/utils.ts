@@ -1,10 +1,30 @@
+// src/design/utils.ts
+
 /**
  * Meritbox Design System - Utility Functions
  *
- * Helper functions for working with design tokens
+ * Helper functions for working with design tokens and classes
  */
 
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { colors, spacing, radius, shadows, typography } from "./elements";
+
+// ============================================================
+// CLASS NAME UTILITIES
+// ============================================================
+
+/**
+ * Merge class names with Tailwind conflict resolution
+ * @example cn("p-4", "p-8") => "p-8"
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// ============================================================
+// COLOR UTILITIES
+// ============================================================
 
 /**
  * Get a color value from the color tokens
@@ -27,6 +47,10 @@ export function getSemanticColor(
   return colors.semantic[color];
 }
 
+// ============================================================
+// SPACING UTILITIES
+// ============================================================
+
 /**
  * Get a spacing value
  * @example getSpacing(16) => '16px'
@@ -35,21 +59,33 @@ export function getSpacing(value: keyof typeof spacing): string {
   return spacing[value];
 }
 
+// ============================================================
+// RADIUS UTILITIES
+// ============================================================
+
 /**
  * Get a radius value
- * @example getRadius('m') => '12px'
+ * @example getRadius('md') => '12px'
  */
 export function getRadius(value: keyof typeof radius): string {
   return radius[value];
 }
 
+// ============================================================
+// SHADOW UTILITIES
+// ============================================================
+
 /**
  * Get a shadow value
- * @example getShadow('s') => '0px 2px 6px rgba(0, 0, 0, 0.08)'
+ * @example getShadow('sm') => '0px 2px 6px rgba(0, 0, 0, 0.08)'
  */
 export function getShadow(value: keyof typeof shadows): string {
   return shadows[value];
 }
+
+// ============================================================
+// TYPOGRAPHY UTILITIES
+// ============================================================
 
 /**
  * Get typography styles for a specific size
@@ -58,6 +94,10 @@ export function getShadow(value: keyof typeof shadows): string {
 export function getTypography(size: keyof typeof typography.fontSize) {
   return typography.fontSize[size];
 }
+
+// ============================================================
+// CSS UTILITIES
+// ============================================================
 
 /**
  * Create a CSS variable reference

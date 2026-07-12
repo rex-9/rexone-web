@@ -1,7 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
-import { Input } from "../Input";
-import { TextLink } from "../TextLink";
+import { Button, TextInput, TextLink } from "..";
 
 export interface IForgotPasswordDialog {
   email: string;
@@ -15,7 +13,7 @@ export interface IForgotPasswordDialog {
   onBackToSignin: () => void;
 }
 
-const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
+export const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
   email,
   message,
   error,
@@ -35,7 +33,7 @@ const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <Input
+        <TextInput
           id="email"
           type="email"
           value={email}
@@ -47,7 +45,12 @@ const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
           disabled={isLoading}
         />
 
-        <Button variant="primary" type="submit" fullWidth disabled={isLoading || resendCountdownActive}>
+        <Button
+          variant="primary"
+          type="submit"
+          fullWidth
+          disabled={isLoading || resendCountdownActive}
+        >
           {resendCountdownActive
             ? `Resend in ${resendCountdownSecondsLeft}s`
             : isLoading
@@ -56,14 +59,18 @@ const ForgotPasswordDialog: React.FC<IForgotPasswordDialog> = ({
         </Button>
       </form>
 
-      {message && <p className="text-caption text-success text-center">{message}</p>}
+      {message && (
+        <p className="text-caption text-success text-center">{message}</p>
+      )}
       {error && <p className="text-caption text-error text-center">{error}</p>}
 
       <div className="text-center">
-        <TextLink label="Back to Sign In" onClick={onBackToSignin} className="text-body-s" />
+        <TextLink
+          label="Back to Sign In"
+          onClick={onBackToSignin}
+          className="text-body-s"
+        />
       </div>
     </div>
   );
 };
-
-export default ForgotPasswordDialog;

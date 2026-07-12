@@ -1,7 +1,6 @@
 import React from "react";
-import ThemeToggle from "./ThemeToggle";
-import LanguageSwitcher from "./LanguageSwitcher";
 import ProfileAvatar from "./ProfileAvatar";
+import { LanguageDropdown, ThemeToggle } from "..";
 
 export const NavBar: React.FC = () => {
   return (
@@ -11,7 +10,7 @@ export const NavBar: React.FC = () => {
       </div>
       <div className="flex gap-2 items-center px-2">
         <ThemeToggle />
-        <LanguageSwitcher />
+        <LanguageDropdown />
       </div>
     </nav>
   );

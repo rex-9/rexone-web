@@ -1,8 +1,5 @@
 import React from "react";
-import { AlertMessage } from "../AlertMessage";
-import { Button } from "../Button";
-import { PasscodeBoxesInput } from "../PasscodeBoxesInput";
-import { TextLink } from "../TextLink";
+import { AlertMessage, Button, PasscodeInput, TextLink } from "..";
 
 export interface ISigninPasscodeDialog {
   email: string;
@@ -23,7 +20,7 @@ export interface ISigninPasscodeDialog {
   onForgotPassword: () => void;
 }
 
-const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
+export const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
   email,
   mode = "email",
   passcode,
@@ -58,7 +55,7 @@ const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <PasscodeBoxesInput
+        <PasscodeInput
           idPrefix="signin-passcode"
           value={passcode}
           onChange={onPasscodeChange}
@@ -69,7 +66,9 @@ const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
         />
 
         {shouldShowAttempts && (
-          <p className="text-caption text-base-content opacity-70 text-center">{attemptsLabel}</p>
+          <p className="text-caption text-base-content opacity-70 text-center">
+            {attemptsLabel}
+          </p>
         )}
 
         {isCooldownActive && (
@@ -83,7 +82,12 @@ const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
           />
         )}
 
-        <Button variant="primary" type="submit" fullWidth disabled={isSubmitDisabled}>
+        <Button
+          variant="primary"
+          type="submit"
+          fullWidth
+          disabled={isSubmitDisabled}
+        >
           {isCooldownActive
             ? `Try again in ${cooldownSecondsLeft}s`
             : isLoading
@@ -96,7 +100,9 @@ const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
 
       <div className="text-center">
         <TextLink
-          label={isGoogleMode ? "Back to sign in options" : "Use a different email"}
+          label={
+            isGoogleMode ? "Back to sign in options" : "Use a different email"
+          }
           onClick={onUseDifferentEmail}
           className="text-body-s"
         />
@@ -113,5 +119,3 @@ const SigninPasscodeDialog: React.FC<ISigninPasscodeDialog> = ({
     </div>
   );
 };
-
-export default SigninPasscodeDialog;

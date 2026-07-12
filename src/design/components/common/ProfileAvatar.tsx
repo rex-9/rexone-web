@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts";
 import { Image } from "../";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../AppRoutes";
+import { useAuth } from "../../../contexts";
+import AppRoutes from "../../../AppRoutes";
 
 export interface ProfileAvatarProps {
   className?: string;

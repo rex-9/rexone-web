@@ -2,15 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import AppRoutes from "../../AppRoutes";
-import { useAuth } from "../../contexts";
+import AppRoutes from "../../../AppRoutes";
+import { useAuth } from "../../../contexts";
 import authController, {
   type IPasscodeRetryMeta,
-} from "../../controllers/auth.controller";
-import { userController } from "../../controllers";
-import { AppLocales } from "../../locales/app_locales";
-import { useCountdown } from "../../utils";
-import { Dialog } from ".";
+} from "../../../controllers/auth.controller";
+import { userController } from "../../../controllers";
+import { AppLocales } from "../../../locales/app_locales";
+import { useCountdown } from "../../../hooks";
+import { Dialog } from "..";
 import {
   ForgotPasswordDialog,
   InitialDialog,
@@ -19,7 +19,7 @@ import {
   SignupPasscodeConfirmDialog,
   SignupPasscodeCreateDialog,
   VerifyEmailDialog,
-} from "./auth";
+} from ".";
 
 type AuthStep =
   | "initial"
@@ -1122,10 +1122,7 @@ export const AuthDialog: React.FC = () => {
       return;
     }
 
-    if (
-      isLoading ||
-      autoSubmittedCreatePasscodeRef.current === passcode
-    ) {
+    if (isLoading || autoSubmittedCreatePasscodeRef.current === passcode) {
       return;
     }
 
@@ -1146,10 +1143,7 @@ export const AuthDialog: React.FC = () => {
 
     const confirmKey = `${passcode}|${passcodeConfirmation}|${resetPasswordToken}|${googlePasscodeSetupRequired}`;
 
-    if (
-      isLoading ||
-      autoSubmittedConfirmPasscodeRef.current === confirmKey
-    ) {
+    if (isLoading || autoSubmittedConfirmPasscodeRef.current === confirmKey) {
       return;
     }
 

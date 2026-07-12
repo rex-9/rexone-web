@@ -5,10 +5,9 @@
  */
 
 import React, { useRef, useEffect } from "react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
-export interface TextAreaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   helperText?: string;
   error?: string;
@@ -46,7 +45,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
   }, [value, autoExpand]);
 
   return (
-    <div className={clsx("flex flex-col", fullWidth && "w-full")}>
+    <div className={cn("flex flex-col", fullWidth && "w-full")}>
       {label && (
         <label
           htmlFor={inputId}
@@ -63,7 +62,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
         value={value}
         maxLength={maxLength}
         disabled={disabled}
-        className={clsx(
+        className={cn(
           "px-16 py-12 rounded-m border text-body-m resize-none",
           "bg-base-100 text-base-content",
           "placeholder:text-base-content placeholder:opacity-40",
@@ -73,16 +72,16 @@ export const TextArea: React.FC<TextAreaProps> = ({
             ? "border-error focus:ring-error focus:border-error"
             : "border-base-300",
           disabled && "opacity-50 cursor-not-allowed bg-base-200",
-          className
+          className,
         )}
       />
 
       <div className="flex justify-between items-center mt-4">
         {displayText && (
           <span
-            className={clsx(
+            className={cn(
               "text-caption",
-              hasError ? "text-error" : "text-base-content opacity-60"
+              hasError ? "text-error" : "text-base-content opacity-60",
             )}
           >
             {displayText}
@@ -91,11 +90,11 @@ export const TextArea: React.FC<TextAreaProps> = ({
 
         {showCounter && maxLength && (
           <span
-            className={clsx(
+            className={cn(
               "text-caption ml-auto",
               currentLength > maxLength * 0.9
                 ? "text-warning"
-                : "text-base-content opacity-50"
+                : "text-base-content opacity-50",
             )}
           >
             {currentLength} / {maxLength}
@@ -105,5 +104,3 @@ export const TextArea: React.FC<TextAreaProps> = ({
     </div>
   );
 };
-
-export default TextArea;

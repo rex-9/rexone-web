@@ -1,5 +1,5 @@
 import React from "react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
 export interface AlertMessageProps {
   message: string;
@@ -31,7 +31,5 @@ export const AlertMessage: React.FC<AlertMessageProps> = ({
       colorClass = "text-error";
   }
 
-  return <p className={clsx(colorClass, "mb-4", className)}>{message}</p>;
+  return <p className={cn(colorClass, "mb-4", className)}>{message}</p>;
 };
-
-export default AlertMessage;

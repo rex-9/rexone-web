@@ -1,6 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
-import { Input } from "../Input";
+import { Button, TextInput } from "..";
 
 export interface ISignupInfoDialog {
   fullName: string;
@@ -12,7 +11,7 @@ export interface ISignupInfoDialog {
   onSubmit: (event: React.FormEvent) => void;
 }
 
-const SignupInfoDialog: React.FC<ISignupInfoDialog> = ({
+export const SignupInfoDialog: React.FC<ISignupInfoDialog> = ({
   fullName,
   username,
   isLoading,
@@ -24,11 +23,13 @@ const SignupInfoDialog: React.FC<ISignupInfoDialog> = ({
   return (
     <div className="space-y-16">
       <div className="text-center">
-        <p className="text-body-m text-base-content">Almost done! Tell us a bit about yourself</p>
+        <p className="text-body-m text-base-content">
+          Almost done! Tell us a bit about yourself
+        </p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <Input
+        <TextInput
           id="full-name"
           type="text"
           value={fullName}
@@ -41,7 +42,7 @@ const SignupInfoDialog: React.FC<ISignupInfoDialog> = ({
           disabled={isLoading}
         />
 
-        <Input
+        <TextInput
           id="username"
           type="text"
           value={username}
@@ -63,5 +64,3 @@ const SignupInfoDialog: React.FC<ISignupInfoDialog> = ({
     </div>
   );
 };
-
-export default SignupInfoDialog;

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import AppRoutes from "../../AppRoutes";
 import { AppLocales } from "../../locales/app_locales";
-import { Button, SignOutBtn } from "../";
+import { Button, SignOutButton } from "../";
 import { useAuth } from "../../contexts";
 
 const LandingPage: React.FC = () => {
@@ -16,7 +16,7 @@ const LandingPage: React.FC = () => {
       Landing Page
       <div className="w-48 flex flex-col justify-center items-center">
         {isAuthenticated ? (
-          <SignOutBtn />
+          <SignOutButton />
         ) : (
           <Button
             variant="primary"

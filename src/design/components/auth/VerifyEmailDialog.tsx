@@ -1,7 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
-import { PasscodeBoxesInput } from "../PasscodeBoxesInput";
-import { TextLink } from "../TextLink";
+import { Button, PasscodeInput, TextLink } from "..";
 
 export interface IVerifyEmailDialog {
   email: string;
@@ -18,7 +16,7 @@ export interface IVerifyEmailDialog {
   onUseDifferentEmail: () => void;
 }
 
-const VerifyEmailDialog: React.FC<IVerifyEmailDialog> = ({
+export const VerifyEmailDialog: React.FC<IVerifyEmailDialog> = ({
   email,
   otp,
   otpError,
@@ -35,7 +33,7 @@ const VerifyEmailDialog: React.FC<IVerifyEmailDialog> = ({
   return (
     <div className="space-y-16">
       <form onSubmit={onSubmit} className="space-y-16">
-        <PasscodeBoxesInput
+        <PasscodeInput
           idPrefix="verify-email-code"
           value={otp}
           onChange={onOtpChange}
@@ -45,15 +43,26 @@ const VerifyEmailDialog: React.FC<IVerifyEmailDialog> = ({
           disabled={isLoading}
         />
 
-        <Button variant="primary" type="submit" fullWidth disabled={isLoading || otp.length !== 6}>
+        <Button
+          variant="primary"
+          type="submit"
+          fullWidth
+          disabled={isLoading || otp.length !== 6}
+        >
           {isLoading ? "Verifying..." : "Verify Email"}
         </Button>
       </form>
 
       <div className="text-center">
-        <p className="text-body-m text-base-content font-semibold">Verify your email</p>
-        <p className="text-body-s text-base-content opacity-70 mt-4">We have sent a confirmation code to:</p>
-        <p className="text-body-m text-base-content font-medium mt-2">{email}</p>
+        <p className="text-body-m text-base-content font-semibold">
+          Verify your email
+        </p>
+        <p className="text-body-s text-base-content opacity-70 mt-4">
+          We have sent a confirmation code to:
+        </p>
+        <p className="text-body-m text-base-content font-medium mt-2">
+          {email}
+        </p>
       </div>
 
       <div className="text-center">
@@ -69,14 +78,20 @@ const VerifyEmailDialog: React.FC<IVerifyEmailDialog> = ({
       </div>
 
       <div className="text-center space-y-4">
-        <p className="text-body-s text-base-content opacity-70">Check your inbox and enter the code to complete signup.</p>
-        <TextLink label="Use a different email" onClick={onUseDifferentEmail} className="text-body-s" />
+        <p className="text-body-s text-base-content opacity-70">
+          Check your inbox and enter the code to complete signup.
+        </p>
+        <TextLink
+          label="Use a different email"
+          onClick={onUseDifferentEmail}
+          className="text-body-s"
+        />
       </div>
 
-      {message && <p className="text-caption text-success text-center">{message}</p>}
+      {message && (
+        <p className="text-caption text-success text-center">{message}</p>
+      )}
       {error && <p className="text-caption text-error text-center">{error}</p>}
     </div>
   );
 };
-
-export default VerifyEmailDialog;

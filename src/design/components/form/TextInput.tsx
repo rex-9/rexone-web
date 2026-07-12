@@ -5,17 +5,16 @@
  */
 
 import React from "react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
 }
 
-export const Input: React.FC<InputProps> = ({
+export const TextInput: React.FC<TextInputProps> = ({
   label,
   helperText,
   error,
@@ -30,7 +29,7 @@ export const Input: React.FC<InputProps> = ({
   const displayText = error || helperText;
 
   return (
-    <div className={clsx("flex flex-col", fullWidth && "w-full")}>
+    <div className={cn("flex flex-col", fullWidth && "w-full")}>
       {label && (
         <label
           htmlFor={inputId}
@@ -44,7 +43,7 @@ export const Input: React.FC<InputProps> = ({
         {...props}
         id={inputId}
         disabled={disabled}
-        className={clsx(
+        className={cn(
           "px-16 py-12 rounded-m border-2 text-body-m",
           "bg-base-100 text-base-content",
           "placeholder:text-base-content placeholder:opacity-40",
@@ -54,15 +53,15 @@ export const Input: React.FC<InputProps> = ({
             ? "border-error focus:ring-error focus:border-error"
             : "border-base-300",
           disabled && "opacity-50 cursor-not-allowed bg-base-200",
-          className
+          className,
         )}
       />
 
       {displayText && (
         <span
-          className={clsx(
+          className={cn(
             "text-caption mt-4",
-            hasError ? "text-error" : "text-base-content opacity-60"
+            hasError ? "text-error" : "text-base-content opacity-60",
           )}
         >
           {displayText}
@@ -71,5 +70,3 @@ export const Input: React.FC<InputProps> = ({
     </div>
   );
 };
-
-export default Input;

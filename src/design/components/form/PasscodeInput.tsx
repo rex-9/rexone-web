@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-export interface IPasscodeBoxesInput {
+export interface IPasscodeInput {
   idPrefix: string;
   value: string;
   onChange: (value: string) => void;
@@ -10,7 +10,7 @@ export interface IPasscodeBoxesInput {
   disabled?: boolean;
 }
 
-export const PasscodeBoxesInput: React.FC<IPasscodeBoxesInput> = ({
+export const PasscodeInput: React.FC<IPasscodeInput> = ({
   idPrefix,
   value,
   onChange,
@@ -132,5 +132,3 @@ export const PasscodeBoxesInput: React.FC<IPasscodeBoxesInput> = ({
     </div>
   );
 };
-
-export default PasscodeBoxesInput;

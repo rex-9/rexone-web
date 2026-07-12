@@ -30,6 +30,7 @@
     "react-dom": "^19.2.6",
     "react-i18next": "^17.0.8",
     "react-router-dom": "^7.15.1",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^3.4.12",
     "ts-clsx": "^2.4.1"
   },

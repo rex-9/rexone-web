@@ -9,6 +9,7 @@ import banner from "./images/banner.png";
 
 // Icons (Asset files like SVG)
 import instagramIcon from "./icons/instagram.svg";
+import googleIcon from "./icons/google.svg";
 
 // Icons (Library components - Heroicons, Lucide, etc.)
 import {
@@ -21,7 +22,7 @@ import {
   LanguageIcon,
   UserIcon,
   HomeIcon,
-} from "./icons";
+} from "@heroicons/react/24/solid";
 
 // Videos
 import sampleVideo from "./videos/sample.mp4";
@@ -43,6 +44,7 @@ export const images = {
 
 export const icons = {
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
+  google: { src: googleIcon, alt: "Google icon", title: "Google" },
 } as const;
 
 // ============================================================

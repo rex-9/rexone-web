@@ -1,7 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
-import { PasscodeBoxesInput } from "../PasscodeBoxesInput";
-import { TextLink } from "../TextLink";
+import { Button, PasscodeInput, TextLink } from "..";
 
 export interface ISignupPasscodeConfirmDialog {
   email: string;
@@ -15,7 +13,9 @@ export interface ISignupPasscodeConfirmDialog {
   onForgotPasscode: () => void;
 }
 
-const SignupPasscodeConfirmDialog: React.FC<ISignupPasscodeConfirmDialog> = ({
+export const SignupPasscodeConfirmDialog: React.FC<
+  ISignupPasscodeConfirmDialog
+> = ({
   email,
   passcodeConfirmation,
   passcodeError,
@@ -32,17 +32,20 @@ const SignupPasscodeConfirmDialog: React.FC<ISignupPasscodeConfirmDialog> = ({
         <p className="text-body-m text-base-content">
           {email ? (
             <>
-              Confirm your passcode for <span className="font-semibold">{email}</span>
+              Confirm your passcode for{" "}
+              <span className="font-semibold">{email}</span>
             </>
           ) : (
             "Confirm your passcode"
           )}
         </p>
-        <p className="text-body-s text-base-content opacity-70 mt-4">Enter the same 6 digits again</p>
+        <p className="text-body-s text-base-content opacity-70 mt-4">
+          Enter the same 6 digits again
+        </p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <PasscodeBoxesInput
+        <PasscodeInput
           idPrefix="confirm-passcode"
           value={passcodeConfirmation}
           onChange={onPasscodeConfirmationChange}
@@ -63,9 +66,17 @@ const SignupPasscodeConfirmDialog: React.FC<ISignupPasscodeConfirmDialog> = ({
       </form>
 
       <div className="text-center">
-        <TextLink label="Use a different email" onClick={onUseDifferentEmail} className="text-body-s" />
+        <TextLink
+          label="Use a different email"
+          onClick={onUseDifferentEmail}
+          className="text-body-s"
+        />
         <div className="mt-4">
-          <TextLink label="Forgot your passcode?" onClick={onForgotPasscode} className="text-body-s" />
+          <TextLink
+            label="Forgot your passcode?"
+            onClick={onForgotPasscode}
+            className="text-body-s"
+          />
         </div>
       </div>
 
@@ -73,5 +84,3 @@ const SignupPasscodeConfirmDialog: React.FC<ISignupPasscodeConfirmDialog> = ({
     </div>
   );
 };
-
-export default SignupPasscodeConfirmDialog;

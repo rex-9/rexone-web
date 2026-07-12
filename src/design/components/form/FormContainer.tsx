@@ -1,6 +1,6 @@
 import React from "react";
-import { clsx } from "ts-clsx";
 import { useTranslation } from "react-i18next";
+import { cn } from "../../utils";
 
 export interface FormContainerProps {
   title: string;
@@ -20,7 +20,7 @@ export const FormContainer: React.FC<FormContainerProps> = ({
   return (
     <form
       onSubmit={onSubmit}
-      className={clsx(
+      className={cn(
         "w-96 flex flex-col justify-center items-center bg-base-200 p-6 rounded shadow-md",
         className,
       )}
@@ -30,5 +30,3 @@ export const FormContainer: React.FC<FormContainerProps> = ({
     </form>
   );
 };
-
-export default FormContainer;

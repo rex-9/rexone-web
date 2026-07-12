@@ -12,7 +12,7 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
-import { clsx } from "ts-clsx";
+import { cn } from "../../utils";
 
 export interface DialogProps {
   isOpen: boolean;
@@ -72,7 +72,7 @@ export const Dialog: React.FC<DialogProps> = ({
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel
-                className={clsx(
+                className={cn(
                   "relative z-10 bg-base-100 rounded-lg p-24 shadow-m",
                   "w-full max-w-[448px]",
                   "max-h-[90vh] overflow-y-auto",
@@ -152,5 +152,3 @@ export const Dialog: React.FC<DialogProps> = ({
     </Transition>
   );
 };
-
-export default Dialog;

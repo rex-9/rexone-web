@@ -1,7 +1,5 @@
 import React from "react";
-import { Button } from "../Button";
-import { PasscodeBoxesInput } from "../PasscodeBoxesInput";
-import { TextLink } from "../TextLink";
+import { Button, PasscodeInput, TextLink } from "..";
 
 export interface ISignupPasscodeCreateDialog {
   email: string;
@@ -15,7 +13,9 @@ export interface ISignupPasscodeCreateDialog {
   onForgotPasscode: () => void;
 }
 
-const SignupPasscodeCreateDialog: React.FC<ISignupPasscodeCreateDialog> = ({
+export const SignupPasscodeCreateDialog: React.FC<
+  ISignupPasscodeCreateDialog
+> = ({
   email,
   passcode,
   passcodeError,
@@ -32,7 +32,8 @@ const SignupPasscodeCreateDialog: React.FC<ISignupPasscodeCreateDialog> = ({
         <p className="text-body-m text-base-content">
           {email ? (
             <>
-              Create a passcode for <span className="font-semibold">{email}</span>
+              Create a passcode for{" "}
+              <span className="font-semibold">{email}</span>
             </>
           ) : (
             "Create your passcode"
@@ -44,7 +45,7 @@ const SignupPasscodeCreateDialog: React.FC<ISignupPasscodeCreateDialog> = ({
       </div>
 
       <form onSubmit={onSubmit} className="space-y-16">
-        <PasscodeBoxesInput
+        <PasscodeInput
           idPrefix="create-passcode"
           value={passcode}
           onChange={onPasscodeChange}
@@ -54,15 +55,28 @@ const SignupPasscodeCreateDialog: React.FC<ISignupPasscodeCreateDialog> = ({
           disabled={isLoading}
         />
 
-        <Button variant="primary" type="submit" fullWidth disabled={isLoading || passcode.length !== 6}>
+        <Button
+          variant="primary"
+          type="submit"
+          fullWidth
+          disabled={isLoading || passcode.length !== 6}
+        >
           Continue
         </Button>
       </form>
 
       <div className="text-center">
-        <TextLink label="Use a different email" onClick={onUseDifferentEmail} className="text-body-s" />
+        <TextLink
+          label="Use a different email"
+          onClick={onUseDifferentEmail}
+          className="text-body-s"
+        />
         <div className="mt-4">
-          <TextLink label="Forgot your passcode?" onClick={onForgotPasscode} className="text-body-s" />
+          <TextLink
+            label="Forgot your passcode?"
+            onClick={onForgotPasscode}
+            className="text-body-s"
+          />
         </div>
       </div>
 
@@ -70,5 +84,3 @@ const SignupPasscodeCreateDialog: React.FC<ISignupPasscodeCreateDialog> = ({
     </div>
   );
 };
-
-export default SignupPasscodeCreateDialog;

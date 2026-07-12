@@ -5,9 +5,14 @@
     <!-- Set theme immediately -->
     <script>
       (function() {
-        const savedTheme = localStorage.getItem('theme');
-        const theme = savedTheme ? JSON.parse(savedTheme) : 'day';
-        document.documentElement.setAttribute('data-theme', theme);
+        try {
+          const savedTheme = localStorage.getItem('theme');
+          const theme = savedTheme ? JSON.parse(savedTheme) : 'day';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          // Fallback to day if something goes wrong
+          document.documentElement.setAttribute('data-theme', 'day');
+        }
       })();
     </script>
     <!-- #TODO: replace with actual product info -->
