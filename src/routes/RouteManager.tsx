@@ -1,7 +1,13 @@
+// src/routes/RouteManager.tsx
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+  Outlet,
+} from "react-router-dom";
 import AppRoutes from "../AppRoutes";
 import { ProtectedRoute, PublicRoute } from ".";
-import { Outlet } from "react-router-dom";
-import { AuthDialog } from "../design/components";
 import {
   SignIn,
   SignUp,
@@ -14,12 +20,7 @@ import {
   RootPage,
   ProfilePage,
 } from "../design/pages";
-import {
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-} from "react-router-dom";
+import { AuthDialog } from "../design";
 import { AnapanaPage } from "../modules/anapana/pages";
 
 const RouteManager = () => {
@@ -35,22 +36,18 @@ const RouteManager = () => {
       >
         <Route path={AppRoutes.client.public.ROOT}>
           <Route index element={<RootPage />} />
-          <Route element={<AnapanaPage />} /> {/* // ANAPANA MODULE */}
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path={AppRoutes.client.protected.SIGN_OUT}
-              element={<SignOut />}
-            />
-            <Route
-              path={AppRoutes.client.protected.HOME}
-              element={<HomePage />}
-            />
-            <Route
-              path={AppRoutes.client.protected.PROFILE}
-              element={<ProfilePage />}
-            />
-          </Route>
+          <Route path="anapana" element={<AnapanaPage />} />
+
+          {/* Public Routes */}
           <Route element={<PublicRoute />}>
+            <Route
+              path={AppRoutes.client.public.SIGN_IN}
+              element={<SignIn />}
+            />
+            <Route
+              path={AppRoutes.client.public.SIGN_UP}
+              element={<SignUp />}
+            />
             <Route
               path={AppRoutes.client.public.CONFIRM_EMAIL}
               element={<ConfirmEmail />}
@@ -63,15 +60,25 @@ const RouteManager = () => {
               path={AppRoutes.client.public.RESET_PASSWORD}
               element={<ResetPassword />}
             />
+          </Route>
+
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
             <Route
-              path={AppRoutes.client.public.SIGN_IN}
-              element={<SignIn />}
+              path={AppRoutes.client.protected.HOME}
+              element={<HomePage />}
             />
             <Route
-              path={AppRoutes.client.public.SIGN_UP}
-              element={<SignUp />}
+              path={AppRoutes.client.protected.PROFILE}
+              element={<ProfilePage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.SIGN_OUT}
+              element={<SignOut />}
             />
           </Route>
+
+          {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>,
