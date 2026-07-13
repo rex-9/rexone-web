@@ -1,9 +1,9 @@
 import React from "react";
-import LayoutPage from "./LayoutPage";
+import { LayoutPage } from "./LayoutPage";
 import { AnapanaPage } from "../../modules/anapana/pages";
 import { LandingPage } from ".";
 
-const RootPage: React.FC = () => {
+export const RootPage: React.FC = () => {
   return (
     <LayoutPage>
       {(() => {
@@ -18,5 +18,3 @@ const RootPage: React.FC = () => {
     </LayoutPage>
   );
 };
-
-export default RootPage;

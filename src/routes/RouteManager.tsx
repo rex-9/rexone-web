@@ -9,12 +9,12 @@ import {
 import AppRoutes from "../AppRoutes";
 import { ProtectedRoute, PublicRoute } from ".";
 import {
-  SignIn,
-  SignUp,
-  SignOut,
-  ConfirmEmail,
-  ForgotPassword,
-  ResetPassword,
+  SignInPage,
+  SignUpPage,
+  SignOutPage,
+  ConfirmEmailPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
   NotFoundPage,
   HomePage,
   RootPage,
@@ -23,7 +23,7 @@ import {
 import { AuthDialog } from "../design";
 import { AnapanaPage } from "../modules/anapana/pages";
 
-const RouteManager = () => {
+export const RouteManager = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route
@@ -42,23 +42,23 @@ const RouteManager = () => {
           <Route element={<PublicRoute />}>
             <Route
               path={AppRoutes.client.public.SIGN_IN}
-              element={<SignIn />}
+              element={<SignInPage />}
             />
             <Route
               path={AppRoutes.client.public.SIGN_UP}
-              element={<SignUp />}
+              element={<SignUpPage />}
             />
             <Route
               path={AppRoutes.client.public.CONFIRM_EMAIL}
-              element={<ConfirmEmail />}
+              element={<ConfirmEmailPage />}
             />
             <Route
               path={AppRoutes.client.public.FORGOT_PASSWORD}
-              element={<ForgotPassword />}
+              element={<ForgotPasswordPage />}
             />
             <Route
               path={AppRoutes.client.public.RESET_PASSWORD}
-              element={<ResetPassword />}
+              element={<ResetPasswordPage />}
             />
           </Route>
 
@@ -74,7 +74,7 @@ const RouteManager = () => {
             />
             <Route
               path={AppRoutes.client.protected.SIGN_OUT}
-              element={<SignOut />}
+              element={<SignOutPage />}
             />
           </Route>
 
@@ -87,5 +87,3 @@ const RouteManager = () => {
 
   return <RouterProvider router={router} />;
 };
-
-export default RouteManager;

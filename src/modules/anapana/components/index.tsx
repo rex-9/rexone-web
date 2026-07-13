@@ -1,3 +1,3 @@
-export { default as AnalogClock } from "./AnalogClock";
-export { default as MarkerPopup } from "./MarkerPopup";
-export { default as SupportLove } from "./SupportLove";
+export { AnalogClock } from "./AnalogClock";
+export { MarkerPopup } from "./MarkerPopup";
+export { SupportLove } from "./SupportLove";

@@ -8,7 +8,7 @@ import {
   SignupPasscodeCreateDialog,
   SignupPasscodeConfirmDialog,
   SignupInfoDialog,
-  VerifyEmailDialog,
+  ConfirmEmailDialog,
   ForgotPasswordDialog,
 } from ".";
 import { AuthStep } from "./type";
@@ -20,8 +20,8 @@ const stepHistory: Record<AuthStep, AuthStep | null> = {
   "signup-passcode-create": "initial",
   "signup-passcode-confirm": "signup-passcode-create",
   "signup-info": "signup-passcode-create",
-  "verify-email": "signup-info",
-  "forgot-passcode": "signin-passcode",
+  "confirm-email": "signup-info",
+  "forgot-password": "signin-passcode",
 };
 
 export const AuthDialog: React.FC = () => {
@@ -33,7 +33,7 @@ export const AuthDialog: React.FC = () => {
   const fullName = searchParams.get("fullName") || "";
   const username = searchParams.get("username") || "";
 
-  // ✅ Store passcodes in memory, NOT in URL
+  // Store passcodes in memory, NOT in URL
   const [passcode, setPasscode] = useState("");
   const [confirmPasscode, setConfirmPasscode] = useState("");
 
@@ -43,10 +43,10 @@ export const AuthDialog: React.FC = () => {
       "dialog",
       "step",
       "email",
-      "passcode",
       "otp",
       "fullName",
       "username",
+      "challenge_token",
     ].forEach((key) => params.delete(key));
     setSearchParams(params, { replace: true });
     // Clear sensitive data on close
@@ -71,7 +71,7 @@ export const AuthDialog: React.FC = () => {
     setSearchParams(params, { replace: true });
   };
 
-  // ✅ Pass setter functions to child components
+  // Pass setter functions to child components
   const updatePasscode = (value: string) => setPasscode(value);
   const updateConfirmPasscode = (value: string) => setConfirmPasscode(value);
 
@@ -161,9 +161,9 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "verify-email":
+      case "confirm-email":
         return (
-          <VerifyEmailDialog
+          <ConfirmEmailDialog
             email={email}
             navigateToStep={navigateToStep}
             updateUrl={updateUrl}
@@ -171,7 +171,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "forgot-passcode":
+      case "forgot-password":
         return (
           <ForgotPasswordDialog
             email={email}

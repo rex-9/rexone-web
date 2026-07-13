@@ -4,5 +4,5 @@ export type AuthStep =
   | "signup-passcode-create"
   | "signup-passcode-confirm"
   | "signup-info"
-  | "verify-email"
-  | "forgot-passcode";
+  | "confirm-email"
+  | "forgot-password";

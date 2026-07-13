@@ -6,7 +6,7 @@ import Clock from "react-clock";
 import atoms from "../../../atoms";
 import { sounds } from "../../../assets";
 
-const AnalogClock: React.FC = () => {
+export const AnalogClock: React.FC = () => {
   const [value, setValue] = useState(new Date());
   const { markers } = useMarker();
   const [startTime] = useAtom(atoms.startTimeAtom);
@@ -214,5 +214,3 @@ const AnalogClock: React.FC = () => {
     </div>
   );
 };
-
-export default AnalogClock;

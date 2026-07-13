@@ -1,6 +1,7 @@
 // src/design/components/auth/SignupPasscodeConfirmDialog.tsx
 
 import React, { useState, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { AuthStep } from "./type";
 import { authController } from "../../../controllers";
@@ -35,6 +36,10 @@ export const SignupPasscodeConfirmDialog: React.FC<
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+
+  // Check if this is a password reset flow
+  const resetPasswordToken = searchParams.get("reset_password_token");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +50,33 @@ export const SignupPasscodeConfirmDialog: React.FC<
     if (confirmPasscode !== passcode) {
       setError("Passcodes do not match");
       setConfirmPasscode("");
+      return;
+    }
+
+    // If this is a password reset flow
+    if (resetPasswordToken) {
+      setIsLoading(true);
+      try {
+        await authController.resetPassword(
+          resetPasswordToken,
+          passcode,
+          confirmPasscode,
+          setError,
+          // Remove setMessage - it's not used
+          () => {
+            // Navigate to sign in (initial dialog) on success
+            toast.showToast("success", "Password reset successfully!");
+            const authUrl = AppRoutes.buildDialogUrl(
+              AppRoutes.dialog.steps.initial,
+            );
+            navigate(authUrl);
+          },
+        );
+      } catch (err: any) {
+        setError(err.message || "Failed to reset passcode.");
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
 
@@ -84,20 +116,29 @@ export const SignupPasscodeConfirmDialog: React.FC<
     }
   };
 
+  // Show different title for reset password flow
+  const isResetFlow = !!resetPasswordToken;
+
   return (
     <Dialog
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title="Confirm Passcode"
+      title={isResetFlow ? "Confirm New Passcode" : "Confirm Passcode"}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Enter the same 6 digits again to confirm.
+        {isResetFlow
+          ? "Enter the same 6 digits again to confirm your new passcode."
+          : "Enter the same 6 digits again to confirm."}
       </p>
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
         <div className="text-center">
-          <p className="text-body-m text-base-content">Confirm your passcode</p>
+          <p className="text-body-m text-base-content">
+            {isResetFlow
+              ? "Confirm your new passcode"
+              : "Confirm your passcode"}
+          </p>
           <p className="text-body-s text-base-content opacity-70 mt-4">
             Enter the same 6 digits again
           </p>
@@ -121,7 +162,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
           fullWidth
           disabled={isLoading || confirmPasscode.length !== 6}
         >
-          {isLoading ? "Completing..." : "Continue"}
+          {isLoading ? "Resetting..." : "Continue"}
         </Button>
         <div className="text-center">
           <TextLink
@@ -132,7 +173,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
           <div className="mt-4">
             <TextLink
               label="Forgot your passcode?"
-              onClick={() => navigateToStep("forgot-passcode", { email })}
+              onClick={() => navigateToStep("forgot-password", { email })}
               className="text-body-s"
             />
           </div>

@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
 
-const ForgotPassword: React.FC = () => {
+export const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -11,15 +12,19 @@ const ForgotPassword: React.FC = () => {
     const email = params.get("email");
 
     if (email) {
-      navigate(`/?dialog=auth&step=forgot-password&email=${encodeURIComponent(email)}`, {
-        replace: true,
-      });
+      navigate(
+        `/?dialog=auth&step=forgot-password&email=${encodeURIComponent(email)}`,
+        {
+          replace: true,
+        },
+      );
     } else {
-      navigate("/?dialog=auth&step=forgot-password", { replace: true });
+      navigate(
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPassword),
+        { replace: true },
+      );
     }
   }, [navigate, location]);
 
   return null;
 };
-
-export default ForgotPassword;

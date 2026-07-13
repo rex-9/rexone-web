@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import LayoutPage from "../LayoutPage";
+import { LayoutPage } from "../LayoutPage";
+import AppRoutes from "../../../AppRoutes";
 
-const SignIn: React.FC = () => {
+export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     // Redirect to home with dialog=auth param
-    navigate("/?dialog=auth", { replace: true });
+    navigate(AppRoutes.client.public.SIGN_IN, {
+      replace: true,
+    });
   }, [navigate]);
 
   return (
@@ -16,5 +19,3 @@ const SignIn: React.FC = () => {
     </LayoutPage>
   );
 };
-
-export default SignIn;

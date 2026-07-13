@@ -1,10 +1,10 @@
 import AppRoutes from "../../AppRoutes";
 import { TextLink } from "../";
 import { useAuth } from "../../contexts";
-import LayoutPage from "./LayoutPage";
+import { LayoutPage } from "./LayoutPage";
 import { AppLocales } from "../../locales/app_locales";
 
-const NotFoundPage: React.FC = () => {
+export const NotFoundPage: React.FC = () => {
   const { token } = useAuth();
 
   return (
@@ -21,5 +21,3 @@ const NotFoundPage: React.FC = () => {
     </LayoutPage>
   );
 };
-
-export default NotFoundPage;

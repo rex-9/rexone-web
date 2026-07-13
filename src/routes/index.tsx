@@ -1,3 +1,3 @@
-export { default as RouteManager } from "./RouteManager";
-export { default as ProtectedRoute } from "./ProtectedRoute";
-export { default as PublicRoute } from "./PublicRoute";
+export { RouteManager } from "./RouteManager";
+export { ProtectedRoute } from "./ProtectedRoute";
+export { PublicRoute } from "./PublicRoute";

@@ -1,28 +1,25 @@
 // src/atoms/index.ts
-import AtomStorageService from "./services/atomStorage.service";
+import AtomService from "./services/atom.service";
 import { IMarker, IUser } from "./models";
 
 // src/atoms/index.ts
 class Atoms {
-  private atomStorageService = new AtomStorageService();
+  private atomService = new AtomService();
 
   // ===== THEME =====
-  themeAtom = this.atomStorageService.getAtom<"day" | "night">("theme", "day");
+  themeAtom = this.atomService.getAtom<"day" | "night">("theme", "day");
 
   // ===== LOCALE =====
-  localeAtom = this.atomStorageService.getAtom<string>("locale", "en");
+  localeAtom = this.atomService.getAtom<string>("locale", "en");
 
   // ===== AUTH =====
-  tokenAtom = this.atomStorageService.getAtom<string | null>("token", null);
-  currentUserAtom = this.atomStorageService.getAtom<IUser | null>("user", null);
+  tokenAtom = this.atomService.getAtom<string | null>("token", null);
+  currentUserAtom = this.atomService.getAtom<IUser | null>("user", null);
 
   // ===== ANAPANA MODULE =====
-  markersAtom = this.atomStorageService.getAtom<IMarker[]>("markers", []);
-  startTimeAtom = this.atomStorageService.getAtom<string>(
-    "startTime",
-    "00:00:00",
-  );
-  endTimeAtom = this.atomStorageService.getAtom<string>("endTime", "00:00:00");
+  markersAtom = this.atomService.getAtom<IMarker[]>("markers", []);
+  startTimeAtom = this.atomService.getAtom<string>("startTime", "00:00:00");
+  endTimeAtom = this.atomService.getAtom<string>("endTime", "00:00:00");
 }
 
 export default new Atoms();

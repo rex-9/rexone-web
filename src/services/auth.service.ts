@@ -1,29 +1,41 @@
 import AppRoutes from "../AppRoutes";
 import { api } from "./api.service";
-import {
-  IApiAuthResponse,
-  IApiResponse,
-  IGoogleSignInCompleteData,
-  IGoogleSignInStartData,
-} from "../models/api.model";
-import { IUser } from "../models";
+import { IApiAuthResponse, IApiResponse, IUser } from "../models";
+
+export interface ISignInResponseData {
+  user?: IUser;
+  token?: string;
+  otp_sent?: boolean;
+  remaining_attempts?: number;
+  cooldown_remaining?: number;
+  failed_attempts?: number;
+}
+
+export interface IGoogleSignInStartData {
+  password_required: boolean;
+  challenge_token?: string;
+  flow_token?: string;
+  user?: IUser;
+  token?: string;
+  existing_user?: boolean;
+}
+
+export interface IGoogleSignInCompleteData {
+  user: IUser;
+  token: string;
+}
 
 class AuthService {
   async signInWithEmailOrUsername(
     signinKey: string,
     password: string,
-  ): Promise<
-    IApiResponse<
-      IApiAuthResponse<
-        { user?: IUser; token?: string; otp_sent?: boolean } | undefined
-      >
-    >
-  > {
-    const response = await api.post<
-      IApiAuthResponse<{ user?: IUser; token?: string; otp_sent?: boolean }>
-    >(AppRoutes.server.public.SIGN_IN_EMAIL, {
-      user: { signin_key: signinKey, password },
-    });
+  ): Promise<IApiResponse<IApiAuthResponse<ISignInResponseData>>> {
+    const response = await api.post<IApiAuthResponse<ISignInResponseData>>(
+      AppRoutes.server.public.SIGN_IN_EMAIL,
+      {
+        user: { signin_key: signinKey, password },
+      },
+    );
     return response;
   }
 
@@ -53,7 +65,7 @@ class AuthService {
     const response = await api.post<
       IApiAuthResponse<IGoogleSignInCompleteData>
     >(AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE, {
-      passcode,
+      password: passcode,
       challenge_token: challengeToken,
     });
     return response;

@@ -33,50 +33,40 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   const [, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Cooldown state with localStorage persistence
-  const [attempts, setAttempts] = useState(3);
-  const [cooldownUntil, setCooldownUntil] = useState(0);
-  const cooldown = useCountdown(
-    Math.max(0, Math.ceil((cooldownUntil - Date.now()) / 1000)),
-  );
+  // Use useCountdown hook (same as resend cooldown at ConfirmEmailDialog)
+  const cooldown = useCountdown(0);
   const isCooldownActive = cooldown.isActive;
   const secondsLeft = cooldown.secondsLeft;
 
-  // Load persisted retry state from localStorage
+  // Track remaining attempts from backend
+  const [remainingAttempts, setRemainingAttempts] = useState<number>(3);
+
+  // Load persisted cooldown state from localStorage
   useEffect(() => {
     const key = `passcode-retry:${email}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setAttempts(parsed.attempts ?? 3);
         const until = parsed.cooldownUntilMs || 0;
         if (until > Date.now()) {
-          setCooldownUntil(until);
           cooldown.startAt(until);
         }
       } catch {}
     }
   }, [email]);
 
-  // Save state to localStorage
-  const persistRetryState = (attemptsLeft: number, cooldownUntilMs: number) => {
+  // ✅ Save cooldown state to localStorage
+  const persistCooldownState = (cooldownUntilMs: number) => {
     const key = `passcode-retry:${email}`;
-    localStorage.setItem(
-      key,
-      JSON.stringify({ attempts: attemptsLeft, cooldownUntilMs }),
-    );
+    localStorage.setItem(key, JSON.stringify({ cooldownUntilMs }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (isCooldownActive) return;
-    if (passcode.length !== 6) {
-      setError("Passcode must be 6 digits");
-      return;
-    }
+    if (passcode.length !== 6) return;
+
     setIsLoading(true);
-    setError("");
     const result = await authController.signInWithEmailOrUsername(
       email,
       passcode,
@@ -87,52 +77,68 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     );
 
     if (result.success) {
+      // Success - clear everything
       toast.showToast("success", "Sign in successful");
-      // dialog closes automatically after navigation
-    } else if (result.statusCode === 200 && result.otpSent) {
-      // Backend sent verification email → go to verify step
-      toast.showToast("info", "Verification code sent to your email");
-      navigateToStep("verify-email", { email });
+      cooldown.clear();
+      setRemainingAttempts(3);
+      persistCooldownState(0);
+      setPasscode("");
+    } else if (result.otpSent) {
+      // OTP sent - unconfirmed user
+      navigateToStep("confirm-email", { email });
+      toast.showToast("info", "Verification code sent.");
+    } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
+      // Cooldown active - use cooldown.start()
+      cooldown.start(result.cooldownRemaining);
+      const until = Date.now() + result.cooldownRemaining * 1000;
+      persistCooldownState(until);
+      setRemainingAttempts(0);
+      setPasscode("");
+      setError(`Too many attempts. Please wait ${result.cooldownRemaining}s.`);
     } else {
-      // Retry logic
-      const newAttempts = attempts - 1;
-      setAttempts(newAttempts);
-      if (newAttempts <= 0) {
-        const waitSeconds = result.retryMeta?.cooldownSeconds || 30;
-        const until = Date.now() + waitSeconds * 1000;
-        setCooldownUntil(until);
-        cooldown.start(waitSeconds);
-        setError(`Too many attempts. Please wait ${waitSeconds}s.`);
-        persistRetryState(0, until);
-        setPasscode("");
-      } else {
-        setError(`Incorrect passcode. ${newAttempts} attempts remaining.`);
-        persistRetryState(newAttempts, 0);
-        setPasscode("");
-      }
-      setIsLoading(false);
+      // Failed attempt - update remaining attempts
+      const attemptsLeft = result.remainingAttempts ?? 3;
+      setRemainingAttempts(attemptsLeft);
+      setPasscode("");
+      setError(
+        attemptsLeft > 0
+          ? "Incorrect passcode. Try again."
+          : "No attempts remaining.",
+      );
     }
+    setIsLoading(false);
   };
 
-  // Auto-submit trigger
+  // Reset attempts when cooldown expires
+  useEffect(() => {
+    if (!isCooldownActive && cooldown.targetTimeMs > 0) {
+      setRemainingAttempts(3);
+      setError("");
+      persistCooldownState(0);
+      setPasscode("");
+    }
+  }, [isCooldownActive]);
+
   const triggerSubmit = () => {
     if (formRef.current) {
-      // Dispatch a synthetic submit event
       const event = new Event("submit", { bubbles: true, cancelable: true });
       formRef.current.dispatchEvent(event);
     }
   };
 
-  // Reset attempts when cooldown expires
-  useEffect(() => {
-    if (!isCooldownActive && cooldownUntil > 0) {
-      setAttempts(3);
-      setCooldownUntil(0);
-      setError("");
-      persistRetryState(3, 0);
-      setPasscode("");
+  // Helper text based on state (same pattern as ConfirmEmailDialog)
+  const getHelperText = (): string => {
+    if (isCooldownActive) {
+      return `Wait ${secondsLeft}s before trying again.`;
     }
-  }, [isCooldownActive]);
+    if (remainingAttempts === 0) {
+      return "No attempts remaining. Please wait for cooldown.";
+    }
+    if (remainingAttempts <= 2) {
+      return `${remainingAttempts}/3 attempts remaining.`;
+    }
+    return "Enter your 6-digit passcode.";
+  };
 
   const isSubmitDisabled =
     isLoading || isCooldownActive || passcode.length !== 6;
@@ -154,6 +160,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
             Sign in to <span className="font-semibold">{email}</span>
           </p>
         </div>
+
         <PasscodeInput
           idPrefix="signin-passcode"
           value={passcode}
@@ -165,10 +172,9 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
           label=""
           error={error}
           disabled={isLoading || isCooldownActive}
-          helperText={
-            isCooldownActive ? `Wait ${secondsLeft}s before trying again` : ""
-          }
+          helperText={getHelperText()}
         />
+
         <Button
           variant="primary"
           type="submit"
@@ -181,6 +187,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
               ? "Signing in..."
               : "Sign In"}
         </Button>
+
         <div className="flex justify-between text-sm">
           <TextLink
             label="Use a different email"
@@ -188,7 +195,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
           />
           <TextLink
             label="Forgot your passcode?"
-            onClick={() => navigateToStep("forgot-passcode", { email })}
+            onClick={() => navigateToStep("forgot-password", { email })}
           />
         </div>
       </form>

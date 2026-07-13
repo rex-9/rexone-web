@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../contexts";
 import AppRoutes from "../AppRoutes";
 
-const ProtectedRoute: React.FC = () => {
+export const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return !isAuthenticated ? (
@@ -12,5 +12,3 @@ const ProtectedRoute: React.FC = () => {
     <Outlet />
   );
 };
-
-export default ProtectedRoute;

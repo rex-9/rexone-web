@@ -7,7 +7,6 @@ import { useAuth } from "../contexts";
 import { IApiAuthResponse, IApiResponse } from "../models";
 
 const PLATFORM_HEADER_VALUE = "web";
-const SKIP_LOADING_HEADER = "X-Skip-Loading";
 const SESSION_REPLACED_MESSAGE =
   "Your session was replaced by a newer sign in on this platform.";
 
@@ -92,8 +91,6 @@ export const useAxiosInterceptor = () => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
         const headers = AxiosHeaders.from(config.headers);
-        const shouldSkipLoading =
-          String(headers.get(SKIP_LOADING_HEADER) ?? "") === "true";
 
         // Always send platform so backend can enforce one active session per platform.
         headers.set("X-Platform", PLATFORM_HEADER_VALUE);
@@ -102,15 +99,9 @@ export const useAxiosInterceptor = () => {
           headers.set("Authorization", `Bearer ${token}`);
         }
 
-        if (shouldSkipLoading) {
-          headers.delete(SKIP_LOADING_HEADER);
-        }
-
         config.headers = headers;
 
-        if (!shouldSkipLoading) {
-          setLoading(true);
-        }
+        setLoading(true);
         return config;
       },
       (error) => {
@@ -128,39 +119,37 @@ export const useAxiosInterceptor = () => {
         console.log("interceptor response error ===>", error);
 
         const serverError = error?.response?.data?.status?.error;
-        const errorHeaders = AxiosHeaders.from(error?.config?.headers);
-        const shouldSkipLoading =
-          String(errorHeaders.get(SKIP_LOADING_HEADER) ?? "") === "true";
-        const hasAuthHeader = Boolean(errorHeaders.get("Authorization"));
+        const hasAuthHeader = Boolean(error?.config?.headers?.Authorization);
         const isSessionReplacedError =
           serverError === "Active session not found";
 
-        // Keep logout scoped to clear session-expiry signals only.
-        if (
-          error?.response?.status === 401 &&
-          !!token &&
-          hasAuthHeader &&
-          isSessionReplacedError
-        ) {
+        // Handle ANY 401 with auth header (token expired OR session replaced)
+        if (error?.response?.status === 401 && hasAuthHeader) {
           signout();
 
-          if (isSessionReplacedError && typeof window !== "undefined") {
+          if (typeof window !== "undefined") {
             const nextUrl = new URL(
               window.location.origin + AppRoutes.client.public.ROOT,
             );
             nextUrl.searchParams.set("dialog", "auth");
             nextUrl.searchParams.set("step", "initial");
-            nextUrl.searchParams.set(
-              "session_message",
-              SESSION_REPLACED_MESSAGE,
-            );
+
+            if (isSessionReplacedError) {
+              nextUrl.searchParams.set(
+                "session_message",
+                SESSION_REPLACED_MESSAGE,
+              );
+            } else {
+              nextUrl.searchParams.set(
+                "session_message",
+                "Your session has expired. Please sign in again.",
+              );
+            }
             window.location.assign(nextUrl.toString());
           }
         }
 
-        if (!shouldSkipLoading) {
-          setLoading(false);
-        }
+        setLoading(false);
         return Promise.reject(error);
       },
     );

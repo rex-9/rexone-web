@@ -59,7 +59,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       setError,
       () => {
         // After signup, navigate to verify email step
-        navigateToStep("verify-email", { email, passcode });
+        navigateToStep("confirm-email", { email, passcode });
         toast.showToast(
           "success",
           "Verification email sent. Please check your inbox.",

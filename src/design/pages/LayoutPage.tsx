@@ -6,7 +6,7 @@ interface PageLayoutProps {
   children: React.ReactNode;
 }
 
-const LayoutPage: React.FC<PageLayoutProps> = ({ children }) => {
+export const LayoutPage: React.FC<PageLayoutProps> = ({ children }) => {
   useAxiosInterceptor();
 
   return (
@@ -17,5 +17,3 @@ const LayoutPage: React.FC<PageLayoutProps> = ({ children }) => {
     </div>
   );
 };
-
-export default LayoutPage;

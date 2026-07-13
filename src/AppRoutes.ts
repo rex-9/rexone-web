@@ -36,6 +36,34 @@ class AppRoutes {
       UPLOAD_ASSET: "/media/upload",
     },
   };
+
+  // Dialog constants for URL params
+  static readonly dialog = {
+    param: "dialog",
+    auth: "auth",
+    steps: {
+      initial: "initial",
+      signinPasscode: "signin-passcode",
+      signupPasscodeCreate: "signup-passcode-create",
+      signupPasscodeConfirm: "signup-passcode-confirm",
+      signupInfo: "signup-info",
+      confirmEmail: "confirm-email",
+      forgotPassword: "forgot-password",
+    },
+  };
+
+  // Helper to build dialog URLs
+  static buildDialogUrl(step: string, params?: Record<string, string>): string {
+    const url = new URL(window.location.origin + this.client.public.ROOT);
+    url.searchParams.set(this.dialog.param, this.dialog.auth);
+    url.searchParams.set("step", step);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value) url.searchParams.set(key, value);
+      });
+    }
+    return url.pathname + url.search;
+  }
 }
 
 export default AppRoutes;

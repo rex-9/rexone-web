@@ -4,7 +4,7 @@ import { Button } from "../../../design/components";
 import { iconsLib } from "../../../assets";
 import { AppLocales } from "../../../locales/app_locales";
 
-const SupportLove: React.FC = () => {
+export const SupportLove: React.FC = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const { t } = useTranslation();
   return (
@@ -39,5 +39,3 @@ const SupportLove: React.FC = () => {
     </>
   );
 };
-
-export default SupportLove;

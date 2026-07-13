@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import LayoutPage from "./LayoutPage";
+import { LayoutPage } from "./LayoutPage";
 import { Button } from "../";
 import userController from "../../controllers/user.controller";
 
-const ProfilePage: React.FC = () => {
+export const ProfilePage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,5 +29,3 @@ const ProfilePage: React.FC = () => {
     </LayoutPage>
   );
 };
-
-export default ProfilePage;

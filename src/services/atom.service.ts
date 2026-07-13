@@ -1,17 +1,20 @@
 import { WritableAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
-class AtomStorageService {
+class AtomService {
   private atoms: Record<string, WritableAtom<any, any, void>>;
 
   constructor() {
-    this.atoms = Object.keys(localStorage).reduce((acc, key) => {
-      acc[key] = atomWithStorage<any>(
-        key,
-        JSON.parse(localStorage.getItem(key) as string)
-      );
-      return acc;
-    }, {} as Record<string, WritableAtom<any, any, void>>);
+    this.atoms = Object.keys(localStorage).reduce(
+      (acc, key) => {
+        acc[key] = atomWithStorage<any>(
+          key,
+          JSON.parse(localStorage.getItem(key) as string),
+        );
+        return acc;
+      },
+      {} as Record<string, WritableAtom<any, any, void>>,
+    );
   }
 
   getAtom<T>(key: string, initialValue: T): WritableAtom<T, any, void> {
@@ -29,4 +32,4 @@ class AtomStorageService {
   }
 }
 
-export default AtomStorageService;
+export default AtomService;

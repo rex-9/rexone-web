@@ -1,11 +1,11 @@
 import { SignOutButton, Video, Image, Typography } from "../components";
-import LayoutPage from "./LayoutPage";
+import { LayoutPage } from "./LayoutPage";
 import { useAuth } from "../../contexts";
 import { icons, images, videos } from "../../assets";
 import { AppLocales } from "../../locales/app_locales";
 import { useTranslation } from "react-i18next";
 
-const HomePage: React.FC = () => {
+export const HomePage: React.FC = () => {
   const { currentUser } = useAuth();
   const { t } = useTranslation();
 
@@ -35,5 +35,3 @@ const HomePage: React.FC = () => {
     </LayoutPage>
   );
 };
-
-export default HomePage;

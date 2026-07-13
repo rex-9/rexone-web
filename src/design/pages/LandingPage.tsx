@@ -6,7 +6,7 @@ import { AppLocales } from "../../locales/app_locales";
 import { Button, SignOutButton } from "../";
 import { useAuth } from "../../contexts";
 
-const LandingPage: React.FC = () => {
+export const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -29,5 +29,3 @@ const LandingPage: React.FC = () => {
     </>
   );
 };
-
-export default LandingPage;

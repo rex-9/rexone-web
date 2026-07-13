@@ -7,10 +7,12 @@ import React, {
   useMemo,
   ReactNode,
   useState,
+  useEffect,
 } from "react";
 import { useAtom } from "jotai";
 import { IUser } from "../models/user.model";
 import atoms from "../atoms";
+import { isTokenExpired } from "../helpers";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -34,7 +36,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     string | null
   >(null);
 
-  const isAuthenticated = !!token;
+  // Check if authenticated using token expiry from JWT
+  const isAuthenticated = useMemo(() => {
+    if (!token) return false;
+    return !isTokenExpired(token);
+  }, [token]);
+
+  // Auto-check token expiry on app load and when token changes
+  useEffect(() => {
+    // console.log("token ===> ", isTokenExpired(token!));
+    if (token && isTokenExpired(token)) {
+      console.log("Token expired, signing out...");
+      signout();
+    }
+  }, [token]);
+
+  // Also check expiry periodically (every 60 seconds)
+  useEffect(() => {
+    if (!token) return;
+
+    const interval = setInterval(() => {
+      if (isTokenExpired(token)) {
+        console.log("Token expired during session, signing out...");
+        signout();
+      }
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, [token]);
 
   const signin = useCallback(
     (token: string, user: IUser) => {
@@ -42,14 +71,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setCurrentUser(user);
       setGoogleChallengeToken(null);
     },
-    [setToken, setCurrentUser],
+    [setToken, setCurrentUser, setGoogleChallengeToken],
   );
 
   const signout = useCallback(() => {
     setToken(null);
     setCurrentUser(null);
     setGoogleChallengeToken(null);
-  }, [setToken, setCurrentUser]);
+  }, [setToken, setCurrentUser, setGoogleChallengeToken]);
 
   const value = useMemo(
     () => ({

@@ -1,4 +1,4 @@
-// src/design/components/auth/VerifyEmailDialog.tsx
+// src/design/components/auth/ConfirmEmailDialog.tsx
 
 import React, { useState, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
@@ -8,7 +8,7 @@ import { useCountdown } from "../../../hooks";
 import { AuthStep } from "./type";
 import { useNavigate } from "react-router-dom";
 
-interface VerifyEmailDialogProps {
+interface ConfirmEmailDialogProps {
   email: string;
   navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
@@ -16,7 +16,7 @@ interface VerifyEmailDialogProps {
   onBack: () => void;
 }
 
-export const VerifyEmailDialog: React.FC<VerifyEmailDialogProps> = ({
+export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -97,7 +97,7 @@ export const VerifyEmailDialog: React.FC<VerifyEmailDialogProps> = ({
           className="space-y-16"
         >
           <PasscodeInput
-            idPrefix="verify-email-code"
+            idPrefix="confirm-email-code"
             value={otp}
             onChange={(value) => {
               setOtp(value);

@@ -8,7 +8,7 @@ import { AppLocales } from "../../../locales/app_locales";
 import { sounds } from "../../../assets";
 import { Dropdown, Button, TextInput } from "../../../design/components";
 
-const MarkerPopup: React.FC = () => {
+export const MarkerPopup: React.FC = () => {
   const { showToast } = useToast();
   const { addMarker, cleanMarkers } = useMarker();
   const { t } = useTranslation();
@@ -117,5 +117,3 @@ const MarkerPopup: React.FC = () => {
     </div>
   );
 };
-
-export default MarkerPopup;

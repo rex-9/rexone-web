@@ -59,7 +59,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           () => {},
           () => {},
         );
-        navigateToStep("verify-email", { email: localEmail });
+        navigateToStep("confirm-email", { email: localEmail });
       } else {
         // New user → sign up flow
         navigateToStep("signup-passcode-create", { email: localEmail });
@@ -80,11 +80,13 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           tokenResponse.access_token,
         );
         if (result.success && result.token && result.user) {
+          // Existing user - sign in directly
           signin(result.token, result.user);
           toast.showToast("success", "Signed in with Google");
           onClose();
           navigate(AppRoutes.client.protected.HOME);
         } else if (result.passcodeRequired && result.challengeToken) {
+          // New user - show passcode setup
           setGoogleChallengeToken(result.challengeToken);
           navigateToStep("signup-passcode-create", {
             email: result.user?.email || "",

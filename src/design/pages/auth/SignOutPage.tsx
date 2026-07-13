@@ -5,7 +5,7 @@ import authController from "../../../controllers/auth.controller";
 
 let isSignOutInProgress = false;
 
-const SignOut: React.FC = () => {
+export const SignOutPage: React.FC = () => {
   const { signout, currentUser, token } = useAuth();
 
   const handleSignout = async () => {
@@ -32,5 +32,3 @@ const SignOut: React.FC = () => {
 
   return null; // No UI
 };
-
-export default SignOut;

@@ -1,1 +1,1 @@
-export { default as AnapanaPage } from "./AnapanaPage";
+export { AnapanaPage } from "./AnapanaPage";
