@@ -103,15 +103,6 @@ export const SignupPasscodeCreateDialog: React.FC<
             onClick={() => navigateToStep(AuthStep.INITIAL)}
             className="text-body-s"
           />
-          <div className="mt-4">
-            <TextLink
-              label="Forgot your passcode?"
-              onClick={() =>
-                navigateToStep(AuthStep.FORGOT_PASSCODE, { email })
-              }
-              className="text-body-s"
-            />
-          </div>
         </div>
       </form>
     </Dialog>
