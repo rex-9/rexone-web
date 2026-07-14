@@ -7,11 +7,11 @@ import { authController, userController } from "../../../controllers";
 import { Button, GoogleButton, TextInput, AlertMessage, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { useNavigate } from "react-router-dom";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 
 interface InitialDialogProps {
   email: string;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
   onClose: () => void;
 }
@@ -50,7 +50,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 
       if (result === "exists_confirmed") {
         // User exists and is confirmed → sign in with passcode
-        navigateToStep("signin-passcode", { email: localEmail });
+        navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail });
       } else if (result === "exists_unconfirmed") {
         // User exists but not confirmed → send new code and go to verify
         await authController.sendConfirmationEmail(
@@ -59,10 +59,10 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           () => {},
           () => {},
         );
-        navigateToStep("confirm-email", { email: localEmail });
+        navigateToStep(AuthStep.CONFIRM_EMAIL, { email: localEmail });
       } else {
         // New user → sign up flow
-        navigateToStep("signup-passcode-create", { email: localEmail });
+        navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, { email: localEmail });
       }
     } catch (err: any) {
       setError(err.message || "Failed to check user.");
@@ -88,7 +88,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
         } else if (result.passcodeRequired && result.challengeToken) {
           // New user - show passcode setup
           setGoogleChallengeToken(result.challengeToken);
-          navigateToStep("signup-passcode-create", {
+          navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, {
             email: result.user?.email || "",
           });
         } else {

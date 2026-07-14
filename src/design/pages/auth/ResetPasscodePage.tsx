@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 
-export const ResetPasswordPage: React.FC = () => {
+export const ResetPasscodePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -14,28 +14,32 @@ export const ResetPasswordPage: React.FC = () => {
 
     // If there's an error, show it in the auth dialog
     if (error) {
-      const url = AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial, {
-        error,
-      });
-      navigate(url, { replace: true });
+      navigate(
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial, {
+          error,
+        }),
+        { replace: true },
+      );
       return;
     }
 
     // If token is missing, go back to forgot password
     if (!token) {
-      const url = AppRoutes.buildDialogUrl(
-        AppRoutes.dialog.steps.forgotPassword,
+      navigate(
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPasscode),
+        { replace: true },
       );
-      navigate(url, { replace: true });
       return;
     }
 
     // If token exists, go to create passcode (reset password)
-    const url = AppRoutes.buildDialogUrl(
-      AppRoutes.dialog.steps.signupPasscodeCreate,
-      { reset_password_token: token, email: email || "" },
+    navigate(
+      AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.signupPasscodeCreate, {
+        reset_password_token: token,
+        email: email || "",
+      }),
+      { replace: true },
     );
-    navigate(url, { replace: true });
   }, [navigate, location.search]);
 
   return null;

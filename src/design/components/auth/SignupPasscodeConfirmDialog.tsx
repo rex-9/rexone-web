@@ -3,7 +3,7 @@
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 import { authController } from "../../../controllers";
 import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ interface SignupPasscodeConfirmDialogProps {
   passcode: string;
   confirmPasscode: string;
   setConfirmPasscode: (value: string) => void;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
@@ -65,11 +65,8 @@ export const SignupPasscodeConfirmDialog: React.FC<
           // Remove setMessage - it's not used
           () => {
             // Navigate to sign in (initial dialog) on success
-            toast.showToast("success", "Password reset successfully!");
-            const authUrl = AppRoutes.buildDialogUrl(
-              AppRoutes.dialog.steps.initial,
-            );
-            navigate(authUrl);
+            toast.showToast("success", "Passcode reset successfully!");
+            navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial));
           },
         );
       } catch (err: any) {
@@ -106,7 +103,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
     }
 
     // Normal email sign-up - go to info page
-    navigateToStep("signup-info", { email, passcode });
+    navigateToStep(AuthStep.SIGNUP_INFO, { email, passcode });
   };
 
   const triggerSubmit = () => {
@@ -167,13 +164,15 @@ export const SignupPasscodeConfirmDialog: React.FC<
         <div className="text-center">
           <TextLink
             label="Use a different email"
-            onClick={() => navigateToStep("initial")}
+            onClick={() => navigateToStep(AuthStep.INITIAL)}
             className="text-body-s"
           />
           <div className="mt-4">
             <TextLink
               label="Forgot your passcode?"
-              onClick={() => navigateToStep("forgot-password", { email })}
+              onClick={() =>
+                navigateToStep(AuthStep.FORGOT_PASSCODE, { email })
+              }
               className="text-body-s"
             />
           </div>

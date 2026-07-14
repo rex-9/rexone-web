@@ -5,12 +5,12 @@ import { useAuth, useToast } from "../../../contexts";
 import { authController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useCountdown } from "../../../hooks";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 import { useNavigate } from "react-router-dom";
 
 interface ConfirmEmailDialogProps {
   email: string;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
   onClose: () => void;
   onBack: () => void;
@@ -150,7 +150,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
           </p>
           <TextLink
             label="Use a different email"
-            onClick={() => navigateToStep("initial")}
+            onClick={() => navigateToStep(AuthStep.INITIAL)}
             className="text-body-s"
           />
         </div>

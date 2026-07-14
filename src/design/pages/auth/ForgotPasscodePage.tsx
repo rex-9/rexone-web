@@ -2,25 +2,25 @@ import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 
-export const ForgotPasswordPage: React.FC = () => {
+export const ForgotPasscodePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // Extract email from URL if provided and redirect to auth dialog forgot-password step.
+    // Extract email from URL if provided and redirect to auth dialog forgot-passcode step.
     const params = new URLSearchParams(location.search);
     const email = params.get("email");
 
     if (email) {
       navigate(
-        `/?dialog=auth&step=forgot-password&email=${encodeURIComponent(email)}`,
-        {
-          replace: true,
-        },
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPasscode, {
+          email,
+        }),
+        { replace: true },
       );
     } else {
       navigate(
-        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPassword),
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPasscode),
         { replace: true },
       );
     }

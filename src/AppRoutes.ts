@@ -1,3 +1,5 @@
+import { AuthStep } from "./design/components/auth/type";
+
 class AppRoutes {
   // private static readonly PROTECTED_PREFIX = "/auth";
 
@@ -6,8 +8,8 @@ class AppRoutes {
       SIGN_IN: "/signin",
       SIGN_UP: "/signup",
       CONFIRM_EMAIL: "/email/confirm",
-      FORGOT_PASSWORD: "/password/forgot",
-      RESET_PASSWORD: "/password/reset",
+      FORGOT_PASSCODE: "/passcode/forgot",
+      RESET_PASSCODE: "/passcode/reset",
       ROOT: "/",
     },
     protected: {
@@ -42,13 +44,13 @@ class AppRoutes {
     param: "dialog",
     auth: "auth",
     steps: {
-      initial: "initial",
-      signinPasscode: "signin-passcode",
-      signupPasscodeCreate: "signup-passcode-create",
-      signupPasscodeConfirm: "signup-passcode-confirm",
-      signupInfo: "signup-info",
-      confirmEmail: "confirm-email",
-      forgotPassword: "forgot-password",
+      initial: AuthStep.INITIAL,
+      signinPasscode: AuthStep.SIGNIN_PASSCODE,
+      signupPasscodeCreate: AuthStep.SIGNUP_PASSCODE_CREATE,
+      signupPasscodeConfirm: AuthStep.SIGNUP_PASSCODE_CONFIRM,
+      signupInfo: AuthStep.SIGNUP_INFO,
+      confirmEmail: AuthStep.CONFIRM_EMAIL,
+      forgotPasscode: AuthStep.FORGOT_PASSCODE,
     },
   };
 

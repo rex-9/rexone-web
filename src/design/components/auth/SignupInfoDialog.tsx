@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import { authController } from "../../../controllers";
 import { Button, Dialog, TextInput } from "..";
 import { useToast } from "../../../contexts";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 
 interface SignupInfoDialogProps {
   email: string;
   passcode: string;
   fullNameParam: string;
   userNameParam: string;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
   onClose: () => void;
   onBack: () => void;
@@ -59,7 +59,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       setError,
       () => {
         // After signup, navigate to verify email step
-        navigateToStep("confirm-email", { email, passcode });
+        navigateToStep(AuthStep.CONFIRM_EMAIL, { email, passcode });
         toast.showToast(
           "success",
           "Verification email sent. Please check your inbox.",

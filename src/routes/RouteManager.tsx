@@ -13,8 +13,8 @@ import {
   SignUpPage,
   SignOutPage,
   ConfirmEmailPage,
-  ForgotPasswordPage,
-  ResetPasswordPage,
+  ForgotPasscodePage,
+  ResetPasscodePage,
   NotFoundPage,
   HomePage,
   RootPage,
@@ -53,12 +53,12 @@ export const RouteManager = () => {
               element={<ConfirmEmailPage />}
             />
             <Route
-              path={AppRoutes.client.public.FORGOT_PASSWORD}
-              element={<ForgotPasswordPage />}
+              path={AppRoutes.client.public.FORGOT_PASSCODE}
+              element={<ForgotPasscodePage />}
             />
             <Route
-              path={AppRoutes.client.public.RESET_PASSWORD}
-              element={<ResetPasswordPage />}
+              path={AppRoutes.client.public.RESET_PASSCODE}
+              element={<ResetPasscodePage />}
             />
           </Route>
 

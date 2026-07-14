@@ -47,13 +47,12 @@ export const ConfirmEmailPage: React.FC = () => {
 
     // If email is provided, open verify email dialog
     if (email) {
-      const url = AppRoutes.buildDialogUrl(
-        AppRoutes.dialog.steps.confirmEmail,
-        {
+      navigate(
+        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.confirmEmail, {
           email,
-        },
+        }),
+        { replace: true },
       );
-      navigate(url, { replace: true });
       return;
     }
 

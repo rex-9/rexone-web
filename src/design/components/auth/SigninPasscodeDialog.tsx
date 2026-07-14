@@ -6,13 +6,13 @@ import { useCountdown } from "../../../hooks";
 import { authController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useNavigate } from "react-router-dom";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 
 interface SigninPasscodeDialogProps {
   email: string;
   passcode: string;
   setPasscode: (value: string) => void;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
@@ -56,7 +56,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     }
   }, [email]);
 
-  // ✅ Save cooldown state to localStorage
+  // Save cooldown state to localStorage
   const persistCooldownState = (cooldownUntilMs: number) => {
     const key = `passcode-retry:${email}`;
     localStorage.setItem(key, JSON.stringify({ cooldownUntilMs }));
@@ -85,7 +85,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       setPasscode("");
     } else if (result.otpSent) {
       // OTP sent - unconfirmed user
-      navigateToStep("confirm-email", { email });
+      navigateToStep(AuthStep.CONFIRM_EMAIL, { email });
       toast.showToast("info", "Verification code sent.");
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - use cooldown.start()
@@ -191,11 +191,11 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
         <div className="flex justify-between text-sm">
           <TextLink
             label="Use a different email"
-            onClick={() => navigateToStep("initial")}
+            onClick={() => navigateToStep(AuthStep.INITIAL)}
           />
           <TextLink
             label="Forgot your passcode?"
-            onClick={() => navigateToStep("forgot-password", { email })}
+            onClick={() => navigateToStep(AuthStep.FORGOT_PASSCODE, { email })}
           />
         </div>
       </form>

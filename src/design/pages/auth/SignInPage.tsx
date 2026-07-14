@@ -9,8 +9,9 @@ export const SignInPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial);
-    navigate(url, { replace: true });
+    navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial), {
+      replace: true,
+    });
   }, [navigate]);
 
   return (

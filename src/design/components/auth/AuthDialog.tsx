@@ -9,26 +9,26 @@ import {
   SignupPasscodeConfirmDialog,
   SignupInfoDialog,
   ConfirmEmailDialog,
-  ForgotPasswordDialog,
+  ForgotPasscodeDialog,
 } from ".";
-import { AuthStep } from "./type";
+import { TAuthStep, AuthStep } from "./type";
 
 // Map steps to their previous step
-const stepHistory: Record<AuthStep, AuthStep | null> = {
-  initial: null,
-  "signin-passcode": "initial",
-  "signup-passcode-create": "initial",
-  "signup-passcode-confirm": "signup-passcode-create",
-  "signup-info": "signup-passcode-create",
-  "confirm-email": "signup-info",
-  "forgot-password": "signin-passcode",
+const stepHistory: Record<TAuthStep, TAuthStep | null> = {
+  [AuthStep.INITIAL]: null,
+  [AuthStep.SIGNIN_PASSCODE]: AuthStep.INITIAL,
+  [AuthStep.SIGNUP_PASSCODE_CREATE]: AuthStep.INITIAL,
+  [AuthStep.SIGNUP_PASSCODE_CONFIRM]: AuthStep.SIGNUP_PASSCODE_CREATE,
+  [AuthStep.SIGNUP_INFO]: AuthStep.SIGNUP_PASSCODE_CREATE,
+  [AuthStep.CONFIRM_EMAIL]: AuthStep.SIGNUP_INFO,
+  [AuthStep.FORGOT_PASSCODE]: AuthStep.SIGNIN_PASSCODE,
 };
 
 export const AuthDialog: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const isOpen = searchParams.get("dialog") === "auth";
 
-  const step = (searchParams.get("step") as AuthStep) || "initial";
+  const step = (searchParams.get("step") as TAuthStep) || AuthStep.INITIAL;
   const email = searchParams.get("email") || "";
   const fullName = searchParams.get("fullName") || "";
   const username = searchParams.get("username") || "";
@@ -49,13 +49,12 @@ export const AuthDialog: React.FC = () => {
       "challenge_token",
     ].forEach((key) => params.delete(key));
     setSearchParams(params, { replace: true });
-    // Clear sensitive data on close
     setPasscode("");
     setConfirmPasscode("");
   };
 
   const navigateToStep = (
-    newStep: AuthStep,
+    newStep: TAuthStep,
     extra?: Record<string, string>,
   ) => {
     const params = new URLSearchParams(searchParams);
@@ -71,7 +70,6 @@ export const AuthDialog: React.FC = () => {
     setSearchParams(params, { replace: true });
   };
 
-  // Pass setter functions to child components
   const updatePasscode = (value: string) => setPasscode(value);
   const updateConfirmPasscode = (value: string) => setConfirmPasscode(value);
 
@@ -105,7 +103,7 @@ export const AuthDialog: React.FC = () => {
 
   const renderStep = () => {
     switch (step) {
-      case "initial":
+      case AuthStep.INITIAL:
         return (
           <InitialDialog
             email={email}
@@ -114,7 +112,7 @@ export const AuthDialog: React.FC = () => {
             onClose={handleClose}
           />
         );
-      case "signin-passcode":
+      case AuthStep.SIGNIN_PASSCODE:
         return (
           <SigninPasscodeDialog
             email={email}
@@ -125,7 +123,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "signup-passcode-create":
+      case AuthStep.SIGNUP_PASSCODE_CREATE:
         return (
           <SignupPasscodeCreateDialog
             email={email}
@@ -136,7 +134,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "signup-passcode-confirm":
+      case AuthStep.SIGNUP_PASSCODE_CONFIRM:
         return (
           <SignupPasscodeConfirmDialog
             email={email}
@@ -148,7 +146,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "signup-info":
+      case AuthStep.SIGNUP_INFO:
         return (
           <SignupInfoDialog
             email={email}
@@ -161,7 +159,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "confirm-email":
+      case AuthStep.CONFIRM_EMAIL:
         return (
           <ConfirmEmailDialog
             email={email}
@@ -171,9 +169,9 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case "forgot-password":
+      case AuthStep.FORGOT_PASSCODE:
         return (
-          <ForgotPasswordDialog
+          <ForgotPasscodeDialog
             email={email}
             navigateToStep={navigateToStep}
             updateUrl={updateUrl}

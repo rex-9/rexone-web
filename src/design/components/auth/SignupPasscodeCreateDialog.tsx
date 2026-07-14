@@ -3,13 +3,13 @@
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
-import { AuthStep } from "./type";
+import { AuthStep, TAuthStep } from "./type";
 
 interface SignupPasscodeCreateDialogProps {
   email: string;
   passcode: string;
   setPasscode: (value: string) => void;
-  navigateToStep: (step: AuthStep, extra?: Record<string, string>) => void;
+  navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
@@ -38,7 +38,7 @@ export const SignupPasscodeCreateDialog: React.FC<
       extra.reset_password_token = resetPasswordToken;
     }
 
-    navigateToStep("signup-passcode-confirm", extra);
+    navigateToStep(AuthStep.SIGNUP_PASSCODE_CONFIRM, extra);
   };
 
   const triggerSubmit = () => {
@@ -100,13 +100,15 @@ export const SignupPasscodeCreateDialog: React.FC<
         <div className="text-center">
           <TextLink
             label="Use a different email"
-            onClick={() => navigateToStep("initial")}
+            onClick={() => navigateToStep(AuthStep.INITIAL)}
             className="text-body-s"
           />
           <div className="mt-4">
             <TextLink
               label="Forgot your passcode?"
-              onClick={() => navigateToStep("forgot-password", { email })}
+              onClick={() =>
+                navigateToStep(AuthStep.FORGOT_PASSCODE, { email })
+              }
               className="text-body-s"
             />
           </div>
