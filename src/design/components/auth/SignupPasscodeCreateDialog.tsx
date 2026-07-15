@@ -97,11 +97,10 @@ export const SignupPasscodeCreateDialog: React.FC<
         >
           Continue
         </Button>
-        <div className="text-center">
+        <div className="text-center text-sm">
           <TextLink
             label="Use a different email"
             onClick={() => navigateToStep(AuthStep.INITIAL)}
-            className="text-body-s"
           />
         </div>
       </form>

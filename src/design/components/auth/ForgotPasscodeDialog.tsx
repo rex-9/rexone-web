@@ -84,20 +84,19 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
               ? "Sending..."
               : "Send Passcode Reset Link"}
         </Button>
+        <div className="text-center text-sm">
+          <TextLink
+            label="Back to Sign In"
+            onClick={() =>
+              navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail })
+            }
+          />
+        </div>
       </form>
       {message && (
         <p className="text-caption text-success text-center">{message}</p>
       )}
       {error && <p className="text-caption text-error text-center">{error}</p>}
-      <div className="text-center">
-        <TextLink
-          label="Back to Sign In"
-          onClick={() =>
-            navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail })
-          }
-          className="text-body-s"
-        />
-      </div>
     </Dialog>
   );
 };

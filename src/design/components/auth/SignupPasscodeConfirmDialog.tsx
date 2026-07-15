@@ -66,6 +66,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
           () => {
             // Navigate to sign in (initial dialog) on success
             toast.showToast("success", "Passcode reset successfully!");
+            onClose();
             navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial));
           },
         );
@@ -161,11 +162,10 @@ export const SignupPasscodeConfirmDialog: React.FC<
         >
           {isLoading ? "Resetting..." : "Continue"}
         </Button>
-        <div className="text-center">
+        <div className="text-center text-sm">
           <TextLink
             label="Use a different email"
             onClick={() => navigateToStep(AuthStep.INITIAL)}
-            className="text-body-s"
           />
         </div>
       </form>
