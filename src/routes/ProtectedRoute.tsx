@@ -2,11 +2,14 @@ import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts";
 import AppRoutes from "../AppRoutes";
+import { getSafePostAuthRoute } from "../utils/authRedirect.util";
 
 const ProtectedRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
-  const nextPath = `${location.pathname}${location.search}`;
+  const nextPath = getSafePostAuthRoute(
+    `${location.pathname}${location.search}`,
+  );
 
   return !isAuthenticated ? (
     <Navigate

@@ -1,17 +1,15 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import LayoutPage from "../LayoutPage";
+import { getSafePostAuthRoute } from "../../../utils/authRedirect.util";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    const next = searchParams.get("next");
-    const nextQuery =
-      next && next.startsWith("/") && !next.startsWith("//")
-        ? `&next=${encodeURIComponent(next)}`
-        : "";
+    const next = getSafePostAuthRoute(searchParams.get("next"));
+    const nextQuery = `&next=${encodeURIComponent(next)}`;
 
     // Redirect to home with dialog=auth param.
     navigate(`/?dialog=auth${nextQuery}`, { replace: true });

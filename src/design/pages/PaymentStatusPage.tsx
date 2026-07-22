@@ -1,164 +1,125 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
-import { paymentService } from "../../services";
+import type { IOrder } from "../../models";
+import {
+  clearCheckoutOrder,
+  getCheckoutOrderId,
+  isTerminalPaymentStatus,
+  orderService,
+  POLL_INTERVAL_MS,
+  POLL_TIMEOUT_MS,
+  redirectToCheckout,
+  retryOrderCheckout,
+} from "../../services";
 import { AlertMessage, Button, Typography } from "../molecules";
 import LayoutPage from "./LayoutPage";
-
-type ViewState = "success" | "cancel" | "error" | "pending";
 
 const PaymentStatusPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const params = useParams();
-  const [searchParams] = useSearchParams();
-
-  const [isLoading, setIsLoading] = useState(false);
+  const isCancellation = location.pathname === AppRoutes.client.public.PAYMENT_CANCEL;
+  const orderId = useMemo(() => getCheckoutOrderId(window.sessionStorage), []);
+  const [order, setOrder] = useState<IOrder | null>(null);
   const [error, setError] = useState("");
-  const [apiStatus, setApiStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
+  const [timedOut, setTimedOut] = useState(false);
+  const startedAt = useRef(0);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const resourceId =
-    params.id ||
-    searchParams.get("session_id") ||
-    searchParams.get("payment_intent") ||
-    searchParams.get("id") ||
-    "";
-  const sessionId = searchParams.get("session_id") || "";
-  const paymentIntentId = searchParams.get("payment_intent") || "";
-
-  const routeStatus: ViewState = useMemo(() => {
-    if (location.pathname === AppRoutes.client.public.PAYMENT_SUCCESS) {
-      return "success";
+  const fetchOrder = useCallback(async () => {
+    if (!orderId) return null;
+    setError("");
+    const response = await orderService.getOrder(orderId, { skipLoading: true });
+    const envelope = response.data;
+    if (!envelope?.status.success || !envelope.data?.order) {
+      throw new Error(envelope?.status.error || response.error || "Unable to load the order.");
     }
-
-    if (location.pathname === AppRoutes.client.public.PAYMENT_CANCEL) {
-      return "cancel";
+    setOrder(envelope.data.order);
+    if (envelope.data.order.payment_status === "paid") {
+      clearCheckoutOrder(window.sessionStorage);
     }
+    return envelope.data.order;
+  }, [orderId]);
 
-    if (location.pathname === AppRoutes.client.public.PAYMENT_ERROR) {
-      return "error";
+  const refresh = useCallback(async () => {
+    setIsLoading(true);
+    setTimedOut(false);
+    startedAt.current = Date.now();
+    try {
+      await fetchOrder();
+    } catch (refreshError) {
+      setError(refreshError instanceof Error ? refreshError.message : "Unable to refresh the order.");
+    } finally {
+      setIsLoading(false);
     }
-
-    return "pending";
-  }, [location.pathname]);
+  }, [fetchOrder]);
 
   useEffect(() => {
-    if (!resourceId) return;
+    if (isCancellation || !orderId) return;
+    let active = true;
+    startedAt.current = Date.now();
 
-    let isMounted = true;
-
-    const loadStatus = async () => {
-      setIsLoading(true);
-      setError("");
-
+    const poll = async () => {
       try {
-        const response = await paymentService.getPaymentStatus({
-          id: resourceId || undefined,
-          session_id: sessionId || undefined,
-          payment_intent: paymentIntentId || undefined,
-          payment_intent_id: paymentIntentId || undefined,
-        });
-        const status = response.data?.status;
-        const payload = response.data?.data;
-
-        if (!status?.success) {
-          throw new Error(status?.error || response.error || "Failed to fetch payment status.");
+        const latest = await fetchOrder();
+        if (!active || !latest || isTerminalPaymentStatus(latest.payment_status)) return;
+        if (Date.now() - startedAt.current >= POLL_TIMEOUT_MS) {
+          setTimedOut(true);
+          return;
         }
-
-        const normalizedStatus =
-          payload?.paymentStatus || payload?.payment_status || payload?.status || "";
-
-        if (isMounted) {
-          setApiStatus(normalizedStatus.toLowerCase());
-        }
-      } catch (statusError) {
-        const message =
-          statusError instanceof Error
-            ? statusError.message
-            : "Unable to fetch payment status right now.";
-        if (isMounted) {
-          setError(message);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        timer.current = setTimeout(poll, POLL_INTERVAL_MS);
+      } catch (pollError) {
+        if (active) setError(pollError instanceof Error ? pollError.message : "Unable to check payment status.");
       }
     };
 
-    void loadStatus();
-
+    void poll();
     return () => {
-      isMounted = false;
+      active = false;
+      if (timer.current) clearTimeout(timer.current);
     };
-  }, [paymentIntentId, resourceId, sessionId]);
+  }, [fetchOrder, isCancellation, orderId]);
 
-  const effectiveState: ViewState = useMemo(() => {
-    if (apiStatus.includes("succeeded") || apiStatus.includes("paid")) {
-      return "success";
+  const retry = async () => {
+    if (!orderId || isRetrying) return;
+    setIsRetrying(true);
+    setError("");
+    try {
+      const checkout = await retryOrderCheckout(orderId, window.sessionStorage);
+      redirectToCheckout(checkout.checkout_url, window.location.assign.bind(window.location));
+    } catch (retryError) {
+      setError(retryError instanceof Error ? retryError.message : "Unable to retry payment.");
+    } finally {
+      setIsRetrying(false);
     }
+  };
 
-    if (apiStatus.includes("cancel")) {
-      return "cancel";
-    }
-
-    if (apiStatus.includes("fail") || apiStatus.includes("error")) {
-      return "error";
-    }
-
-    return routeStatus;
-  }, [apiStatus, routeStatus]);
-
-  const title =
-    effectiveState === "success"
-      ? "Payment successful"
-      : effectiveState === "cancel"
-        ? "Payment canceled"
-        : effectiveState === "error"
-          ? "Payment failed"
-          : "Checking payment";
-
-  const description =
-    effectiveState === "success"
-      ? "Your payment was completed successfully."
-      : effectiveState === "cancel"
-        ? "Your payment was canceled before completion."
-        : effectiveState === "error"
-          ? "Payment could not be completed. Please try again."
-          : "We are confirming your payment status.";
+  const content = (() => {
+    if (isCancellation) return ["Payment was not completed", "Your existing order is saved. You can try payment again without creating a new order."];
+    if (!orderId) return ["Order not found", "We could not recover the order for this checkout."];
+    if (order?.payment_status === "paid") return ["Payment confirmed", "Your payment has been confirmed by the server."];
+    if (order?.payment_status === "processing") return ["Payment is processing", "Stripe is processing the payment. This page will keep checking."];
+    if (order?.payment_status === "failed") return ["Payment failed", "The payment could not be completed."];
+    if (order?.payment_status === "refunded") return ["Payment refunded", "This payment has been refunded."];
+    if (order?.payment_status === "partially_refunded") return ["Payment partially refunded", "This payment has been partially refunded."];
+    return ["Waiting for payment confirmation", "We are checking the authoritative order status with the server."];
+  })();
 
   return (
     <LayoutPage>
       <section className="w-full max-w-xl px-6 py-12">
-        <Typography className="text-3xl font-semibold mb-3" variant="primary">
-          {title}
-        </Typography>
-        <Typography className="text-base mb-6">{description}</Typography>
-
-        {isLoading && (
-          <Typography className="text-sm opacity-70 mb-4">Loading latest payment status...</Typography>
-        )}
-
-        {resourceId && (
-          <Typography className="text-sm opacity-70 mb-4">Reference ID: {resourceId}</Typography>
-        )}
-
-        {apiStatus && (
-          <Typography className="text-sm opacity-70 mb-4">Backend status: {apiStatus}</Typography>
-        )}
-
+        <Typography className="mb-3 text-3xl font-semibold" variant="primary">{content[0]}</Typography>
+        <Typography className="mb-6 text-base">{content[1]}</Typography>
+        {order?.order_number && <Typography className="mb-4 text-sm opacity-70">Order: {order.order_number}</Typography>}
+        {isLoading && <Typography className="mb-4 text-sm opacity-70">Loading latest payment status...</Typography>}
+        {timedOut && <AlertMessage message="Confirmation is taking longer than expected. You can refresh the order status manually." type="error" />}
         {error && <AlertMessage message={error} type="error" />}
-
-        <div className="flex flex-wrap gap-3 mt-6">
-          <Button onClick={() => navigate(AppRoutes.client.public.PAYMENT)}>
-            Pay Again
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => navigate(AppRoutes.client.public.ROOT)}
-          >
-            Back to Home
-          </Button>
+        <div className="mt-6 flex flex-wrap gap-3">
+          {isCancellation && orderId && <Button onClick={retry} disabled={isRetrying}>{isRetrying ? "Redirecting..." : "Try payment again"}</Button>}
+          {!isCancellation && timedOut && <Button onClick={refresh} disabled={isLoading}>Refresh status</Button>}
+          <Button variant="secondary" onClick={() => navigate(AppRoutes.client.public.ROOT)}>Back to Home</Button>
         </div>
       </section>
     </LayoutPage>

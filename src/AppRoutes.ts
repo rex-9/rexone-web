@@ -40,12 +40,15 @@ class AppRoutes {
       GET_PRODUCT_DETAILS: "/payments/product_details",
       LIST_CUSTOMER_PAYMENTS: "/payments/customers",
       STRIPE_WEBHOOK: "/payments/webhooks/stripe",
+      CREATE_ORDER: "/orders",
+      ORDER: "/orders",
     },
     protected: {
       SIGN_OUT: "/signout",
       PEEK_USER: "/users/peek",
       GET_CURRENT_USER: "/users/current",
       UPLOAD_ASSET: "/media/upload",
+      DELIVER_MAIL: "/mail/deliver",
     },
   };
 }

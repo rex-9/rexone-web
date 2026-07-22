@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import AppConfig from "../../AppConfig";
 import { useAuth } from "../../contexts";
 import { paymentService } from "../../services";
-import { AlertMessage, PaymentForm } from "../molecules";
+import { AlertMessage, CheckoutButton } from "../molecules";
 import LayoutPage from "./LayoutPage";
 
 const PaymentPage: React.FC = () => {
@@ -114,14 +114,15 @@ const PaymentPage: React.FC = () => {
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 md:p-8">
             <h1 className="text-2xl font-semibold text-slate-900">Complete your payment</h1>
-            <p className="mt-1 text-sm text-slate-500">Powered by Stripe SDK PaymentElement</p>
+            <p className="mt-1 text-sm text-slate-500">
+              Card details are entered securely on Stripe Checkout.
+            </p>
 
             <div className="mt-6">
-              <PaymentForm
-                currency="usd"
-                productId={AppConfig.STRIPE_PRODUCT_ID}
+              <CheckoutButton
                 priceId={AppConfig.STRIPE_PRICE_ID}
                 quantity={quantity}
+                disabled={isProductLoading || Boolean(productError)}
               />
             </div>
           </div>

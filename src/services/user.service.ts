@@ -2,6 +2,13 @@ import AppRoutes from "../AppRoutes";
 import { IApiAuthResponse, IApiResponse, IUser } from "../models";
 import { api } from "../services";
 
+export type MailTemplate = "email_verification" | "password_reset";
+
+export interface MailRecipient {
+  user_id?: string;
+  email?: string;
+}
+
 class UserService {
   async peekUser(
     email: string,
@@ -36,6 +43,21 @@ class UserService {
       },
     );
     return response;
+  }
+
+  async deliverMail(
+    type: MailTemplate,
+    recipient: MailRecipient = {},
+  ): Promise<IApiResponse<IApiAuthResponse<null>>> {
+    return api.post<IApiAuthResponse<null>>(
+      AppRoutes.server.protected.DELIVER_MAIL,
+      {
+        mail: {
+          type,
+          ...recipient,
+        },
+      },
+    );
   }
 }
 

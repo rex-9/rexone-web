@@ -1,89 +1,55 @@
-import React, { useMemo, useState } from "react";
+import React, { useRef, useState } from "react";
 import AppConfig from "../../../AppConfig";
-import AppRoutes from "../../../AppRoutes";
-import { paymentService } from "../../../services";
+import {
+  claimCheckoutSubmission,
+  redirectToCheckout,
+  startNewOrderCheckout,
+} from "../../../services";
 import AlertMessage from "../AlertMessage";
 import Button from "../Button";
 
 export interface CheckoutButtonProps {
-  productId?: string;
   priceId?: string;
   quantity?: number;
   className?: string;
-  buttonClassName?: string;
-  buttonVariant?: "primary" | "secondary" | "tertiary";
   disabled?: boolean;
   buttonLabel?: string;
-  onCheckoutStarted?: () => void;
-  onCheckoutComplete?: () => void;
 }
 
 const CheckoutButton: React.FC<CheckoutButtonProps> = ({
-  productId = AppConfig.STRIPE_PRODUCT_ID,
   priceId = AppConfig.STRIPE_PRICE_ID,
   quantity = 1,
   className,
-  buttonClassName,
-  buttonVariant = "primary",
   disabled = false,
   buttonLabel = "Pay Now",
-  onCheckoutStarted,
-  onCheckoutComplete,
 }) => {
+  const submittingRef = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const checkoutUrls = useMemo(() => {
-    const base = AppConfig.CLIENT_BASE_URL;
-    return {
-      successUrl: `${base}${AppRoutes.client.public.PAYMENT_SUCCESS}?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${base}${AppRoutes.client.public.PAYMENT_CANCEL}`,
-    };
-  }, []);
-
   const onClick = async () => {
-    if (isLoading || disabled) return;
-
+    // The ref closes the gap before React commits the disabled state.
+    if (disabled || !claimCheckoutSubmission(submittingRef)) return;
     setIsLoading(true);
     setError("");
-    onCheckoutStarted?.();
 
     try {
-      const response = await paymentService.createCheckoutSession({
-        product_id: productId,
-        price_id: priceId,
+      if (!priceId) throw new Error("Stripe Price ID is not configured.");
+      const checkout = await startNewOrderCheckout(
+        priceId,
         quantity,
-        mode: "payment",
-        success_url: checkoutUrls.successUrl,
-        cancel_url: checkoutUrls.cancelUrl,
-      });
-
-      const status = response.data?.status;
-      const payload = response.data?.data;
-      const checkoutUrl =
-        payload?.checkoutUrl || payload?.checkout_url || payload?.url;
-
-      if (!status?.success) {
-        throw new Error(status?.error || response.error || "Unable to start checkout.");
-      }
-
-      if (checkoutUrl) {
-        window.location.assign(checkoutUrl);
-        return;
-      }
-
-      throw new Error(
-        "Checkout session created without checkout URL. Please verify backend response includes checkout_url.",
+        window.sessionStorage,
       );
+      redirectToCheckout(checkout.checkout_url, window.location.assign.bind(window.location));
     } catch (checkoutError) {
-      const message =
+      setError(
         checkoutError instanceof Error
           ? checkoutError.message
-          : "Unable to process payment right now. Please try again.";
-      setError(message);
+          : "Unable to start checkout. Please try again.",
+      );
     } finally {
+      submittingRef.current = false;
       setIsLoading(false);
-      onCheckoutComplete?.();
     }
   };
 
@@ -94,10 +60,9 @@ const CheckoutButton: React.FC<CheckoutButtonProps> = ({
         onClick={onClick}
         disabled={disabled || isLoading}
         fullWidth
-        variant={buttonVariant}
-        className={buttonClassName}
+        className="mt-2 rounded-md bg-[#1f2c6c] text-white hover:bg-[#182257]"
       >
-        {isLoading ? "Redirecting..." : buttonLabel}
+        {isLoading ? "Redirecting to Stripe..." : buttonLabel}
       </Button>
     </div>
   );

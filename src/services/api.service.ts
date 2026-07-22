@@ -11,7 +11,19 @@ const SKIP_LOADING_HEADER = "X-Skip-Loading";
 const SESSION_VERIFY_MIN_INTERVAL_MS = 10_000;
 const SESSION_REPLACED_MESSAGE =
   "Your session was replaced by a newer sign in on this platform.";
+const SESSION_EXPIRED_MESSAGE = "Your session expired. Please sign in again.";
 let lastSessionVerifyAtMs = 0;
+
+export const isExpiredSessionError = (error: unknown): boolean => {
+  if (typeof error !== "string") return false;
+
+  const normalized = error.trim().replace(/[.!]+$/, "").toLowerCase();
+  return [
+    "active session not found",
+    "signature has expired",
+    "no verification key available",
+  ].includes(normalized);
+};
 
 const shouldRunProactiveSessionCheck = (): boolean => {
   if (typeof window === "undefined") return false;
@@ -69,7 +81,7 @@ const apiRequest = async <T>(
 export const api = {
   get: async <T>(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
     config?: AxiosRequestConfig,
   ) => {
     return apiRequest<T>(url, {
@@ -78,14 +90,14 @@ export const api = {
       params,
     });
   },
-  post: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
+  post: async <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => {
     const headers =
       data instanceof FormData
         ? { "Content-Type": "multipart/form-data" }
         : { "Content-Type": "application/json" };
     return apiRequest<T>(url, { ...config, method: "POST", data, headers });
   },
-  put: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
+  put: async <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => {
     const headers =
       data instanceof FormData
         ? { "Content-Type": "multipart/form-data" }
@@ -152,8 +164,10 @@ export const useAxiosInterceptor = () => {
         const isSessionValidationRequest = requestUrl.includes(
           AppRoutes.server.protected.GET_CURRENT_USER,
         );
-        const isSessionReplacedError =
-          serverError === "Active session not found";
+        const isSessionReplacedError = isExpiredSessionError(serverError);
+        const wasSessionReplaced =
+          typeof serverError === "string" &&
+          serverError.toLowerCase().includes("active session not found");
 
         // Keep logout scoped to clear session-expiry signals only.
         if (
@@ -170,10 +184,13 @@ export const useAxiosInterceptor = () => {
             );
             nextUrl.searchParams.set("dialog", "auth");
             nextUrl.searchParams.set("step", "initial");
-            nextUrl.searchParams.set(
-              "session_message",
-              SESSION_REPLACED_MESSAGE,
-            );
+            const returnPath = `${window.location.pathname}${window.location.search}`;
+            if (returnPath !== AppRoutes.client.public.ROOT) {
+              nextUrl.searchParams.set("next", returnPath);
+            }
+            nextUrl.searchParams.set("session_message", wasSessionReplaced
+              ? SESSION_REPLACED_MESSAGE
+              : SESSION_EXPIRED_MESSAGE);
             window.location.assign(nextUrl.toString());
           }
         }

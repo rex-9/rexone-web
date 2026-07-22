@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import AppRoutes from "../../AppRoutes";
+import { getSafePostAuthRoute } from "../../utils/authRedirect.util";
 import { useAuth } from "../../contexts";
 import authController, {
   type IPasscodeRetryMeta,
@@ -136,15 +136,7 @@ export const AuthDialog: React.FC = () => {
   const isOpen = searchParams.get("dialog") === "auth";
 
   const getPostSignInRoute = (): string => {
-    const next = searchParams.get("next");
-    if (!next) return AppRoutes.client.protected.HOME;
-
-    // Only allow app-relative redirects.
-    if (!next.startsWith("/") || next.startsWith("//")) {
-      return AppRoutes.client.protected.HOME;
-    }
-
-    return next;
+    return getSafePostAuthRoute(searchParams.get("next"));
   };
 
   const getStepFromUrl = (): AuthStep => {
