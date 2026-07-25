@@ -10,7 +10,7 @@ export const ConfirmEmailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { signin } = useAuth();
-  const toast = useToast();
+  const { success } = useToast();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -25,7 +25,7 @@ export const ConfirmEmailPage: React.FC = () => {
         () => {},
         (token, user) => {
           signin(token, user);
-          toast.showToast("success", "Email confirmed successfully!");
+          success("Email confirmed successfully!");
           navigate(AppRoutes.client.protected.HOME, { replace: true });
         },
         (errorMsg) => {
@@ -59,7 +59,7 @@ export const ConfirmEmailPage: React.FC = () => {
     // Fallback: go to initial auth dialog
     const url = AppRoutes.client.public.SIGN_IN;
     navigate(url, { replace: true });
-  }, [navigate, location, signin, toast]);
+  }, [navigate, location, signin]);
 
   return null;
 };

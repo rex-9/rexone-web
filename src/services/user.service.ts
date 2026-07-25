@@ -25,7 +25,7 @@ class UserService {
   > {
     const response = await api.get<
       IApiAuthResponse<{ user: IUser; token: string }>
-    >(AppRoutes.server.protected.GET_CURRENT_USER);
+    >(AppRoutes.server.protected.CURRENT_USER);
     return response;
   }
 

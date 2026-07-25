@@ -64,18 +64,18 @@ export const api = {
     });
   },
   post: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
-    const headers =
-      data instanceof FormData
-        ? { "Content-Type": "multipart/form-data" }
-        : { "Content-Type": "application/json" };
-    return apiRequest<T>(url, { ...config, method: "POST", data, headers });
+    return apiRequest<T>(url, {
+      ...config,
+      method: "POST",
+      data,
+    });
   },
   put: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
-    const headers =
-      data instanceof FormData
-        ? { "Content-Type": "multipart/form-data" }
-        : { "Content-Type": "application/json" };
-    return apiRequest<T>(url, { ...config, method: "PUT", data, headers });
+    return apiRequest<T>(url, {
+      ...config,
+      method: "PUT",
+      data,
+    });
   },
   delete: async <T>(url: string, config?: AxiosRequestConfig) => {
     return apiRequest<T>(url, { ...config, method: "DELETE" });
@@ -95,12 +95,22 @@ export const useAxiosInterceptor = () => {
         // Always send platform so backend can enforce one active session per platform.
         headers.set("X-Platform", PLATFORM_HEADER_VALUE);
 
+        // Check if data is FormData - let axios set Content-Type automatically
+        if (config.data instanceof FormData) {
+          // Don't set Content-Type - axios will set it with boundary
+          // Remove any existing Content-Type to let axios handle it
+          headers.delete("Content-Type");
+          headers.set("Content-Type", "multipart/form-data");
+        } else if (config.data && typeof config.data === "object") {
+          // For JSON data, set Content-Type
+          headers.set("Content-Type", "application/json");
+        }
+
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
         }
 
         config.headers = headers;
-
         setLoading(true);
         return config;
       },
@@ -182,4 +192,13 @@ export const apiHandler = async <T>(
     setError(`An error occurred when ${operation}. error: ${error}`);
     onFailure?.();
   }
+};
+
+// Helper to extract attributes from JSONAPI response
+export const parseFromList = <T>(items: any[]): T[] => {
+  if (!items || !Array.isArray(items)) return [];
+  return items.map((item) => ({
+    ...item.attributes,
+    id: item.id,
+  }));
 };

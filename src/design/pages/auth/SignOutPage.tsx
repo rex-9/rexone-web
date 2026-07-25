@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../../../contexts";
 import { googleLogout } from "@react-oauth/google";
-import authController from "../../../controllers/auth.controller";
+import { authController } from "../../../controllers";
 
 let isSignOutInProgress = false;
 

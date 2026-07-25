@@ -19,6 +19,9 @@ import {
   HomePage,
   RootPage,
   ProfilePage,
+  PaymentPage,
+  PaymentSuccessPage,
+  PaymentCancelPage,
 } from "../design/pages";
 import { AuthDialog } from "../design";
 import { AnapanaPage } from "../modules/anapana/pages";
@@ -75,6 +78,18 @@ export const RouteManager = () => {
             <Route
               path={AppRoutes.client.protected.SIGN_OUT}
               element={<SignOutPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.PAYMENT}
+              element={<PaymentPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.PAYMENT_SUCCESS}
+              element={<PaymentSuccessPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.PAYMENT_CANCEL}
+              element={<PaymentCancelPage />}
             />
           </Route>
 

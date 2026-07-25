@@ -24,7 +24,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 }) => {
   const { signin, setGoogleChallengeToken } = useAuth();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { success } = useToast();
   const [localEmail, setLocalEmail] = useState(email);
   const [emailError, setEmailError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -82,7 +82,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
         if (result.success && result.token && result.user) {
           // Existing user - sign in directly
           signin(result.token, result.user);
-          toast.showToast("success", "Signed in with Google");
+          success("Signed in with Google");
           onClose();
           navigate(AppRoutes.client.protected.HOME);
         } else if (result.passcodeRequired && result.challengeToken) {

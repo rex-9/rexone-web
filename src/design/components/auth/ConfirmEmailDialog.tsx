@@ -25,7 +25,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
 }) => {
   const { signin } = useAuth();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
@@ -46,7 +46,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       setError,
       (msg) => {
         setMessage(msg);
-        toast.showToast("success", "Email verified successfully");
+        success("Email verified successfully");
       },
       signin,
       navigate,
@@ -63,7 +63,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       () => cooldown.start(30),
     );
     if (!error) {
-      toast.showToast("info", "Resend email sent");
+      info("Resend email sent");
     }
   };
 

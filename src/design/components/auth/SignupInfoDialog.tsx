@@ -27,7 +27,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
   onClose,
   onBack,
 }) => {
-  const toast = useToast();
+  const { success } = useToast();
   const [fullName, setFullName] = useState(fullNameParam);
   const [username, setUsername] = useState(userNameParam);
   const [error, setError] = useState("");
@@ -60,10 +60,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       () => {
         // After signup, navigate to verify email step
         navigateToStep(AuthStep.CONFIRM_EMAIL, { email, passcode });
-        toast.showToast(
-          "success",
-          "Verification email sent. Please check your inbox.",
-        );
+        success("Verification email sent. Please check your inbox.");
       },
     );
     setIsLoading(false);

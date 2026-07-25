@@ -22,7 +22,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
   onClose,
   onBack,
 }) => {
-  const toast = useToast();
+  const { success } = useToast();
   const [localEmail, setLocalEmail] = useState(email);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -42,7 +42,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
     );
     setIsLoading(false);
     if (!error) {
-      toast.showToast("success", "Reset link sent to your email.");
+      success("Reset link sent to your email.");
     }
   };
 

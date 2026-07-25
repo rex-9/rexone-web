@@ -27,7 +27,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 }) => {
   const { signin } = useAuth();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
   const [, setMessage] = useState("");
@@ -78,7 +78,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
     if (result.success) {
       // Success - clear everything
-      toast.showToast("success", "Sign in successful");
+      success("Sign in successful");
       cooldown.clear();
       setRemainingAttempts(3);
       persistCooldownState(0);
@@ -86,7 +86,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     } else if (result.otpSent) {
       // OTP sent - unconfirmed user
       navigateToStep(AuthStep.CONFIRM_EMAIL, { email });
-      toast.showToast("info", "Verification code sent.");
+      info("Verification code sent.");
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - use cooldown.start()
       cooldown.start(result.cooldownRemaining);

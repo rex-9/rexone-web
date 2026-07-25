@@ -32,7 +32,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
 }) => {
   const { signin, googleChallengeToken, setGoogleChallengeToken } = useAuth();
   const navigate = useNavigate();
-  const toast = useToast();
+  const { success } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +65,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
           // Remove setMessage - it's not used
           () => {
             // Navigate to sign in (initial dialog) on success
-            toast.showToast("success", "Passcode reset successfully!");
+            success("Passcode reset successfully!");
             onClose();
             navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial));
           },
@@ -88,7 +88,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
         );
         if (result.success && result.token && result.user) {
           signin(result.token, result.user);
-          toast.showToast("success", "Google sign in complete");
+          success("Google sign in complete");
           setGoogleChallengeToken(null);
           onClose();
           navigate(AppRoutes.client.protected.HOME);

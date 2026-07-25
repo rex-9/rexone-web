@@ -16,26 +16,35 @@ class AppRoutes {
       SIGN_OUT: "/signout",
       HOME: "/home",
       PROFILE: "/profile",
+      PAYMENT: "/payment",
+      PAYMENT_SUCCESS: "/payment/success",
+      PAYMENT_CANCEL: "/payment/cancel",
     },
   };
 
   static readonly server = {
     public: {
-      SIGN_UP: "/signup",
-      SIGN_IN_EMAIL: "/signin",
-      SIGN_IN_TOKEN: "/signin/token",
-      SIGN_IN_GOOGLE: "/signin/google",
-      SIGN_IN_GOOGLE_COMPLETE: "/signin/google/complete",
-      SEND_EMAIL_CODE: "/confirmation/send_code",
-      CONFIRM_CODE: "/confirmation/confirm_code",
-      FORGOT_PASSWORD: "/password/forgot",
-      RESET_PASSWORD: "/password/reset",
+      SIGN_UP: "/signup", // POST
+      SIGN_IN_EMAIL: "/signin", // POST
+      SIGN_IN_TOKEN: "/signin/token", // POST
+      SIGN_IN_GOOGLE: "/signin/google", // POST
+      SIGN_IN_GOOGLE_COMPLETE: "/signin/google/complete", // POST
+      SEND_EMAIL_CODE: "/confirmation/send_code", // POST
+      CONFIRM_CODE: "/confirmation/confirm_code", // POST
+      FORGOT_PASSWORD: "/password/forgot", // POST
+      RESET_PASSWORD: "/password/reset", // PUT
     },
     protected: {
-      SIGN_OUT: "/signout",
-      PEEK_USER: "/users/peek",
-      GET_CURRENT_USER: "/users/current",
-      UPLOAD_ASSET: "/media/upload",
+      SIGN_OUT: "/signout", // DELETE
+      PEEK_USER: "/users/peek", // GET
+      CURRENT_USER: "/users/current", // GET
+      UPLOAD_ASSET: "/media/upload", // POST
+      ACCESS: "/access", // GET
+      CHECK_ACCESS: "/access/check", // GET
+      PAYMENT_SESSION: "/payment/session", // POST
+      PAYMENT_PRODUCTS: "/payment/products", // GET
+      PAYMENT_SUBSCRIPTIONS: "/payment/subscriptions", // GET, POST, DELETE
+      PAYMENT_TRANSACTIONS: "/payment/transactions", // GET
     },
   };
 

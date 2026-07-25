@@ -1,13 +1,17 @@
-import { SignOutButton, Video, Image, Typography } from "../components";
+import { SignOutButton, Button } from "../components";
 import { LayoutPage } from "./LayoutPage";
-import { useAuth } from "../../contexts";
-import { icons, images, videos } from "../../assets";
-import { AppLocales } from "../../locales/app_locales";
-import { useTranslation } from "react-i18next";
+// import { useAuth } from "../../contexts";
+// import { icons, images, videos } from "../../assets";
+// import { AppLocales } from "../../locales/app_locales";
+// import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../AppRoutes";
 
 export const HomePage: React.FC = () => {
-  const { currentUser } = useAuth();
-  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  // const { currentUser } = useAuth();
+  // const { t } = useTranslation();
 
   // No need just for the sample
   // useEffect(() => {
@@ -18,7 +22,15 @@ export const HomePage: React.FC = () => {
 
   return (
     <LayoutPage>
-      {<Image asset={icons.instagram} className="w-8" />}
+      {/* Payment Section */}
+      <Button
+        variant="primary"
+        onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
+        className="mt-4"
+      >
+        💳 View Plans & Pricing
+      </Button>
+      {/* {<Image asset={icons.instagram} className="w-8" />}
       {<Image asset={images.banner} className="w-96" />}
       <Typography className="text-xl font-bold" variant="primary">
         {t(AppLocales.Home)}
@@ -30,7 +42,7 @@ export const HomePage: React.FC = () => {
         autoplay={false}
         muted={false}
         className="w-96"
-      />
+      /> */}
       <SignOutButton />
     </LayoutPage>
   );

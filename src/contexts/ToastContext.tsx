@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Toast } from "../design/components";
-
-type ToastType = "info" | "success" | "warning" | "error";
+import { Toast, ToastType } from "../design/components/overlay/Toast";
 
 interface ToastContextType {
   showToast: (type: ToastType, message: string) => void;
+  success: (message: string) => void;
+  error: (message: string) => void;
+  info: (message: string) => void;
+  warning: (message: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -21,15 +23,19 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
 
   const showToast = (type: ToastType, message: string) => {
     setToast({ type, message: t(message) });
-    setTimeout(() => setToast(null), 3000); // Hide toast after 3 seconds
   };
 
+  const success = (message: string) => showToast("success", message);
+  const error = (message: string) => showToast("error", message);
+  const info = (message: string) => showToast("info", message);
+  const warning = (message: string) => showToast("warning", message);
+
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={{ showToast, success, error, info, warning }}>
       {children}
       {toast && (
         <Toast
-          type={toast.type as "success" | "info" | "warning" | "error"}
+          type={toast.type}
           message={toast.message}
           onClose={() => setToast(null)}
         />

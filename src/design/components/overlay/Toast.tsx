@@ -1,7 +1,6 @@
 /**
- * Meritbox Design System - Toast Notification Molecule
- *
- * Reinforce dopamine loop with encouraging messages
+ * Meritbox Design System - Toast Notification
+ * Uses DaisyUI alert components
  */
 
 import React, { useEffect } from "react";
@@ -32,50 +31,46 @@ export const Toast: React.FC<ToastProps> = ({
   }, [duration, onClose]);
 
   const typeClasses = {
-    success: "bg-success text-white",
-    info: "bg-info text-white",
-    warning: "bg-warning text-navy-900",
-    error: "bg-error text-white",
+    success: "alert-success",
+    info: "alert-info",
+    warning: "alert-warning",
+    error: "alert-error",
   };
 
   const defaultIcons = {
-    success: "✨",
+    success: "✅",
     info: "💡",
     warning: "⚠️",
     error: "❌",
   };
 
   return (
-    <div
-      className={cn(
-        "fixed top-16 left-1/2 transform -translate-x-1/2 z-50",
-        "px-20 py-12 rounded-m shadow-m",
-        "flex items-center gap-12",
-        "animate-[fadeIn_200ms_ease-out]",
-        typeClasses[type],
-      )}
-    >
-      <span className="text-20">{icon || defaultIcons[type]}</span>
-      <span className="text-body-m font-medium">{message}</span>
-      <button
-        type="button"
-        onClick={onClose}
-        className="ml-8 p-4 rounded-s hover:bg-black hover:bg-opacity-10 transition-colors"
-      >
-        <svg
-          className="w-16 h-16"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
-      </button>
+    <div className="toast toast-top toast-center z-50">
+      <div className={cn("alert shadow-lg max-w-md", typeClasses[type])}>
+        <div className="flex items-center gap-3">
+          <span className="text-xl">{icon || defaultIcons[type]}</span>
+          <span className="text-sm font-medium">{message}</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="btn btn-ghost btn-sm btn-square"
+          >
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

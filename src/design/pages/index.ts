@@ -5,3 +5,6 @@ export { ProfilePage } from "./ProfilePage";
 export { LayoutPage } from "./LayoutPage";
 export { NotFoundPage } from "./NotFoundPage";
 export { LandingPage } from "./LandingPage";
+export { PaymentPage } from "./PaymentPage";
+export { PaymentSuccessPage } from "./PaymentSuccessPage";
+export { PaymentCancelPage } from "./PaymentCancelPage";
