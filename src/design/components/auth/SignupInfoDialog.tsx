@@ -1,7 +1,7 @@
 // src/design/components/auth/SignupInfoDialog.tsx
 
 import React, { useState } from "react";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import { Button, Dialog, TextInput } from "..";
 import { useToast } from "../../../contexts";
 import { AuthStep, TAuthStep } from "./type";
@@ -51,7 +51,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
     }
 
     setIsLoading(true);
-    await authController.signUpWithEmail(
+    await AuthController.signUpWithEmail(
       username,
       email,
       passcode,

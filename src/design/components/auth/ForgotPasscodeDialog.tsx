@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useCountdown } from "../../../hooks";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import { Button, Dialog, TextInput, TextLink } from "..";
 import { useToast } from "../../../contexts";
 import { AuthStep, TAuthStep } from "./type";
@@ -34,7 +34,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await authController.sendForgotPasswordMail(
+    await AuthController.sendForgotPasswordMail(
       localEmail,
       setError,
       setMessage,

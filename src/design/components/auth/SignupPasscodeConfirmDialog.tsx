@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { AuthStep, TAuthStep } from "./type";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
@@ -57,7 +57,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
     if (resetPasswordToken) {
       setIsLoading(true);
       try {
-        await authController.resetPassword(
+        await AuthController.resetPassword(
           resetPasswordToken,
           passcode,
           confirmPasscode,
@@ -82,7 +82,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
     if (googleChallengeToken) {
       setIsLoading(true);
       try {
-        const result = await authController.completeGoogleSignIn(
+        const result = await AuthController.completeGoogleSignIn(
           passcode,
           googleChallengeToken,
         );

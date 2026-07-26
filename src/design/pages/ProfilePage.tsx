@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { LayoutPage } from "./LayoutPage";
 import { Button } from "../";
-import userController from "../../controllers/user.controller";
+import UserController from "../../controllers/user.controller";
 
 export const ProfilePage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -14,7 +14,7 @@ export const ProfilePage: React.FC = () => {
 
   const handleUploadClick = async () => {
     if (selectedFile) {
-      await userController.uploadImage(selectedFile);
+      await UserController.uploadImage(selectedFile);
       // Optionally, handle the response or update the state
     } else {
       console.error("No file selected");

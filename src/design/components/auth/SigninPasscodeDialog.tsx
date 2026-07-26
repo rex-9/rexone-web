@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
 import { useCountdown } from "../../../hooks";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useNavigate } from "react-router-dom";
 import { AuthStep, TAuthStep } from "./type";
@@ -67,7 +67,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     if (passcode.length !== 6) return;
 
     setIsLoading(true);
-    const result = await authController.signInWithEmailOrUsername(
+    const result = await AuthController.signInWithEmailOrUsername(
       email,
       passcode,
       setError,

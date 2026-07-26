@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import AppRoutes from "../../../AppRoutes";
 
 export const ConfirmEmailPage: React.FC = () => {
@@ -20,7 +20,7 @@ export const ConfirmEmailPage: React.FC = () => {
 
     // Handle auth_token from email confirmation link
     if (authToken) {
-      authController.signInWithToken(
+      AuthController.signInWithToken(
         authToken,
         () => {},
         (token, user) => {

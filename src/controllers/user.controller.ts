@@ -1,4 +1,4 @@
-import { userService } from "../services";
+import { UserService } from "../services";
 import { IApiResponse, IUser } from "../models";
 
 class UserController {
@@ -8,7 +8,7 @@ class UserController {
   ): Promise<
     "exists_confirmed" | "exists_unconfirmed" | "not_exists" | undefined
   > {
-    const response = await userService.peekUser(email);
+    const response = await UserService.peekUser(email);
     const data = response.data?.data;
 
     if (!data) {
@@ -28,7 +28,7 @@ class UserController {
     setCurrentUser: (user: IUser | null) => void,
   ): Promise<void> {
     try {
-      const response = await userService.getCurrentUser();
+      const response = await UserService.getCurrentUser();
       const user = response.data?.data?.user;
       setCurrentUser(user || null);
     } catch (error) {
@@ -39,7 +39,7 @@ class UserController {
   async uploadImage(file: File): Promise<void> {
     try {
       const response: IApiResponse<{ url: string }> =
-        await userService.uploadImage(file);
+        await UserService.uploadImage(file);
       console.log("Image uploaded:", response.data?.url);
     } catch (error) {
       console.error("Error uploading image:", error);

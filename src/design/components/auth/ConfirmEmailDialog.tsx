@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useCountdown } from "../../../hooks";
 import { AuthStep, TAuthStep } from "./type";
@@ -40,7 +40,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
     setIsLoading(true);
     setError("");
     setMessage("");
-    await authController.confirmEmailWithCode(
+    await AuthController.confirmEmailWithCode(
       email,
       otp,
       setError,
@@ -56,7 +56,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
 
   const handleResend = async () => {
     if (isCooldown) return;
-    await authController.sendConfirmationEmail(
+    await AuthController.sendConfirmationEmail(
       email,
       setError,
       setMessage,

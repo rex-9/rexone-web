@@ -17,7 +17,7 @@ export const HomePage: React.FC = () => {
   // useEffect(() => {
   //   if (currentUser) return;
 
-  //   userController.getCurrentUser(setCurrentUser);
+  //   UserController.getCurrentUser(setCurrentUser);
   // }, [currentUser, setCurrentUser]);
 
   return (

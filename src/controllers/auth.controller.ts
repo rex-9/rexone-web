@@ -1,7 +1,7 @@
 // src/controllers/auth.controller.ts
 
 import AppRoutes from "../AppRoutes";
-import { authService } from "../services";
+import { AuthService } from "../services";
 import { IUser } from "../models";
 import { apiHandler } from "../services";
 
@@ -33,7 +33,7 @@ class AuthController {
   ): Promise<void> {
     await apiHandler(
       "signing in with token",
-      () => authService.signInWithToken(token),
+      () => AuthService.signInWithToken(token),
       setError,
       (data) => {
         signin(data.data!.token, data.data!.user);
@@ -59,7 +59,7 @@ class AuthController {
     otpSent?: boolean;
   }> {
     try {
-      const response = await authService.signInWithEmailOrUsername(
+      const response = await AuthService.signInWithEmailOrUsername(
         signinKey,
         passcode,
       );
@@ -96,7 +96,7 @@ class AuthController {
 
   // Google sign in (NO passcode attempt limiter)
   async signInWithGoogle(token: string): Promise<IGoogleSignInStartResult> {
-    const response = await authService.signInWithGoogle(token);
+    const response = await AuthService.signInWithGoogle(token);
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -143,7 +143,7 @@ class AuthController {
     passcode: string,
     challengeToken: string,
   ): Promise<IGoogleSignInCompleteResult> {
-    const response = await authService.completeGoogleSignIn(
+    const response = await AuthService.completeGoogleSignIn(
       passcode,
       challengeToken,
     );
@@ -177,7 +177,7 @@ class AuthController {
     await apiHandler(
       "signing up with email",
       () =>
-        authService.signUpWithEmail(
+        AuthService.signUpWithEmail(
           username,
           email,
           password,
@@ -200,7 +200,7 @@ class AuthController {
   ): Promise<void> {
     await apiHandler(
       "sending confirmation email",
-      () => authService.sendConfirmationEmail(emailOrUsername),
+      () => AuthService.sendConfirmationEmail(emailOrUsername),
       setError,
       (data) => {
         setMessage(data.status.message);
@@ -220,7 +220,7 @@ class AuthController {
   ): Promise<void> {
     await apiHandler(
       "confirming email with code",
-      () => authService.confirmEmailWithCode(emailOrUsername, confirmationCode),
+      () => AuthService.confirmEmailWithCode(emailOrUsername, confirmationCode),
       setError,
       (data) => {
         setMessage(data.status.message);
@@ -240,7 +240,7 @@ class AuthController {
   ): Promise<void> {
     await apiHandler(
       "sending forgot password email",
-      () => authService.sendForgotPasswordMail(email),
+      () => AuthService.sendForgotPasswordMail(email),
       setError,
       (data) => {
         setMessage(data.status.message);
@@ -259,7 +259,7 @@ class AuthController {
   ): Promise<void> {
     await apiHandler(
       "resetting password",
-      () => authService.resetPassword(token, password, passwordConfirmation),
+      () => AuthService.resetPassword(token, password, passwordConfirmation),
       setError,
       () => {
         if (onSuccess) onSuccess();
@@ -270,7 +270,7 @@ class AuthController {
   // Sign out
   async signOut(): Promise<void> {
     try {
-      const response = await authService.signOut();
+      const response = await AuthService.signOut();
       const { status } = response.data || {};
       const statusError = status?.error;
       const isAlreadySignedOut =

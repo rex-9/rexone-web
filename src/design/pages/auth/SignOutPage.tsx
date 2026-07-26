@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../../../contexts";
 import { googleLogout } from "@react-oauth/google";
-import { authController } from "../../../controllers";
+import { AuthController } from "../../../controllers";
 
 let isSignOutInProgress = false;
 
@@ -10,7 +10,7 @@ export const SignOutPage: React.FC = () => {
 
   const handleSignout = async () => {
     if (token) {
-      await authController.signOut();
+      await AuthController.signOut();
     }
 
     if (currentUser?.provider === "google") {

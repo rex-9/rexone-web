@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth, useToast } from "../../../contexts";
-import { authController, userController } from "../../../controllers";
+import { AuthController, UserController } from "../../../controllers";
 import { Button, GoogleButton, TextInput, AlertMessage, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { useNavigate } from "react-router-dom";
@@ -46,14 +46,14 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     if (!validateEmail(localEmail)) return;
     setIsLoading(true);
     try {
-      const result = await userController.peekUser(localEmail, setError);
+      const result = await UserController.peekUser(localEmail, setError);
 
       if (result === "exists_confirmed") {
         // User exists and is confirmed → sign in with passcode
         navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail });
       } else if (result === "exists_unconfirmed") {
         // User exists but not confirmed → send new code and go to verify
-        await authController.sendConfirmationEmail(
+        await AuthController.sendConfirmationEmail(
           localEmail,
           setError,
           () => {},
@@ -76,7 +76,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
       setIsLoading(true);
       setError("");
       try {
-        const result = await authController.signInWithGoogle(
+        const result = await AuthController.signInWithGoogle(
           tokenResponse.access_token,
         );
         if (result.success && result.token && result.user) {
