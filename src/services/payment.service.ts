@@ -9,7 +9,7 @@ export interface IProduct {
   price: string;
   price_unit_amount: number;
   currency: string;
-  interval: string | null;
+  cycle: string | null;
   period_label: string;
   recurring: boolean;
   active: boolean;
@@ -20,14 +20,12 @@ export interface ISubscription {
   product_id: string;
   product_name: string;
   status: string;
-  billing_cycle: string;
+  cycle: string;
   started_at: string;
   next_billing_at: string | null;
   ended_at: string | null;
   canceled_at: string | null;
-  paused_at: string | null;
   active: boolean;
-  paused: boolean;
   days_until_renewal: number | null;
   price: string;
   period_label: string;
@@ -45,6 +43,11 @@ export interface ITransaction {
   refunded_at: string | null;
   paid: boolean;
   refunded: boolean;
+}
+
+export interface ICheckoutResponse {
+  checkout_url: string;
+  session_id: string;
 }
 
 class PaymentService {
@@ -71,19 +74,13 @@ class PaymentService {
   async cancelSubscription(
     subscriptionId: string,
   ): Promise<IApiResponse<IApiAuthResponse<{ subscription: ISubscription }>>> {
-    const response = await api.delete<
-      IApiAuthResponse<{ subscription: ISubscription }>
-    >(`${AppRoutes.server.protected.PAYMENT_SUBSCRIPTIONS}/${subscriptionId}`);
-    return response;
-  }
-
-  async pauseSubscription(
-    subscriptionId: string,
-  ): Promise<IApiResponse<IApiAuthResponse<{ subscription: ISubscription }>>> {
     const response = await api.post<
       IApiAuthResponse<{ subscription: ISubscription }>
     >(
-      `${AppRoutes.server.protected.PAYMENT_SUBSCRIPTIONS}/${subscriptionId}/pause`,
+      AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_CANCEL.replace(
+        ":id",
+        subscriptionId,
+      ),
     );
     return response;
   }
@@ -94,7 +91,10 @@ class PaymentService {
     const response = await api.post<
       IApiAuthResponse<{ subscription: ISubscription }>
     >(
-      `${AppRoutes.server.protected.PAYMENT_SUBSCRIPTIONS}/${subscriptionId}/resume`,
+      AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_RESUME.replace(
+        ":id",
+        subscriptionId,
+      ),
     );
     return response;
   }
@@ -114,16 +114,19 @@ class PaymentService {
     productId: string,
     successUrl?: string,
     cancelUrl?: string,
-  ): Promise<
-    IApiResponse<IApiAuthResponse<{ checkout_url: string; session_id: string }>>
-  > {
-    const response = await api.post<
-      IApiAuthResponse<{ checkout_url: string; session_id: string }>
-    >(AppRoutes.server.protected.PAYMENT_SESSION, {
-      product_id: productId,
-      success_url: successUrl || window.location.origin + "/payment/success",
-      cancel_url: cancelUrl || window.location.origin + "/payment/cancel",
-    });
+  ): Promise<IApiResponse<IApiAuthResponse<ICheckoutResponse>>> {
+    const response = await api.post<IApiAuthResponse<ICheckoutResponse>>(
+      AppRoutes.server.protected.PAYMENT_SESSION,
+      {
+        product_id: productId,
+        success_url:
+          successUrl ||
+          window.location.origin + AppRoutes.client.protected.PAYMENT_SUCCESS,
+        cancel_url:
+          cancelUrl ||
+          window.location.origin + AppRoutes.client.protected.PAYMENT_CANCEL,
+      },
+    );
     return response;
   }
 }

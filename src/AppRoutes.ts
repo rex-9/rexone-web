@@ -43,7 +43,9 @@ class AppRoutes {
       CHECK_ACCESS: "/access/check", // GET
       PAYMENT_SESSION: "/payment/session", // POST
       PAYMENT_PRODUCTS: "/payment/products", // GET
-      PAYMENT_SUBSCRIPTIONS: "/payment/subscriptions", // GET, POST, DELETE
+      PAYMENT_SUBSCRIPTIONS: "/payment/subscriptions", // GET, POST
+      PAYMENT_SUBSCRIPTION_CANCEL: "/payment/subscriptions/:id/cancel", // POST
+      PAYMENT_SUBSCRIPTION_RESUME: "/payment/subscriptions/:id/resume", // POST
       PAYMENT_TRANSACTIONS: "/payment/transactions", // GET
     },
   };

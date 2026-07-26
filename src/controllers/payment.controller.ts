@@ -52,66 +52,41 @@ class PaymentController {
     }
   }
 
-  async cancelSubscription(subscriptionId: string): Promise<{
-    success: boolean;
-    subscription?: ISubscription;
-    error?: string;
-  }> {
+  async cancelSubscription(
+    subscriptionId: string,
+    onSuccess: (data: { subscription: ISubscription }) => void,
+    onError: (message: string) => void,
+  ): Promise<void> {
     try {
       const response = await PaymentService.cancelSubscription(subscriptionId);
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.subscription) {
-        return { success: true, subscription: data.subscription };
+      if (status?.success && data) {
+        onSuccess(data);
+      } else {
+        onError(status?.error || "Failed to cancel subscription");
       }
-      return {
-        success: false,
-        error: status?.error || "Failed to cancel subscription",
-      };
     } catch (error) {
-      return { success: false, error: "An error occurred. Please try again." };
+      onError("An error occurred. Please try again.");
     }
   }
 
-  async pauseSubscription(subscriptionId: string): Promise<{
-    success: boolean;
-    subscription?: ISubscription;
-    error?: string;
-  }> {
-    try {
-      const response = await PaymentService.pauseSubscription(subscriptionId);
-      const { status, data } = response.data || {};
-
-      if (status?.success && data?.subscription) {
-        return { success: true, subscription: data.subscription };
-      }
-      return {
-        success: false,
-        error: status?.error || "Failed to pause subscription",
-      };
-    } catch (error) {
-      return { success: false, error: "An error occurred. Please try again." };
-    }
-  }
-
-  async resumeSubscription(subscriptionId: string): Promise<{
-    success: boolean;
-    subscription?: ISubscription;
-    error?: string;
-  }> {
+  async resumeSubscription(
+    subscriptionId: string,
+    onSuccess: (data: { subscription: ISubscription }) => void,
+    onError: (message: string) => void,
+  ): Promise<void> {
     try {
       const response = await PaymentService.resumeSubscription(subscriptionId);
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.subscription) {
-        return { success: true, subscription: data.subscription };
+      if (status?.success && data) {
+        onSuccess(data);
+      } else {
+        onError(status?.error || "Failed to resume subscription");
       }
-      return {
-        success: false,
-        error: status?.error || "Failed to resume subscription",
-      };
     } catch (error) {
-      return { success: false, error: "An error occurred. Please try again." };
+      onError("An error occurred. Please try again.");
     }
   }
 
