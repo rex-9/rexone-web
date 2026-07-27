@@ -1,76 +1,91 @@
 import AppRoutes from "../AppRoutes";
-import { IApiAuthResponse, IApiResponse } from "../models";
-import {
-  ICreateCheckoutSessionPayload,
-  ICreatePaymentIntentPayload,
-  IPaymentCheckoutSessionData,
-  IPaymentIntentData,
-  IProductDetailsResponseData,
-  IPaymentStatusData,
-} from "../models/payment.model";
+import type {
+  IApiAuthResponse,
+  IApiResponse,
+  ICreatePaymentIntentResult,
+  IPaymentStatusResult,
+  PaymentIntentStatus,
+} from "../models";
 import { api } from "./api.service";
 
+interface ICreatePaymentIntentDto {
+  payment_intent_id: string;
+  client_secret: string;
+  status: PaymentIntentStatus;
+}
+
+interface IPaymentStatusDto {
+  id: string;
+  status: PaymentIntentStatus;
+}
+
+const normalizeCreatePaymentIntentResponse = (
+  response: IApiResponse<IApiAuthResponse<ICreatePaymentIntentDto>>,
+): IApiResponse<IApiAuthResponse<ICreatePaymentIntentResult>> => ({
+  data: response.data
+    ? {
+        status: response.data.status,
+        data: response.data.data
+          ? {
+              paymentIntentId: response.data.data.payment_intent_id,
+              clientSecret: response.data.data.client_secret,
+              status: response.data.data.status,
+            }
+          : undefined,
+      }
+    : null,
+  error: response.error,
+});
+
+const normalizePaymentStatusResponse = (
+  response: IApiResponse<IApiAuthResponse<IPaymentStatusDto>>,
+): IApiResponse<IApiAuthResponse<IPaymentStatusResult>> => ({
+  data: response.data
+    ? {
+        status: response.data.status,
+        data: response.data.data
+          ? {
+              paymentIntentId: response.data.data.id,
+              status: response.data.data.status,
+            }
+          : undefined,
+      }
+    : null,
+  error: response.error,
+});
+
 class PaymentService {
-  async createCheckoutSession(
-    payload: ICreateCheckoutSessionPayload,
-  ): Promise<IApiResponse<IApiAuthResponse<IPaymentCheckoutSessionData>>> {
-    return api.post<IApiAuthResponse<IPaymentCheckoutSessionData>>(
-      AppRoutes.server.public.CREATE_CHECKOUT_SESSION,
-      payload,
-    );
-  }
-
   async createPaymentIntent(
-    payload: ICreatePaymentIntentPayload,
-  ): Promise<IApiResponse<IApiAuthResponse<IPaymentIntentData>>> {
-    return api.post<IApiAuthResponse<IPaymentIntentData>>(
-      AppRoutes.server.public.CREATE_PAYMENT_INTENT,
-      payload,
-    );
+    orderId: string,
+    productId: string,
+    priceId: string,
+    quantity: number,
+  ): Promise<IApiResponse<IApiAuthResponse<ICreatePaymentIntentResult>>> {
+    const response = await api.post<
+      IApiAuthResponse<ICreatePaymentIntentDto>
+    >(AppRoutes.server.protected.CREATE_PAYMENT_INTENT, {
+      payment: {
+        product_id: productId,
+        price_id: priceId,
+        quantity,
+        payment_method_type: "card",
+        metadata: { order_id: orderId },
+      },
+    });
+
+    return normalizeCreatePaymentIntentResponse(response);
   }
 
-  async getPaymentStatus(params: {
-    id?: string;
-    session_id?: string;
-    payment_intent?: string;
-    payment_intent_id?: string;
-  }): Promise<IApiResponse<IApiAuthResponse<IPaymentStatusData>>> {
-    return api.get<IApiAuthResponse<IPaymentStatusData>>(
-      AppRoutes.server.public.GET_PAYMENT_STATUS,
-      params,
+  async getPaymentStatus(
+    paymentIntentId: string,
+  ): Promise<IApiResponse<IApiAuthResponse<IPaymentStatusResult>>> {
+    const response = await api.get<IApiAuthResponse<IPaymentStatusDto>>(
+      AppRoutes.server.protected.GET_PAYMENT_STATUS,
+      { payment_intent_id: paymentIntentId },
+      { headers: { "X-Skip-Loading": "true" } },
     );
-  }
 
-  async getPaymentDetails(params: {
-    id?: string;
-    session_id?: string;
-    payment_intent?: string;
-    product_id?: string;
-    price_id?: string;
-    quantity?: number;
-  }): Promise<IApiResponse<IApiAuthResponse<IPaymentStatusData>>> {
-    return api.get<IApiAuthResponse<IPaymentStatusData>>(
-      AppRoutes.server.public.GET_PAYMENT_DETAILS,
-      params,
-    );
-  }
-
-  async listCustomerPayments(
-    customerId: string,
-  ): Promise<IApiResponse<IApiAuthResponse<IPaymentStatusData[]>>> {
-    return api.get<IApiAuthResponse<IPaymentStatusData[]>>(
-      `${AppRoutes.server.public.LIST_CUSTOMER_PAYMENTS}/${customerId}`,
-    );
-  }
-
-  async getProductDetails(params: {
-    product_id: string;
-    price_id: string;
-  }): Promise<IApiResponse<IApiAuthResponse<IProductDetailsResponseData>>> {
-    return api.get<IApiAuthResponse<IProductDetailsResponseData>>(
-      AppRoutes.server.public.GET_PRODUCT_DETAILS,
-      params,
-    );
+    return normalizePaymentStatusResponse(response);
   }
 }
 

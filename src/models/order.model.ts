@@ -13,7 +13,7 @@ export type OrderPaymentStatus =
   | "refunded"
   | "failed";
 
-export type PaymentStatus =
+export type PaymentTransactionStatus =
   | "pending"
   | "processing"
   | "paid"
@@ -23,40 +23,54 @@ export type PaymentStatus =
   | "partially_refunded"
   | "refunded";
 
+export interface IOrderItem {
+  id: string;
+  name: string;
+  unitPriceCents: number;
+  quantity: number;
+  totalCents: number;
+}
+
 export interface IOrder {
   id: string;
-  order_number: string;
+  orderNumber: string;
   status: OrderStatus;
-  payment_status: OrderPaymentStatus;
-  subtotal_cents?: number;
-  discount_cents?: number;
-  tax_cents?: number;
-  total_cents: number;
+  paymentStatus: OrderPaymentStatus;
+  subtotalCents: number;
+  discountCents: number;
+  taxCents: number;
+  totalCents: number;
   currency: string;
-  paid_at?: string | null;
-  created_at?: string;
-  order_items?: unknown[];
+  paidAt: string | null;
+  createdAt: string;
+  orderItems: IOrderItem[];
 }
 
-export interface IPayment {
+export interface IPaymentTransaction {
   id: string;
-  payment_number: string;
+  paymentNumber: string;
   provider: "stripe";
-  status: PaymentStatus;
-  amount_cents: number;
+  status: PaymentTransactionStatus;
+  amountCents: number;
   currency: string;
+  paymentMethodType: string | null;
+  paidAt: string | null;
+  failedAt: string | null;
+  createdAt: string;
 }
 
-export interface ICreateOrderPayload {
-  resource_id: string;
+export interface ICreateOrderInput {
+  resourceId: string;
   quantity: number;
 }
 
-export interface IOrderData {
-  order: IOrder;
-}
-
-export interface IOrderCheckoutData extends IOrderData {
-  payment: IPayment;
-  checkout_url: string;
+export interface IPurchasableResource {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  priceId: string;
+  currency: string;
+  unitAmountCents: number;
+  displayAmount: string;
 }

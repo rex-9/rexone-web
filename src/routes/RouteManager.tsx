@@ -38,23 +38,7 @@ const RouteManager = () => {
         <Route path={AppRoutes.client.public.ROOT}>
           <Route index element={<RootPage />} />
             <Route
-              path={AppRoutes.client.public.PAYMENT_SUCCESS}
-              element={<PaymentStatusPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.PAYMENT_CANCEL}
-              element={<PaymentStatusPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.PAYMENT_ERROR}
-              element={<PaymentStatusPage />}
-            />
-            <Route
-              path={`${AppRoutes.client.public.PAYMENT_STATUS}/:id`}
-              element={<PaymentStatusPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.PAYMENT_STATUS}
+              path={`${AppRoutes.client.public.PAYMENT_STATUS}/:orderId`}
               element={<PaymentStatusPage />}
             />
           <Route element={<AnapanaPage />} /> {/* // ANAPANA MODULE */}

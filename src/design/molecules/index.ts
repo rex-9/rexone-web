@@ -28,5 +28,7 @@ export {
 	PasscodeBoxesInput,
 	type IPasscodeBoxesInput,
 } from "./PasscodeBoxesInput";
-export { CheckoutButton, type CheckoutButtonProps } from "./payments";
-export { PaymentForm, type PaymentFormProps } from "./payments";
+export {
+  PaymentForm,
+  type IPaymentFormProps,
+} from "./payment";

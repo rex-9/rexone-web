@@ -10,5 +10,4 @@ export { default as ProfilePage } from "./ProfilePage";
 export { default as LayoutPage } from "./LayoutPage";
 export { default as NotFoundPage } from "./NotFoundPage";
 export { default as LandingPage } from "./LandingPage";
-export { default as PaymentPage } from "./PaymentPage";
-export { default as PaymentStatusPage } from "./PaymentStatusPage";
+export { PaymentPage, PaymentStatusPage } from "./payment";
