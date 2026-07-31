@@ -54,10 +54,7 @@ export const PaymentPage: React.FC = () => {
   const handleCancel = (subscriptionId: string) => {
     PaymentController.cancelSubscription(
       subscriptionId,
-      () => {
-        success("Subscription will be canceled at the end of billing period");
-        fetchData();
-      },
+      () => fetchData(),
       (err) => error(err),
     );
   };
@@ -65,10 +62,7 @@ export const PaymentPage: React.FC = () => {
   const handleResume = (subscriptionId: string) => {
     PaymentController.resumeSubscription(
       subscriptionId,
-      () => {
-        success("Subscription resumed successfully");
-        fetchData();
-      },
+      () => fetchData(),
       (err) => error(err),
     );
   };

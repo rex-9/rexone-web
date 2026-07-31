@@ -13,6 +13,7 @@ import { useAtom } from "jotai";
 import { IUser } from "../models/user.model";
 import atoms from "../atoms";
 import { isTokenExpired } from "../helpers";
+import { useLoading } from "./LoadingContext";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -35,6 +36,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [googleChallengeToken, setGoogleChallengeToken] = useState<
     string | null
   >(null);
+  const { setLoading } = useLoading();
 
   // Check if authenticated using token expiry from JWT
   const isAuthenticated = useMemo(() => {
@@ -42,16 +44,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return !isTokenExpired(token);
   }, [token]);
 
-  // Auto-check token expiry on app load and when token changes
+  // Update loading when token changes
   useEffect(() => {
-    // console.log("token ===> ", isTokenExpired(token!));
+    if (token !== undefined) {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
     if (token && isTokenExpired(token)) {
-      console.log("Token expired, signing out...");
+      console.log("🔐 Token expired, signing out...");
       signout();
     }
   }, [token]);
 
-  // Also check expiry periodically (every 60 seconds)
+  // Also check expiry periodically (every 1 hour)
   useEffect(() => {
     if (!token) return;
 
@@ -60,7 +67,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         console.log("Token expired during session, signing out...");
         signout();
       }
-    }, 60000);
+    }, 3600000);
 
     return () => clearInterval(interval);
   }, [token]);

@@ -3,11 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Toast, ToastType } from "../design/components/overlay/Toast";
 
 interface ToastContextType {
-  showToast: (type: ToastType, message: string) => void;
-  success: (message: string) => void;
-  error: (message: string) => void;
-  info: (message: string) => void;
-  warning: (message: string) => void;
+  showToast: (type: ToastType, message: string, title?: string) => void;
+  success: (message: string, title?: string) => void;
+  error: (message: string, title?: string) => void;
+  info: (message: string, title?: string) => void;
+  warning: (message: string, title?: string) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -18,17 +18,22 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
   const [toast, setToast] = useState<{
     type: ToastType;
     message: string;
+    title?: string;
   } | null>(null);
   const { t } = useTranslation();
 
-  const showToast = (type: ToastType, message: string) => {
-    setToast({ type, message: t(message) });
+  const showToast = (type: ToastType, message: string, title?: string) => {
+    setToast({ type, message: t(message), title });
   };
 
-  const success = (message: string) => showToast("success", message);
-  const error = (message: string) => showToast("error", message);
-  const info = (message: string) => showToast("info", message);
-  const warning = (message: string) => showToast("warning", message);
+  const success = (message: string, title?: string) =>
+    showToast("success", message, title);
+  const error = (message: string, title?: string) =>
+    showToast("error", message, title);
+  const info = (message: string, title?: string) =>
+    showToast("info", message, title);
+  const warning = (message: string, title?: string) =>
+    showToast("warning", message, title);
 
   return (
     <ToastContext.Provider value={{ showToast, success, error, info, warning }}>
@@ -37,6 +42,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
         <Toast
           type={toast.type}
           message={toast.message}
+          title={toast.title}
           onClose={() => setToast(null)}
         />
       )}

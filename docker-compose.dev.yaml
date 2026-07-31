@@ -5,16 +5,10 @@ services:
     build:
       context: .
       dockerfile: ${VITE_REACT_APP_DOCKERFILE}
+    env_file:
+      - .env
     ports:
       - ${VITE_REACT_APP_PORT_MAP}
     volumes:
       - .:/web
       - /web/node_modules
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - PORT=${PORT:-4002}
-      - VITE_PORT=${PORT:-4002}
-      - VITE_REACT_APP_GOOGLE_CLIENT_ID=${VITE_REACT_APP_GOOGLE_CLIENT_ID}
-      - VITE_REACT_APP_GOOGLE_CLIENT_SECRET=${VITE_REACT_APP_GOOGLE_CLIENT_SECRET}
-      - VITE_REACT_APP_SERVER_BASE_URL=${VITE_REACT_APP_SERVER_BASE_URL}
-      - VITE_REACT_APP_CLIENT_BASE_URL=${VITE_REACT_APP_CLIENT_BASE_URL}

@@ -13,8 +13,8 @@ const App: React.FC = () => {
 
   return (
     <GoogleOAuthProvider clientId={AppConfig.GOOGLE_CLIENT_ID}>
-      <AuthProvider>
-        <LoadingProvider>
+      <LoadingProvider>
+        <AuthProvider>
           <ToastProvider>
             {/* // ANAPANA MODULE */}
             <MarkerProvider>
@@ -22,8 +22,8 @@ const App: React.FC = () => {
               <RouteManager />
             </MarkerProvider>
           </ToastProvider>
-        </LoadingProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </LoadingProvider>
     </GoogleOAuthProvider>
   );
 };

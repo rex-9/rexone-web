@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useAuth, useToast } from "../../../contexts";
 import { AuthController, UserController } from "../../../controllers";
-import { Button, GoogleButton, TextInput, AlertMessage, Dialog } from "..";
+import { Button, GoogleButton, TextInput, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { useNavigate } from "react-router-dom";
 import { AuthStep, TAuthStep } from "./type";
@@ -124,11 +124,13 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           Continue with Google
         </GoogleButton>
         {isBlocked && (
-          <div className="space-y-8">
-            <AlertMessage
-              type="error"
-              message="Ad blocker detected. Please disable and retry."
-            />
+          <div className="space-y-4">
+            <div className="bg-error/10 border border-error/30 rounded-lg p-4 text-center">
+              <p className="text-error font-medium">⚠️ Ad Blocker Detected</p>
+              <p className="text-sm text-gray-600 mt-1">
+                Please disable your ad blocker and retry Google sign in.
+              </p>
+            </div>
             <Button
               variant="primary"
               onClick={() => window.location.reload()}

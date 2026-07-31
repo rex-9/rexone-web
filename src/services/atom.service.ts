@@ -32,4 +32,4 @@ class AtomService {
   }
 }
 
-export default AtomService;
+export default new AtomService();

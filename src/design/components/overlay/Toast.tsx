@@ -14,14 +14,16 @@ export interface ToastProps {
   duration?: number;
   onClose: () => void;
   icon?: React.ReactNode;
+  title?: string;
 }
 
 export const Toast: React.FC<ToastProps> = ({
   message,
   type = "success",
-  duration = 3000,
+  duration = 5000,
   onClose,
   icon,
+  title,
 }) => {
   useEffect(() => {
     if (duration > 0) {
@@ -38,22 +40,36 @@ export const Toast: React.FC<ToastProps> = ({
   };
 
   const defaultIcons = {
-    success: "✅",
+    success: "🎉",
     info: "💡",
     warning: "⚠️",
     error: "❌",
   };
 
+  const typeColors = {
+    success: "text-green-700",
+    info: "text-blue-700",
+    warning: "text-yellow-700",
+    error: "text-red-700",
+  };
+
   return (
-    <div className="toast toast-top toast-center z-50">
+    <div className="toast toast-top toast-center z-50 animate-fade-in">
       <div className={cn("alert shadow-lg max-w-md", typeClasses[type])}>
-        <div className="flex items-center gap-3">
-          <span className="text-xl">{icon || defaultIcons[type]}</span>
-          <span className="text-sm font-medium">{message}</span>
+        <div className="flex items-start gap-3 w-full">
+          <span className="text-2xl mt-0.5">{icon || defaultIcons[type]}</span>
+          <div className="flex-1 min-w-0">
+            {title && (
+              <p className={cn("text-sm font-semibold", typeColors[type])}>
+                {title}
+              </p>
+            )}
+            <p className="text-sm">{message}</p>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-sm btn-square"
+            className="btn btn-ghost btn-sm btn-square flex-shrink-0"
           >
             <svg
               className="w-4 h-4"

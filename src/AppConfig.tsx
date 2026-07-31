@@ -6,6 +6,8 @@ class AppConfig {
     import.meta.env.VITE_REACT_APP_SERVER_BASE_URL || "http://localhost:3000";
   static readonly CLIENT_BASE_URL =
     import.meta.env.VITE_REACT_APP_CLIENT_BASE_URL || "http://localhost:4002";
+  static readonly SERVER_WS_BASE_URL =
+    import.meta.env.VITE_REACT_APP_SERVER_WS_BASE_URL || "ws://localhost:3000";
 }
 
 export default AppConfig;
