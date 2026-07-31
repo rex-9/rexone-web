@@ -16,8 +16,8 @@ class PaymentController {
       const response = await PaymentService.getProducts();
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.products) {
-        const products = parseFromList<IProduct>(data.products);
+      if (status?.success && data) {
+        const products = parseFromList<IProduct>(data);
         return { success: true, products };
       }
       return {
@@ -39,8 +39,8 @@ class PaymentController {
       const response = await PaymentService.getSubscriptions();
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.subscriptions) {
-        const subscriptions = parseFromList<ISubscription>(data.subscriptions);
+      if (status?.success && data) {
+        const subscriptions = parseFromList<ISubscription>(data);
         return { success: true, subscriptions };
       }
       return {
@@ -54,7 +54,7 @@ class PaymentController {
 
   async cancelSubscription(
     subscriptionId: string,
-    onSuccess: (data: { subscription: ISubscription }) => void,
+    onSuccess: (data: ISubscription) => void,
     onError: (message: string) => void,
   ): Promise<void> {
     try {
@@ -73,7 +73,7 @@ class PaymentController {
 
   async resumeSubscription(
     subscriptionId: string,
-    onSuccess: (data: { subscription: ISubscription }) => void,
+    onSuccess: (data: ISubscription) => void,
     onError: (message: string) => void,
   ): Promise<void> {
     try {
@@ -100,8 +100,8 @@ class PaymentController {
       const response = await PaymentService.getTransactions();
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.transactions) {
-        const transactions = parseFromList<ITransaction>(data.transactions);
+      if (status?.success && data) {
+        const transactions = parseFromList<ITransaction>(data);
         return { success: true, transactions };
       }
       return {
