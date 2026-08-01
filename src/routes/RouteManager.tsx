@@ -22,6 +22,7 @@ import {
   PaymentPage,
   PaymentSuccessPage,
   PaymentCancelPage,
+  AiPage,
 } from "../design/pages";
 import { AuthDialog } from "../design";
 import { AnapanaPage } from "../modules/anapana/pages";
@@ -91,6 +92,7 @@ export const RouteManager = () => {
               path={AppRoutes.client.protected.PAYMENT_CANCEL}
               element={<PaymentCancelPage />}
             />
+            <Route path={AppRoutes.client.protected.AI} element={<AiPage />} />
           </Route>
 
           {/* 404 */}

@@ -4,3 +4,4 @@ export { default as UserService } from "./user.service";
 export { default as AtomService } from "./atom.service";
 export { default as PaymentService } from "./payment.service";
 export { default as SocketService } from "./socket.service";
+export { default as AiService } from "./ai.service";

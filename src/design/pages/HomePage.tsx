@@ -24,11 +24,18 @@ export const HomePage: React.FC = () => {
     <LayoutPage>
       {/* Payment Section */}
       <Button
-        variant="primary"
+        variant="secondary"
         onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
-        className="mt-4"
       >
         💳 View Plans & Pricing
+      </Button>
+
+      {/* AI Chat Section */}
+      <Button
+        variant="secondary"
+        onClick={() => navigate(AppRoutes.client.protected.AI)}
+      >
+        🤖 AI Assistant
       </Button>
       {/* {<Image asset={icons.instagram} className="w-8" />}
       {<Image asset={images.banner} className="w-96" />}

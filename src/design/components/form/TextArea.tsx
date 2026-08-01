@@ -29,6 +29,7 @@ export const TextArea: React.FC<TextAreaProps> = ({
   id,
   value,
   disabled,
+  rows = 3,
   ...props
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -45,11 +46,11 @@ export const TextArea: React.FC<TextAreaProps> = ({
   }, [value, autoExpand]);
 
   return (
-    <div className={cn("flex flex-col", fullWidth && "w-full")}>
+    <div className={cn("flex flex-col gap-1", fullWidth && "w-full")}>
       {label && (
         <label
           htmlFor={inputId}
-          className="text-body-s font-medium text-base-content mb-4"
+          className="text-sm font-medium text-base-content"
         >
           {label}
         </label>
@@ -62,26 +63,26 @@ export const TextArea: React.FC<TextAreaProps> = ({
         value={value}
         maxLength={maxLength}
         disabled={disabled}
+        rows={rows}
         className={cn(
-          "px-16 py-12 rounded-m border text-body-m resize-none",
-          "bg-base-100 text-base-content",
-          "placeholder:text-base-content placeholder:opacity-40",
+          "w-full rounded-md border px-3 py-2 text-base bg-base-100 text-base-content",
+          "placeholder:text-base-content/40",
           "transition-all duration-200 ease-out",
-          "focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary",
+          "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
+          "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-base-200",
           hasError
-            ? "border-error focus:ring-error focus:border-error"
-            : "border-base-300",
-          disabled && "opacity-50 cursor-not-allowed bg-base-200",
+            ? "border-error focus:ring-error"
+            : "border-base-300 hover:border-base-400",
           className,
         )}
       />
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center gap-2">
         {displayText && (
           <span
             className={cn(
-              "text-caption",
-              hasError ? "text-error" : "text-base-content opacity-60",
+              "text-xs",
+              hasError ? "text-error" : "text-base-content/60",
             )}
           >
             {displayText}
@@ -91,10 +92,10 @@ export const TextArea: React.FC<TextAreaProps> = ({
         {showCounter && maxLength && (
           <span
             className={cn(
-              "text-caption ml-auto",
+              "text-xs ml-auto",
               currentLength > maxLength * 0.9
                 ? "text-warning"
-                : "text-base-content opacity-50",
+                : "text-base-content/50",
             )}
           >
             {currentLength} / {maxLength}

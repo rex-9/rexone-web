@@ -19,6 +19,7 @@ class AppRoutes {
       PAYMENT: "/payment",
       PAYMENT_SUCCESS: "/payment/success",
       PAYMENT_CANCEL: "/payment/cancel",
+      AI: "/ai",
     },
   };
 
@@ -47,6 +48,15 @@ class AppRoutes {
       PAYMENT_SUBSCRIPTION_CANCEL: "/payment/subscriptions/:id/cancel", // POST
       PAYMENT_SUBSCRIPTION_RESUME: "/payment/subscriptions/:id/resume", // POST
       PAYMENT_TRANSACTIONS: "/payment/transactions", // GET
+      AI_CHAT: "/ai/chat", // POST
+      AI_HISTORY: "/ai/history", // GET
+      AI_CLEAR: "/ai/clear", //DELETE
+      AI_RENAME: "/ai/rename", // PUT
+      AI_ROOMS: "/ai/rooms", // GET, POST
+      AI_DELETE_ROOM: "/ai/rooms/:id", // DELETE
+      AI_SUMMARIZE: "/ai/summarize", // POST
+      AI_TRANSLATE: "/ai/translate", // POST
+      AI_ANALYZE: "/ai/analyze", // POST
     },
   };
 
