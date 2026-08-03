@@ -1,5 +1,6 @@
 // src/controllers/ai.controller.ts
 import AiService, { IMessage, IRoom } from "../services/ai.service";
+import { parseFromList } from "../services/api.service";
 
 class AiController {
   private currentRoomId: string | null = null;
@@ -67,7 +68,8 @@ class AiController {
 
       if (status?.success && data?.messages) {
         this.currentRoomId = data.room_id;
-        onSuccess(data.messages, data.room_id, data.room_title);
+        const messages = parseFromList<IMessage>(data.messages);
+        onSuccess(messages, data.room_id, data.room_title);
       } else {
         onError(status?.error || "Failed to load history");
       }
