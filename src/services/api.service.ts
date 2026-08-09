@@ -7,8 +7,6 @@ import { useAuth } from "../contexts";
 import { IApiAuthResponse, IApiResponse } from "../models";
 
 const PLATFORM_HEADER_VALUE = "web";
-const SESSION_REPLACED_MESSAGE =
-  "Your session was replaced by a newer sign in on this platform.";
 
 // Create an axios instance
 const axiosInstance = axios.create({
@@ -128,33 +126,24 @@ export const useAxiosInterceptor = () => {
       (error) => {
         console.log("interceptor response error ===>", error);
 
-        const serverError = error?.response?.data?.status?.error;
-        const hasAuthHeader = Boolean(error?.config?.headers?.Authorization);
-        const isSessionReplacedError =
-          serverError === "Active session not found";
-
         // Handle ANY 401 with auth header (token expired OR session replaced)
-        if (error?.response?.status === 401 && hasAuthHeader) {
+        if (error?.response?.status === 401) {
           signout();
 
           if (typeof window !== "undefined") {
             const nextUrl = new URL(
               window.location.origin + AppRoutes.client.public.ROOT,
             );
-            nextUrl.searchParams.set("dialog", "auth");
-            nextUrl.searchParams.set("step", "initial");
+            nextUrl.searchParams.set(
+              AppRoutes.dialog.auth,
+              AppRoutes.dialog.auth,
+            );
+            nextUrl.searchParams.set("step", AppRoutes.dialog.steps.initial);
 
-            if (isSessionReplacedError) {
-              nextUrl.searchParams.set(
-                "session_message",
-                SESSION_REPLACED_MESSAGE,
-              );
-            } else {
-              nextUrl.searchParams.set(
-                "session_message",
-                "Your session has expired. Please sign in again.",
-              );
-            }
+            nextUrl.searchParams.set(
+              "message",
+              "Your session has expired. Please sign in again.",
+            );
             window.location.assign(nextUrl.toString());
           }
         }

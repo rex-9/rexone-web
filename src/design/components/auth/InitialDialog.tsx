@@ -1,12 +1,12 @@
 // src/design/components/auth/InitialDialog.tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
 import { AuthController, UserController } from "../../../controllers";
 import { Button, GoogleButton, TextInput, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
-import { useNavigate } from "react-router-dom";
 import { AuthStep, TAuthStep } from "./type";
 
 interface InitialDialogProps {
@@ -24,12 +24,44 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 }) => {
   const { signin, setGoogleChallengeToken } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { success } = useToast();
+
   const [localEmail, setLocalEmail] = useState(email);
   const [emailError, setEmailError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [error, setError] = useState("");
+
+  // Read session message from URL params
+  const message = searchParams.get("message");
+  const [displayMessage, setDisplayMessage] = useState(message || "");
+
+  // Clear message param when dialog closes or user interacts
+  const clearMessageParam = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("message");
+    window.history.replaceState({}, "", url.toString());
+  };
+
+  // Set display message when URL param changes
+  useEffect(() => {
+    if (message) {
+      setDisplayMessage(message);
+      // Optionally clear the param after showing (so it doesn't persist on reload)
+      // We'll clear on close or on user action.
+    }
+  }, [message]);
+
+  // Clear message when user starts typing or interacts
+  const handleEmailChange = (value: string) => {
+    setLocalEmail(value);
+    updateUrl({ email: value });
+    if (displayMessage) {
+      setDisplayMessage("");
+      clearMessageParam();
+    }
+  };
 
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -106,10 +138,15 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     },
   });
 
+  const handleClose = () => {
+    clearMessageParam();
+    onClose();
+  };
+
   return (
     <Dialog
       isOpen={true}
-      onClose={onClose}
+      onClose={handleClose}
       title="Welcome to Meritbox"
       className="max-w-md"
     >
@@ -155,10 +192,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             id="email"
             type="email"
             value={localEmail}
-            onChange={(e) => {
-              setLocalEmail(e.target.value);
-              updateUrl({ email: e.target.value });
-            }}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="your@email.com"
             label="Email"
             error={emailError}
@@ -176,6 +210,11 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             {isLoading ? "Checking..." : "Continue"}
           </Button>
         </form>
+        {displayMessage && (
+          <p className="text-caption text-warning text-center">
+            {displayMessage}
+          </p>
+        )}
         {error && (
           <p className="text-caption text-error text-center">{error}</p>
         )}
