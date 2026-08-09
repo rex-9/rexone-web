@@ -1,35 +1,42 @@
 import AppRoutes from "../AppRoutes";
-import { IApiAuthResponse, IApiResponse, IUser } from "../models";
+import { IApiEnvelope, IApiResponse, IJsonApiResource, IUser } from "../models";
 import { api } from "../services";
 
 class UserService {
+  async getUsers(params?: { page?: number; limit?: number }) {
+    return api.get<IJsonApiResource<IUser>[]>(
+      AppRoutes.server.protected.USERS,
+      params,
+    );
+  }
+
   async peekUser(email: string): Promise<
     IApiResponse<
-      IApiAuthResponse<{
+      IApiEnvelope<{
         user_exists: boolean;
         confirmed: boolean;
       }>
     >
   > {
-    const response = await api.get<
-      IApiAuthResponse<{
-        user_exists: boolean;
-        confirmed: boolean;
-      }>
-    >(AppRoutes.server.protected.PEEK_USER, { email });
+    const response = await api.get<{
+      user_exists: boolean;
+      confirmed: boolean;
+    }>(AppRoutes.server.protected.PEEK_USER, { email });
     return response;
   }
 
   async getCurrentUser(): Promise<
-    IApiResponse<IApiAuthResponse<{ user: IUser; token: string }>>
+    IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>
   > {
-    const response = await api.get<
-      IApiAuthResponse<{ user: IUser; token: string }>
-    >(AppRoutes.server.protected.CURRENT_USER);
+    const response = await api.get<{ user: IUser; token: string }>(
+      AppRoutes.server.protected.CURRENT_USER,
+    );
     return response;
   }
 
-  async uploadImage(file: File): Promise<IApiResponse<{ url: string }>> {
+  async uploadImage(
+    file: File,
+  ): Promise<IApiResponse<IApiEnvelope<{ url: string }>>> {
     const formData = new FormData();
     formData.append("file", file);
 

@@ -6,6 +6,8 @@ import { LayoutPage } from "./LayoutPage";
 // import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
+// import { useEffect } from "react";
+// import { UserController } from "../../controllers";
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,10 +17,22 @@ export const HomePage: React.FC = () => {
 
   // No need just for the sample
   // useEffect(() => {
-  //   if (currentUser) return;
+  //   // if (currentUser) return;
 
-  //   UserController.getCurrentUser(setCurrentUser);
-  // }, [currentUser, setCurrentUser]);
+  //   // UserController.getCurrentUser(setCurrentUser);
+  //   UserController.getUsers(
+  //     { page: 1, limit: 20 },
+
+  //     (users, pagination) => {
+  //       console.log("users ===>", users);
+  //       console.log("pagination ===>", pagination);
+  //     },
+
+  //     (error) => {
+  //       console.log("error ===> ", error);
+  //     },
+  //   );
+  // }, []);
 
   return (
     <LayoutPage>

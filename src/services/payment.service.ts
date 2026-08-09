@@ -1,5 +1,5 @@
 import AppRoutes from "../AppRoutes";
-import { IApiAuthResponse, IApiResponse } from "../models";
+import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../models";
 import { api } from "./api.service";
 
 export interface IProduct {
@@ -52,8 +52,10 @@ export interface ICheckoutResponse {
 
 class PaymentService {
   // ===== PRODUCTS =====
-  async getProducts(): Promise<IApiResponse<IApiAuthResponse<IProduct[]>>> {
-    const response = await api.get<IApiAuthResponse<IProduct[]>>(
+  async getProducts(): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IProduct>[]>>
+  > {
+    const response = await api.get<IJsonApiResource<IProduct>[]>(
       AppRoutes.server.protected.PAYMENT_PRODUCTS,
     );
     return response;
@@ -61,9 +63,9 @@ class PaymentService {
 
   // ===== SUBSCRIPTIONS =====
   async getSubscriptions(): Promise<
-    IApiResponse<IApiAuthResponse<ISubscription[]>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<ISubscription>[]>>
   > {
-    const response = await api.get<IApiAuthResponse<ISubscription[]>>(
+    const response = await api.get<IJsonApiResource<ISubscription>[]>(
       AppRoutes.server.protected.PAYMENT_SUBSCRIPTIONS,
     );
     return response;
@@ -71,8 +73,8 @@ class PaymentService {
 
   async cancelSubscription(
     subscriptionId: string,
-  ): Promise<IApiResponse<IApiAuthResponse<ISubscription>>> {
-    const response = await api.post<IApiAuthResponse<ISubscription>>(
+  ): Promise<IApiResponse<IApiEnvelope<ISubscription>>> {
+    const response = await api.post<ISubscription>(
       AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_CANCEL.replace(
         ":id",
         subscriptionId,
@@ -83,8 +85,8 @@ class PaymentService {
 
   async resumeSubscription(
     subscriptionId: string,
-  ): Promise<IApiResponse<IApiAuthResponse<ISubscription>>> {
-    const response = await api.post<IApiAuthResponse<ISubscription>>(
+  ): Promise<IApiResponse<IApiEnvelope<ISubscription>>> {
+    const response = await api.post<ISubscription>(
       AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_RESUME.replace(
         ":id",
         subscriptionId,
@@ -95,9 +97,9 @@ class PaymentService {
 
   // ===== TRANSACTIONS =====
   async getTransactions(): Promise<
-    IApiResponse<IApiAuthResponse<ITransaction[]>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<ITransaction>[]>>
   > {
-    const response = await api.get<IApiAuthResponse<ITransaction[]>>(
+    const response = await api.get<IJsonApiResource<ITransaction>[]>(
       AppRoutes.server.protected.PAYMENT_TRANSACTIONS,
     );
     return response;
@@ -108,8 +110,8 @@ class PaymentService {
     productId: string,
     successUrl?: string,
     cancelUrl?: string,
-  ): Promise<IApiResponse<IApiAuthResponse<ICheckoutResponse>>> {
-    const response = await api.post<IApiAuthResponse<ICheckoutResponse>>(
+  ): Promise<IApiResponse<IApiEnvelope<ICheckoutResponse>>> {
+    const response = await api.post<ICheckoutResponse>(
       AppRoutes.server.protected.PAYMENT_SESSION,
       {
         product_id: productId,

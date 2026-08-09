@@ -4,7 +4,13 @@ import AppRoutes from "../AppRoutes";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
-import { IApiAuthResponse, IApiResponse } from "../models";
+import {
+  IApiEnvelope,
+  IApiPagination,
+  IApiResponse,
+  IJsonApiResource,
+  IPaginatedResult,
+} from "../models";
 
 const PLATFORM_HEADER_VALUE = "web";
 
@@ -16,33 +22,50 @@ const axiosInstance = axios.create({
 });
 
 // Utility function to handle errors
-const handleError = <T>(error: unknown): IApiResponse<T> => {
+const handleError = <T = unknown>(
+  error: unknown,
+): IApiResponse<IApiEnvelope<T>> => {
   if (axios.isAxiosError(error)) {
     if (error.response) {
-      // Server responded with a status other than 200 range
       console.error("Server Error:", error.response.data);
+
       return {
         data: error.response.data,
-        error: error.response.data?.status?.error || "An error occurred",
+        error:
+          error.response.data?.status?.error ||
+          error.response.data?.status?.message ||
+          "An error occurred",
       };
-    } else if (error.request) {
-      // Request was made but no response received
+    }
+
+    if (error.request) {
       console.error("Network Error:", error.request);
-      return { data: null, error: "Network error, please try again later" };
+
+      return {
+        data: null,
+        error: "Network error, please try again later",
+      };
     }
   }
-  // Something else happened while setting up the request
+
   console.error("Error:", (error as Error).message);
-  return { data: null, error: "An error occurred, please try again" };
+
+  return {
+    data: null,
+    error: "An error occurred, please try again",
+  };
 };
 
 const apiRequest = async <T>(
   url: string,
   config: AxiosRequestConfig,
-): Promise<IApiResponse<T>> => {
+): Promise<IApiResponse<IApiEnvelope<T>>> => {
   try {
     const response = await axiosInstance(url, config);
-    return { data: response.data };
+
+    return {
+      data: response.data,
+    };
   } catch (error: unknown) {
     return handleError(error);
   }
@@ -52,31 +75,48 @@ const apiRequest = async <T>(
 export const api = {
   get: async <T>(
     url: string,
-    params?: Record<string, any>,
+    params?: Record<string, unknown>,
     config?: AxiosRequestConfig,
-  ) => {
+  ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
       method: "GET",
       params,
     });
   },
-  post: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
+
+  post: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
       method: "POST",
       data,
     });
   },
-  put: async <T>(url: string, data?: any, config?: AxiosRequestConfig) => {
+
+  put: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
       method: "PUT",
       data,
     });
   },
-  delete: async <T>(url: string, config?: AxiosRequestConfig) => {
-    return apiRequest<T>(url, { ...config, method: "DELETE" });
+
+  delete: async <T>(
+    url: string,
+    config?: AxiosRequestConfig,
+  ): Promise<IApiResponse<IApiEnvelope<T>>> => {
+    return apiRequest<T>(url, {
+      ...config,
+      method: "DELETE",
+    });
   },
 };
 
@@ -162,32 +202,67 @@ export const useAxiosInterceptor = () => {
 
 export const apiHandler = async <T>(
   operation: string,
-  apiFunction: () => Promise<IApiResponse<IApiAuthResponse<T>>>,
+  apiFunction: () => Promise<IApiResponse<IApiEnvelope<T>>>,
   setError: (message: string) => void,
-  onSuccess: (data: IApiAuthResponse<T>) => void,
+  onSuccess: (response: IApiEnvelope<T>) => void,
   onFailure?: () => void,
 ): Promise<void> => {
   try {
     const response = await apiFunction();
-    const { status, data } = response.data || {};
-    if (status?.success) {
+    const envelope = response.data;
+
+    if (envelope?.status?.success) {
       setError("");
-      onSuccess({ status, data });
+      onSuccess(envelope);
     } else {
-      setError(status?.error ?? `An error occurred when ${operation}.`);
+      setError(
+        envelope?.status?.error ??
+          envelope?.status?.message ??
+          `An error occurred when ${operation}.`,
+      );
+
       onFailure?.();
     }
   } catch (error) {
     setError(`An error occurred when ${operation}. error: ${error}`);
+
     onFailure?.();
   }
 };
 
 // Helper to extract attributes from JSONAPI response
-export const parseFromList = <T>(items: any[]): T[] => {
-  if (!items || !Array.isArray(items)) return [];
+export const parseFromList = <T>(
+  items: IJsonApiResource<T>[] | null | undefined,
+): (T & { id: string })[] => {
+  if (!Array.isArray(items)) return [];
+
   return items.map((item) => ({
     ...item.attributes,
     id: item.id,
   }));
+};
+
+export const parsePaginatedResponse = <T>(
+  response: IApiResponse<IApiEnvelope<T[]>>,
+): IPaginatedResult<T> => {
+  const envelope = response.data;
+
+  return {
+    records: envelope?.data ?? [],
+    pagination: envelope?.meta?.pagination ?? null,
+  };
+};
+
+export const parsePaginatedJsonApiResponse = <T>(
+  response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
+): {
+  records: (T & { id: string })[];
+  pagination: IApiPagination | null;
+} => {
+  const envelope = response.data;
+
+  return {
+    records: parseFromList(envelope?.data),
+    pagination: envelope?.meta?.pagination ?? null,
+  };
 };

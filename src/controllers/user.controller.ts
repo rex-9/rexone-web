@@ -1,7 +1,31 @@
 import { UserService } from "../services";
-import { IApiResponse, IUser } from "../models";
+import { IApiEnvelope, IApiPagination, IApiResponse, IUser } from "../models";
+import { parseFromList } from "../services/api.service";
 
 class UserController {
+  async getUsers(
+    params?: { page?: number; limit?: number },
+    onSuccess?: (users: IUser[], pagination?: IApiPagination) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    try {
+      const response = await UserService.getUsers(params);
+      const { status, data, meta } = response.data || {};
+
+      if (!status?.success || !data) {
+        onError?.(status?.error || "Failed to load users");
+        return;
+      }
+
+      const users = parseFromList<IUser>(data);
+
+      onSuccess?.(users, meta?.pagination);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      onError?.("An error occurred while loading users.");
+    }
+  }
+
   async peekUser(
     email: string,
     setError: (message: string) => void,
@@ -38,9 +62,9 @@ class UserController {
 
   async uploadImage(file: File): Promise<void> {
     try {
-      const response: IApiResponse<{ url: string }> =
+      const response: IApiResponse<IApiEnvelope<{ url: string }>> =
         await UserService.uploadImage(file);
-      console.log("Image uploaded:", response.data?.url);
+      console.log("Image uploaded:", response.data?.data.url);
     } catch (error) {
       console.error("Error uploading image:", error);
     }

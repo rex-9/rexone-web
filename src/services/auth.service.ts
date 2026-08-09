@@ -1,6 +1,6 @@
 import AppRoutes from "../AppRoutes";
 import { api } from "./api.service";
-import { IApiAuthResponse, IApiResponse, IUser } from "../models";
+import { IApiEnvelope, IApiResponse, IUser } from "../models";
 
 export interface ISignInResponseData {
   user?: IUser;
@@ -29,8 +29,8 @@ class AuthService {
   async signInWithEmailOrUsername(
     signinKey: string,
     password: string,
-  ): Promise<IApiResponse<IApiAuthResponse<ISignInResponseData>>> {
-    const response = await api.post<IApiAuthResponse<ISignInResponseData>>(
+  ): Promise<IApiResponse<IApiEnvelope<ISignInResponseData>>> {
+    const response = await api.post<ISignInResponseData>(
       AppRoutes.server.public.SIGN_IN_EMAIL,
       {
         user: { signin_key: signinKey, password },
@@ -41,17 +41,18 @@ class AuthService {
 
   async signInWithToken(
     token: string,
-  ): Promise<IApiResponse<IApiAuthResponse<{ user: IUser; token: string }>>> {
-    const response = await api.post<
-      IApiAuthResponse<{ user: IUser; token: string }>
-    >(AppRoutes.server.public.SIGN_IN_TOKEN, { token });
+  ): Promise<IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>> {
+    const response = await api.post<{ user: IUser; token: string }>(
+      AppRoutes.server.public.SIGN_IN_TOKEN,
+      { token },
+    );
     return response;
   }
 
   async signInWithGoogle(
     token: string,
-  ): Promise<IApiResponse<IApiAuthResponse<IGoogleSignInStartData>>> {
-    const response = await api.post<IApiAuthResponse<IGoogleSignInStartData>>(
+  ): Promise<IApiResponse<IApiEnvelope<IGoogleSignInStartData>>> {
+    const response = await api.post<IGoogleSignInStartData>(
       AppRoutes.server.public.SIGN_IN_GOOGLE,
       { token },
     );
@@ -61,13 +62,14 @@ class AuthService {
   async completeGoogleSignIn(
     passcode: string,
     challengeToken: string,
-  ): Promise<IApiResponse<IApiAuthResponse<IGoogleSignInCompleteData>>> {
-    const response = await api.post<
-      IApiAuthResponse<IGoogleSignInCompleteData>
-    >(AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE, {
-      password: passcode,
-      challenge_token: challengeToken,
-    });
+  ): Promise<IApiResponse<IApiEnvelope<IGoogleSignInCompleteData>>> {
+    const response = await api.post<IGoogleSignInCompleteData>(
+      AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE,
+      {
+        password: passcode,
+        challenge_token: challengeToken,
+      },
+    );
     return response;
   }
 
@@ -76,8 +78,8 @@ class AuthService {
     email: string,
     password: string,
     passwordConfirmation: string,
-  ): Promise<IApiResponse<IApiAuthResponse<undefined>>> {
-    const response = await api.post<IApiAuthResponse<undefined>>(
+  ): Promise<IApiResponse<IApiEnvelope<undefined>>> {
+    const response = await api.post<undefined>(
       AppRoutes.server.public.SIGN_UP,
       {
         user: {
@@ -94,20 +96,21 @@ class AuthService {
   async confirmEmailWithCode(
     emailOrUsername: string,
     confirmationCode: string,
-  ): Promise<IApiResponse<IApiAuthResponse<{ user: IUser; token: string }>>> {
-    const response = await api.post<
-      IApiAuthResponse<{ user: IUser; token: string }>
-    >(`${AppRoutes.server.public.CONFIRM_CODE}`, {
-      signin_key: emailOrUsername,
-      confirmation_code: confirmationCode,
-    });
+  ): Promise<IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>> {
+    const response = await api.post<{ user: IUser; token: string }>(
+      `${AppRoutes.server.public.CONFIRM_CODE}`,
+      {
+        signin_key: emailOrUsername,
+        confirmation_code: confirmationCode,
+      },
+    );
     return response;
   }
 
   async sendConfirmationEmail(
     emailOrUsername: string,
-  ): Promise<IApiResponse<IApiAuthResponse<undefined>>> {
-    const response = await api.post<IApiAuthResponse<undefined>>(
+  ): Promise<IApiResponse<IApiEnvelope<undefined>>> {
+    const response = await api.post<undefined>(
       `${AppRoutes.server.public.SEND_EMAIL_CODE}`,
       { signin_key: emailOrUsername },
     );
@@ -116,8 +119,8 @@ class AuthService {
 
   async sendForgotPasswordMail(
     email: string,
-  ): Promise<IApiResponse<IApiAuthResponse<undefined>>> {
-    const response = await api.post<IApiAuthResponse<undefined>>(
+  ): Promise<IApiResponse<IApiEnvelope<undefined>>> {
+    const response = await api.post<undefined>(
       AppRoutes.server.public.FORGOT_PASSWORD,
       { email },
     );
@@ -128,8 +131,8 @@ class AuthService {
     token: string,
     password: string,
     passwordConfirmation: string,
-  ): Promise<IApiResponse<IApiAuthResponse<undefined>>> {
-    const response = await api.put<IApiAuthResponse<undefined>>(
+  ): Promise<IApiResponse<IApiEnvelope<undefined>>> {
+    const response = await api.put<undefined>(
       AppRoutes.server.public.RESET_PASSWORD,
       {
         user: {
@@ -142,8 +145,8 @@ class AuthService {
     return response;
   }
 
-  async signOut(): Promise<IApiResponse<IApiAuthResponse<null>>> {
-    const response = await api.delete<IApiAuthResponse<null>>(
+  async signOut(): Promise<IApiResponse<IApiEnvelope<null>>> {
+    const response = await api.delete<null>(
       AppRoutes.server.protected.SIGN_OUT,
     );
     return response;

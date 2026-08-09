@@ -37,6 +37,7 @@ class AppRoutes {
     },
     protected: {
       SIGN_OUT: "/signout", // DELETE
+      USERS: "/users", // GET
       PEEK_USER: "/users/peek", // GET
       CURRENT_USER: "/users/current", // GET
       UPLOAD_ASSET: "/media/upload", // POST
