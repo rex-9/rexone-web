@@ -1,5 +1,5 @@
 /**
- * Meritbox Design System - Atoms
+ * Rexone Design System - Atoms
  *
  * Foundation tokens exported from atoms
  *

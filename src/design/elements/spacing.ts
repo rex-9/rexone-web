@@ -1,7 +1,7 @@
 // src/design/elements/spacing.ts
 
 /**
- * Meritbox Design System - Spacing Tokens
+ * Rexone Design System - Spacing Tokens
  *
  * 8-based spacing scale
  */

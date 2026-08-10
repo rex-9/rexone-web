@@ -2,7 +2,7 @@
 
 ## Port Scheme
 
-Meritbox uses different ports for different environments:
+Rexone uses different ports for different environments:
 
 - **Production**: Port `4000`
 - **UAT**: Port `4001`
@@ -27,7 +27,7 @@ To deploy to UAT, update `.env`:
 ```bash
 NODE_ENV=uat
 PORT=4001
-VITE_REACT_APP_CLIENT_BASE_URL=https://uat.meritbox.me
+VITE_REACT_APP_CLIENT_BASE_URL=https://uat.rexone.me
 VITE_REACT_APP_PORT_MAP=4001:4001
 ```
 
@@ -38,7 +38,7 @@ To deploy to production, update `.env`:
 ```bash
 NODE_ENV=production
 PORT=4000
-VITE_REACT_APP_CLIENT_BASE_URL=https://meritbox.me
+VITE_REACT_APP_CLIENT_BASE_URL=https://rexone.me
 VITE_REACT_APP_PORT_MAP=4000:4000
 ```
 

@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   web:
+    container_name: dev-rexone-web
     build:
       context: .
       dockerfile: ${VITE_REACT_APP_DOCKERFILE}

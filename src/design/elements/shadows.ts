@@ -1,7 +1,7 @@
 // src/design/tokens/shadows.ts
 
 /**
- * Meritbox Design System - Shadow Tokens
+ * Rexone Design System - Shadow Tokens
  *
  * Subtle, soft, Apple-quality shadows
  */

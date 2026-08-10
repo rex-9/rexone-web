@@ -1,5 +1,5 @@
 /**
- * Meritbox Design System - Dialog Molecule
+ * Rexone Design System - Dialog Molecule
  *
  * For adding a new merit or editing one
  * Rounded 20-24px, dimmed background with slight vignette

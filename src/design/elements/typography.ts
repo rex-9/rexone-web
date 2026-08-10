@@ -1,7 +1,7 @@
 // src/design/elements/typography.ts
 
 /**
- * Meritbox Design System - Typography Tokens
+ * Rexone Design System - Typography Tokens
  *
  * UI: Inter / SF Pro (system)
  * Display: Cormorant Garamond

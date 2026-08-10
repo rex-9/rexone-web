@@ -1,7 +1,7 @@
 // src/design/examples/UsageExamples.tsx
 
 /**
- * Meritbox Design System - Usage Examples
+ * Rexone Design System - Usage Examples
  *
  * Examples showing how to use the design system tokens
  *
@@ -324,7 +324,7 @@ export const CompletePageExample = () => {
         {/* Hero Section */}
         <div className="text-center space-y-4 mb-12">
           <h1 className="text-display-l font-display text-navy-900 dark:text-white">
-            ✨ Meritbox ✨
+            ✨ Rexone ✨
           </h1>
           <p className="text-body-l text-gray-700 dark:text-gray-300 max-w-2xl mx-auto">
             Support dreams or make yours come true—where every merit counts.
@@ -369,7 +369,7 @@ export const CompletePageExample = () => {
         {/* Footer */}
         <div className="mt-8 text-center">
           <p className="text-caption text-gray-500 dark:text-gray-400">
-            © 2025 Meritbox. All rights reserved.
+            © 2026 Rexone. All rights reserved.
           </p>
         </div>
       </div>
@@ -384,7 +384,7 @@ export const CompletePageExample = () => {
 export const DesignExamples = () => {
   return (
     <div className="space-y-12 p-8 max-w-6xl mx-auto">
-      <h1 className="text-display-l text-center">🎨 Meritbox Design System</h1>
+      <h1 className="text-display-l text-center">🎨 Rexone Design System</h1>
 
       <div className="border-t border-gray-200 pt-8">
         <h2 className="text-h2 mb-6">1. Colors</h2>

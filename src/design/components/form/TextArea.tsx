@@ -1,5 +1,5 @@
 /**
- * Meritbox Design System - TextArea Molecule
+ * Rexone Design System - TextArea Molecule
  *
  * Auto-expanding textarea with same visual language as input fields
  */

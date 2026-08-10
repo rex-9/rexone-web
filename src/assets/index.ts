@@ -35,7 +35,7 @@ import noteSound from "./sounds/note.mp3";
 // ============================================================
 
 export const images = {
-  banner: { src: banner, alt: "Banner image", title: "Meritbox Banner" },
+  banner: { src: banner, alt: "Banner image", title: "Rexone Banner" },
 } as const;
 
 // ============================================================

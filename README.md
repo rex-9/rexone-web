@@ -1,18 +1,18 @@
-# meritbox-web
+# rexone-web
 
 <a name="readme-top"></a>
 
 <div align="center">
-  <h3><b>Meritbox Web</b></h3>
+  <h3><b>Rexone Web</b></h3>
 </div>
 
 <!-- TABLE OF CONTENTS -->
 
 # 📗 Table of Contents
 
-- [meritbox-web](#meritbox-web)
+- [rexone-web](#rexone-web)
 - [📗 Table of Contents](#-table-of-contents)
-- [📖 Meritbox Web ](#-meritbox-web-)
+- [📖 Rexone Web ](#-rexone-web-)
   - [🚀 Featuring!](#-featuring)
     - [🌟 Modern Tech Stack](#-modern-tech-stack)
     - [🗃️ State Management \& Storage](#️-state-management--storage)
@@ -39,14 +39,14 @@
 
 <!-- PROJECT DESCRIPTION -->
 
-# 📖 Meritbox Web <a name="about-project"></a>
+# 📖 Rexone Web <a name="about-project"></a>
 
-**Meritbox Web** is a robust frontend framework for authenticated web applications, offering a solid foundation for diverse product development needs. This repository also serves as an excellent learning resource for anyone looking to master frontend web development. It emphasizes best practices on the client side, enabling developers to write simple yet clean code.
+**Rexone Web** is a robust frontend framework for authenticated web applications, offering a solid foundation for diverse product development needs. This repository also serves as an excellent learning resource for anyone looking to master frontend web development. It emphasizes best practices on the client side, enabling developers to write simple yet clean code.
 
 **Related Repositories:**
 
-- **Backend API**: [Meritbox API](https://github.com/rex-9/meritbox-api)
-- **Mobile App**: [Auth Service Mobile](https://github.com/rex-9/auth_service_mobile)
+- **Backend API**: [Rexone API](https://github.com/rex-9/rexone-api)
+- **Mobile App**: [Auth Service Mobile](https://github.com/rex-9/rexone_mobile)
 
 ## 🚀 Featuring!
 
@@ -166,13 +166,13 @@ Clone this repository or download as a zip file to your desired folder:
 
 ```sh
   cd my-folder
-  git clone git@github.com:rex-9/meritbox-web.git
+  git clone git@github.com:rex-9/rexone-web.git
 ```
 
 Enter the Root level of the project
 
 ```sh
-  cd meritbox-web
+  cd rexone-web
 ```
 
 Install the dependencies using yarn or npm:
@@ -215,7 +215,7 @@ This will start the development server at `http://localhost:5173`
 ## 📁 Project Structure
 
 ```
-meritbox-web/
+rexone-web/
 ├── src/
 │   ├── components/     # Reusable UI components
 │   ├── pages/         # Page-level components
@@ -232,7 +232,7 @@ meritbox-web/
 
 If you like this project, please consider giving it a star on GitHub and buying me a coffee to support its development: 🌟
 
-[![GitHub Stars](https://img.shields.io/github/stars/rex-9/meritbox-web.svg?style=social&label=Star)](https://github.com/rex-9/meritbox-web)
+[![GitHub Stars](https://img.shields.io/github/stars/rex-9/rexone-web.svg?style=social&label=Star)](https://github.com/rex-9/rexone-web)
 
 <div align="center">
   <a href="https://buymeacoffee.com/rex9" target="_blank">

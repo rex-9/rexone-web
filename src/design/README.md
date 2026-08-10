@@ -1,4 +1,4 @@
-# Meritbox Design System - Quick Start Guide
+# Rexone Design System - Quick Start Guide
 
 ## 🚀 Getting Started
 
@@ -14,7 +14,7 @@ import { colors, typography, spacing, radius, shadows } from "@/design";
 
 ```tsx
 <div className="bg-gold-500 text-navy-900 p-16 rounded-m shadow-s">
-  <h1 className="text-h1 font-semibold">Hello Meritbox Design System</h1>
+  <h1 className="text-h1 font-semibold">Hello Rexone Design System</h1>
   <p className="text-body-m">Using design system tokens</p>
 </div>
 ```
@@ -84,7 +84,7 @@ To add new tokens:
 
 #########################################################################################################################
 
-# Meritbox Design System
+# Rexone Design System
 
 **Clean, warm, calming, modern, premium**
 

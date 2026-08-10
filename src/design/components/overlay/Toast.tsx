@@ -1,5 +1,5 @@
 /**
- * Meritbox Design System - Toast Notification
+ * Rexone Design System - Toast Notification
  * Uses DaisyUI alert components
  */
 

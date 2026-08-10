@@ -147,7 +147,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     <Dialog
       isOpen={true}
       onClose={handleClose}
-      title="Welcome to Meritbox"
+      title="Welcome to Rexone"
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">

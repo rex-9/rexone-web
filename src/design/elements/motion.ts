@@ -1,7 +1,7 @@
 // src/design/elements/motion.ts
 
 /**
- * Meritbox Design System - Motion Tokens
+ * Rexone Design System - Motion Tokens
  *
  * Simple, consistent animation values for Tailwind
  */

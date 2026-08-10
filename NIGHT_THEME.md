@@ -1,8 +1,8 @@
-# 🌙 Meritbox Night Theme - Implementation Guide
+# 🌙 Rexone Night Theme - Implementation Guide
 
 ## Overview
 
-Night Theme is now fully integrated into Meritbox Design System, creating an "inner sanctuary" experience perfect for self-reflection, inner peace, and quiet gratitude.
+Night Theme is now fully integrated into Rexone Design System, creating an "inner sanctuary" experience perfect for self-reflection, inner peace, and quiet gratitude.
 
 ## 🎨 Night Theme Colors
 
@@ -36,7 +36,7 @@ The theme system now supports three modes:
 
 1. **Auto** (Default) - Follows system preference
 2. **Light** - Always light mode
-3. **Dark** - Always night mode (the true Meritbox experience)
+3. **Dark** - Always night mode (the true Rexone experience)
 
 ## ✨ Special Features
 
@@ -104,7 +104,7 @@ import { ThemeToggle } from "@/components";
 Night Theme embodies:
 
 - **Inner Sanctuary** - Feels like meditation halls, temples, candles
-- **Ritual** - Opening Meritbox at night becomes a calming habit
+- **Ritual** - Opening Rexone at night becomes a calming habit
 - **Emotional Memory** - Merits feel more special in low-light, high-intimacy mode
 - **Beautiful Contrast** - Gold accents POP on dark backgrounds
 

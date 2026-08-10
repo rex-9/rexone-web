@@ -1,7 +1,7 @@
 // src/design/utils.ts
 
 /**
- * Meritbox Design System - Utility Functions
+ * Rexone Design System - Utility Functions
  *
  * Helper functions for working with design tokens and classes
  */
