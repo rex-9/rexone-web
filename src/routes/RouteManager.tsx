@@ -7,7 +7,7 @@ import {
   Outlet,
 } from "react-router-dom";
 import AppRoutes from "../AppRoutes";
-import { ProtectedRoute, PublicRoute } from ".";
+import { AdminAccessRoute, AdminHomeRoute, ProtectedRoute, PublicRoute } from ".";
 import {
   SignInPage,
   SignUpPage,
@@ -23,6 +23,13 @@ import {
   PaymentSuccessPage,
   PaymentCancelPage,
   AiPage,
+  AdminChatMessageEditPage,
+  AdminChatRoomsPage,
+  AdminChatRoomEditPage,
+  AdminChatMessagesPage,
+  AdminUsersPage,
+  AdminUserCreatePage,
+  AdminUserEditPage,
 } from "../design/pages";
 import { AuthDialog } from "../design";
 import { AnapanaPage } from "../modules/anapana/pages";
@@ -93,6 +100,72 @@ export const RouteManager = () => {
               element={<PaymentCancelPage />}
             />
             <Route path={AppRoutes.client.protected.AI} element={<AiPage />} />
+            <Route
+              path={AppRoutes.client.protected.ADMIN}
+              element={<AdminHomeRoute />}
+            />
+            <Route
+              element={<AdminAccessRoute action="read" resource="users" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_USERS}
+                element={<AdminUsersPage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="create" resource="users" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_USER_CREATE}
+                element={<AdminUserCreatePage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="update" resource="users" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_USER_EDIT}
+                element={<AdminUserEditPage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="read" resource="chat_rooms" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_CHAT_ROOMS}
+                element={<AdminChatRoomsPage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute action="update" resource="chat_rooms" />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT}
+                element={<AdminChatRoomEditPage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute action="read" resource="chat_messages" />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGES}
+                element={<AdminChatMessagesPage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute action="update" resource="chat_messages" />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT}
+                element={<AdminChatMessageEditPage />}
+              />
+            </Route>
           </Route>
 
           {/* 404 */}

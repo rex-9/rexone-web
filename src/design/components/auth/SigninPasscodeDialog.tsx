@@ -91,7 +91,14 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       setError(`Too many attempts. Try again in ${result.cooldownRemaining}s.`);
     } else {
       // Failed attempt - update remaining attempts
-      const attemptsLeft = result.remainingAttempts ?? 3;
+      if (result.remainingAttempts === undefined) {
+        setPasscode("");
+        setError(result.errorMessage || "Unable to sign in. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      const attemptsLeft = result.remainingAttempts;
       setRemainingAttempts(attemptsLeft);
       setPasscode("");
 

@@ -71,6 +71,12 @@ const apiRequest = async <T>(
   }
 };
 
+const shouldSkipLoading = (config: AxiosRequestConfig): boolean =>
+  config.headers instanceof AxiosHeaders
+    ? config.headers.get("X-Skip-Loading") === "true"
+    : config.headers?.["X-Skip-Loading" as keyof typeof config.headers] ===
+      "true";
+
 // Utility functions for each HTTP method
 export const api = {
   get: async <T>(
@@ -109,6 +115,18 @@ export const api = {
     });
   },
 
+  patch: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig,
+  ): Promise<IApiResponse<IApiEnvelope<T>>> => {
+    return apiRequest<T>(url, {
+      ...config,
+      method: "PATCH",
+      data,
+    });
+  },
+
   delete: async <T>(
     url: string,
     config?: AxiosRequestConfig,
@@ -129,6 +147,7 @@ export const useAxiosInterceptor = () => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       (config) => {
         const headers = AxiosHeaders.from(config.headers);
+        const skipLoading = shouldSkipLoading(config);
 
         // Always send platform so backend can enforce one active session per platform.
         headers.set("X-Platform", PLATFORM_HEADER_VALUE);
@@ -148,8 +167,14 @@ export const useAxiosInterceptor = () => {
           headers.set("Authorization", `Bearer ${token}`);
         }
 
+        if (skipLoading) {
+          headers.delete("X-Skip-Loading");
+        }
+
         config.headers = headers;
-        setLoading(true);
+        if (!skipLoading) {
+          setLoading(true);
+        }
         return config;
       },
       (error) => {

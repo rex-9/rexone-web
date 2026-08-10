@@ -2,11 +2,14 @@ import React, { useEffect } from "react";
 import { useAuth } from "../../../contexts";
 import { googleLogout } from "@react-oauth/google";
 import { AuthController } from "../../../controllers";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
 
 let isSignOutInProgress = false;
 
 export const SignOutPage: React.FC = () => {
   const { signout, currentUser, token } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignout = async () => {
     if (token) {
@@ -18,6 +21,7 @@ export const SignOutPage: React.FC = () => {
     }
 
     signout();
+    navigate(AppRoutes.client.public.ROOT, { replace: true });
     console.log("logged out successfully.");
   };
 

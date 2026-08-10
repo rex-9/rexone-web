@@ -54,6 +54,7 @@ class AuthController {
     navigate: (url: string) => void,
   ): Promise<{
     success: boolean;
+    errorMessage?: string;
     remainingAttempts?: number;
     cooldownRemaining?: number;
     otpSent?: boolean;
@@ -85,12 +86,14 @@ class AuthController {
 
       return {
         success: false,
+        errorMessage,
         remainingAttempts: data?.remaining_attempts,
         cooldownRemaining: data?.cooldown_remaining,
       };
     } catch {
-      setError("Failed to sign in.");
-      return { success: false };
+      const errorMessage = "Failed to sign in.";
+      setError(errorMessage);
+      return { success: false, errorMessage };
     }
   }
 

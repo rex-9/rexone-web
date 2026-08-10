@@ -1,4 +1,6 @@
 class AppConfig {
+  static readonly APP_TITLE =
+    import.meta.env.VITE_REACT_APP_TITLE || "rexone.me";
   static readonly GOOGLE_CLIENT_ID =
     import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID ||
     "1026550055658-skeaoo2ipej0ntv2i5vtj3s7isgdhqg4.apps.googleusercontent.com";

@@ -20,6 +20,14 @@ class AppRoutes {
       PAYMENT_SUCCESS: "/payment/success",
       PAYMENT_CANCEL: "/payment/cancel",
       AI: "/ai",
+      ADMIN: "/admin",
+      ADMIN_USERS: "/admin/users",
+      ADMIN_USER_CREATE: "/admin/users/create",
+      ADMIN_USER_EDIT: "/admin/users/:id/edit",
+      ADMIN_CHAT_ROOMS: "/admin/chat/rooms",
+      ADMIN_CHAT_ROOM_EDIT: "/admin/chat/rooms/:id/edit",
+      ADMIN_CHAT_MESSAGES: "/admin/chat/messages",
+      ADMIN_CHAT_MESSAGE_EDIT: "/admin/chat/messages/:id/edit",
     },
   };
 
@@ -38,6 +46,12 @@ class AppRoutes {
     protected: {
       SIGN_OUT: "/signout", // DELETE
       USERS: "/users", // GET
+      ADMIN_USERS: "/api/v1/admin/users", // GET, POST
+      ADMIN_USER_DETAIL: "/api/v1/admin/users/:id", // GET, PATCH, PUT, DELETE
+      ADMIN_CHAT_ROOMS: "/api/v1/admin/chat/rooms", // GET
+      ADMIN_CHAT_ROOM_DETAIL: "/api/v1/admin/chat/rooms/:id", // GET, DELETE
+      ADMIN_CHAT_MESSAGES: "/api/v1/admin/chat/messages", // GET
+      ADMIN_CHAT_MESSAGE_DETAIL: "/api/v1/admin/chat/messages/:id", // GET, DELETE
       PEEK_USER: "/users/peek", // GET
       CURRENT_USER: "/users/current", // GET
       UPLOAD_ASSET: "/media/upload", // POST
