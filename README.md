@@ -1,5 +1,3 @@
-# rexone-web
-
 <a name="readme-top"></a>
 
 <div align="center">
@@ -10,9 +8,8 @@
 
 # 📗 Table of Contents
 
-- [rexone-web](#rexone-web)
 - [📗 Table of Contents](#-table-of-contents)
-- [📖 Rexone Web ](#-rexone-web-)
+- [📖 Rexone Web](#-rexone-web)
   - [🚀 Featuring!](#-featuring)
     - [🌟 Modern Tech Stack](#-modern-tech-stack)
     - [🗃️ State Management \& Storage](#️-state-management--storage)
@@ -24,9 +21,9 @@
       - [💳 Payment Integration](#-payment-integration)
       - [📁 Media \& File Management](#-media--file-management)
       - [🤖 AI Features](#-ai-features)
-  - [🛠 Built With ](#-built-with-)
-    - [Tech Stack ](#tech-stack-)
-  - [💻 Getting Started ](#-getting-started-)
+  - [🛠 Built With](#-built-with)
+    - [Tech Stack](#tech-stack)
+  - [💻 Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [Setup](#setup)
     - [Environment Variables](#environment-variables)
@@ -34,127 +31,120 @@
     - [Build for Production](#build-for-production)
     - [Preview Production Build](#preview-production-build)
   - [📁 Project Structure](#-project-structure)
-- [☕ Support ](#-support-)
+- [☕ Support](#-support)
   - [👤 Author](#-author)
 
-<!-- PROJECT DESCRIPTION -->
+# 📖 Rexone Web
 
-# 📖 Rexone Web <a name="about-project"></a>
+**Rexone Web** is a production-ready React web foundation designed for building modern authenticated applications and administrative dashboards. It provides a structured client-side architecture with clear separation between presentation, application logic, state management, and backend communication.
 
-**Rexone Web** is a robust frontend framework for authenticated web applications, offering a solid foundation for diverse product development needs. This repository also serves as an excellent learning resource for anyone looking to master frontend web development. It emphasizes best practices on the client side, enabling developers to write simple yet clean code.
+The project is designed to work as part of the **Rexone ecosystem**, providing a reusable foundation that can be extended across multiple products and platforms.
 
 **Related Repositories:**
 
-- **Backend API**: [Rexone API](https://github.com/rex-9/rexone-api)
-- **Mobile App**: [Auth Service Mobile](https://github.com/rex-9/rexone_mobile)
+- **Core API**: [Rexone Core](https://github.com/rex-9/rexone-core)
+- **Mobile App**: [Rexone Mobile](https://github.com/rex-9/rexone-mobile)
 
 ## 🚀 Featuring!
 
 ### 🌟 Modern Tech Stack
 
-- **React with TypeScript**: Enjoy the benefits of a strongly-typed language for building robust and scalable applications.
-- **TailwindCSS for UI**: Rapidly build modern and responsive user interfaces with utility-first CSS.
-- **Vite for Hosting**: Experience fast and efficient development with Vite's lightning-fast build tool.
+- **React with TypeScript**: Build scalable and maintainable interfaces with strong static typing.
+- **Vite**: Fast development server and optimized production builds.
+- **TailwindCSS**: Utility-first styling for responsive and consistent UI development.
+- **DaisyUI**: Reusable UI components and theme support built on top of TailwindCSS.
+- **React Router**: Client-side routing and protected application navigation.
 
 ### 🗃️ State Management & Storage
 
-- **Jotai**: Simplify state management and local storage with Jotai's atomic state management library.
-- **Local Storage Integration**: Persistent user preferences and session management.
+- **Jotai**: Lightweight atomic state management for application and user state.
+- **Local Storage**: Persistent client-side storage for appropriate application preferences and session-related data.
+- **Centralized State Architecture**: Keeps shared application state predictable and separated from presentation logic.
 
 ### 🏗️ Design Patterns & Architecture
 
-- **MVC Design Pattern**: Maintain a clean separation of concerns with the Model-View-Controller design pattern.
-- **Dockerized**: Easily deploy and manage your application with Docker.
-- **Clean Architecture**: Ensure maintainability and scalability with a clean and modular architecture.
-- **Component-Based Architecture**: Reusable and maintainable UI components with Atomic Design System.
+- **MVC-inspired Client Architecture**: Clear separation between Models, Controllers, Services, and Views.
+- **Controller Layer**: Handles API success and failure responses before exposing data to UI components.
+- **Service Layer**: Centralizes communication with the Rexone Core API.
+- **Model Layer**: Strongly typed API responses, envelopes, resources, and application data structures.
+- **Component-Based Architecture**: Reusable UI components organized for maintainability and consistency.
+- **Clean Architecture Principles**: Separates responsibilities to keep the application easy to extend and maintain.
+- **Dockerized Development**: Supports a consistent and reproducible development environment.
 
 ### 🔐 Authentication & Security
 
-- **Email-Password Authentication**: Securely authenticate users with email and password.
-- **Google Authentication**: Provide a seamless sign in experience with Google OAuth.
-- **Forgot Password & Reset Password**: Allow users to recover their accounts with ease.
-- **Email Confirmation**: Verify user email addresses to enhance security.
-- **Protected Routes**: Role-based access control for different user types.
+- **Email-Password Authentication**: Secure user authentication through the Rexone Core API.
+- **Google Authentication**: OAuth-based sign-in support.
+- **Email Confirmation**: User email verification workflows.
+- **Forgot Password & Reset Password**: Account recovery workflows.
+- **Protected Routes**: Restrict authenticated application areas.
+- **Role-Based Access Control**: Support different application capabilities based on user roles and permissions.
+- **Centralized API Authentication**: Authentication and authorization are handled through the Core API.
 
 ### 🔌 Integrated Services
 
-The web application seamlessly integrates with various backend services:
+The web application is designed to integrate with the Rexone Core API and its surrounding services.
 
 #### 📧 Email Services
 
-- Transactional emails for verification and notifications
-- Password reset and account recovery workflows
-- Welcome emails and user onboarding
+- Email confirmation workflows
+- Password reset and account recovery
+- Transactional notifications
+- User onboarding communication
 
 #### 🔔 Real-time Updates
 
-- WebSocket connections via Action Cable
-- Live notifications and real-time data updates
-- Instant feedback for user actions
+- Real-time communication with backend services
+- Live notifications and application updates
+- Support for event-driven application experiences
 
 #### 💳 Payment Integration
 
-- Stripe payment processing
-- Subscription management
-- Secure checkout experience
+- Stripe payment processing through the backend
+- Subscription and payment workflows
+- Secure checkout experiences
+- Payment status and transaction handling
 
 #### 📁 Media & File Management
 
-- Cloudinary image optimization
-- AWS S3 file storage
-- Drag-and-drop upload support
+- Image and file upload workflows
+- Cloudinary integration where required
+- AWS S3-compatible storage support
+- Client-side upload interfaces and previews
 
 #### 🤖 AI Features
 
-- DeepSeek AI integration
-- Smart content generation
-- AI-powered recommendations
+- Integration with AI-powered backend services
+- AI-assisted application workflows
+- Support for AI-generated content and recommendations
+- Centralized AI communication through the Core API
 
-## 🛠 Built With <a name="built-with"></a>
+## 🛠 Built With
 
-### Tech Stack <a name="tech-stack"></a>
+### Tech Stack
 
 <details>
-  <summary>Frontend</summary>
+  <summary>Web Client</summary>
   <ul>
-    <li><a href="https://react.dev/">React 18</a></li>
+    <li><a href="https://react.dev/">ReactJS</a></li>
     <li><a href="https://www.typescriptlang.org/">TypeScript</a></li>
+    <li><a href="https://daisyui.com/">DaisyUI</a></li>
     <li><a href="https://tailwindcss.com/">TailwindCSS</a></li>
     <li><a href="https://vitejs.dev/">Vite</a></li>
     <li><a href="https://jotai.org/">Jotai</a></li>
+    <li><a href="https://www.docker.com/">Docker</a></li>
   </ul>
 </details>
 
-<details>
-  <summary>Backend Integration</summary>
-  <ul>
-    <li><a href="https://rubyonrails.org/">Ruby on Rails API</a></li>
-    <li><a href="https://stripe.com/">Stripe</a> (Payments)</li>
-    <li><a href="https://onesignal.com/">OneSignal</a> (Notifications)</li>
-    <li><a href="https://cloudinary.com/">Cloudinary</a> (Images)</li>
-    <li><a href="https://aws.amazon.com/s3/">AWS S3</a> (Storage)</li>
-    <li><a href="https://deepseek.com/">DeepSeek</a> (AI Services)</li>
-  </ul>
-</details>
-
-<details>
-  <summary>Database</summary>
-  <ul>
-    <li><a href="https://www.postgresql.org/">PostgreSQL</a></li>
-  </ul>
-</details>
-
-<!-- GETTING STARTED -->
-
-## 💻 Getting Started <a name="getting-started"></a>
+## 💻 Getting Started
 
 To get a local copy up and running, follow these steps.
 
 ### Prerequisites
 
-In order to run this project you need download [Node](https://nodejs.org/en) and [yarn](https://yarnpkg.com/):
+In order to run this project you need to install [Node.js](https://nodejs.org/en) and [Yarn](https://yarnpkg.com/).
 
-Check your node installation is complete.
+Check your installation:
 
 ```sh
   node --version && yarn --version
@@ -162,87 +152,100 @@ Check your node installation is complete.
 
 ### Setup
 
-Clone this repository or download as a zip file to your desired folder:
+Clone this repository or download it to your desired folder:
 
 ```sh
   cd my-folder
   git clone git@github.com:rex-9/rexone-web.git
 ```
 
-Enter the Root level of the project
+Enter the root level of the project:
 
 ```sh
   cd rexone-web
 ```
 
-Install the dependencies using yarn or npm:
+Install the dependencies:
 
 ```sh
-> yarn install
+  yarn install
 ```
 
 ### Environment Variables
 
-Create a `.env` file in the root directory with the following variables:
+Create a `.env` file in the root directory with the required environment variables:
 
 ```env
 VITE_REACT_APP_SERVER_BASE_URL=http://localhost:3000
 VITE_REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id
 ```
 
+> Environment variables should be configured according to the target environment. Never commit secrets or sensitive credentials to the repository.
+
 ### Run
 
-run the app.
+Start the development application:
 
 ```sh
-> sh run_dev.sh
+  sh run_dev.sh
 ```
 
-This will start the development server at `http://localhost:5173`
+The web application will be available at:
+
+```text
+http://localhost:5173
+```
+
+The development application communicates with the local **Rexone Core API**.
 
 ### Build for Production
 
+Create an optimized production build:
+
 ```sh
-> yarn build
+  yarn build
 ```
+
+The production assets will be generated in the `dist/` directory.
 
 ### Preview Production Build
 
+Preview the production build locally:
+
 ```sh
-> yarn preview
+  yarn preview
 ```
 
 ## 📁 Project Structure
 
-```
+```text
 rexone-web/
 ├── src/
-│   ├── components/     # Reusable UI components
-│   ├── pages/         # Page-level components
-│   ├── hooks/         # Custom React hooks
-│   ├── store/         # Jotai state management
-│   ├── services/      # API service integrations
-│   ├── utils/         # Utility functions
-│   ├── types/         # TypeScript type definitions
-│   └── styles/        # Global styles and Tailwind config
-├── public/            # Static assets
+│   ├── assets/         # Images, icons, videos, and static application assets
+│   ├── contexts/       # Contexts and Providers
+│   ├── design/         # Atomic Design System
+│   ├── controllers/    # Application-level API response handling
+│   ├── hooks/          # Reusable React hooks
+│   ├── models/         # TypeScript models and API types
+│   ├── helpers/        # Shared utilities and helpers
+│   ├── services/       # Backend API communication
+│   ├── atoms.ts        # Jotai state management
+│   └── ...
 ```
 
-# ☕ Support <a name="support"></a>
+# ☕ Support
 
 If you like this project, please consider giving it a star on GitHub and buying me a coffee to support its development: 🌟
 
 [![GitHub Stars](https://img.shields.io/github/stars/rex-9/rexone-web.svg?style=social&label=Star)](https://github.com/rex-9/rexone-web)
 
-<div align="center">
+<!-- <div align="center">
   <a href="https://buymeacoffee.com/rex9" target="_blank">
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
   </a>
-</div>
+</div> -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
----
 
 ## 👤 Author
 
