@@ -1,7 +1,11 @@
 import { AuthStep } from "./design/components/auth/type";
 
 class AppRoutes {
-  // private static readonly PROTECTED_PREFIX = "/auth";
+  private static readonly API_VERSION = "/v1";
+
+  private static api(path: string): string {
+    return `${this.API_VERSION}${path}`;
+  }
 
   static readonly client = {
     public: {
@@ -12,6 +16,7 @@ class AppRoutes {
       RESET_PASSCODE: "/passcode/reset",
       ROOT: "/",
     },
+
     protected: {
       SIGN_OUT: "/signout",
       HOME: "/home",
@@ -25,39 +30,60 @@ class AppRoutes {
 
   static readonly server = {
     public: {
+      // Authentication
+      PEEK_USER: "/peek", // GET
       SIGN_UP: "/signup", // POST
       SIGN_IN_EMAIL: "/signin", // POST
       SIGN_IN_TOKEN: "/signin/token", // POST
       SIGN_IN_GOOGLE: "/signin/google", // POST
       SIGN_IN_GOOGLE_COMPLETE: "/signin/google/complete", // POST
+
+      // Email confirmation
       SEND_EMAIL_CODE: "/confirmation/send_code", // POST
       CONFIRM_CODE: "/confirmation/confirm_code", // POST
+
+      // Password
       FORGOT_PASSWORD: "/password/forgot", // POST
       RESET_PASSWORD: "/password/reset", // PUT
     },
+
     protected: {
+      // Authentication
       SIGN_OUT: "/signout", // DELETE
-      USERS: "/users", // GET
-      PEEK_USER: "/users/peek", // GET
-      CURRENT_USER: "/users/current", // GET
-      UPLOAD_ASSET: "/media/upload", // POST
-      ACCESS: "/access", // GET
-      CHECK_ACCESS: "/access/check", // GET
-      PAYMENT_SESSION: "/payment/session", // POST
-      PAYMENT_PRODUCTS: "/payment/products", // GET
-      PAYMENT_SUBSCRIPTIONS: "/payment/subscriptions", // GET, POST
-      PAYMENT_SUBSCRIPTION_CANCEL: "/payment/subscriptions/:id/cancel", // POST
-      PAYMENT_SUBSCRIPTION_RESUME: "/payment/subscriptions/:id/resume", // POST
-      PAYMENT_TRANSACTIONS: "/payment/transactions", // GET
-      AI_CHAT: "/ai/chat", // POST
-      AI_HISTORY: "/ai/history", // GET
-      AI_CLEAR: "/ai/clear", //DELETE
-      AI_RENAME: "/ai/rename", // PUT
-      AI_ROOMS: "/ai/rooms", // GET, POST
-      AI_DELETE_ROOM: "/ai/rooms/:id", // DELETE
-      AI_SUMMARIZE: "/ai/summarize", // POST
-      AI_TRANSLATE: "/ai/translate", // POST
-      AI_ANALYZE: "/ai/analyze", // POST
+
+      // Users
+      USERS: AppRoutes.api("/users"), // GET
+      CURRENT_USER: AppRoutes.api("/users/current"), // GET
+
+      // Media
+      UPLOAD_ASSET: AppRoutes.api("/media/upload"), // POST
+
+      // Access
+      ACCESS: AppRoutes.api("/access"), // GET
+      CHECK_ACCESS: AppRoutes.api("/access/check"), // GET
+
+      // Payments
+      PAYMENT_SESSION: AppRoutes.api("/payment/session"), // POST
+      PAYMENT_PRODUCTS: AppRoutes.api("/payment/products"), // GET
+      PAYMENT_SUBSCRIPTIONS: AppRoutes.api("/payment/subscriptions"), // GET, POST
+      PAYMENT_SUBSCRIPTION_CANCEL: AppRoutes.api(
+        "/payment/subscriptions/:id/cancel",
+      ), // POST
+      PAYMENT_SUBSCRIPTION_RESUME: AppRoutes.api(
+        "/payment/subscriptions/:id/resume",
+      ), // POST
+      PAYMENT_TRANSACTIONS: AppRoutes.api("/payment/transactions"), // GET
+
+      // AI
+      AI_CHAT: AppRoutes.api("/ai/chat"), // POST
+      AI_HISTORY: AppRoutes.api("/ai/history"), // GET
+      AI_CLEAR: AppRoutes.api("/ai/clear"), // DELETE
+      AI_RENAME: AppRoutes.api("/ai/rename"), // PUT
+      AI_ROOMS: AppRoutes.api("/ai/rooms"), // GET, POST
+      AI_DELETE_ROOM: AppRoutes.api("/ai/rooms/:id"), // DELETE
+      AI_SUMMARIZE: AppRoutes.api("/ai/summarize"), // POST
+      AI_TRANSLATE: AppRoutes.api("/ai/translate"), // POST
+      AI_ANALYZE: AppRoutes.api("/ai/analyze"), // POST
     },
   };
 
@@ -65,6 +91,7 @@ class AppRoutes {
   static readonly dialog = {
     param: "dialog",
     auth: "auth",
+
     steps: {
       initial: AuthStep.INITIAL,
       signinPasscode: AuthStep.SIGNIN_PASSCODE,
@@ -78,14 +105,17 @@ class AppRoutes {
 
   // Helper to build dialog URLs
   static buildDialogUrl(step: string, params?: Record<string, string>): string {
-    const url = new URL(window.location.origin + this.client.public.ROOT);
-    url.searchParams.set(this.dialog.param, this.dialog.auth);
+    const url = new URL(window.location.origin + AppRoutes.client.public.ROOT);
+
+    url.searchParams.set(AppRoutes.dialog.param, AppRoutes.dialog.auth);
     url.searchParams.set("step", step);
+
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value) url.searchParams.set(key, value);
       });
     }
+
     return url.pathname + url.search;
   }
 }

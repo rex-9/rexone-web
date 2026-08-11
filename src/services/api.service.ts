@@ -167,7 +167,7 @@ export const useAxiosInterceptor = () => {
         console.log("interceptor response error ===>", error);
 
         // Handle ANY 401 with auth header (token expired OR session replaced)
-        if (error?.response?.status === 401) {
+        if (error?.response?.status === 401 && token) {
           signout();
 
           if (typeof window !== "undefined") {
@@ -175,7 +175,7 @@ export const useAxiosInterceptor = () => {
               window.location.origin + AppRoutes.client.public.ROOT,
             );
             nextUrl.searchParams.set(
-              AppRoutes.dialog.auth,
+              AppRoutes.dialog.param,
               AppRoutes.dialog.auth,
             );
             nextUrl.searchParams.set("step", AppRoutes.dialog.steps.initial);

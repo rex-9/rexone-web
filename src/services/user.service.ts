@@ -18,20 +18,18 @@ class UserService {
       }>
     >
   > {
-    const response = await api.get<{
+    return api.get<{
       user_exists: boolean;
       confirmed: boolean;
-    }>(AppRoutes.server.protected.PEEK_USER, { email });
-    return response;
+    }>(AppRoutes.server.public.PEEK_USER, { email });
   }
 
   async getCurrentUser(): Promise<
     IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>
   > {
-    const response = await api.get<{ user: IUser; token: string }>(
+    return await api.get<{ user: IUser; token: string }>(
       AppRoutes.server.protected.CURRENT_USER,
     );
-    return response;
   }
 
   async uploadImage(

@@ -28,24 +28,22 @@ class UserController {
 
   async peekUser(
     email: string,
-    setError: (message: string) => void,
-  ): Promise<
-    "exists_confirmed" | "exists_unconfirmed" | "not_exists" | undefined
-  > {
+  ): Promise<"exists_confirmed" | "exists_unconfirmed" | "not_exists"> {
     const response = await UserService.peekUser(email);
-    const data = response.data?.data;
 
-    if (!data) {
+    if (response.error || !response.data?.data) {
       console.error("Error peeking user:", response.error);
-      setError("Failed to peek user");
-      return undefined;
+
+      throw new Error("Failed to check user.");
     }
 
-    if (!data.user_exists) {
+    const { user_exists, confirmed } = response.data.data;
+
+    if (!user_exists) {
       return "not_exists";
     }
 
-    return data.confirmed ? "exists_confirmed" : "exists_unconfirmed";
+    return confirmed ? "exists_confirmed" : "exists_unconfirmed";
   }
 
   async getCurrentUser(
