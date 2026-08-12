@@ -1,16 +1,15 @@
 import AppRoutes from "../AppRoutes";
 import {
+  IAdminRole,
   IAdminUser,
   IAdminUserFormValues,
   IAdminUserListParams,
-  IAdminPermission,
-  IAdminRole,
   IApiEnvelope,
   IApiResponse,
   IJsonApiResource,
   IUser,
 } from "../models";
-import { api } from "../services";
+import { api } from "./api.service";
 
 const buildAdminUserPath = (id: string): string =>
   AppRoutes.server.protected.ADMIN_USER_DETAIL.replace(":id", id);
@@ -20,13 +19,6 @@ export type AdminUserResponse =
   | { user: IAdminUser };
 
 class UserService {
-  async getUsers(params?: { page?: number; limit?: number }) {
-    return api.get<IJsonApiResource<IUser>[]>(
-      AppRoutes.server.protected.USERS,
-      params,
-    );
-  }
-
   async getAdminUsers(
     params?: IAdminUserListParams,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
@@ -45,10 +37,9 @@ class UserService {
   async createAdminUser(
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.post<AdminUserResponse>(
-      AppRoutes.server.protected.ADMIN_USERS,
-      { user: values },
-    );
+    return api.post<AdminUserResponse>(AppRoutes.server.protected.ADMIN_USERS, {
+      user: values,
+    });
   }
 
   async updateAdminUser(
@@ -56,15 +47,6 @@ class UserService {
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.patch<AdminUserResponse>(buildAdminUserPath(id), {
-      user: values,
-    });
-  }
-
-  async replaceAdminUser(
-    id: string,
-    values: IAdminUserFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.put<AdminUserResponse>(buildAdminUserPath(id), {
       user: values,
     });
   }
@@ -78,16 +60,8 @@ class UserService {
   async getAdminRoles(): Promise<
     IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
   > {
-    return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>("/iam/roles");
-  }
-
-  async getAdminPermissions(): Promise<
-    IApiResponse<
-      IApiEnvelope<{ permissions: IJsonApiResource<IAdminPermission>[] }>
-    >
-  > {
-    return api.get<{ permissions: IJsonApiResource<IAdminPermission>[] }>(
-      "/iam/permissions",
+    return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>(
+      AppRoutes.server.protected.IAM_ROLES,
     );
   }
 
@@ -99,20 +73,18 @@ class UserService {
       }>
     >
   > {
-    const response = await api.get<{
+    return api.get<{
       user_exists: boolean;
       confirmed: boolean;
-    }>(AppRoutes.server.protected.PEEK_USER, { email });
-    return response;
+    }>(AppRoutes.server.public.PEEK_USER, { email });
   }
 
   async getCurrentUser(): Promise<
     IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>
   > {
-    const response = await api.get<{ user: IUser; token: string }>(
+    return api.get<{ user: IUser; token: string }>(
       AppRoutes.server.protected.CURRENT_USER,
     );
-    return response;
   }
 
   async uploadImage(
@@ -121,7 +93,7 @@ class UserService {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await api.post<{ url: string }>(
+    return api.post<{ url: string }>(
       AppRoutes.server.protected.UPLOAD_ASSET,
       formData,
       {
@@ -130,7 +102,6 @@ class UserService {
         },
       },
     );
-    return response;
   }
 }
 

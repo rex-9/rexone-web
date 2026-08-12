@@ -1,54 +1,12 @@
-import AppRoutes from "../AppRoutes";
-import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../models";
-import { api } from "./api.service";
-
-export interface IProduct {
-  id: string;
-  name: string;
-  description: string;
-  price: string;
-  price_unit_amount: number;
-  currency: string;
-  cycle: string | null;
-  period_label: string;
-  recurring: boolean;
-  active: boolean;
-}
-
-export interface ISubscription {
-  id: string;
-  product_id: string;
-  product_name: string;
-  status: string;
-  cycle: string;
-  started_at: string;
-  next_billing_at: string | null;
-  ended_at: string | null;
-  canceled_at: string | null;
-  active: boolean;
-  days_until_renewal: number | null;
-  price: string;
-  period_label: string;
-}
-
-export interface ITransaction {
-  id: string;
-  product_id: string;
-  product_name: string;
-  status: string;
-  amount: string;
-  price_unit_amount: number;
-  currency: string;
-  paid_at: string | null;
-  refunded_at: string | null;
-  paid: boolean;
-  refunded: boolean;
-}
-
-export interface ICheckoutResponse {
-  checkout_url: string;
-  session_id: string;
-}
+import AppRoutes from "../../AppRoutes";
+import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../models";
+import { api } from "../../services";
+import {
+  ICheckoutResponse,
+  IProduct,
+  ISubscription,
+  ITransaction,
+} from "./types";
 
 class PaymentService {
   // ===== PRODUCTS =====

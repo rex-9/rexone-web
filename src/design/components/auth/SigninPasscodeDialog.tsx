@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
 import { useCountdown } from "../../../hooks";
-import { AuthController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useNavigate } from "react-router-dom";
 import { AuthStep, TAuthStep } from "./type";
+import { AuthController } from "../../../modules/auth";
 
 interface SigninPasscodeDialogProps {
   email: string;

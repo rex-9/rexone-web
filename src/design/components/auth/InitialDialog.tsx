@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
-import { AuthController, UserController } from "../../../controllers";
+import { UserController } from "../../../controllers";
 import { Button, GoogleButton, TextInput, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { AuthStep, TAuthStep } from "./type";
+import { AuthController } from "../../../modules/auth";
 
 interface InitialDialogProps {
   email: string;
@@ -78,39 +79,57 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     if (!validateEmail(localEmail)) return;
     setIsLoading(true);
     try {
-      const result = await UserController.peekUser(localEmail, setError);
+      const result = await UserController.peekUser(localEmail);
 
-      if (result === "exists_confirmed") {
-        // User exists and is confirmed → sign in with passcode
-        navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail });
-      } else if (result === "exists_unconfirmed") {
-        // User exists but not confirmed → send new code and go to verify
-        await AuthController.sendConfirmationEmail(
-          localEmail,
-          setError,
-          () => {},
-          () => {},
-        );
-        navigateToStep(AuthStep.CONFIRM_EMAIL, { email: localEmail });
-      } else {
-        // New user → sign up flow
-        navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, { email: localEmail });
+      switch (result) {
+        case "exists_confirmed":
+          // Existing confirmed user
+          navigateToStep(AuthStep.SIGNIN_PASSCODE, {
+            email: localEmail,
+          });
+          break;
+
+        case "exists_unconfirmed":
+          // Existing but unconfirmed user
+          await AuthController.sendConfirmationEmail(
+            localEmail,
+            setError,
+            () => {},
+            () => {},
+          );
+
+          navigateToStep(AuthStep.CONFIRM_EMAIL, {
+            email: localEmail,
+          });
+          break;
+
+        case "not_exists":
+          // Definitely a new user
+          navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, {
+            email: localEmail,
+          });
+          break;
       }
     } catch (err: any) {
-      setError(err.message || "Failed to check user.");
+      console.error("Failed to check user:", err);
+
+      setError(err?.message || "Failed to check user. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleSignIn = useGoogleLogin({
+    flow: "implicit",
     onSuccess: async (tokenResponse) => {
       setIsLoading(true);
       setError("");
+
       try {
         const result = await AuthController.signInWithGoogle(
           tokenResponse.access_token,
         );
+
         if (result.success && result.token && result.user) {
           // Existing user - sign in directly
           signin(result.token, result.user);
@@ -120,6 +139,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
         } else if (result.passcodeRequired && result.challengeToken) {
           // New user - show passcode setup
           setGoogleChallengeToken(result.challengeToken);
+
           navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, {
             email: result.user?.email || "",
           });
@@ -127,14 +147,15 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           setError(result.errorMessage || "Google sign in failed");
         }
       } catch (err: any) {
-        setError(err.message || "Google sign in failed");
+        setError(err?.message || "Google sign in failed");
       } finally {
         setIsLoading(false);
       }
     },
+
     onError: () => {
       setIsBlocked(true);
-      setError("Google sign in blocked. Please try again.");
+      setError("Google sign in failed. Please try again.");
     },
   });
 

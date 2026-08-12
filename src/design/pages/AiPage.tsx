@@ -5,8 +5,8 @@ import { LayoutPage } from "./LayoutPage";
 import { Button, TextArea } from "../components";
 import { useToast } from "../../contexts/ToastContext";
 import { useLoading } from "../../contexts/LoadingContext";
-import AiController from "../../controllers/ai.controller";
-import { IMessage } from "../../services/ai.service";
+import AiController from "../../modules/ai/ai.controller";
+import { IMessage } from "../../modules/ai/";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();

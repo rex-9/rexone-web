@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useToast } from "../../contexts/ToastContext";
-import { PaymentController } from "../../controllers";
 import { Button } from "../components/button/Button";
 import { LayoutPage } from ".";
+import { IProduct, ISubscription, ITransaction } from "../../modules/payment";
+import { PaymentController } from "../../modules/payment";
 
 export const PaymentPage: React.FC = () => {
   const { setLoading } = useLoading();
   const { success, error } = useToast();
-  const [products, setProducts] = useState<any[]>([]);
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
+  const [transactions, setTransactions] = useState<ITransaction[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -102,8 +103,8 @@ export const PaymentPage: React.FC = () => {
 
     // Active subscription
     if (activeSub) {
-      const activeUntil = activeSub.next_billing_at
-        ? new Date(activeSub.next_billing_at).toLocaleDateString()
+      const activeUntil = activeSub.current_period_end
+        ? new Date(activeSub.current_period_end).toLocaleDateString()
         : "end of period";
 
       return (
@@ -126,8 +127,8 @@ export const PaymentPage: React.FC = () => {
 
     // Canceled but still active (scheduled for cancellation)
     if (canceledSub) {
-      const activeUntil = canceledSub.next_billing_at
-        ? new Date(canceledSub.next_billing_at).toLocaleDateString()
+      const activeUntil = canceledSub.current_period_end
+        ? new Date(canceledSub.current_period_end).toLocaleDateString()
         : "end of period";
 
       return (

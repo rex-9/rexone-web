@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useAuth } from "../../../contexts";
 import { googleLogout } from "@react-oauth/google";
-import { AuthController } from "../../../controllers";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
+import { AuthController } from "../../../modules/auth";
 
 let isSignOutInProgress = false;
 

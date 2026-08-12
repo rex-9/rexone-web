@@ -1,27 +1,10 @@
 // src/controllers/auth.controller.ts
 
-import AppRoutes from "../AppRoutes";
-import { AuthService } from "../services";
-import { IUser } from "../models";
-import { apiHandler } from "../services";
-
-export interface IGoogleSignInStartResult {
-  success: boolean;
-  statusCode?: number;
-  passcodeRequired?: boolean; // Only when new user
-  challengeToken?: string; // Only when new user
-  user?: IUser; // Only when existing user
-  token?: string; // Only when existing user
-  errorMessage?: string;
-}
-
-export interface IGoogleSignInCompleteResult {
-  success: boolean;
-  statusCode?: number;
-  user?: IUser;
-  token?: string;
-  errorMessage?: string;
-}
+import { AuthService } from ".";
+import AppRoutes from "../../AppRoutes";
+import { IUser } from "../../models";
+import { apiHandler } from "../../services";
+import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 
 class AuthController {
   // Sign in with token from URL (email confirmation)

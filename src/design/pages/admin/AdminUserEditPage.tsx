@@ -4,12 +4,7 @@ import AppRoutes from "../../../AppRoutes";
 import { UserController } from "../../../controllers";
 import { useToast } from "../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../hooks";
-import {
-  IAdminPermission,
-  IAdminRole,
-  IAdminUser,
-  IAdminUserFormValues,
-} from "../../../models";
+import { IAdminRole, IAdminUser, IAdminUserFormValues } from "../../../models";
 import { AdminLayout, AdminLoadingState, AdminState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 
@@ -21,7 +16,6 @@ export const AdminUserEditPage: React.FC = () => {
   const toast = useToast();
   const [user, setUser] = useState<IAdminUser | null>(null);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
-  const [permissions, setPermissions] = useState<IAdminPermission[]>([]);
   const [isLoading, setIsLoading] = useState(Boolean(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -38,10 +32,6 @@ export const AdminUserEditPage: React.FC = () => {
         ),
         UserController.getAdminRoles(
           (nextRoles) => setRoles(nextRoles),
-          (message) => setError(message),
-        ),
-        UserController.getAdminPermissions(
-          (nextPermissions) => setPermissions(nextPermissions),
           (message) => setError(message),
         ),
       ]).finally(() => setIsLoading(false));
@@ -92,7 +82,6 @@ export const AdminUserEditPage: React.FC = () => {
             mode="edit"
             user={user}
             roles={roles}
-            permissions={permissions}
             isSubmitting={isSubmitting}
             onSubmit={handleSubmit}
             onCancel={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}

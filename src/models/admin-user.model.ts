@@ -4,7 +4,6 @@ export interface IAdminUser extends IUser {
   id: string;
   confirmed?: boolean;
   locked?: boolean;
-  permission_ids?: string[];
 }
 
 export interface IAdminUserFormValues {
@@ -14,7 +13,6 @@ export interface IAdminUserFormValues {
   password?: string;
   password_confirmation?: string;
   role_ids?: string[];
-  permission_ids?: string[];
 }
 
 export interface IAdminUserListParams {
@@ -28,11 +26,4 @@ export interface IAdminRole {
   description?: string;
   permission_ids?: string[];
   permissions?: Record<string, string[]>;
-}
-
-export interface IAdminPermission {
-  id: string;
-  name: string;
-  action: string;
-  resource: string;
 }

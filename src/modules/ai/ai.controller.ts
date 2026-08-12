@@ -1,6 +1,7 @@
 // src/controllers/ai.controller.ts
-import AiService, { IMessage, IRoom } from "../services/ai.service";
-import { parseFromList } from "../services/api.service";
+import AiService from "./ai.service";
+import { parseFromList } from "../../services/api.service";
+import { IMessage, IRoom } from "./types";
 
 class AiController {
   private currentRoomId: string | null = null;
