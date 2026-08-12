@@ -1,6 +1,6 @@
-import AppRoutes from "../AppRoutes";
-import { api } from "./api.service";
-import { IApiEnvelope, IApiResponse, IUser } from "../models";
+import AppRoutes from "../../AppRoutes";
+import { api } from "../../services/api.service";
+import { IApiEnvelope, IApiResponse, IUser } from "../../models";
 
 export interface ISignInResponseData {
   user?: IUser;

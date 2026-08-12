@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
-import { AuthController, UserController } from "../../../controllers";
+import { UserController } from "../../../controllers";
 import { Button, GoogleButton, TextInput, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { AuthStep, TAuthStep } from "./type";
+import { AuthController } from "../../../modules/auth";
 
 interface InitialDialogProps {
   email: string;

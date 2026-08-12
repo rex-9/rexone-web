@@ -7,6 +7,10 @@ class AppRoutes {
     return `${this.API_VERSION}${path}`;
   }
 
+  private static adminApi(path: string): string {
+    return `${this.API_VERSION}/admin${path}`;
+  }
+
   static readonly client = {
     public: {
       SIGN_IN: "/signin",
@@ -25,6 +29,11 @@ class AppRoutes {
       PAYMENT_SUCCESS: "/payment/success",
       PAYMENT_CANCEL: "/payment/cancel",
       AI: "/ai",
+
+      // Client Admin Dashboard
+      admin: {
+        HOME: AppRoutes.adminApi("/"),
+      },
     },
   };
 
@@ -52,7 +61,6 @@ class AppRoutes {
       SIGN_OUT: "/signout", // DELETE
 
       // Users
-      USERS: AppRoutes.api("/users"), // GET
       CURRENT_USER: AppRoutes.api("/users/current"), // GET
 
       // Media
@@ -84,6 +92,11 @@ class AppRoutes {
       AI_SUMMARIZE: AppRoutes.api("/ai/summarize"), // POST
       AI_TRANSLATE: AppRoutes.api("/ai/translate"), // POST
       AI_ANALYZE: AppRoutes.api("/ai/analyze"), // POST
+
+      // API for Client Admin Dashboard
+      admin: {
+        USERS: AppRoutes.adminApi("/users"),
+      },
     },
   };
 

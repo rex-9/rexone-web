@@ -3,8 +3,8 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
-import { AuthController } from "../../../controllers";
 import AppRoutes from "../../../AppRoutes";
+import { AuthController } from "../../../modules/auth";
 
 export const ConfirmEmailPage: React.FC = () => {
   const navigate = useNavigate();

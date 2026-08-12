@@ -2,11 +2,11 @@
 
 import React, { useState, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
-import { AuthController } from "../../../controllers";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useCountdown } from "../../../hooks";
 import { AuthStep, TAuthStep } from "./type";
 import { useNavigate } from "react-router-dom";
+import { AuthController } from "../../../modules/auth";
 
 interface ConfirmEmailDialogProps {
   email: string;

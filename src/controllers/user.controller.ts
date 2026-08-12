@@ -1,31 +1,7 @@
 import { UserService } from "../services";
-import { IApiEnvelope, IApiPagination, IApiResponse, IUser } from "../models";
-import { parseFromList } from "../services/api.service";
+import { IApiEnvelope, IApiResponse, IUser } from "../models";
 
 class UserController {
-  async getUsers(
-    params?: { page?: number; limit?: number },
-    onSuccess?: (users: IUser[], pagination?: IApiPagination) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await UserService.getUsers(params);
-      const { status, data, meta } = response.data || {};
-
-      if (!status?.success || !data) {
-        onError?.(status?.error || "Failed to load users");
-        return;
-      }
-
-      const users = parseFromList<IUser>(data);
-
-      onSuccess?.(users, meta?.pagination);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      onError?.("An error occurred while loading users.");
-    }
-  }
-
   async peekUser(
     email: string,
   ): Promise<"exists_confirmed" | "exists_unconfirmed" | "not_exists"> {

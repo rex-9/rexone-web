@@ -224,6 +224,7 @@ rexone-web/
 │   ├── assets/         # Images, icons, videos, and static application assets
 │   ├── contexts/       # Contexts and Providers
 │   ├── design/         # Atomic Design System
+│   ├── modules/        # Modules for Logics of each Resources
 │   ├── controllers/    # Application-level API response handling
 │   ├── hooks/          # Reusable React hooks
 │   ├── models/         # TypeScript models and API types

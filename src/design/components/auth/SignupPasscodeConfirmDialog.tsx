@@ -4,10 +4,10 @@ import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../controllers";
 import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
+import { AuthController } from "../../../modules/auth";
 
 interface SignupPasscodeConfirmDialogProps {
   email: string;

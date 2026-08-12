@@ -1,9 +1,6 @@
-import { parseFromList } from "../services/api.service";
-import PaymentService, {
-  IProduct,
-  ISubscription,
-  ITransaction,
-} from "../services/payment.service";
+import { PaymentService } from ".";
+import { parseFromList } from "../../services/api.service";
+import { IProduct, ISubscription, ITransaction } from "./types";
 
 class PaymentController {
   // ===== PRODUCTS =====

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useToast } from "../../contexts/ToastContext";
-import { PaymentController } from "../../controllers";
 import { Button } from "../components/button/Button";
 import { LayoutPage } from ".";
-import {
-  IProduct,
-  ISubscription,
-  ITransaction,
-} from "../../services/payment.service";
+import { IProduct, ISubscription, ITransaction } from "../../modules/payment";
+import { PaymentController } from "../../modules/payment";
 
 export const PaymentPage: React.FC = () => {
   const { setLoading } = useLoading();
