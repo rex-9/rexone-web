@@ -1,12 +1,15 @@
+// src/main.tsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@fontsource/cormorant-garamond/index.css";
-import App from "./App.tsx";
+import App from "./App";
 import "./index.css";
 import "./locales/i18n";
+import { initErrorLogging } from "./initErrorLogging";
+
+initErrorLogging();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />
-  </StrictMode>
+  </StrictMode>,
 );

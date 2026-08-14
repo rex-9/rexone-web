@@ -1,4 +1,5 @@
 class AppConfig {
+  static readonly NODE_ENV = import.meta.env.NODE_ENV;
   static readonly APP_TITLE =
     import.meta.env.VITE_REACT_APP_TITLE || "rexone.me";
   static readonly GOOGLE_CLIENT_ID =

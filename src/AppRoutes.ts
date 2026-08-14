@@ -69,6 +69,9 @@ class AppRoutes {
       // Authentication
       SIGN_OUT: "/signout", // DELETE
 
+      // Save Client Log Errors
+      CLIENT_LOGS: AppRoutes.api("/log/clients"), // POST
+
       // Users
       USERS: AppRoutes.api("/users"), // GET
       CURRENT_USER: AppRoutes.api("/users/current"), // GET
