@@ -15,6 +15,7 @@
     - [🗃️ State Management \& Storage](#️-state-management--storage)
     - [🏗️ Design Patterns \& Architecture](#️-design-patterns--architecture)
     - [🔐 Authentication \& Security](#-authentication--security)
+    - [📱 Client Logging](#-client-logging)
     - [🔌 Integrated Services](#-integrated-services)
       - [📧 Email Services](#-email-services)
       - [🔔 Real-time Updates](#-real-time-updates)
@@ -80,6 +81,18 @@ The project is designed to work as part of the **Rexone ecosystem**, providing a
 - **Protected Routes**: Restrict authenticated application areas.
 - **Role-Based Access Control**: Support different application capabilities based on user roles and permissions.
 - **Centralized API Authentication**: Authentication and authorization are handled through the Core API.
+
+### 📱 Client Logging
+
+> **No more: "This works on my machine."** — Now you can see exactly what your users are experiencing, complete with their environment, storage state, and error context.
+
+- **Client Error Capture**: Centralized API endpoint for capturing frontend errors from web and mobile clients.
+- **Rich Context**: Captures error messages, stack traces, component context, and storage snapshots (localStorage, sessionStorage, cookies).
+- **Platform Detection**: Automatically detects and logs platform (web, iOS, Android), browser, OS, version, and device model from user agent.
+- **User Association**: Links client errors to authenticated users when available.
+- **Severity Levels**: Supports debug, info, warning, error, and critical severity levels.
+- **Occurrence Tracking**: Tracks how many times an error has occurred and when it last appeared.
+- **API Endpoint**: `POST /v1/log/clients` for client-side error submission.
 
 ### 🔌 Integrated Services
 
