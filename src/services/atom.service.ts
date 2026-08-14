@@ -1,34 +1,74 @@
+// src/services/atom.service.ts
 import { WritableAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 
 class AtomService {
-  private atoms: Record<string, WritableAtom<any, any, void>>;
+  private atoms: Record<string, WritableAtom<any, any, void>> = {};
 
   constructor() {
-    this.atoms = Object.keys(localStorage).reduce(
-      (acc, key) => {
-        acc[key] = atomWithStorage<any>(
-          key,
-          JSON.parse(localStorage.getItem(key) as string),
-        );
-        return acc;
-      },
-      {} as Record<string, WritableAtom<any, any, void>>,
-    );
+    this.loadAtomsFromStorage();
   }
 
+  /**
+   * Safely load existing atoms from localStorage.
+   * Invalid JSON entries are automatically removed.
+   */
+  private loadAtomsFromStorage(): void {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (!key) continue;
+
+      const value = this.safeParse(key);
+      if (value !== undefined) {
+        this.atoms[key] = atomWithStorage<any>(key, value);
+      }
+    }
+  }
+
+  /**
+   * Safely parse a localStorage value. Returns undefined if invalid.
+   * If invalid, removes the entry and logs a warning.
+   */
+  private safeParse(key: string): any | undefined {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw !== null ? JSON.parse(raw) : undefined;
+    } catch {
+      console.warn(`[AtomService] Removed invalid localStorage key: "${key}"`);
+      localStorage.removeItem(key);
+      return undefined;
+    }
+  }
+
+  /**
+   * Get or create an atom with the given initial value.
+   */
   getAtom<T>(key: string, initialValue: T): WritableAtom<T, any, void> {
     if (!this.atoms[key]) {
-      this.atoms[key] = atomWithStorage<T>(key, initialValue);
+      const existing = this.safeParse(key);
+      this.atoms[key] = atomWithStorage<T>(
+        key,
+        existing !== undefined ? existing : initialValue,
+      );
     }
     return this.atoms[key] as WritableAtom<T, any, void>;
   }
 
+  /**
+   * Remove an atom and its localStorage entry.
+   */
   removeAtom(key: string): void {
     if (this.atoms[key]) {
       localStorage.removeItem(key);
       delete this.atoms[key];
     }
+  }
+
+  /**
+   * Get all current atom keys.
+   */
+  getKeys(): string[] {
+    return Object.keys(this.atoms);
   }
 }
 
