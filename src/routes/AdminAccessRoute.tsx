@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
-import { AdminAction, AdminResource } from "../models";
+import { AdminAction, AdminResource, hasAdminRole } from "../models";
 
 interface AdminAccessRouteProps {
   action: AdminAction;
@@ -18,6 +18,7 @@ export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
+  const hasAdminAccess = hasAdminRole(currentUser?.role_names);
   const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
 
   if (isLoading) {
@@ -32,5 +33,5 @@ export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
     return isSuperAdmin ? <Outlet /> : <NotFoundPage />;
   }
 
-  return can(action, resource) ? <Outlet /> : <NotFoundPage />;
+  return hasAdminAccess && can(action, resource) ? <Outlet /> : <NotFoundPage />;
 };

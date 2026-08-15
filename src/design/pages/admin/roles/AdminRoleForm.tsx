@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { isAdminRoleName } from "../../../../models";
 import {
   IAdminPermission,
   IAdminRole,
@@ -30,9 +31,11 @@ export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
 }) => {
   const [name, setName] = useState(role?.name ?? "");
   const [description, setDescription] = useState(role?.description ?? "");
+  const [nameError, setNameError] = useState("");
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<string[]>(
     role?.permission_ids ?? [],
   );
+  const shouldValidateAdminName = !role?.system;
 
   const permissionItems = useMemo(
     () =>
@@ -67,8 +70,19 @@ export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const nextName = name.trim();
+
+    if (shouldValidateAdminName && !isAdminRoleName(nextName)) {
+      setNameError(
+        "Admin panel roles must end with _admin, for example notification_admin.",
+      );
+      return;
+    }
+
+    setNameError("");
+
     onSubmit({
-      name: name.trim(),
+      name: nextName,
       description: description.trim(),
       permission_ids: selectedPermissionIds,
     });
@@ -83,7 +97,16 @@ export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
             value={name}
             required
             disabled={role?.system}
-            onChange={(event) => setName(event.target.value)}
+            error={nameError}
+            helperText={
+              shouldValidateAdminName
+                ? "Use a name ending with _admin, such as notification_admin."
+                : undefined
+            }
+            onChange={(event) => {
+              setName(event.target.value);
+              if (nameError) setNameError("");
+            }}
           />
           <TextInput
             label="Description"

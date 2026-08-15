@@ -1,9 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import AppRoutes from "../AppRoutes";
+import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
-import { AdminResource } from "../models";
+import { AdminResource, hasAdminRole } from "../models";
 
 const adminEntryRoutes: Array<{
   action?: "read" | "create";
@@ -23,7 +24,9 @@ const adminEntryRoutes: Array<{
 ];
 
 export const AdminHomeRoute: React.FC = () => {
+  const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
+  const hasAdminAccess = hasAdminRole(currentUser?.role_names);
 
   if (isLoading) {
     return (
@@ -33,9 +36,11 @@ export const AdminHomeRoute: React.FC = () => {
     );
   }
 
-  const entry = adminEntryRoutes.find((item) =>
-    can(item.action ?? "read", item.resource),
-  );
+  const entry = hasAdminAccess
+    ? adminEntryRoutes.find((item) =>
+        can(item.action ?? "read", item.resource),
+      )
+    : null;
 
   return entry ? <Navigate to={entry.path} replace /> : <NotFoundPage />;
 };

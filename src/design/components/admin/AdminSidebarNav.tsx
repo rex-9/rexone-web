@@ -10,7 +10,7 @@ import {
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
-import { AdminResource } from "../../../models";
+import { AdminResource, hasAdminRole } from "../../../models";
 import { cn } from "../../utils";
 
 interface IAdminNavItem {
@@ -65,17 +65,20 @@ export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
 }) => {
   const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
+  const hasAdminAccess = hasAdminRole(currentUser?.role_names);
   const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
 
   const enabledItems = useMemo(
     () =>
       navItems.map((item) => ({
         ...item,
-        isEnabled: item.superAdminOnly
+        isEnabled: !hasAdminAccess
+          ? false
+          : item.superAdminOnly
           ? isSuperAdmin
           : isLoading || can(item.action ?? "read", item.resource),
       })),
-    [can, isLoading, isSuperAdmin],
+    [can, hasAdminAccess, isLoading, isSuperAdmin],
   );
 
   return (
