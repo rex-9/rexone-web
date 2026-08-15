@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { UserController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../hooks";
-import { IAdminRole, IAdminUserFormValues } from "../../../models";
-import { AdminLayout, AdminLoadingState, AdminState } from "../../components";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle } from "../../../../hooks";
+import { Admin, IAdminRole, IAdminUserFormValues } from "../../../../modules/admin";
+import { AdminFormAlert, AdminLayout, AdminLoadingState } from "../../../components";
 import { AdminUserForm } from "./AdminUserForm";
 
 export const AdminUserCreatePage: React.FC = () => {
@@ -20,7 +19,7 @@ export const AdminUserCreatePage: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void UserController.getAdminRoles(
+      void Admin.UserController.getRoles(
         (nextRoles) => setRoles(nextRoles),
         (message) => setError(message),
       ).finally(() => setIsLoadingRoles(false));
@@ -33,7 +32,7 @@ export const AdminUserCreatePage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await UserController.createAdminUser(
+    await Admin.UserController.createUser(
       values,
       () => {
         toast.success("User created");
@@ -53,7 +52,7 @@ export const AdminUserCreatePage: React.FC = () => {
     >
       {error && (
         <div className="mb-16">
-          <AdminState title="Unable to create user" message={error} />
+          <AdminFormAlert message={error} />
         </div>
       )}
       {isLoadingRoles ? (

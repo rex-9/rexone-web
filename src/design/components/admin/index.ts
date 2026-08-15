@@ -1,8 +1,12 @@
 export { AdminActionButton } from "./AdminActionButton";
+export { AdminFormAlert } from "./AdminFormAlert";
 export { AdminFormShell } from "./AdminFormShell";
+export { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 export { AdminLayout } from "./AdminLayout";
 export { AdminLoadingState, AdminState } from "./AdminState";
 export { AdminPagination } from "./AdminPagination";
+export { AdminPermissionMatrix } from "./AdminPermissionMatrix";
+export type { IAdminPermissionMatrixItem } from "./AdminPermissionMatrix";
 export { AdminTable } from "./AdminTable";
 export type { IAdminTableColumn } from "./AdminTable";
 export { ConfirmationDialog } from "./ConfirmationDialog";

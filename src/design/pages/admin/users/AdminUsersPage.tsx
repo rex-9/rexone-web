@@ -1,11 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { UserController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../hooks";
-import { IAdminUser, IApiPagination } from "../../../models";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { IApiPagination } from "../../../../models";
+import { Admin, IAdminUser } from "../../../../modules/admin";
 import {
   AdminActionButton,
   AdminLayout,
@@ -15,7 +18,7 @@ import {
   AdminTable,
   ConfirmationDialog,
   IAdminTableColumn,
-} from "../../components";
+} from "../../../components";
 
 const PAGE_SIZE = 10;
 
@@ -49,7 +52,7 @@ export const AdminUsersPage: React.FC = () => {
     setIsLoading(true);
     setError("");
 
-    await UserController.getAdminUsers(
+    await Admin.UserController.getUsers(
       { page, limit: PAGE_SIZE },
       (nextUsers, nextPagination) => {
         setUsers(nextUsers);
@@ -153,7 +156,7 @@ export const AdminUsersPage: React.FC = () => {
 
     setIsDeleting(true);
 
-    await UserController.deleteAdminUser(
+    await Admin.UserController.deleteUser(
       deleteTarget.id,
       () => {
         toast.success("User deleted");

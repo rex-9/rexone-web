@@ -1,11 +1,14 @@
 import React, { useMemo } from "react";
 import { NavLink } from "react-router-dom";
 import {
+  BellAlertIcon,
   ChatBubbleLeftRightIcon,
   InboxStackIcon,
+  KeyIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import AppRoutes from "../../../AppRoutes";
+import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
 import { AdminResource } from "../../../models";
 import { cn } from "../../utils";
@@ -14,7 +17,9 @@ interface IAdminNavItem {
   label: string;
   to: string;
   resource: AdminResource;
+  action?: "read" | "create";
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  superAdminOnly?: boolean;
 }
 
 interface AdminSidebarNavProps {
@@ -29,15 +34,28 @@ const navItems: IAdminNavItem[] = [
     icon: UserGroupIcon,
   },
   {
+    label: "Roles",
+    to: AppRoutes.client.protected.ADMIN_ROLES,
+    resource: "roles",
+    icon: KeyIcon,
+    superAdminOnly: true,
+  },
+  {
+    label: "Notifications",
+    to: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
+    resource: "notifications",
+    icon: BellAlertIcon,
+  },
+  {
     label: "Chat Rooms",
     to: AppRoutes.client.protected.ADMIN_CHAT_ROOMS,
-    resource: "chat_rooms",
+    resource: "rooms",
     icon: ChatBubbleLeftRightIcon,
   },
   {
     label: "Chat Messages",
     to: AppRoutes.client.protected.ADMIN_CHAT_MESSAGES,
-    resource: "chat_messages",
+    resource: "messages",
     icon: InboxStackIcon,
   },
 ];
@@ -45,15 +63,19 @@ const navItems: IAdminNavItem[] = [
 export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
   onNavigate,
 }) => {
+  const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
+  const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
 
   const enabledItems = useMemo(
     () =>
       navItems.map((item) => ({
         ...item,
-        isEnabled: isLoading || can("read", item.resource),
+        isEnabled: item.superAdminOnly
+          ? isSuperAdmin
+          : isLoading || can(item.action ?? "read", item.resource),
       })),
-    [can, isLoading],
+    [can, isLoading, isSuperAdmin],
   );
 
   return (

@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { AdminChatController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../hooks";
-import { IAdminChatRoom, IApiPagination } from "../../../models";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { IApiPagination } from "../../../../models";
+import { Admin, IAdminChatMessage } from "../../../../modules/admin";
 import {
   AdminActionButton,
   AdminLayout,
@@ -15,33 +15,34 @@ import {
   AdminTable,
   ConfirmationDialog,
   IAdminTableColumn,
-} from "../../components";
+} from "../../../components";
 import { formatAdminDate, truncateAdminText } from "./adminPageUtils";
 
 const PAGE_SIZE = 10;
 
-export const AdminChatRoomsPage: React.FC = () => {
-  useDocumentTitle("Chat Rooms");
+export const AdminChatMessagesPage: React.FC = () => {
+  useDocumentTitle("Chat Messages");
 
   const toast = useToast();
   const navigate = useNavigate();
   const { can } = usePermissions();
-  const [rooms, setRooms] = useState<IAdminChatRoom[]>([]);
+  const [messages, setMessages] = useState<IAdminChatMessage[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminChatRoom | null>(null);
+  const [deleteTarget, setDeleteTarget] =
+    useState<IAdminChatMessage | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const loadRooms = useCallback(async () => {
+  const loadMessages = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
-    await AdminChatController.getRooms(
+    await Admin.ChatController.getMessages(
       { page, limit: PAGE_SIZE },
-      (nextRooms, nextPagination) => {
-        setRooms(nextRooms);
+      (nextMessages, nextPagination) => {
+        setMessages(nextMessages);
         setPagination(nextPagination ?? null);
         setIsLoading(false);
       },
@@ -54,50 +55,50 @@ export const AdminChatRoomsPage: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void loadRooms();
+      void loadMessages();
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [loadRooms]);
+  }, [loadMessages]);
 
-  const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
+  const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
     () => [
-      { key: "title", header: "Room", render: (room) => room.title },
+      { key: "role", header: "Role", render: (message) => message.role },
       {
-        key: "messages",
-        header: "Messages",
-        render: (room) => room.message_count,
+        key: "content",
+        header: "Message",
+        render: (message) => truncateAdminText(message.content),
       },
       {
-        key: "last",
-        header: "Last message",
-        render: (room) => truncateAdminText(room.last_message),
+        key: "room",
+        header: "Room ID",
+        render: (message) => message.room_id,
       },
       {
         key: "created",
         header: "Created",
-        render: (room) => formatAdminDate(room.created_at),
+        render: (message) => formatAdminDate(message.created_at),
       },
       {
         key: "actions",
         header: "",
         className: "text-right",
-        render: (room) => (
+        render: (message) => (
           <div className="flex justify-end gap-8">
             <AdminActionButton
               action="update"
-              resource="chat_rooms"
+              resource="chat_messages"
               can={can}
               size="sm"
               variant="secondary"
               className="h-[32px] w-[32px] p-0"
-              aria-label="Edit chat room"
+              aria-label="Edit chat message"
               title="Edit"
               onClick={() =>
                 navigate(
-                  AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT.replace(
+                  AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT.replace(
                     ":id",
-                    room.id,
+                    message.id,
                   ),
                 )
               }
@@ -106,14 +107,14 @@ export const AdminChatRoomsPage: React.FC = () => {
             </AdminActionButton>
             <AdminActionButton
               action="delete"
-              resource="chat_rooms"
+              resource="chat_messages"
               can={can}
               size="sm"
               variant="tertiary"
               className="h-[32px] w-[32px] p-0"
-              aria-label="Delete chat room"
+              aria-label="Delete chat message"
               title="Delete"
-              onClick={() => setDeleteTarget(room)}
+              onClick={() => setDeleteTarget(message)}
             >
               <TrashIcon className="h-[18px] w-[18px]" />
             </AdminActionButton>
@@ -128,13 +129,13 @@ export const AdminChatRoomsPage: React.FC = () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
-    await AdminChatController.deleteRoom(
+    await Admin.ChatController.deleteMessage(
       deleteTarget.id,
       () => {
-        toast.success("Chat room deleted");
+        toast.success("Chat message deleted");
         setDeleteTarget(null);
         setIsDeleting(false);
-        void loadRooms();
+        void loadMessages();
       },
       (message) => {
         toast.error(message);
@@ -144,24 +145,24 @@ export const AdminChatRoomsPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Chat Rooms">
+    <AdminLayout title="Chat Messages">
       {isLoading ? (
         <AdminLoadingState />
       ) : error ? (
-        <AdminState title="Unable to load chat rooms" message={error} />
-      ) : rooms.length === 0 ? (
-        <AdminState title="No chat rooms yet" message="Chat rooms will appear here when users start conversations." />
+        <AdminState title="Unable to load chat messages" message={error} />
+      ) : messages.length === 0 ? (
+        <AdminState title="No chat messages yet" message="Chat messages will appear here when conversations have messages." />
       ) : (
         <>
-          <AdminTable columns={columns} records={rooms} getRowKey={(room) => room.id} />
+          <AdminTable columns={columns} records={messages} getRowKey={(message) => message.id} />
           <AdminPagination pagination={pagination} onPageChange={setPage} />
         </>
       )}
 
       <ConfirmationDialog
         isOpen={Boolean(deleteTarget)}
-        title="Delete chat room"
-        message={`Delete ${deleteTarget?.title || "this chat room"}? This will also delete its messages.`}
+        title="Delete chat message"
+        message="Delete this chat message? This cannot be undone."
         confirmLabel="Delete"
         isLoading={isDeleting}
         onClose={() => setDeleteTarget(null)}

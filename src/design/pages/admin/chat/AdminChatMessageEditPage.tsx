@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { AdminChatController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../hooks";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle } from "../../../../hooks";
 import {
+  Admin,
   IAdminChatMessage,
   IAdminChatMessageFormValues,
-} from "../../../models";
+} from "../../../../modules/admin";
 import {
+  AdminFormAlert,
   AdminFormShell,
   AdminLayout,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextArea,
-} from "../../components";
+} from "../../../components";
 
 const messageRoles = ["user", "assistant"];
 
@@ -36,7 +37,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
     if (!id) return;
 
     const timeoutId = window.setTimeout(() => {
-      void AdminChatController.getMessage(
+      void Admin.ChatController.getMessage(
         id,
         (nextMessage) => {
           setMessage(nextMessage);
@@ -66,7 +67,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await AdminChatController.updateMessage(
+    await Admin.ChatController.updateMessage(
       id,
       values,
       () => {
@@ -95,7 +96,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
         <>
           {error && (
             <div className="mb-16">
-              <AdminState title="Unable to update chat message" message={error} />
+              <AdminFormAlert message={error} />
             </div>
           )}
           <AdminFormShell>

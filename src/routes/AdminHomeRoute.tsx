@@ -5,11 +5,19 @@ import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
 import { AdminResource } from "../models";
 
-const adminEntryRoutes: Array<{ resource: AdminResource; path: string }> = [
+const adminEntryRoutes: Array<{
+  action?: "read" | "create";
+  resource: AdminResource;
+  path: string;
+}> = [
   { resource: "users", path: AppRoutes.client.protected.ADMIN_USERS },
-  { resource: "chat_rooms", path: AppRoutes.client.protected.ADMIN_CHAT_ROOMS },
   {
-    resource: "chat_messages",
+    resource: "notifications",
+    path: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
+  },
+  { resource: "rooms", path: AppRoutes.client.protected.ADMIN_CHAT_ROOMS },
+  {
+    resource: "messages",
     path: AppRoutes.client.protected.ADMIN_CHAT_MESSAGES,
   },
 ];
@@ -25,7 +33,9 @@ export const AdminHomeRoute: React.FC = () => {
     );
   }
 
-  const entry = adminEntryRoutes.find((item) => can("read", item.resource));
+  const entry = adminEntryRoutes.find((item) =>
+    can(item.action ?? "read", item.resource),
+  );
 
   return entry ? <Navigate to={entry.path} replace /> : <NotFoundPage />;
 };

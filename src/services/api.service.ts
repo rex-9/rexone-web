@@ -191,8 +191,6 @@ export const useAxiosInterceptor = () => {
       (error) => {
         console.log("interceptor response error ===>", error);
 
-        // Handle authenticated 401s only. Public auth failures should stay in
-        // their dialog and show the endpoint error.
         if (error?.response?.status === 401 && token) {
           signout();
 

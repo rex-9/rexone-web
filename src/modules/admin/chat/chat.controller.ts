@@ -1,21 +1,21 @@
-import { AdminChatService } from "../services";
+import { IApiPagination } from "../../../models";
+import { parseFromList } from "../../../services/api.service";
+import ChatService from "./chat.service";
 import {
   IAdminChatMessage,
   IAdminChatMessageFormValues,
   IAdminChatRoom,
   IAdminChatRoomFormValues,
-  IApiPagination,
-} from "../models";
-import { parseFromList } from "../services/api.service";
+} from "./types";
 
-class AdminChatController {
+class ChatController {
   async getRooms(
     params: { page?: number; limit?: number },
     onSuccess?: (rooms: IAdminChatRoom[], pagination?: IApiPagination) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.getRooms(params);
+      const response = await ChatService.getRooms(params);
       const { status, data, meta } = response.data || {};
 
       if (!status?.success || !data) {
@@ -35,7 +35,7 @@ class AdminChatController {
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await AdminChatService.deleteRoom(id);
+    const response = await ChatService.deleteRoom(id);
     const { status } = response.data || {};
 
     if (!status?.success) {
@@ -52,7 +52,7 @@ class AdminChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.getRoom(id);
+      const response = await ChatService.getRoom(id);
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.room) {
@@ -74,7 +74,7 @@ class AdminChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.updateRoom(id, values);
+      const response = await ChatService.updateRoom(id, values);
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.room) {
@@ -98,13 +98,11 @@ class AdminChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.getMessages(params);
+      const response = await ChatService.getMessages(params);
       const { status, data, meta } = response.data || {};
 
       if (!status?.success || !data) {
-        onError?.(
-          status?.error || response.error || "Failed to load messages",
-        );
+        onError?.(status?.error || response.error || "Failed to load messages");
         return;
       }
 
@@ -120,7 +118,7 @@ class AdminChatController {
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await AdminChatService.deleteMessage(id);
+    const response = await ChatService.deleteMessage(id);
     const { status } = response.data || {};
 
     if (!status?.success) {
@@ -137,13 +135,11 @@ class AdminChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.getMessage(id);
+      const response = await ChatService.getMessage(id);
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.message) {
-        onError?.(
-          status?.error || response.error || "Failed to load message",
-        );
+        onError?.(status?.error || response.error || "Failed to load message");
         return;
       }
 
@@ -161,7 +157,7 @@ class AdminChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
-      const response = await AdminChatService.updateMessage(id, values);
+      const response = await ChatService.updateMessage(id, values);
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.message) {
@@ -179,4 +175,4 @@ class AdminChatController {
   }
 }
 
-export default new AdminChatController();
+export default new ChatController();

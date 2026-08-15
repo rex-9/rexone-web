@@ -27,6 +27,10 @@ import {
   AdminChatRoomsPage,
   AdminChatRoomEditPage,
   AdminChatMessagesPage,
+  AdminNotificationsPage,
+  AdminRoleEditPage,
+  AdminRolesPage,
+  AdminRoleCreatePage,
   AdminUsersPage,
   AdminUserCreatePage,
   AdminUserEditPage,
@@ -129,7 +133,49 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="read" resource="chat_rooms" />}
+              element={
+                <AdminAccessRoute
+                  action="read"
+                  resource="roles"
+                  superAdminOnly
+                />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_ROLES}
+                element={<AdminRolesPage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute
+                  action="create"
+                  resource="roles"
+                  superAdminOnly
+                />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_ROLE_CREATE}
+                element={<AdminRoleCreatePage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute
+                  action="update"
+                  resource="roles"
+                  superAdminOnly
+                />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_ROLE_EDIT}
+                element={<AdminRoleEditPage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="read" resource="rooms" />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_ROOMS}
@@ -138,7 +184,7 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute action="update" resource="chat_rooms" />
+                <AdminAccessRoute action="update" resource="rooms" />
               }
             >
               <Route
@@ -148,7 +194,7 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute action="read" resource="chat_messages" />
+                <AdminAccessRoute action="read" resource="messages" />
               }
             >
               <Route
@@ -158,12 +204,22 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute action="update" resource="chat_messages" />
+                <AdminAccessRoute action="update" resource="messages" />
               }
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT}
                 element={<AdminChatMessageEditPage />}
+              />
+            </Route>
+            <Route
+              element={
+                <AdminAccessRoute action="read" resource="notifications" />
+              }
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_NOTIFICATIONS}
+                element={<AdminNotificationsPage />}
               />
             </Route>
           </Route>

@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { UserController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../hooks";
-import { IAdminRole, IAdminUser, IAdminUserFormValues } from "../../../models";
-import { AdminLayout, AdminLoadingState, AdminState } from "../../components";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle } from "../../../../hooks";
+import {
+  Admin,
+  IAdminRole,
+  IAdminUser,
+  IAdminUserFormValues,
+} from "../../../../modules/admin";
+import {
+  AdminFormAlert,
+  AdminLayout,
+  AdminLoadingState,
+  AdminState,
+} from "../../../components";
 import { AdminUserForm } from "./AdminUserForm";
 
 export const AdminUserEditPage: React.FC = () => {
@@ -25,12 +34,12 @@ export const AdminUserEditPage: React.FC = () => {
 
     const timeoutId = window.setTimeout(() => {
       void Promise.all([
-        UserController.getAdminUser(
+        Admin.UserController.getUser(
           id,
           (nextUser) => setUser(nextUser),
           (message) => setError(message),
         ),
-        UserController.getAdminRoles(
+        Admin.UserController.getRoles(
           (nextRoles) => setRoles(nextRoles),
           (message) => setError(message),
         ),
@@ -46,7 +55,7 @@ export const AdminUserEditPage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await UserController.updateAdminUser(
+    await Admin.UserController.updateUser(
       id,
       values,
       () => {
@@ -75,7 +84,7 @@ export const AdminUserEditPage: React.FC = () => {
         <>
           {error && (
             <div className="mb-16">
-              <AdminState title="Unable to update user" message={error} />
+              <AdminFormAlert message={error} />
             </div>
           )}
           <AdminUserForm

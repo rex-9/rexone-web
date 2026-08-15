@@ -12,6 +12,7 @@ import { Button } from "../button";
 import { ProfileAvatar } from "../common/ProfileAvatar";
 import { LanguageDropdown } from "../settings/LanguageDropdown";
 import { ThemeToggle } from "../settings/ThemeToggle";
+import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
 
 interface AdminLayoutProps {
@@ -152,9 +153,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                 </h1>
               </div>
               {actionLabel && onAction && (
-                <Button onClick={onAction} className="self-start md:self-auto">
-                  {actionLabel}
-                </Button>
+                <AdminHeaderActionButton
+                  label={actionLabel}
+                  onClick={onAction}
+                />
               )}
             </div>
 

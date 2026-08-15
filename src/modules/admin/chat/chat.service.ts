@@ -1,19 +1,20 @@
-import AppRoutes from "../AppRoutes";
+import AppRoutes from "../../../AppRoutes";
+import {
+  IApiEnvelope,
+  IApiResponse,
+  IJsonApiResource,
+} from "../../../models";
+import { api } from "../../../services";
 import {
   IAdminChatMessage,
   IAdminChatMessageFormValues,
   IAdminChatRoom,
   IAdminChatRoomFormValues,
-  IApiEnvelope,
-  IApiResponse,
-  IJsonApiResource,
-} from "../models";
-import { api } from "./api.service";
+} from "./types";
 
-const buildPath = (path: string, id: string): string =>
-  path.replace(":id", id);
+const buildPath = (path: string, id: string): string => path.replace(":id", id);
 
-class AdminChatService {
+class ChatService {
   async getRooms(params?: {
     page?: number;
     limit?: number;
@@ -85,4 +86,4 @@ class AdminChatService {
   }
 }
 
-export default new AdminChatService();
+export default new ChatService();

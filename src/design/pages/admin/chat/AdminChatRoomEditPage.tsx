@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import AppRoutes from "../../../AppRoutes";
-import { AdminChatController } from "../../../controllers";
-import { useToast } from "../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../hooks";
-import { IAdminChatRoom, IAdminChatRoomFormValues } from "../../../models";
+import AppRoutes from "../../../../AppRoutes";
+import { useToast } from "../../../../contexts/ToastContext";
+import { useDocumentTitle } from "../../../../hooks";
 import {
+  Admin,
+  IAdminChatRoom,
+  IAdminChatRoomFormValues,
+} from "../../../../modules/admin";
+import {
+  AdminFormAlert,
   AdminFormShell,
   AdminLayout,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextInput,
-} from "../../components";
+} from "../../../components";
 
 export const AdminChatRoomEditPage: React.FC = () => {
   useDocumentTitle("Edit Chat Room");
@@ -30,7 +34,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
     if (!id) return;
 
     const timeoutId = window.setTimeout(() => {
-      void AdminChatController.getRoom(
+      void Admin.ChatController.getRoom(
         id,
         (nextRoom) => {
           setRoom(nextRoom);
@@ -58,7 +62,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await AdminChatController.updateRoom(
+    await Admin.ChatController.updateRoom(
       id,
       values,
       () => {
@@ -84,7 +88,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
         <>
           {error && (
             <div className="mb-16">
-              <AdminState title="Unable to update chat room" message={error} />
+              <AdminFormAlert message={error} />
             </div>
           )}
           <AdminFormShell>

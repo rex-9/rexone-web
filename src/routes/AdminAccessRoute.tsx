@@ -1,5 +1,6 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
+import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
 import { AdminAction, AdminResource } from "../models";
@@ -7,13 +8,17 @@ import { AdminAction, AdminResource } from "../models";
 interface AdminAccessRouteProps {
   action: AdminAction;
   resource: AdminResource;
+  superAdminOnly?: boolean;
 }
 
 export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
   action,
   resource,
+  superAdminOnly = false,
 }) => {
+  const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
+  const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
 
   if (isLoading) {
     return (
@@ -21,6 +26,10 @@ export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
         <span className="loading loading-spinner loading-md" />
       </div>
     );
+  }
+
+  if (superAdminOnly) {
+    return isSuperAdmin ? <Outlet /> : <NotFoundPage />;
   }
 
   return can(action, resource) ? <Outlet /> : <NotFoundPage />;

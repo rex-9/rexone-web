@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   IAdminRole,
   IAdminUser,
   IAdminUserFormValues,
-} from "../../../models";
-import { AdminFormShell, FormActionRow, TextInput } from "../../components";
+} from "../../../../modules/admin";
+import {
+  AdminFormShell,
+  AdminPermissionMatrix,
+  FormActionRow,
+  IAdminPermissionMatrixItem,
+  TextInput,
+} from "../../../components";
 
 interface AdminUserFormProps {
   mode: "create" | "edit";
@@ -87,8 +93,36 @@ export const AdminUserForm: React.FC<AdminUserFormProps> = ({
     onSubmit(payload);
   };
 
-  const selectedRoleIds = values.role_ids || [];
-  const selectedRoleIdSet = new Set(selectedRoleIds);
+  const selectedRoleIds = useMemo(() => values.role_ids || [], [values.role_ids]);
+  const selectedRoleIdSet = useMemo(
+    () => new Set(selectedRoleIds),
+    [selectedRoleIds],
+  );
+  const selectedRoles = useMemo(
+    () => roles.filter((role) => selectedRoleIdSet.has(role.id)),
+    [roles, selectedRoleIdSet],
+  );
+  const selectedRolePermissions = useMemo<IAdminPermissionMatrixItem[]>(
+    () => {
+      const permissionsByKey = new Map<string, IAdminPermissionMatrixItem>();
+
+      selectedRoles.forEach((role) => {
+        Object.entries(role.permissions ?? {}).forEach(([resource, actions]) =>
+          (actions ?? []).forEach((action) => {
+            const key = `${resource}-${action}`;
+            permissionsByKey.set(key, {
+              id: key,
+              resource,
+              action,
+            });
+          }),
+        );
+      });
+
+      return [...permissionsByKey.values()];
+    },
+    [selectedRoles],
+  );
 
   return (
     <AdminFormShell>
@@ -157,6 +191,21 @@ export const AdminUserForm: React.FC<AdminUserFormProps> = ({
                   </label>
                 ))}
               </div>
+
+              {selectedRoles.length > 0 && (
+                <div className="mt-14 space-y-10 border-t border-base-300 pt-12">
+                  <h3 className="text-body-s font-semibold text-base-content">
+                    Related permissions
+                  </h3>
+                  {selectedRolePermissions.length === 0 ? (
+                    <div className="text-body-s text-base-content opacity-60">
+                      No permissions assigned.
+                    </div>
+                  ) : (
+                    <AdminPermissionMatrix permissions={selectedRolePermissions} />
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

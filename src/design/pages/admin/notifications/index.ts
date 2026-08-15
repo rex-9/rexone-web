@@ -1,0 +1,1 @@
+export { AdminNotificationsPage } from "./AdminNotificationsPage";
