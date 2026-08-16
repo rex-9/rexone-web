@@ -4,6 +4,25 @@ import en from "./en.json";
 import es from "./es.json";
 import my from "./my.json";
 
+const CLIENT_LOCALES = ["en", "es", "my"] as const;
+
+const getInitialLanguage = (): string => {
+  if (typeof window === "undefined") return "en";
+
+  try {
+    const storedLocale: unknown = JSON.parse(
+      window.localStorage.getItem("locale") ?? '"en"',
+    );
+
+    return typeof storedLocale === "string" &&
+      CLIENT_LOCALES.some((locale) => locale === storedLocale)
+      ? storedLocale
+      : "en";
+  } catch {
+    return "en";
+  }
+};
+
 i18n.use(initReactI18next).init({
   resources: {
     en: {
@@ -16,7 +35,7 @@ i18n.use(initReactI18next).init({
       translation: my,
     },
   },
-  lng: "en", // Default language
+  lng: getInitialLanguage(),
   fallbackLng: "en",
   interpolation: {
     escapeValue: false, // React already escapes values

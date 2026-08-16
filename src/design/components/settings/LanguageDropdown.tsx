@@ -11,7 +11,7 @@ export const LanguageDropdown = () => {
   const languageOptions = [
     { value: "en", label: "🇺🇸 English" },
     { value: "es", label: "🇪🇸 Español" },
-    // { value: "my", label: "🇲🇲 မြန်မာ" },
+    { value: "my", label: "🇲🇲 မြန်မာ" },
   ];
 
   const handleLanguageChange = (value: string) => {

@@ -190,6 +190,8 @@ i18next and react-i18next provide runtime localization with English, Spanish, an
 
 Translation keys are organized by module in [`src/locales/app_locales.ts`](src/locales/app_locales.ts), producing discoverable paths such as `AppLocales.Auth.SignInPasscode.Title`. React components use the reactive `useTranslate()` helper, while services use `translate()` outside React lifecycle rules.
 
+Every API request also carries the selected supported locale in the `X-Locale` header. Rexone Core currently accepts English and Burmese, so unsupported client locales—including Spanish—are mapped to English for backend messages.
+
 The structure is intended to stay navigable as product copy grows rather than becoming one flat catalog of unrelated messages.
 
 ### Client observability

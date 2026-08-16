@@ -42,7 +42,7 @@
       },
       "errors": {
         "too_many_attempts": "Too many attempts. Try again in {{seconds}}s.",
-        "incorrect_passcode": "Incorrect passcode. {{attempts}}/3 attempts remaining.",
+        "incorrect_passcode": "Incorrect passcode. {{attempts}} attempts remaining.",
         "no_attempts": "No attempts remaining. Please wait."
       },
       "helper": {

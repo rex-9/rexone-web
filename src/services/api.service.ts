@@ -4,7 +4,7 @@ import AppRoutes from "../AppRoutes";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
-import { AppLocales, translate } from "../locales";
+import { AppLocales, getApiLocale, translate } from "../locales";
 import {
   IApiEnvelope,
   IApiPagination,
@@ -133,6 +133,10 @@ export const useAxiosInterceptor = () => {
 
         // Always send platform so backend can enforce one active session per platform.
         headers.set("X-Platform", PLATFORM_HEADER_VALUE);
+
+        // Rexone Core currently supports English and Burmese. Unsupported
+        // frontend locales (such as Spanish) intentionally fall back to English.
+        headers.set("X-Locale", getApiLocale());
 
         // Check if data is FormData - let axios set Content-Type automatically
         if (config.data instanceof FormData) {
