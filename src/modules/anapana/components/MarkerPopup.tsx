@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { useAtom } from "jotai";
-import { useTranslation } from "react-i18next";
 import { useMarker } from "../contexts";
 import { useToast } from "../../../contexts/ToastContext";
 import atoms from "../../../atoms";
-import { AppLocales } from "../../../locales/app_locales";
+import { AppLocales, useTranslate } from "../../../locales";
 import { sounds } from "../../../assets";
 import { Dropdown, Button, TextInput } from "../../../design/components";
 
 export const MarkerPopup: React.FC = () => {
   const { showToast } = useToast();
   const { addMarker, cleanMarkers } = useMarker();
-  const { t } = useTranslation();
+  const t = useTranslate();
   const [interval, setInterval] = useState(1);
   const [unit, setUnit] = useState<"minutes" | "hours">("minutes");
   const [startTime, setStartTime] = useAtom(atoms.startTimeAtom);
@@ -20,7 +19,7 @@ export const MarkerPopup: React.FC = () => {
   const handleAddMarker = () => {
     const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
     addMarker({ interval, unit, color });
-    showToast("success", AppLocales.TimerStartMessage);
+    showToast("success", AppLocales.Anapana.StartMessage);
   };
 
   const playSound = () => {
@@ -39,8 +38,8 @@ export const MarkerPopup: React.FC = () => {
   };
 
   const unitOptions = [
-    { value: "minutes", label: t(AppLocales.TimerMinutes) },
-    { value: "hours", label: t(AppLocales.TimerHours) },
+    { value: "minutes", label: t(AppLocales.Anapana.Minutes) },
+    { value: "hours", label: t(AppLocales.Anapana.Hours) },
   ];
 
   const handleUnitChange = (value: string) => {
@@ -51,21 +50,21 @@ export const MarkerPopup: React.FC = () => {
     <div className="w-80 mt-5 flex flex-col items-center justify-center">
       <div className="w-full flex items-center justify-between gap-2">
         <Button className="w-fit mt-2" variant="tertiary" onClick={playSound}>
-          {t(AppLocales.TimerTestIntervalSound)}
+          {t(AppLocales.Anapana.TestIntervalSound)}
         </Button>
         <Button
           className="w-fit mt-2"
           variant="tertiary"
           onClick={playEndSound}
         >
-          {t(AppLocales.TimerTestEndingSound)}
+          {t(AppLocales.Anapana.TestEndingSound)}
         </Button>
       </div>
 
       <div className="w-full mt-2">
         <TextInput
           id="start-time"
-          label={t(AppLocales.TimerStartTime)}
+          label={t(AppLocales.Anapana.StartTime)}
           type="time"
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
@@ -75,7 +74,7 @@ export const MarkerPopup: React.FC = () => {
       <div className="w-full mt-2">
         <TextInput
           id="end-time"
-          label={t(AppLocales.TimerEndTime)}
+          label={t(AppLocales.Anapana.EndTime)}
           type="time"
           value={endTime}
           onChange={(e) => setEndTime(e.target.value)}
@@ -86,7 +85,7 @@ export const MarkerPopup: React.FC = () => {
         <div className="w-1/2">
           <TextInput
             id="interval"
-            label={t(AppLocales.TimerInterval)}
+            label={t(AppLocales.Anapana.Interval)}
             type="number"
             value={interval.toString()}
             onChange={(e) => setInterval(Number(e.target.value))}
@@ -98,7 +97,7 @@ export const MarkerPopup: React.FC = () => {
             options={unitOptions}
             value={unit}
             onValueChange={handleUnitChange}
-            label={t(AppLocales.TimerUnit)}
+            label={t(AppLocales.Anapana.Unit)}
           />
         </div>
       </div>
@@ -108,11 +107,11 @@ export const MarkerPopup: React.FC = () => {
         variant="primary"
         onClick={handleAddMarker}
       >
-        {t(AppLocales.TimerStart)}
+        {t(AppLocales.Anapana.Start)}
       </Button>
 
       <Button className="w-fit mt-2" variant="tertiary" onClick={cleanMarkers}>
-        {t(AppLocales.TimerReset)}
+        {t(AppLocales.Anapana.Reset)}
       </Button>
     </div>
   );

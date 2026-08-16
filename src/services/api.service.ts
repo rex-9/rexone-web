@@ -4,6 +4,7 @@ import AppRoutes from "../AppRoutes";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
+import { AppLocales, translate } from "../locales";
 import {
   IApiEnvelope,
   IApiPagination,
@@ -182,7 +183,7 @@ export const useAxiosInterceptor = () => {
 
             nextUrl.searchParams.set(
               "message",
-              "Your session has expired. Please sign in again.",
+              translate(AppLocales.Auth.Shared.SessionExpired),
             );
             window.location.assign(nextUrl.toString());
           }

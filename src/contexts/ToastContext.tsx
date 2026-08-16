@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../locales";
 import { Toast, ToastType } from "../design/components/overlay/Toast";
 
 interface ToastContextType {
@@ -20,7 +20,7 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
     message: string;
     title?: string;
   } | null>(null);
-  const { t } = useTranslation();
+  const t = useTranslate();
 
   const showToast = (type: ToastType, message: string, title?: string) => {
     setToast({ type, message: t(message), title });

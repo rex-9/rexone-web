@@ -1,29 +1,167 @@
 {
-  "sign_in_title": "Sign In",
-  "sign_in_email_or_username_label": "Email or Username",
-  "sign_in_password_label": "Password",
-  "sign_in_button": "Sign In",
-  "sign_in_sign_up_prompt": "Don't have an account?",
-  "sign_in_sign_up_link": "Sign Up",
-  "sign_in_forgot_password_prompt": "Forgot your password?",
-  "sign_in_forgot_password_link": "Reset Password",
-  "sign_in_google_failure": "Google authentication failed!",
-  "sign_in_google_button": "Sign in with Google",
-
-  "sign_up_title": "Sign Up",
-  "sign_up_username_label": "Username",
-  "sign_up_email_label": "Email",
-  "sign_up_password_label": "Password",
-  "sign_up_password_confirmation_label": "Password Confirmation",
-  "sign_up_button": "Sign Up",
-  "sign_up_sign_in_prompt": "Already have an account?",
-  "sign_up_sign_in_link": "Sign In",
-
-  "sign_out_button": "Sign Out",
-
   "home": "Home",
   "go_back": "Go Back",
   "submit": "Submit",
+
+  "auth": {
+    "sign_out": "Sign Out",
+    "shared": {
+      "email_label": "Email",
+      "email_placeholder": "your@email.com",
+      "continue": "Continue",
+      "use_different_email": "Use a different email",
+      "session_expired": "Your session has expired. Please sign in again.",
+      "validation": { "passcode_length": "Passcode must be 6 digits" }
+    },
+    "initial": {
+      "title": "Welcome to Rexone",
+      "description": "Support dreams or make yours come true.",
+      "continue_with_google": "Continue with Google",
+      "or": "or",
+      "email_helper": "Enter your email to sign in or create an account",
+      "validation": { "invalid_email": "Please enter a valid email address." },
+      "errors": {
+        "user_check_failed": "Failed to check user. Please try again.",
+        "google_signin_failed": "Google sign in failed",
+        "google_signin_retry": "Google sign in failed. Please try again."
+      },
+      "feedback": { "google_signin_success": "Signed in with Google" },
+      "ad_blocker": {
+        "title": "Ad Blocker Detected",
+        "description": "Please disable your ad blocker and retry Google sign in."
+      },
+      "actions": { "retry": "Retry", "checking": "Checking..." }
+    },
+    "signin_passcode": {
+      "title": "Sign In",
+      "description": "Enter your 6-digit passcode to continue.",
+      "prompt": "Sign in to",
+      "feedback": {
+        "signin_success": "Sign in successful",
+        "verification_sent": "Verification code sent."
+      },
+      "errors": {
+        "too_many_attempts": "Too many attempts. Try again in {{seconds}}s.",
+        "incorrect_passcode": "Incorrect passcode. {{attempts}}/3 attempts remaining.",
+        "no_attempts": "No attempts remaining. Please wait."
+      },
+      "helper": {
+        "wait_to_retry": "Wait {{seconds}}s before trying again.",
+        "attempts_remaining": "{{attempts}}/3 attempts remaining.",
+        "enter_passcode": "Enter your 6-digit passcode."
+      },
+      "actions": {
+        "try_again_in": "Try again in {{seconds}}s",
+        "signing_in": "Signing in...",
+        "please_wait": "Please wait...",
+        "sign_in": "Sign In"
+      },
+      "links": { "forgot_passcode": "Forgot your passcode?" }
+    },
+    "signup_passcode_create": {
+      "title": { "reset": "Reset Passcode", "signup": "Create Passcode" },
+      "description": {
+        "reset": "Create a new passcode for your account.",
+        "signup": "Choose a 6-digit passcode you'll remember."
+      },
+      "prompt": {
+        "reset": "Create a new passcode",
+        "signup": "Create a passcode for {{email}}"
+      },
+      "instruction": "You will use this 6-digit passcode to sign in",
+      "field": {
+        "label": "Create Passcode",
+        "helper": "Choose a 6-digit number you will remember"
+      }
+    },
+    "signup_passcode_confirm": {
+      "validation": {
+        "passcode_length": "Passcode must be 6 digits",
+        "passcodes_mismatch": "Passcodes do not match"
+      },
+      "errors": {
+        "reset_failed": "Failed to reset passcode.",
+        "google_signin_failed": "Failed to complete sign in"
+      },
+      "feedback": {
+        "reset_success": "Passcode reset successfully!",
+        "signin_with_new_passcode": "Sign in with your new passcode.",
+        "google_signin_complete": "Google sign in complete"
+      },
+      "title": {
+        "reset": "Confirm New Passcode",
+        "signup": "Confirm Passcode"
+      },
+      "description": {
+        "reset": "Enter the same 6 digits again to confirm your new passcode.",
+        "signup": "Enter the same 6 digits again to confirm."
+      },
+      "prompt": {
+        "reset": "Confirm your new passcode",
+        "signup": "Confirm your passcode"
+      },
+      "instruction": "Enter the same 6 digits again",
+      "field": {
+        "label": "Confirm Passcode",
+        "helper": "Enter the same 6 digits again"
+      },
+      "actions": {
+        "resetting": "Resetting..."
+      }
+    },
+    "signup_info": {
+      "validation": {
+        "full_name_required": "Please enter your full name",
+        "username_length": "Username must be at least 3 characters",
+        "username_format": "Username can only contain lowercase letters, numbers, and underscores"
+      },
+      "feedback": { "verification_sent": "Verification email sent. Please check your inbox." },
+      "title": "Complete Profile",
+      "description": "Tell us a bit about yourself.",
+      "prompt": "Almost done! Tell us a bit about yourself",
+      "full_name": {
+        "label": "Full Name",
+        "placeholder": "John Doe",
+        "helper": "Your real name (visible to others)"
+      },
+      "username": {
+        "label": "Username",
+        "placeholder": "john_doe",
+        "helper": "Unique identifier (letters, numbers, underscores only)"
+      },
+      "actions": { "creating_account": "Creating account...", "create_account": "Create Account" }
+    },
+    "confirm_email": {
+      "title": "Verify Your Email",
+      "description": "Enter the 6-digit code sent to your email.",
+      "field": { "label": "Verification Code", "helper": "Enter the 6-digit code sent to your email" },
+      "prompt": "Verify your email",
+      "sent_to": "We have sent a confirmation code to:",
+      "inbox_instruction": "Check your inbox and enter the code to complete signup.",
+      "actions": {
+        "verifying": "Verifying...",
+        "verify_email": "Verify Email",
+        "resend_in": "Resend code in {{seconds}}s",
+        "resend": "Did not receive the code? Resend"
+      },
+      "feedback": {
+        "verified": "Email verified successfully",
+        "resent": "Resend email sent",
+        "link_confirmed": "Email confirmed successfully!"
+      }
+    },
+    "forgot_passcode": {
+      "title": "Reset Passcode",
+      "description": "Enter your email to receive a reset link.",
+      "feedback": { "reset_link_sent": "Reset link sent to your email." },
+      "actions": {
+        "resend_in": "Resend in {{seconds}}s",
+        "sending": "Sending...",
+        "send_reset_link": "Send Passcode Reset Link"
+      },
+      "links": { "back_to_signin": "Back to Sign In" }
+    }
+  },
 
   "### ANAPANA_MODULE": "### ANAPANA_MODULE",
   "anapana_timer_title": "Anapana Interval Reminder",

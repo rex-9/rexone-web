@@ -93,9 +93,6 @@ export const HomePage: React.FC = () => {
 // Example usage for assets and localization
 
 // import { icons, images, videos } from "../../assets";
-// import { AppLocales } from "../../locales/app_locales";
-// import { useTranslation } from "react-i18next";
-// const { t } = useTranslation();
 /* {<Image asset={icons.instagram} className="w-8" />}
   {<Image asset={images.banner} className="w-96" />}
   <Typography className="text-xl font-bold" variant="primary">

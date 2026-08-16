@@ -1,29 +1,110 @@
 {
-  "sign_in_title": "Iniciar sesión",
-  "sign_in_email_or_username_label": "Correo electrónico o nombre de usuario",
-  "sign_in_password_label": "Contraseña",
-  "sign_in_button": "Iniciar sesión",
-  "sign_in_sign_up_prompt": "¿No tienes una cuenta?",
-  "sign_in_sign_up_link": "Regístrate",
-  "sign_in_forgot_password_prompt": "¿Olvidaste tu contraseña?",
-  "sign_in_forgot_password_link": "Restablecer contraseña",
-  "sign_in_google_failure": "¡La autenticación de Google falló!",
-  "sign_in_google_button": "Iniciar sesión con Google",
-
-  "sign_up_title": "Registrarse",
-  "sign_up_username_label": "Nombre de usuario",
-  "sign_up_email_label": "Correo electrónico",
-  "sign_up_password_label": "Contraseña",
-  "sign_up_password_confirmation_label": "Confirmación de contraseña",
-  "sign_up_button": "Registrarse",
-  "sign_up_sign_in_prompt": "¿Ya tienes una cuenta?",
-  "sign_up_sign_in_link": "Iniciar sesión",
-
-  "sign_out_button": "Cerrar sesión",
-
   "home": "Inicio",
   "go_back": "Volver",
   "submit": "Enviar",
+
+  "auth": {
+    "sign_out": "Cerrar sesión",
+    "shared": {
+      "email_label": "Correo electrónico", "email_placeholder": "tu@correo.com",
+      "continue": "Continuar", "use_different_email": "Usar otro correo electrónico",
+      "session_expired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "validation": { "passcode_length": "El código de acceso debe tener 6 dígitos" }
+    },
+    "initial": {
+      "title": "Bienvenido a Rexone", "description": "Apoya sueños o haz realidad los tuyos.",
+      "continue_with_google": "Continuar con Google", "or": "o",
+      "email_helper": "Introduce tu correo para iniciar sesión o crear una cuenta",
+      "validation": { "invalid_email": "Introduce una dirección de correo válida." },
+      "errors": {
+        "user_check_failed": "No se pudo comprobar el usuario. Inténtalo de nuevo.",
+        "google_signin_failed": "Falló el inicio de sesión con Google",
+        "google_signin_retry": "Falló el inicio de sesión con Google. Inténtalo de nuevo."
+      },
+      "feedback": { "google_signin_success": "Sesión iniciada con Google" },
+      "ad_blocker": { "title": "Bloqueador de anuncios detectado", "description": "Desactiva el bloqueador de anuncios y vuelve a intentar iniciar sesión con Google." },
+      "actions": { "retry": "Reintentar", "checking": "Comprobando..." }
+    },
+    "signin_passcode": {
+      "title": "Iniciar sesión", "description": "Introduce tu código de acceso de 6 dígitos para continuar.", "prompt": "Iniciar sesión en",
+      "feedback": { "signin_success": "Inicio de sesión correcto", "verification_sent": "Código de verificación enviado." },
+      "errors": {
+        "too_many_attempts": "Demasiados intentos. Inténtalo de nuevo en {{seconds}} s.",
+        "incorrect_passcode": "Código incorrecto. Quedan {{attempts}} de 3 intentos.",
+        "no_attempts": "No quedan intentos. Espera."
+      },
+      "helper": {
+        "wait_to_retry": "Espera {{seconds}} s antes de volver a intentarlo.",
+        "attempts_remaining": "Quedan {{attempts}} de 3 intentos.", "enter_passcode": "Introduce tu código de acceso de 6 dígitos."
+      },
+      "actions": { "try_again_in": "Reintentar en {{seconds}} s", "signing_in": "Iniciando sesión...", "please_wait": "Espera...", "sign_in": "Iniciar sesión" },
+      "links": { "forgot_passcode": "¿Olvidaste tu código de acceso?" }
+    },
+    "signup_passcode_create": {
+      "title": { "reset": "Restablecer código de acceso", "signup": "Crear código de acceso" },
+      "description": { "reset": "Crea un nuevo código de acceso para tu cuenta.", "signup": "Elige un código de acceso de 6 dígitos que recuerdes." },
+      "prompt": { "reset": "Crea un nuevo código de acceso", "signup": "Crea un código de acceso para {{email}}" },
+      "instruction": "Usarás este código de 6 dígitos para iniciar sesión",
+      "field": { "label": "Crear código de acceso", "helper": "Elige un número de 6 dígitos que recuerdes" }
+    },
+    "signup_passcode_confirm": {
+      "validation": {
+        "passcode_length": "El código de acceso debe tener 6 dígitos",
+        "passcodes_mismatch": "Los códigos de acceso no coinciden"
+      },
+      "errors": {
+        "reset_failed": "No se pudo restablecer el código de acceso.",
+        "google_signin_failed": "No se pudo completar el inicio de sesión"
+      },
+      "feedback": {
+        "reset_success": "¡Código de acceso restablecido correctamente!",
+        "signin_with_new_passcode": "Inicia sesión con tu nuevo código de acceso.",
+        "google_signin_complete": "Inicio de sesión con Google completado"
+      },
+      "title": {
+        "reset": "Confirmar nuevo código de acceso",
+        "signup": "Confirmar código de acceso"
+      },
+      "description": {
+        "reset": "Introduce de nuevo los mismos 6 dígitos para confirmar tu nuevo código de acceso.",
+        "signup": "Introduce de nuevo los mismos 6 dígitos para confirmar."
+      },
+      "prompt": {
+        "reset": "Confirma tu nuevo código de acceso",
+        "signup": "Confirma tu código de acceso"
+      },
+      "instruction": "Introduce de nuevo los mismos 6 dígitos",
+      "field": {
+        "label": "Confirmar código de acceso",
+        "helper": "Introduce de nuevo los mismos 6 dígitos"
+      },
+      "actions": {
+        "resetting": "Restableciendo..."
+      }
+    },
+    "signup_info": {
+      "validation": { "full_name_required": "Introduce tu nombre completo", "username_length": "El nombre de usuario debe tener al menos 3 caracteres", "username_format": "El nombre de usuario solo puede contener letras minúsculas, números y guiones bajos" },
+      "feedback": { "verification_sent": "Correo de verificación enviado. Revisa tu bandeja de entrada." },
+      "title": "Completar perfil", "description": "Cuéntanos un poco sobre ti.", "prompt": "¡Ya casi está! Cuéntanos un poco sobre ti",
+      "full_name": { "label": "Nombre completo", "placeholder": "Juan Pérez", "helper": "Tu nombre real (visible para otras personas)" },
+      "username": { "label": "Nombre de usuario", "placeholder": "juan_perez", "helper": "Identificador único (solo letras, números y guiones bajos)" },
+      "actions": { "creating_account": "Creando cuenta...", "create_account": "Crear cuenta" }
+    },
+    "confirm_email": {
+      "title": "Verifica tu correo", "description": "Introduce el código de 6 dígitos enviado a tu correo.",
+      "field": { "label": "Código de verificación", "helper": "Introduce el código de 6 dígitos enviado a tu correo" },
+      "prompt": "Verifica tu correo", "sent_to": "Hemos enviado un código de confirmación a:",
+      "inbox_instruction": "Revisa tu bandeja e introduce el código para completar el registro.",
+      "actions": { "verifying": "Verificando...", "verify_email": "Verificar correo", "resend_in": "Reenviar código en {{seconds}} s", "resend": "¿No recibiste el código? Reenviar" },
+      "feedback": { "verified": "Correo verificado correctamente", "resent": "Correo reenviado", "link_confirmed": "¡Correo confirmado correctamente!" }
+    },
+    "forgot_passcode": {
+      "title": "Restablecer código de acceso", "description": "Introduce tu correo para recibir un enlace de restablecimiento.",
+      "feedback": { "reset_link_sent": "Enlace de restablecimiento enviado a tu correo." },
+      "actions": { "resend_in": "Reenviar en {{seconds}} s", "sending": "Enviando...", "send_reset_link": "Enviar enlace para restablecer el código" },
+      "links": { "back_to_signin": "Volver a iniciar sesión" }
+    }
+  },
 
   "### ANAPANA_MODULE": "### ANAPANA_MODULE",
   "anapana_timer_title": "Recordatorio de intervalo de Anapana",

@@ -5,6 +5,7 @@ import { Button, Dialog, TextInput } from "..";
 import { useToast } from "../../../contexts";
 import { AuthStep, TAuthStep } from "./type";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface SignupInfoDialogProps {
   email: string;
@@ -27,6 +28,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
   onClose,
   onBack,
 }) => {
+  const t = useTranslate();
   const { success } = useToast();
   const [fullName, setFullName] = useState(fullNameParam);
   const [username, setUsername] = useState(userNameParam);
@@ -36,17 +38,15 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || fullName.length < 2) {
-      setError("Please enter your full name");
+      setError(t(AppLocales.Auth.SignUpInfo.FullNameRequired));
       return;
     }
     if (!username || username.length < 3) {
-      setError("Username must be at least 3 characters");
+      setError(t(AppLocales.Auth.SignUpInfo.UsernameLength));
       return;
     }
     if (!/^[a-z0-9_]+$/.test(username)) {
-      setError(
-        "Username can only contain lowercase letters, numbers, and underscores",
-      );
+      setError(t(AppLocales.Auth.SignUpInfo.UsernameFormat));
       return;
     }
 
@@ -60,7 +60,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       () => {
         // After signup, navigate to verify email step
         navigateToStep(AuthStep.CONFIRM_EMAIL, { email, passcode });
-        success("Verification email sent. Please check your inbox.");
+        success(t(AppLocales.Auth.SignUpInfo.VerificationSent));
       },
     );
     setIsLoading(false);
@@ -71,36 +71,36 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title="Complete Profile"
+      title={t(AppLocales.Auth.SignUpInfo.Title)}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Tell us a bit about yourself.
+        {t(AppLocales.Auth.SignUpInfo.Description)}
       </p>
       <form onSubmit={handleSubmit} className="space-y-16">
         <div className="text-center">
           <p className="text-body-m text-base-content">
-            Almost done! Tell us a bit about yourself
+            {t(AppLocales.Auth.SignUpInfo.Prompt)}
           </p>
         </div>
         <TextInput
           id="full-name"
-          label="Full Name"
+          label={t(AppLocales.Auth.SignUpInfo.FullNameLabel)}
           type="text"
           value={fullName}
           onChange={(e) => {
             setFullName(e.target.value);
             updateUrl({ fullName: e.target.value });
           }}
-          placeholder="John Doe"
-          helperText="Your real name (visible to others)"
+          placeholder={t(AppLocales.Auth.SignUpInfo.FullNamePlaceholder)}
+          helperText={t(AppLocales.Auth.SignUpInfo.FullNameHelper)}
           required
           fullWidth
           disabled={isLoading}
         />
         <TextInput
           id="username"
-          label="Username"
+          label={t(AppLocales.Auth.SignUpInfo.UsernameLabel)}
           type="text"
           value={username}
           onChange={(e) => {
@@ -108,14 +108,16 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
             setUsername(val);
             updateUrl({ username: val });
           }}
-          placeholder="john_doe"
-          helperText="Unique identifier (letters, numbers, underscores only)"
+          placeholder={t(AppLocales.Auth.SignUpInfo.UsernamePlaceholder)}
+          helperText={t(AppLocales.Auth.SignUpInfo.UsernameHelper)}
           required
           fullWidth
           disabled={isLoading}
         />
         <Button variant="primary" type="submit" fullWidth disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Create Account"}
+          {isLoading
+            ? t(AppLocales.Auth.SignUpInfo.CreatingAccount)
+            : t(AppLocales.Auth.SignUpInfo.CreateAccount)}
         </Button>
         {error && (
           <p className="text-caption text-error text-center">{error}</p>

@@ -8,6 +8,7 @@ import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface SignupPasscodeConfirmDialogProps {
   email: string;
@@ -31,6 +32,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
   onBack,
 }) => {
   const { signin, googleChallengeToken, setGoogleChallengeToken } = useAuth();
+  const t = useTranslate();
   const navigate = useNavigate();
   const { success } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -44,11 +46,11 @@ export const SignupPasscodeConfirmDialog: React.FC<
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (confirmPasscode.length !== 6) {
-      setError("Passcode must be 6 digits");
+      setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
     if (confirmPasscode !== passcode) {
-      setError("Passcodes do not match");
+      setError(t(AppLocales.Auth.SignUpPasscodeConfirm.PasscodesMismatch));
       setConfirmPasscode("");
       return;
     }
@@ -64,17 +66,23 @@ export const SignupPasscodeConfirmDialog: React.FC<
           setError,
           () => {
             // Navigate to sign in (initial dialog) on success
-            success("Passcode reset successfully!");
+            success(t(AppLocales.Auth.SignUpPasscodeConfirm.ResetSuccess));
             onClose();
             navigate(
               AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial, {
-                message: "Sign in with your new passcode.",
+                message: t(
+                  AppLocales.Auth.SignUpPasscodeConfirm.SignInWithNewPasscode,
+                ),
               }),
             );
           },
         );
-      } catch (err: any) {
-        setError(err.message || "Failed to reset passcode.");
+      } catch (err: unknown) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : t(AppLocales.Auth.SignUpPasscodeConfirm.ResetFailed),
+        );
       } finally {
         setIsLoading(false);
       }
@@ -91,15 +99,24 @@ export const SignupPasscodeConfirmDialog: React.FC<
         );
         if (result.success && result.token && result.user) {
           signin(result.token, result.user);
-          success("Google sign in complete");
+          success(
+            t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInComplete),
+          );
           setGoogleChallengeToken(null);
           onClose();
           navigate(AppRoutes.client.protected.HOME);
         } else {
-          setError(result.errorMessage || "Failed to complete sign in");
+          setError(
+            result.errorMessage ||
+              t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInFailed),
+          );
         }
-      } catch (err: any) {
-        setError(err.message || "Failed to complete sign in");
+      } catch (err: unknown) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInFailed),
+        );
       } finally {
         setIsLoading(false);
       }
@@ -125,23 +142,27 @@ export const SignupPasscodeConfirmDialog: React.FC<
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title={isResetFlow ? "Confirm New Passcode" : "Confirm Passcode"}
+      title={
+        isResetFlow
+          ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetTitle)
+          : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpTitle)
+      }
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
         {isResetFlow
-          ? "Enter the same 6 digits again to confirm your new passcode."
-          : "Enter the same 6 digits again to confirm."}
+          ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetDescription)
+          : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpDescription)}
       </p>
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
-              ? "Confirm your new passcode"
-              : "Confirm your passcode"}
+              ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetPrompt)
+              : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpPrompt)}
           </p>
           <p className="text-body-s text-base-content opacity-70 mt-4">
-            Enter the same 6 digits again
+            {t(AppLocales.Auth.SignUpPasscodeConfirm.Instruction)}
           </p>
         </div>
         <PasscodeInput
@@ -152,8 +173,8 @@ export const SignupPasscodeConfirmDialog: React.FC<
             setError("");
           }}
           onComplete={triggerSubmit}
-          label="Confirm Passcode"
-          helperText="Enter the same 6 digits again"
+          label={t(AppLocales.Auth.SignUpPasscodeConfirm.FieldLabel)}
+          helperText={t(AppLocales.Auth.SignUpPasscodeConfirm.FieldHelper)}
           error={error}
           disabled={false}
         />
@@ -163,11 +184,13 @@ export const SignupPasscodeConfirmDialog: React.FC<
           fullWidth
           disabled={isLoading || confirmPasscode.length !== 6}
         >
-          {isLoading ? "Resetting..." : "Continue"}
+          {isLoading
+            ? t(AppLocales.Auth.SignUpPasscodeConfirm.Resetting)
+            : t(AppLocales.Auth.Shared.Continue)}
         </Button>
         <div className="text-center text-sm">
           <TextLink
-            label="Use a different email"
+            label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
             onClick={() => navigateToStep(AuthStep.INITIAL)}
           />
         </div>

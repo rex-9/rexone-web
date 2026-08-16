@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Button } from "../../../design/components";
 import { iconsLib } from "../../../assets";
-import { AppLocales } from "../../../locales/app_locales";
+import { AppLocales, useTranslate } from "../../../locales";
 
 export const SupportLove: React.FC = () => {
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const { t } = useTranslation();
+  const t = useTranslate();
   return (
     <>
       <Button
@@ -21,7 +20,7 @@ export const SupportLove: React.FC = () => {
       {showSnackbar && (
         <div className="fixed bottom-[40%] bg-base-200 p-8 rounded-lg shadow-lg flex items-center gap-4">
           <div className="w-64 flex flex-col justify-center items-center gap-4">
-            <div>{t(AppLocales.WelcomeDonations)}</div>
+            <div>{t(AppLocales.Anapana.WelcomeDonations)}</div>
             <a
               href="https://buymeacoffee.com/rex9"
               target="_blank"

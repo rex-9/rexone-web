@@ -9,6 +9,7 @@ import { Button, GoogleButton, TextInput, Dialog } from "..";
 import AppRoutes from "../../../AppRoutes";
 import { AuthStep, TAuthStep } from "./type";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface InitialDialogProps {
   email: string;
@@ -24,6 +25,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
   onClose,
 }) => {
   const { signin, setGoogleChallengeToken } = useAuth();
+  const t = useTranslate();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { success } = useToast();
@@ -67,7 +69,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
   const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
-      setEmailError("Please enter a valid email address.");
+      setEmailError(t(AppLocales.Auth.Initial.InvalidEmail));
       return false;
     }
     setEmailError("");
@@ -110,10 +112,13 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           });
           break;
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to check user:", err);
-
-      setError(err?.message || "Failed to check user. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : t(AppLocales.Auth.Initial.UserCheckFailed),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +138,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
         if (result.success && result.token && result.user) {
           // Existing user - sign in directly
           signin(result.token, result.user);
-          success("Signed in with Google");
+          success(t(AppLocales.Auth.Initial.GoogleSignInSuccess));
           onClose();
           navigate(AppRoutes.client.protected.HOME);
         } else if (result.passcodeRequired && result.challengeToken) {
@@ -144,10 +149,16 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             email: result.user?.email || "",
           });
         } else {
-          setError(result.errorMessage || "Google sign in failed");
+          setError(
+            result.errorMessage || t(AppLocales.Auth.Initial.GoogleSignInFailed),
+          );
         }
-      } catch (err: any) {
-        setError(err?.message || "Google sign in failed");
+      } catch (err: unknown) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : t(AppLocales.Auth.Initial.GoogleSignInFailed),
+        );
       } finally {
         setIsLoading(false);
       }
@@ -155,7 +166,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 
     onError: () => {
       setIsBlocked(true);
-      setError("Google sign in failed. Please try again.");
+      setError(t(AppLocales.Auth.Initial.GoogleSignInRetry));
     },
   });
 
@@ -168,25 +179,27 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     <Dialog
       isOpen={true}
       onClose={handleClose}
-      title="Welcome to Rexone"
+      title={t(AppLocales.Auth.Initial.Title)}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Support dreams or make yours come true.
+        {t(AppLocales.Auth.Initial.Description)}
       </p>
       <div className="space-y-16">
         <GoogleButton
           onClick={() => handleGoogleSignIn()}
           isLoading={isLoading}
         >
-          Continue with Google
+          {t(AppLocales.Auth.Initial.ContinueWithGoogle)}
         </GoogleButton>
         {isBlocked && (
           <div className="space-y-4">
             <div className="bg-error/10 border border-error/30 rounded-lg p-4 text-center">
-              <p className="text-error font-medium">⚠️ Ad Blocker Detected</p>
+              <p className="text-error font-medium">
+                ⚠️ {t(AppLocales.Auth.Initial.AdBlockerTitle)}
+              </p>
               <p className="text-sm text-gray-600 mt-1">
-                Please disable your ad blocker and retry Google sign in.
+                {t(AppLocales.Auth.Initial.AdBlockerDescription)}
               </p>
             </div>
             <Button
@@ -194,7 +207,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
               onClick={() => window.location.reload()}
               fullWidth
             >
-              Retry
+              {t(AppLocales.Auth.Initial.Retry)}
             </Button>
           </div>
         )}
@@ -204,7 +217,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           </div>
           <div className="relative flex justify-center text-body-s">
             <span className="px-16 bg-base-100 text-base-content opacity-60">
-              or
+              {t(AppLocales.Auth.Initial.Or)}
             </span>
           </div>
         </div>
@@ -214,10 +227,10 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             type="email"
             value={localEmail}
             onChange={(e) => handleEmailChange(e.target.value)}
-            placeholder="your@email.com"
-            label="Email"
+            placeholder={t(AppLocales.Auth.Shared.EmailPlaceholder)}
+            label={t(AppLocales.Auth.Shared.EmailLabel)}
             error={emailError}
-            helperText="Enter your email to sign in or create an account"
+            helperText={t(AppLocales.Auth.Initial.EmailHelper)}
             required
             fullWidth
             disabled={isLoading}
@@ -228,7 +241,9 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             fullWidth
             disabled={isLoading}
           >
-            {isLoading ? "Checking..." : "Continue"}
+            {isLoading
+              ? t(AppLocales.Auth.Initial.Checking)
+              : t(AppLocales.Auth.Shared.Continue)}
           </Button>
         </form>
         {displayMessage && (

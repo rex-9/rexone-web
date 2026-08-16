@@ -7,6 +7,7 @@ import { useCountdown } from "../../../hooks";
 import { AuthStep, TAuthStep } from "./type";
 import { useNavigate } from "react-router-dom";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface ConfirmEmailDialogProps {
   email: string;
@@ -24,6 +25,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
   onBack,
 }) => {
   const { signin } = useAuth();
+  const t = useTranslate();
   const navigate = useNavigate();
   const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -46,7 +48,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       setError,
       (msg) => {
         setMessage(msg);
-        success("Email verified successfully");
+        success(t(AppLocales.Auth.ConfirmEmail.Verified));
       },
       signin,
       navigate,
@@ -63,7 +65,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       () => cooldown.start(30),
     );
     if (!error) {
-      info("Resend email sent");
+      info(t(AppLocales.Auth.ConfirmEmail.Resent));
     }
   };
 
@@ -81,11 +83,11 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title="Verify Your Email"
+      title={t(AppLocales.Auth.ConfirmEmail.Title)}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Enter the 6-digit code sent to your email.
+        {t(AppLocales.Auth.ConfirmEmail.Description)}
       </p>
       <div className="space-y-16">
         <form
@@ -105,9 +107,9 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
               setError("");
             }}
             onComplete={triggerSubmit}
-            label="Verification Code"
+            label={t(AppLocales.Auth.ConfirmEmail.FieldLabel)}
             error={error}
-            helperText="Enter the 6-digit code sent to your email"
+            helperText={t(AppLocales.Auth.ConfirmEmail.FieldHelper)}
             disabled={isLoading}
           />
           <Button
@@ -116,16 +118,18 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
             fullWidth
             disabled={isLoading || otp.length !== 6}
           >
-            {isLoading ? "Verifying..." : "Verify Email"}
+            {isLoading
+              ? t(AppLocales.Auth.ConfirmEmail.Verifying)
+              : t(AppLocales.Auth.ConfirmEmail.VerifyEmail)}
           </Button>
         </form>
 
         <div className="text-center">
           <p className="text-body-m text-base-content font-semibold">
-            Verify your email
+            {t(AppLocales.Auth.ConfirmEmail.Prompt)}
           </p>
           <p className="text-body-s text-base-content opacity-70 mt-4">
-            We have sent a confirmation code to:
+            {t(AppLocales.Auth.ConfirmEmail.SentTo)}
           </p>
           <p className="text-body-m text-base-content font-medium mt-2">
             {email}
@@ -136,8 +140,10 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
           <TextLink
             label={
               isCooldown
-                ? `Resend code in ${secondsLeft}s`
-                : "Did not receive the code? Resend"
+                ? t(AppLocales.Auth.ConfirmEmail.ResendIn, {
+                    seconds: secondsLeft,
+                  })
+                : t(AppLocales.Auth.ConfirmEmail.Resend)
             }
             onClick={handleResend}
             className={`text-body-s ${isCooldown ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -146,10 +152,10 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
 
         <div className="text-center space-y-4">
           <p className="text-body-s text-base-content opacity-70">
-            Check your inbox and enter the code to complete signup.
+            {t(AppLocales.Auth.ConfirmEmail.InboxInstruction)}
           </p>
           <TextLink
-            label="Use a different email"
+            label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
             onClick={() => navigateToStep(AuthStep.INITIAL)}
             className="text-body-s"
           />
