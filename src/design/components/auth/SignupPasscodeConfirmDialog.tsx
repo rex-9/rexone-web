@@ -62,12 +62,15 @@ export const SignupPasscodeConfirmDialog: React.FC<
           passcode,
           confirmPasscode,
           setError,
-          // Remove setMessage - it's not used
           () => {
             // Navigate to sign in (initial dialog) on success
             success("Passcode reset successfully!");
             onClose();
-            navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial));
+            navigate(
+              AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial, {
+                message: "Sign in with your new passcode.",
+              }),
+            );
           },
         );
       } catch (err: any) {
