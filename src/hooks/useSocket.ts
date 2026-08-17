@@ -6,7 +6,7 @@ import SocketService, { ISocketMessage } from "../services/socket.service";
 interface Notification {
   id: string;
   message: string;
-  data: any;
+  data: Record<string, unknown>;
   created_at: string;
 }
 
@@ -14,15 +14,12 @@ export const useSocket = () => {
   const { token, isAuthenticated } = useAuth();
   const { success, error, info } = useToast();
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && token) {
       SocketService.connect(token);
-      setIsConnected(SocketService.isConnectedToSocket());
     } else {
       SocketService.disconnect();
-      setIsConnected(false);
     }
 
     const handleNotification = (data: ISocketMessage) => {
@@ -39,17 +36,19 @@ export const useSocket = () => {
           return [notif, ...prev];
         });
 
-        const type = notif.data?.type || "general";
+        const type = typeof notif.data.type === "string" ? notif.data.type : "general";
 
         switch (type) {
           case "payment_success":
           case "subscription_created":
           case "subscription_resumed":
           case "welcome":
+          case "ai_response_ready":
             success(notif.message);
             break;
           case "payment_failed":
           case "subscription_canceled":
+          case "ai_response_failed":
             error(notif.message);
             break;
           case "sign_in_alert":
@@ -69,7 +68,7 @@ export const useSocket = () => {
   }, [token, isAuthenticated, success, error, info]);
 
   const sendMessage = useCallback(
-    (channel: string, message: string, data: any = {}) => {
+    (channel: string, message: string, data: Record<string, unknown> = {}) => {
       SocketService.sendMessage(channel, message, data);
     },
     [],
@@ -77,7 +76,7 @@ export const useSocket = () => {
 
   return {
     notifications,
-    isConnected,
+    isConnected: SocketService.isConnectedToSocket(),
     sendMessage,
     SocketService,
   };

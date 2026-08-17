@@ -3,8 +3,8 @@ import AppConfig from "../AppConfig";
 export type ISocketMessage = {
   type: string;
   message?: string;
-  data?: any;
-  created_at: string;
+  data?: Record<string, unknown>;
+  created_at?: string;
 };
 
 class SocketService {
@@ -91,7 +91,7 @@ class SocketService {
     this.isConnected = true;
     this.isConnecting = false;
     this.reconnectAttempts = 0;
-    this.subscribe();
+    this.subscribe("NotificationChannel");
   }
 
   private handleMessage(event: MessageEvent): void {
@@ -114,8 +114,8 @@ class SocketService {
         return;
       }
 
-      // Check if the message is nested under "message" (Action Cable format)
-      if (data.message && data.message.type === "notification") {
+      // Action Cable wraps channel broadcasts under "message".
+      if (data.message && typeof data.message === "object") {
         this.notifyListeners(data.message);
         return;
       }
@@ -140,17 +140,17 @@ class SocketService {
     // Don't reconnect here - onclose will handle it
   }
 
-  private subscribe(): void {
+  private subscribe(channel: string): void {
     const message = {
       command: "subscribe",
       identifier: JSON.stringify({
-        channel: "NotificationChannel",
+        channel,
       }),
     };
     this.send(message);
   }
 
-  private send(data: any): void {
+  private send(data: object): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(data));
     } else {
@@ -217,7 +217,11 @@ class SocketService {
     return this.isConnected && this.ws?.readyState === WebSocket.OPEN;
   }
 
-  sendMessage(channel: string, message: string, data: any = {}): void {
+  sendMessage(
+    channel: string,
+    message: string,
+    data: Record<string, unknown> = {},
+  ): void {
     if (!this.isConnectedToSocket()) {
       console.warn("WebSocket not connected");
       return;
