@@ -9,15 +9,27 @@ export interface IChatRequest {
 }
 
 export interface IChatResponse {
-  response: string;
+  message: IMessage;
   room_id: string;
-  usage?: any;
+  status: "queued";
+  job_id: string;
 }
 
 export interface IMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  metadata?: {
+    status?: "queued" | "processing" | "retrying" | "completed" | "failed";
+    notification_locale?: string;
+    system_prompt?: string;
+    temperature?: number;
+    max_tokens?: number;
+    error?: string | null;
+    assistant_message_id?: string;
+    usage?: Record<string, number>;
+    model?: string;
+  };
   created_at: string;
 }
 
@@ -25,6 +37,7 @@ export interface IHistoryResponse {
   messages: IJsonApiResource<IMessage>[];
   room_id: string;
   room_title: string;
+  processing: boolean;
 }
 
 export interface IRoom {
@@ -34,6 +47,7 @@ export interface IRoom {
   last_message: string | null;
   created_at: string;
   updated_at: string;
+  processing: boolean;
 }
 
 export interface IRoomsResponse {

@@ -61,7 +61,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | State | React contexts, Jotai atoms, and deliberate browser persistence | [State & application flow](#state--application-flow) |
 | Commerce | Product selection, Stripe Checkout handoff, success, and cancellation flows | [Payments & entitlements](#payments--entitlements) |
 | Media | Authenticated upload requests and reusable image/video presentation | [Media & assets](#media--assets) |
-| AI | Chat, rooms, history, clearing, renaming, summarization, translation, and analysis contracts | [AI capabilities](#ai-capabilities) |
+| AI | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities) |
 | Real time | Action Cable-compatible WebSocket lifecycle and reconnect handling | [Real-time delivery](#real-time-delivery) |
 | Localization | English, Spanish, and Burmese resources with organized typed keys | [Localization](#localization) |
 | Observability | React boundary, global browser capture, structured context, and Core API delivery | [Client observability](#client-observability) |
@@ -174,15 +174,19 @@ That boundary keeps storage credentials and provider rules out of the browser.
 
 The AI module supports the Core API contracts for:
 
-- Conversational chat.
-- Persisted rooms and history.
+- Non-blocking conversational chat backed by durable queued processing in Rexone Core.
+- Persisted rooms, messages, history, and processing state across navigation, refreshes, and closed sessions.
+- Clear “AI is thinking” feedback with additional submissions disabled only for the room being processed.
+- Real-time completion and failure events through the shared notification socket channel.
+- Automatic history refresh when a completed response belongs to the room currently on screen.
+- Global success or failure alerts while the user browses elsewhere in the application.
 - Room creation, deletion, and renaming.
 - Conversation clearing.
 - Summarization.
 - Translation.
 - Analysis.
 
-The browser owns interaction and presentation; prompts, provider credentials, and DeepSeek integration remain behind the Core service boundary.
+The browser owns interaction and presentation, not the lifetime of AI work. A user can leave the page or close the browser without losing the request; the persisted assistant response is waiting in history when they return. Prompts, provider credentials, queue execution, retries, and DeepSeek integration remain behind the Core service boundary.
 
 ### Localization
 

@@ -27,7 +27,7 @@ class AiController {
       } else {
         onError(status?.error || "Failed to load rooms");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }
@@ -47,7 +47,7 @@ class AiController {
       } else {
         onError(status?.error || "Failed to create room");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }
@@ -58,6 +58,7 @@ class AiController {
       messages: IMessage[],
       roomId: string,
       roomTitle: string,
+      processing: boolean,
     ) => void,
     onError: (error: string) => void,
   ): Promise<void> {
@@ -70,11 +71,11 @@ class AiController {
       if (status?.success && data?.messages) {
         this.currentRoomId = data.room_id;
         const messages = parseFromList<IMessage>(data.messages);
-        onSuccess(messages, data.room_id, data.room_title);
+        onSuccess(messages, data.room_id, data.room_title, data.processing);
       } else {
         onError(status?.error || "Failed to load history");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }
@@ -82,7 +83,7 @@ class AiController {
   async chat(
     message: string,
     roomId: string | null = null,
-    onSuccess: (response: string, roomId: string) => void,
+    onSuccess: (message: IMessage, roomId: string) => void,
     onError: (error: string) => void,
   ): Promise<void> {
     try {
@@ -95,13 +96,13 @@ class AiController {
 
       const { status, data } = response.data || {};
 
-      if (status?.success && data?.response) {
+      if (status?.success && data?.message) {
         this.currentRoomId = data.room_id;
-        onSuccess(data.response, data.room_id);
+        onSuccess(data.message, data.room_id);
       } else {
         onError(status?.error || "Failed to get AI response");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }
@@ -122,7 +123,7 @@ class AiController {
       } else {
         onError?.(status?.error || "Failed to clear history");
       }
-    } catch (error) {
+    } catch {
       onError?.("An error occurred. Please try again.");
     }
   }
@@ -142,7 +143,7 @@ class AiController {
       } else {
         onError(status?.error || "Failed to rename room");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }
@@ -164,7 +165,7 @@ class AiController {
       } else {
         onError(status?.error || "Failed to delete room");
       }
-    } catch (error) {
+    } catch {
       onError("An error occurred. Please try again.");
     }
   }

@@ -1,40 +1,32 @@
 // src/design/pages/AiPage.tsx
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { LayoutPage } from "./LayoutPage";
 import { Button, TextArea } from "../components";
 import { useToast } from "../../contexts/ToastContext";
-import { useLoading } from "../../contexts/LoadingContext";
 import AiController from "../../modules/ai/ai.controller";
 import { IMessage } from "../../modules/ai/";
+import SocketService, { ISocketMessage } from "../../services/socket.service";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
-  const { isLoading } = useLoading();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [input, setInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    loadHistory();
-  }, []);
-
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     await AiController.loadHistory(
       null, // null for current room
-      (historyMessages, roomId, roomTitle) => {
+      (historyMessages, roomId, roomTitle, processing) => {
         console.log("Room ID:", roomId, "Room Title:", roomTitle);
         console.log("Loaded history:", historyMessages.length, "messages");
         if (historyMessages.length === 0) {
-          // No history, show welcome message
           setMessages([
             {
               id: "welcome",
@@ -47,10 +39,10 @@ export const AiPage: React.FC = () => {
         } else {
           setMessages(historyMessages);
         }
+        setIsProcessing(processing);
       },
       (err) => {
         console.error("Failed to load history:", err);
-        // Show welcome message on error
         setMessages([
           {
             id: "welcome",
@@ -59,54 +51,67 @@ export const AiPage: React.FC = () => {
             created_at: new Date().toISOString(),
           },
         ]);
+        setIsProcessing(false);
       },
     );
-  };
+  }, []);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-    const userMessage: IMessage = {
-      id: Date.now().toString(),
-      role: "user",
-      content: input.trim(),
-      created_at: new Date().toISOString(),
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
+
+  useEffect(() => {
+    const handleAiMessage = (event: ISocketMessage) => {
+      const eventType =
+        typeof event.data?.type === "string" ? event.data.type : "";
+      const roomId =
+        typeof event.data?.room_id === "string" ? event.data.room_id : "";
+
+      if (
+        event.type !== "notification" ||
+        !["ai_response_ready", "ai_response_failed"].includes(eventType) ||
+        roomId !== AiController.getCurrentRoomId()
+      ) {
+        return;
+      }
+
+      loadHistory();
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    SocketService.addListener(handleAiMessage);
+    return () => SocketService.removeListener(handleAiMessage);
+  }, [loadHistory]);
+
+  const handleSend = async () => {
+    if (!input.trim() || isSubmitting || isProcessing) return;
+
+    const content = input.trim();
     setInput("");
-
-    // Build history from actual messages (last 10)
-    const history = messages
-      .slice(-10)
-      .filter((m) => m.role !== "assistant" || m.id !== "welcome")
-      .map((m) => ({
-        user: m.role === "user" ? m.content : "",
-        assistant: m.role === "assistant" ? m.content : "",
-      }))
-      .filter((h) => h.user || h.assistant);
-
-    // ✅ Add the new user message to history
-    history.push({ user: userMessage.content, assistant: "" });
+    setIsSubmitting(true);
 
     await AiController.chat(
-      userMessage.content,
+      content,
       null, // roomId (auto-detected)
-      (response, roomId) => {
+      (queuedMessage, roomId) => {
         console.log("Room ID:", roomId);
-        const assistantMessage: IMessage = {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content: response,
-          created_at: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, assistantMessage]);
-        success("AI responded");
+        setMessages((prev) => [
+          ...prev.filter((message) => message.id !== "welcome"),
+          queuedMessage,
+        ]);
+        setIsProcessing(true);
+        success("Message sent. AI is thinking while you continue browsing.");
       },
       (err) => {
+        setInput(content);
         error(err || "Failed to get AI response");
       },
     );
+
+    setIsSubmitting(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -145,9 +150,23 @@ export const AiPage: React.FC = () => {
                 <span className="text-xs opacity-50 mt-1 block">
                   {new Date(message.created_at).toLocaleTimeString()}
                 </span>
+                {message.metadata?.status === "failed" && (
+                  <span className="text-xs text-error mt-1 block">
+                    AI could not complete this message. You can try again.
+                  </span>
+                )}
               </div>
             </div>
           ))}
+
+          {isProcessing && (
+            <div className="flex justify-start">
+              <div className="max-w-[80%] rounded-lg p-3 bg-base-200">
+                <p className="text-sm">AI is thinking…</p>
+                <span className="loading loading-dots loading-sm mt-1" />
+              </div>
+            </div>
+          )}
 
           <div ref={messagesEndRef} />
         </div>
@@ -159,24 +178,26 @@ export const AiPage: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder={isProcessing ? "AI is thinking…" : "Type your message..."}
               rows={3}
               className="flex-1"
-              disabled={isLoading}
+              disabled={isSubmitting || isProcessing}
               showCounter
               maxLength={2000}
             />
             <Button
               variant="primary"
               onClick={handleSend}
-              disabled={isLoading || !input.trim()}
+              disabled={isSubmitting || isProcessing || !input.trim()}
               className="self-end"
             >
-              Send
+              {isSubmitting ? "Sending…" : "Send"}
             </Button>
           </div>
           <p className="text-xs text-gray-400 mt-2">
-            Press Enter to send, Shift+Enter for new line
+            {isProcessing
+              ? "You can leave this page. We’ll notify you when the response is ready."
+              : "Press Enter to send, Shift+Enter for new line"}
           </p>
         </div>
       </div>
