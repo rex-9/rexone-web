@@ -6,6 +6,7 @@ import { Button, Dialog, TextInput, TextLink } from "..";
 import { useToast } from "../../../contexts";
 import { AuthStep, TAuthStep } from "./type";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface ForgotPasscodeDialogProps {
   email: string;
@@ -22,6 +23,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
   onClose,
   onBack,
 }) => {
+  const t = useTranslate();
   const { success } = useToast();
   const [localEmail, setLocalEmail] = useState(email);
   const [error, setError] = useState("");
@@ -42,7 +44,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
     );
     setIsLoading(false);
     if (!error) {
-      success("Reset link sent to your email.");
+      success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
     }
   };
 
@@ -51,11 +53,11 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title="Reset Passcode"
+      title={t(AppLocales.Auth.ForgotPasscode.Title)}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Enter your email to receive a reset link.
+        {t(AppLocales.Auth.ForgotPasscode.Description)}
       </p>
       <form onSubmit={handleSubmit} className="space-y-16">
         <TextInput
@@ -66,8 +68,8 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
             setLocalEmail(e.target.value);
             updateUrl({ email: e.target.value });
           }}
-          placeholder="your@email.com"
-          label="Email"
+          placeholder={t(AppLocales.Auth.Shared.EmailPlaceholder)}
+          label={t(AppLocales.Auth.Shared.EmailLabel)}
           required
           fullWidth
           disabled={isLoading}
@@ -79,14 +81,16 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
           disabled={isLoading || isCooldown}
         >
           {isCooldown
-            ? `Resend in ${secondsLeft}s`
+            ? t(AppLocales.Auth.ForgotPasscode.ResendIn, {
+                seconds: secondsLeft,
+              })
             : isLoading
-              ? "Sending..."
-              : "Send Passcode Reset Link"}
+              ? t(AppLocales.Auth.ForgotPasscode.Sending)
+              : t(AppLocales.Auth.ForgotPasscode.SendResetLink)}
         </Button>
         <div className="text-center text-sm">
           <TextLink
-            label="Back to Sign In"
+            label={t(AppLocales.Auth.ForgotPasscode.BackToSignIn)}
             onClick={() =>
               navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail })
             }

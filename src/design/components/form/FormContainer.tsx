@@ -1,5 +1,5 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
 export interface FormContainerProps {
@@ -15,7 +15,7 @@ export const FormContainer: React.FC<FormContainerProps> = ({
   onSubmit,
   className,
 }) => {
-  const { t } = useTranslation();
+  const t = useTranslate();
 
   return (
     <form

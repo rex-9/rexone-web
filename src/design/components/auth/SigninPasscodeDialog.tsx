@@ -7,6 +7,7 @@ import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { useNavigate } from "react-router-dom";
 import { AuthStep, TAuthStep } from "./type";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface SigninPasscodeDialogProps {
   email: string;
@@ -26,6 +27,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   onBack,
 }) => {
   const { signin } = useAuth();
+  const t = useTranslate();
   const navigate = useNavigate();
   const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
@@ -73,13 +75,13 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     );
 
     if (result.success) {
-      success("Sign in successful");
+      success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
       cooldown.clear();
       setRemainingAttempts(3);
       persistCooldownState(0);
       setPasscode("");
     } else if (result.otpSent) {
-      info("Verification code sent.");
+      info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(AuthStep.CONFIRM_EMAIL, { email });
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - start countdown
@@ -88,7 +90,11 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       persistCooldownState(until);
       setRemainingAttempts(0);
       setPasscode("");
-      setError(`Too many attempts. Try again in ${result.cooldownRemaining}s.`);
+      setError(
+        t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
+          seconds: result.cooldownRemaining,
+        }),
+      );
     } else {
       // Failed attempt - update remaining attempts
       if (result.remainingAttempts === undefined) {
@@ -103,9 +109,13 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       setPasscode("");
 
       if (attemptsLeft > 0) {
-        setError(`Incorrect passcode. ${attemptsLeft}/3 attempts remaining.`);
+        setError(
+          t(AppLocales.Auth.SignInPasscode.IncorrectPasscode, {
+            attempts: attemptsLeft,
+          }),
+        );
       } else {
-        setError("No attempts remaining. Please wait.");
+        setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
       }
     }
     setIsLoading(false);
@@ -131,15 +141,19 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   // Helper text with countdown
   const getHelperText = (): string => {
     if (cooldown.isActive) {
-      return `Wait ${cooldown.secondsLeft}s before trying again.`;
+      return t(AppLocales.Auth.SignInPasscode.WaitToRetry, {
+        seconds: cooldown.secondsLeft,
+      });
     }
     if (remainingAttempts === 0) {
-      return "No attempts remaining. Please wait.";
+      return t(AppLocales.Auth.SignInPasscode.NoAttempts);
     }
     if (remainingAttempts <= 2) {
-      return `${remainingAttempts}/3 attempts remaining.`;
+      return t(AppLocales.Auth.SignInPasscode.AttemptsRemaining, {
+        attempts: remainingAttempts,
+      });
     }
-    return "Enter your 6-digit passcode.";
+    return t(AppLocales.Auth.SignInPasscode.EnterPasscode);
   };
 
   const isSubmitDisabled =
@@ -148,15 +162,17 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   // Button text with countdown
   const getButtonText = (): string => {
     if (cooldown.isActive) {
-      return `Try again in ${cooldown.secondsLeft}s`;
+      return t(AppLocales.Auth.SignInPasscode.TryAgainIn, {
+        seconds: cooldown.secondsLeft,
+      });
     }
     if (isLoading) {
-      return "Signing in...";
+      return t(AppLocales.Auth.SignInPasscode.SigningIn);
     }
     if (remainingAttempts === 0) {
-      return "Please wait...";
+      return t(AppLocales.Auth.SignInPasscode.PleaseWait);
     }
-    return "Sign In";
+    return t(AppLocales.Auth.SignInPasscode.SignIn);
   };
 
   return (
@@ -164,16 +180,17 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title="Sign In"
+      title={t(AppLocales.Auth.SignInPasscode.Title)}
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
-        Enter your 6-digit passcode to continue.
+        {t(AppLocales.Auth.SignInPasscode.Description)}
       </p>
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
         <div className="text-center">
           <p className="text-body-m text-base-content">
-            Sign in to <span className="font-semibold">{email}</span>
+            {t(AppLocales.Auth.SignInPasscode.Prompt)}{" "}
+            <span className="font-semibold">{email}</span>
           </p>
         </div>
 
@@ -202,11 +219,11 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
         <div className="flex justify-between text-sm">
           <TextLink
-            label="Use a different email"
+            label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
             onClick={() => navigateToStep(AuthStep.INITIAL)}
           />
           <TextLink
-            label="Forgot your passcode?"
+            label={t(AppLocales.Auth.SignInPasscode.ForgotPasscode)}
             onClick={() => navigateToStep(AuthStep.FORGOT_PASSCODE, { email })}
           />
         </div>

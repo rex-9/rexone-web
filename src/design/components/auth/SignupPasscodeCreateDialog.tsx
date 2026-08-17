@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Button, Dialog, PasscodeInput, TextLink } from "..";
 import { AuthStep, TAuthStep } from "./type";
+import { AppLocales, useTranslate } from "../../../locales";
 
 interface SignupPasscodeCreateDialogProps {
   email: string;
@@ -17,6 +18,7 @@ interface SignupPasscodeCreateDialogProps {
 export const SignupPasscodeCreateDialog: React.FC<
   SignupPasscodeCreateDialogProps
 > = ({ email, passcode, setPasscode, navigateToStep, onClose, onBack }) => {
+  const t = useTranslate();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
   const [searchParams] = useSearchParams();
@@ -27,7 +29,7 @@ export const SignupPasscodeCreateDialog: React.FC<
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (passcode.length !== 6) {
-      setError("Passcode must be 6 digits");
+      setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
 
@@ -51,15 +53,19 @@ export const SignupPasscodeCreateDialog: React.FC<
   // Show different subtitle for reset password flow
   const isResetFlow = !!resetPasswordToken;
   const subtitle = isResetFlow
-    ? "Create a new passcode for your account."
-    : "Choose a 6-digit passcode you'll remember.";
+    ? t(AppLocales.Auth.SignUpPasscodeCreate.ResetDescription)
+    : t(AppLocales.Auth.SignUpPasscodeCreate.SignUpDescription);
 
   return (
     <Dialog
       isOpen={true}
       onClose={onClose}
       onBack={onBack}
-      title={isResetFlow ? "Reset Passcode" : "Create Passcode"}
+      title={
+        isResetFlow
+          ? t(AppLocales.Auth.SignUpPasscodeCreate.ResetTitle)
+          : t(AppLocales.Auth.SignUpPasscodeCreate.SignUpTitle)
+      }
       className="max-w-md"
     >
       <p className="text-body-s text-base-content opacity-70 text-center mb-8">
@@ -69,11 +75,11 @@ export const SignupPasscodeCreateDialog: React.FC<
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
-              ? "Create a new passcode"
-              : `Create a passcode for ${email}`}
+              ? t(AppLocales.Auth.SignUpPasscodeCreate.ResetPrompt)
+              : t(AppLocales.Auth.SignUpPasscodeCreate.SignUpPrompt, { email })}
           </p>
           <p className="text-body-s text-base-content opacity-70 mt-4">
-            You will use this 6-digit passcode to sign in
+            {t(AppLocales.Auth.SignUpPasscodeCreate.Instruction)}
           </p>
         </div>
         <PasscodeInput
@@ -84,8 +90,8 @@ export const SignupPasscodeCreateDialog: React.FC<
             setError("");
           }}
           onComplete={triggerSubmit}
-          label="Create Passcode"
-          helperText="Choose a 6-digit number you will remember"
+          label={t(AppLocales.Auth.SignUpPasscodeCreate.FieldLabel)}
+          helperText={t(AppLocales.Auth.SignUpPasscodeCreate.FieldHelper)}
           error={error}
           disabled={false}
         />
@@ -95,11 +101,11 @@ export const SignupPasscodeCreateDialog: React.FC<
           fullWidth
           disabled={passcode.length !== 6}
         >
-          Continue
+          {t(AppLocales.Auth.Shared.Continue)}
         </Button>
         <div className="text-center text-sm">
           <TextLink
-            label="Use a different email"
+            label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
             onClick={() => navigateToStep(AuthStep.INITIAL)}
           />
         </div>

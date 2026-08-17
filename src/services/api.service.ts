@@ -4,6 +4,7 @@ import AppRoutes from "../AppRoutes";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
+import { AppLocales, getApiLocale, translate } from "../locales";
 import {
   IApiEnvelope,
   IApiPagination,
@@ -152,6 +153,10 @@ export const useAxiosInterceptor = () => {
         // Always send platform so backend can enforce one active session per platform.
         headers.set("X-Platform", PLATFORM_HEADER_VALUE);
 
+        // Rexone Core currently supports English and Burmese. Unsupported
+        // frontend locales (such as Spanish) intentionally fall back to English.
+        headers.set("X-Locale", getApiLocale());
+
         // Check if data is FormData - let axios set Content-Type automatically
         if (config.data instanceof FormData) {
           // Don't set Content-Type - axios will set it with boundary
@@ -206,7 +211,7 @@ export const useAxiosInterceptor = () => {
 
             nextUrl.searchParams.set(
               "message",
-              "Your session has expired. Please sign in again.",
+              translate(AppLocales.Auth.Shared.SessionExpired),
             );
             window.location.assign(nextUrl.toString());
           }

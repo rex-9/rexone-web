@@ -5,11 +5,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
 import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "../../../modules/auth";
+import { AppLocales, useTranslate } from "../../../locales";
 
 export const ConfirmEmailPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { signin } = useAuth();
+  const t = useTranslate();
   const { success } = useToast();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ export const ConfirmEmailPage: React.FC = () => {
         () => {},
         (token, user) => {
           signin(token, user);
-          success("Email confirmed successfully!");
+          success(t(AppLocales.Auth.ConfirmEmail.LinkConfirmed));
           navigate(AppRoutes.client.protected.HOME, { replace: true });
         },
         (errorMsg) => {
@@ -59,7 +61,7 @@ export const ConfirmEmailPage: React.FC = () => {
     // Fallback: go to initial auth dialog
     const url = AppRoutes.client.public.SIGN_IN;
     navigate(url, { replace: true });
-  }, [navigate, location, signin]);
+  }, [navigate, location, signin, success, t]);
 
   return null;
 };

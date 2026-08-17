@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
 export interface TextLinkProps {
@@ -16,7 +16,7 @@ export const TextLink: React.FC<TextLinkProps> = ({
   onClick,
   className,
 }) => {
-  const { t } = useTranslation();
+  const t = useTranslate();
 
   const linkClasses = cn(
     "text-gold-500 hover:text-gold-600 hover:underline transition-colors",
