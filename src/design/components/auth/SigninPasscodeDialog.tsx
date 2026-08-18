@@ -41,7 +41,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
   // Load persisted cooldown state from localStorage
   useEffect(() => {
-    const key = `passcode-retry:${email}`;
+    const key = `passcode-retry:${email.trim().toLowerCase()}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
@@ -56,7 +56,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
   // Save cooldown state to localStorage
   const persistCooldownState = (cooldownUntilMs: number) => {
-    const key = `passcode-retry:${email}`;
+    const key = `passcode-retry:${email.trim().toLowerCase()}`;
     localStorage.setItem(key, JSON.stringify({ cooldownUntilMs }));
   };
 
