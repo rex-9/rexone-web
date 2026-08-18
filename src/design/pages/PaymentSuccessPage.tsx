@@ -9,7 +9,7 @@ export const PaymentSuccessPage: React.FC = () => {
 
   useEffect(() => {
     success("Payment successful! Welcome aboard! 🎉");
-  }, []);
+  }, [success]);
 
   return (
     <LayoutPage>

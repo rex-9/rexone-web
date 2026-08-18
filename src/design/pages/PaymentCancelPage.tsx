@@ -9,7 +9,7 @@ export const PaymentCancelPage: React.FC = () => {
 
   useEffect(() => {
     info("Payment was canceled. You can try again anytime.");
-  }, []);
+  }, [info]);
 
   return (
     <LayoutPage>

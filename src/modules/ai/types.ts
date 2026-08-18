@@ -21,7 +21,6 @@ export interface IMessage {
   content: string;
   metadata?: {
     status?: "queued" | "processing" | "retrying" | "completed" | "failed";
-    notification_locale?: string;
     system_prompt?: string;
     temperature?: number;
     max_tokens?: number;
