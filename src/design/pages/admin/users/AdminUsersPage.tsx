@@ -158,8 +158,8 @@ export const AdminUsersPage: React.FC = () => {
 
     await Admin.UserController.deleteUser(
       deleteTarget.id,
-      () => {
-        toast.success("User deleted");
+      (message) => {
+        toast.success(message);
         setDeleteTarget(null);
         setIsDeleting(false);
         void loadUsers();

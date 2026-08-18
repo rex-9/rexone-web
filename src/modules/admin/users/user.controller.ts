@@ -1,3 +1,4 @@
+import { AppLocales, translate } from "../../../locales";
 import { IApiPagination } from "../../../models";
 import { parseFromList } from "../../../services/api.service";
 import UserService from "./user.service";
@@ -16,6 +17,8 @@ const parseAdminUser = (data: AdminUserResponse): IAdminUser => {
   return data.user;
 };
 
+const userErrorMessage = (key: string): string => translate(key);
+
 class UserController {
   async getUsers(
     params?: { page?: number; limit?: number },
@@ -28,10 +31,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load admin users",
+            userErrorMessage(AppLocales.Admin.Users.Errors.LoadListFailed),
         );
         return;
       }
@@ -41,7 +44,7 @@ class UserController {
       onSuccess?.(users, meta?.pagination);
     } catch (error) {
       console.error("Error fetching admin users:", error);
-      onError?.("An error occurred while loading admin users.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.LoadListUnexpected));
     }
   }
 
@@ -56,10 +59,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load admin user",
+            userErrorMessage(AppLocales.Admin.Users.Errors.LoadOneFailed),
         );
         return;
       }
@@ -67,13 +70,13 @@ class UserController {
       onSuccess?.(parseAdminUser(data));
     } catch (error) {
       console.error("Error fetching admin user:", error);
-      onError?.("An error occurred while loading the user.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.LoadOneUnexpected));
     }
   }
 
   async createUser(
     values: IAdminUserFormValues,
-    onSuccess?: (user: IAdminUser) => void,
+    onSuccess?: (user: IAdminUser, message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
@@ -82,25 +85,25 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to create user",
+            userErrorMessage(AppLocales.Admin.Users.Errors.CreateFailed),
         );
         return;
       }
 
-      onSuccess?.(parseAdminUser(data));
+      onSuccess?.(parseAdminUser(data), status.message);
     } catch (error) {
       console.error("Error creating admin user:", error);
-      onError?.("An error occurred while creating the user.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.CreateUnexpected));
     }
   }
 
   async updateUser(
     id: string,
     values: IAdminUserFormValues,
-    onSuccess?: (user: IAdminUser) => void,
+    onSuccess?: (user: IAdminUser, message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
@@ -109,24 +112,24 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to update user",
+            userErrorMessage(AppLocales.Admin.Users.Errors.UpdateFailed),
         );
         return;
       }
 
-      onSuccess?.(parseAdminUser(data));
+      onSuccess?.(parseAdminUser(data), status.message);
     } catch (error) {
       console.error("Error updating admin user:", error);
-      onError?.("An error occurred while updating the user.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.UpdateUnexpected));
     }
   }
 
   async deleteUser(
     id: string,
-    onSuccess?: () => void,
+    onSuccess?: (message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
     try {
@@ -135,18 +138,18 @@ class UserController {
 
       if (!status?.success) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to delete user",
+            userErrorMessage(AppLocales.Admin.Users.Errors.DeleteFailed),
         );
         return;
       }
 
-      onSuccess?.();
+      onSuccess?.(status.message);
     } catch (error) {
       console.error("Error deleting admin user:", error);
-      onError?.("An error occurred while deleting the user.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.DeleteUnexpected));
     }
   }
 
@@ -160,10 +163,10 @@ class UserController {
 
       if (!status?.success || !data?.roles) {
         onError?.(
-          status?.error ||
+            status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load roles",
+            userErrorMessage(AppLocales.Admin.Users.Errors.LoadRolesFailed),
         );
         return;
       }
@@ -171,7 +174,7 @@ class UserController {
       onSuccess?.(parseFromList<IAdminRole>(data.roles));
     } catch (error) {
       console.error("Error fetching admin roles:", error);
-      onError?.("An error occurred while loading roles.");
+      onError?.(userErrorMessage(AppLocales.Admin.Users.Errors.LoadRolesUnexpected));
     }
   }
 }

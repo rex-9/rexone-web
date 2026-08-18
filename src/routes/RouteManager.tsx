@@ -104,10 +104,14 @@ export const RouteManager = () => {
               element={<PaymentCancelPage />}
             />
             <Route path={AppRoutes.client.protected.AI} element={<AiPage />} />
-            <Route
-              path={AppRoutes.client.protected.ADMIN}
-              element={<AdminHomeRoute />}
-            />
+	            <Route
+	              path={AppRoutes.client.protected.ADMIN}
+	              element={<AdminHomeRoute />}
+	            />
+	            <Route
+	              path={`${AppRoutes.client.protected.ADMIN}/`}
+	              element={<AdminHomeRoute />}
+	            />
             <Route
               element={<AdminAccessRoute action="read" resource="users" />}
             >

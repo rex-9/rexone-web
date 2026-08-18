@@ -8,6 +8,10 @@ export interface IAdminNotificationFormValues {
 }
 
 export interface IAdminNotificationDelivery {
+  job_id?: string;
+  audience?: "users" | "roles" | "all";
+  recipient_count?: number;
+  channels?: string[];
   count?: number;
   users?: Record<string, IAdminNotificationDelivery>;
   socket?: boolean;

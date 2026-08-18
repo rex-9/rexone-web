@@ -34,8 +34,8 @@ export const AdminUserCreatePage: React.FC = () => {
 
     await Admin.UserController.createUser(
       values,
-      () => {
-        toast.success("User created");
+      (_user, message) => {
+        toast.success(message);
         navigate(AppRoutes.client.protected.ADMIN_USERS);
       },
       (message) => {

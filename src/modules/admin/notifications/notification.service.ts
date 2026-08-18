@@ -16,20 +16,29 @@ class NotificationService {
     );
   }
 
-  async createNotification(
-    values: IAdminNotificationFormValues,
-  ): Promise<
-    IApiResponse<
-      IApiEnvelope<{ delivered: IAdminNotificationDelivery }>
-    >
-  > {
-    return api.post<{ delivered: IAdminNotificationDelivery }>(
-      AppRoutes.server.protected.ADMIN_NOTIFICATIONS,
-      {
-        notification: values,
-      },
-    );
-  }
+	  async createNotification(
+	    values: IAdminNotificationFormValues,
+	  ): Promise<
+	    IApiResponse<
+	      IApiEnvelope<IAdminNotificationDelivery>
+	    >
+	  > {
+	    const channels = [
+	      values.send_socket ? "socket" : null,
+	      values.send_push ? "push" : null,
+	      values.send_email ? "email" : null,
+	    ].filter((channel): channel is string => Boolean(channel));
+
+	    return api.post<IAdminNotificationDelivery>(
+	      AppRoutes.server.protected.ADMIN_NOTIFICATIONS,
+	      {
+	        audience: { type: "users", user_ids: values.user_ids },
+	        channels,
+	        title: values.title,
+	        message: values.message,
+	      },
+	    );
+	  }
 }
 
 export default new NotificationService();

@@ -58,8 +58,8 @@ export const AdminUserEditPage: React.FC = () => {
     await Admin.UserController.updateUser(
       id,
       values,
-      () => {
-        toast.success("User updated");
+      (_user, message) => {
+        toast.success(message);
         navigate(AppRoutes.client.protected.ADMIN_USERS);
       },
       (message) => {

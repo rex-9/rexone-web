@@ -163,6 +163,25 @@
     }
   },
 
+  "admin": {
+    "users": {
+      "errors": {
+        "load_list_failed": "Failed to load admin users",
+        "load_one_failed": "Failed to load admin user",
+        "create_failed": "Failed to create user",
+        "update_failed": "Failed to update user",
+        "delete_failed": "Failed to delete user",
+        "load_roles_failed": "Failed to load roles",
+        "load_list_unexpected": "An error occurred while loading admin users.",
+        "load_one_unexpected": "An error occurred while loading the user.",
+        "create_unexpected": "An error occurred while creating the user.",
+        "update_unexpected": "An error occurred while updating the user.",
+        "delete_unexpected": "An error occurred while deleting the user.",
+        "load_roles_unexpected": "An error occurred while loading roles."
+      }
+    }
+  },
+
   "### ANAPANA_MODULE": "### ANAPANA_MODULE",
   "anapana_timer_title": "Anapana Interval Reminder",
   "timer_start_time": "Start Time",

@@ -41,7 +41,7 @@ class NotificationController {
       const response = await NotificationService.createNotification(values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.delivered) {
+      if (!status?.success || !data) {
         onError?.(
           status?.error ||
             status?.message ||
@@ -51,7 +51,7 @@ class NotificationController {
         return;
       }
 
-      onSuccess?.(data.delivered);
+      onSuccess?.(data);
     } catch (error) {
       console.error("Error sending admin notification:", error);
       onError?.("An error occurred while sending the notification.");
