@@ -16,29 +16,37 @@ class NotificationService {
     );
   }
 
-	  async createNotification(
-	    values: IAdminNotificationFormValues,
-	  ): Promise<
-	    IApiResponse<
-	      IApiEnvelope<IAdminNotificationDelivery>
-	    >
-	  > {
-	    const channels = [
-	      values.send_socket ? "socket" : null,
-	      values.send_push ? "push" : null,
-	      values.send_email ? "email" : null,
-	    ].filter((channel): channel is string => Boolean(channel));
+  async createNotification(
+    values: IAdminNotificationFormValues,
+  ): Promise<IApiResponse<IApiEnvelope<IAdminNotificationDelivery>>> {
+    const channels = [
+      values.send_socket ? "socket" : null,
+      values.send_push ? "push" : null,
+      values.send_email ? "email" : null,
+    ].filter((channel): channel is string => Boolean(channel));
 
-	    return api.post<IAdminNotificationDelivery>(
-	      AppRoutes.server.protected.ADMIN_NOTIFICATIONS,
-	      {
-	        audience: { type: "users", user_ids: values.user_ids },
-	        channels,
-	        title: values.title,
-	        message: values.message,
-	      },
-	    );
-	  }
+    return api.post<IAdminNotificationDelivery>(
+      AppRoutes.server.protected.ADMIN_NOTIFICATIONS,
+      {
+        audience: this.buildAudience(values),
+        channels,
+        title: values.title,
+        message: values.message,
+      },
+    );
+  }
+
+  private buildAudience(values: IAdminNotificationFormValues) {
+    if (values.audience_type === "all") {
+      return { type: "all" };
+    }
+
+    if (values.audience_type === "roles") {
+      return { type: "roles", role_ids: values.role_ids };
+    }
+
+    return { type: "users", user_ids: values.user_ids };
+  }
 }
 
 export default new NotificationService();

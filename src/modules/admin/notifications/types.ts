@@ -1,5 +1,7 @@
 export interface IAdminNotificationFormValues {
+  audience_type: "users" | "roles" | "all";
   user_ids: string[];
+  role_ids: string[];
   title: string;
   message: string;
   send_push: boolean;

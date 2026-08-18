@@ -10,6 +10,7 @@ import { useDocumentTitle } from "../../../../hooks";
 import {
   Admin,
   IAdminNotificationFormValues,
+  IAdminRole,
   IAdminUser,
 } from "../../../../modules/admin";
 import {
@@ -25,7 +26,9 @@ import {
 } from "../../../components";
 
 const initialValues: IAdminNotificationFormValues = {
+  audience_type: "users",
   user_ids: [],
+  role_ids: [],
   title: "",
   message: "",
   send_push: true,
@@ -63,6 +66,7 @@ export const AdminNotificationsPage: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const [users, setUsers] = useState<IAdminUser[]>([]);
+  const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [values, setValues] =
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
@@ -73,21 +77,26 @@ export const AdminNotificationsPage: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void Admin.NotificationController.getRecipients(
-        (nextUsers) => {
-          setUsers(nextUsers);
-          setIsLoading(false);
-        },
-        (message) => {
-          setError(message);
-          setIsLoading(false);
-        },
-      );
+      void Promise.all([
+        Admin.NotificationController.getRecipients(
+          (nextUsers) => setUsers(nextUsers),
+          (message) => setError(message),
+        ),
+        Admin.RoleController.getRoles(
+          (nextRoles) => setRoles(nextRoles),
+          (message) => setError(message),
+        ),
+      ]).finally(() => setIsLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
   }, []);
 
+  const sortedRoles = useMemo(
+    () =>
+      [...roles].sort((left, right) => left.name.localeCompare(right.name)),
+    [roles],
+  );
   const sortedUsers = useMemo(
     () =>
       [...users].sort((left, right) =>
@@ -97,8 +106,14 @@ export const AdminNotificationsPage: React.FC = () => {
       ),
     [users],
   );
+  const roleIds = useMemo(() => sortedRoles.map((role) => role.id), [sortedRoles]);
   const userIds = useMemo(() => sortedUsers.map((user) => user.id), [sortedUsers]);
+  const selectedRoleIds = useMemo(() => values.role_ids, [values.role_ids]);
   const selectedUserIds = useMemo(() => values.user_ids, [values.user_ids]);
+  const selectedRoleIdSet = useMemo(
+    () => new Set(selectedRoleIds),
+    [selectedRoleIds],
+  );
   const selectedUserIdSet = useMemo(
     () => new Set(selectedUserIds),
     [selectedUserIds],
@@ -120,6 +135,8 @@ export const AdminNotificationsPage: React.FC = () => {
   );
   const areAllUsersSelected =
     userIds.length > 0 && selectedUserIds.length === userIds.length;
+  const areAllRolesSelected =
+    roleIds.length > 0 && selectedRoleIds.length === roleIds.length;
 
   const selectedChannels = [
     values.send_push,
@@ -132,6 +149,16 @@ export const AdminNotificationsPage: React.FC = () => {
     value: string | string[] | boolean,
   ) => {
     setValues((current) => ({ ...current, [field]: value }));
+  };
+
+  const toggleRole = (roleId: string) => {
+    setValues((current) => {
+      const roleIds = current.role_ids.includes(roleId)
+        ? current.role_ids.filter((id) => id !== roleId)
+        : [...current.role_ids, roleId];
+
+      return { ...current, role_ids: roleIds };
+    });
   };
 
   const addUser = (userId: string) => {
@@ -155,6 +182,10 @@ export const AdminNotificationsPage: React.FC = () => {
   const toggleAllUsers = () => {
     updateValue("user_ids", areAllUsersSelected ? [] : userIds);
     setRecipientQuery("");
+  };
+
+  const toggleAllRoles = () => {
+    updateValue("role_ids", areAllRolesSelected ? [] : roleIds);
   };
 
   const handleRecipientKeyDown = (
@@ -186,8 +217,13 @@ export const AdminNotificationsPage: React.FC = () => {
       return;
     }
 
-    if (selectedUserIds.length === 0) {
+    if (values.audience_type === "users" && selectedUserIds.length === 0) {
       setError("Select at least one user.");
+      return;
+    }
+
+    if (values.audience_type === "roles" && selectedRoleIds.length === 0) {
+      setError("Select at least one role.");
       return;
     }
 
@@ -197,15 +233,13 @@ export const AdminNotificationsPage: React.FC = () => {
     await Admin.NotificationController.createNotification(
       {
         ...values,
+        user_ids: values.audience_type === "users" ? values.user_ids : [],
+        role_ids: values.audience_type === "roles" ? values.role_ids : [],
         title: values.title.trim(),
         message: values.message.trim(),
       },
       () => {
-        toast.success(
-          selectedUserIds.length === 1
-            ? "Notification sent"
-            : "Notifications sent",
-        );
+        toast.success("Notification sent");
         setValues(initialValues);
         setIsSubmitting(false);
       },
@@ -220,8 +254,8 @@ export const AdminNotificationsPage: React.FC = () => {
     <AdminLayout title="Notifications">
       {isLoading ? (
         <AdminLoadingState />
-      ) : error && users.length === 0 ? (
-        <AdminState title="Unable to load users" message={error} />
+      ) : error && users.length === 0 && roles.length === 0 ? (
+        <AdminState title="Unable to load recipients" message={error} />
       ) : (
         <>
           <AdminFormShell>
@@ -244,104 +278,172 @@ export const AdminNotificationsPage: React.FC = () => {
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
-                        Recipients
+                        Audience
                       </h2>
                       <div className="flex items-center gap-8">
                         <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
-                          {selectedUserIds.length}/{sortedUsers.length}
+                          {values.audience_type === "users"
+                            ? `${selectedUserIds.length}/${sortedUsers.length}`
+                            : values.audience_type === "roles"
+                              ? `${selectedRoleIds.length}/${sortedRoles.length}`
+                              : "All"}
                         </span>
                         <Button
                           type="button"
                           variant="secondary"
                           className="h-[30px] w-[30px] p-0"
                           aria-label={
-                            areAllUsersSelected
-                              ? "Clear all users"
-                              : "Select all users"
+                            values.audience_type === "users"
+                              ? areAllUsersSelected
+                                ? "Clear all users"
+                                : "Select all users"
+                              : areAllRolesSelected
+                                ? "Clear all roles"
+                                : "Select all roles"
                           }
                           title={
-                            areAllUsersSelected
-                              ? "Clear all users"
-                              : "Select all users"
+                            values.audience_type === "users"
+                              ? areAllUsersSelected
+                                ? "Clear all users"
+                                : "Select all users"
+                              : areAllRolesSelected
+                                ? "Clear all roles"
+                                : "Select all roles"
                           }
-                          onClick={toggleAllUsers}
+                          onClick={
+                            values.audience_type === "users"
+                              ? toggleAllUsers
+                              : toggleAllRoles
+                          }
+                          disabled={values.audience_type === "all"}
                         >
-                          {areAllUsersSelected ? (
-                            <XMarkIcon className="h-[14px] w-[14px]" />
-                          ) : (
-                            <CheckIcon className="h-[14px] w-[14px]" />
-                          )}
+                          <CheckIcon className="h-[14px] w-[14px]" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="relative">
-                      <div className="flex min-h-[34px] flex-wrap items-center gap-5 rounded-md border border-base-300 bg-base-100 px-7 py-4 focus-within:border-gold-500 focus-within:ring-2 focus-within:ring-gold-500/20">
-                        {selectedUsers.map((user) => (
-                          <span
-                            key={user.id}
-                            className="inline-flex max-w-full items-center gap-4 rounded-md bg-base-200 px-6 py-2 text-body-s font-medium text-base-content"
-                          >
-                            <span className="max-w-[180px] truncate">
-                              {getUserLabel(user)}
-                            </span>
-                            <button
-                              type="button"
-                              className="rounded-full p-1 text-base-content opacity-70 transition hover:bg-base-300 hover:opacity-100"
-                              aria-label={`Remove ${getUserLabel(user)}`}
-                              onClick={() => removeUser(user.id)}
-                            >
-                              <XMarkIcon className="h-[12px] w-[12px]" />
-                            </button>
-                          </span>
-                        ))}
-
+                    <div className="mb-10 grid gap-8 sm:grid-cols-3">
+                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
-                          type="text"
-                          value={recipientQuery}
-                          className="min-w-[180px] flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
-                          placeholder={
-                            selectedUsers.length === 0 ? "Recipients" : ""
-                          }
-                          onChange={(event) =>
-                            setRecipientQuery(event.target.value)
-                          }
-                          onFocus={() => setIsRecipientFocused(true)}
-                          onBlur={() => {
-                            window.setTimeout(() => {
-                              setIsRecipientFocused(false);
-                            }, 120);
-                          }}
-                          onKeyDown={handleRecipientKeyDown}
+                          type="radio"
+                          name="audience_type"
+                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
+                          checked={values.audience_type === "users"}
+                          onChange={() => updateValue("audience_type", "users")}
                         />
-                      </div>
-
-                      {isRecipientFocused && recipientSuggestions.length > 0 && (
-                        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
-                          {recipientSuggestions.map((user) => (
-                            <button
-                              key={user.id}
-                              type="button"
-                              className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-gold-500/10"
-                              onMouseDown={(event) => {
-                                event.preventDefault();
-                                addUser(user.id);
-                              }}
-                            >
-                              <span className="min-w-0">
-                                <span className="block truncate font-semibold text-base-content">
-                                  {getUserLabel(user)}
-                                </span>
-                                <span className="block truncate text-caption text-base-content/60">
-                                  {user.username || user.id}
-                                </span>
-                              </span>
-                              <CheckIcon className="h-[14px] w-[14px] shrink-0 text-gold-500" />
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                        <span>Selected users</span>
+                      </label>
+                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
+                        <input
+                          type="radio"
+                          name="audience_type"
+                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
+                          checked={values.audience_type === "roles"}
+                          onChange={() => updateValue("audience_type", "roles")}
+                        />
+                        <span>Selected roles</span>
+                      </label>
+                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
+                        <input
+                          type="radio"
+                          name="audience_type"
+                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
+                          checked={values.audience_type === "all"}
+                          onChange={() => updateValue("audience_type", "all")}
+                        />
+                        <span>All users</span>
+                      </label>
                     </div>
+
+                    {values.audience_type === "users" && (
+                      <div className="relative">
+                        <div className="flex min-h-[34px] flex-wrap items-center gap-5 rounded-md border border-base-300 bg-base-100 px-7 py-4 focus-within:border-gold-500 focus-within:ring-2 focus-within:ring-gold-500/20">
+                          {selectedUsers.map((user) => (
+                            <span
+                              key={user.id}
+                              className="inline-flex max-w-full items-center gap-4 rounded-md bg-base-200 px-6 py-2 text-body-s font-medium text-base-content"
+                            >
+                              <span className="max-w-[180px] truncate">
+                                {getUserLabel(user)}
+                              </span>
+                              <button
+                                type="button"
+                                className="rounded-full p-1 text-base-content opacity-70 transition hover:bg-base-300 hover:opacity-100"
+                                aria-label={`Remove ${getUserLabel(user)}`}
+                                onClick={() => removeUser(user.id)}
+                              >
+                                <XMarkIcon className="h-[12px] w-[12px]" />
+                              </button>
+                            </span>
+                          ))}
+
+                          <input
+                            type="text"
+                            value={recipientQuery}
+                            className="min-w-[180px] flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
+                            placeholder={
+                              selectedUsers.length === 0 ? "Recipients" : ""
+                            }
+                            onChange={(event) =>
+                              setRecipientQuery(event.target.value)
+                            }
+                            onFocus={() => setIsRecipientFocused(true)}
+                            onBlur={() => {
+                              window.setTimeout(() => {
+                                setIsRecipientFocused(false);
+                              }, 120);
+                            }}
+                            onKeyDown={handleRecipientKeyDown}
+                          />
+                        </div>
+
+                        {isRecipientFocused &&
+                          recipientSuggestions.length > 0 && (
+                            <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
+                              {recipientSuggestions.map((user) => (
+                                <button
+                                  key={user.id}
+                                  type="button"
+                                  className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-gold-500/10"
+                                  onMouseDown={(event) => {
+                                    event.preventDefault();
+                                    addUser(user.id);
+                                  }}
+                                >
+                                  <span className="min-w-0">
+                                    <span className="block truncate font-semibold text-base-content">
+                                      {getUserLabel(user)}
+                                    </span>
+                                    <span className="block truncate text-caption text-base-content/60">
+                                      {user.username || user.id}
+                                    </span>
+                                  </span>
+                                  <CheckIcon className="h-[14px] w-[14px] shrink-0 text-gold-500" />
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                      </div>
+                    )}
+
+                    {values.audience_type === "roles" && (
+                      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                        {sortedRoles.map((role) => (
+                          <label
+                            key={role.id}
+                            className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content"
+                          >
+                            <input
+                              type="checkbox"
+                              className={channelCheckboxClassName}
+                              checked={selectedRoleIdSet.has(role.id)}
+                              onChange={() => toggleRole(role.id)}
+                            />
+                            <span className="min-w-0 truncate">{role.name}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
 
