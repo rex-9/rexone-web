@@ -198,30 +198,30 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">Choose Your Plan</h1>
-        <p className="text-gray-500">
+      <div className="text-center space-y-8 mb-16">
+        <h1 className="text-h1 font-semibold text-center">Choose Your Plan</h1>
+        <p className="text-body-m text-base-content/70 text-center">
           Select the option that works best for you
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gap-24">
         {products.map((product) => (
-          <div key={product.id} className="card bg-base-100 shadow-xl">
-            <div className="card-body">
-              <h3 className="card-title text-xl">{product.name}</h3>
-              <p className="text-gray-500 text-sm">{product.description}</p>
+          <div key={product.id} className="card bg-base-100 shadow-s rounded-m border border-base-200">
+            <div className="card-body p-24">
+              <h3 className="card-title text-h3 font-semibold">{product.name}</h3>
+              <p className="text-body-s text-base-content/70">{product.description}</p>
 
-              <div className="mt-4">
-                <span className="text-3xl font-bold">{product.price}</span>
-                <span className="text-gray-500 text-sm ml-1">
+              <div className="mt-16">
+                <span className="text-h2 font-semibold">{product.price}</span>
+                <span className="text-body-s text-base-content/60 ml-4">
                   {product.recurring
                     ? `/${product.period_label}`
                     : " (one-time)"}
                 </span>
               </div>
 
-              <div className="divider"></div>
+              <div className="divider my-16"></div>
               {renderProductActions(product)}
             </div>
           </div>

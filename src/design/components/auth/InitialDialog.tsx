@@ -198,7 +198,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
               <p className="text-error font-medium">
                 ⚠️ {t(AppLocales.Auth.Initial.AdBlockerTitle)}
               </p>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-body-s text-base-content/70 mt-1">
                 {t(AppLocales.Auth.Initial.AdBlockerDescription)}
               </p>
             </div>

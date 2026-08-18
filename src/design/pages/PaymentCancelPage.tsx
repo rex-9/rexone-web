@@ -13,12 +13,12 @@ export const PaymentCancelPage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="text-6xl">😅</div>
-      <h1 className="text-3xl font-bold">Payment Canceled</h1>
-      <p className="text-gray-500">
+      <div className="text-display-xl text-center">😅</div>
+      <h1 className="text-h1 font-semibold text-center">Payment Canceled</h1>
+      <p className="text-body-m text-base-content/70 text-center">
         Your payment was not completed. You can try again anytime.
       </p>
-      <Link to="/payment">
+      <Link to="/payment" className="w-full">
         <Button variant="primary" fullWidth>
           Try Again
         </Button>

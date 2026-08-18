@@ -125,13 +125,13 @@ export const AiPage: React.FC = () => {
     <LayoutPage>
       <div className="flex flex-col h-[calc(100vh-200px)] max-w-3xl mx-auto w-full">
         {/* Header */}
-        <div className="text-center py-4 border-b border-base-200">
-          <h1 className="text-2xl font-bold">🤖 AI Assistant</h1>
-          <p className="text-sm text-gray-500">Powered by DeepSeek AI</p>
+        <div className="text-center py-16 border-b border-base-200">
+          <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
+          <p className="text-body-s text-base-content/70">Powered by DeepSeek AI</p>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-16 space-y-16">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -140,18 +140,18 @@ export const AiPage: React.FC = () => {
               }`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`max-w-[80%] rounded-m p-12 ${
                   message.role === "user"
                     ? "bg-primary text-primary-content"
                     : "bg-base-200"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                <span className="text-xs opacity-50 mt-1 block">
+                <p className="text-body-m whitespace-pre-wrap">{message.content}</p>
+                <span className="text-caption opacity-50 mt-4 block">
                   {new Date(message.created_at).toLocaleTimeString()}
                 </span>
                 {message.metadata?.status === "failed" && (
-                  <span className="text-xs text-error mt-1 block">
+                  <span className="text-caption text-error mt-4 block">
                     AI could not complete this message. You can try again.
                   </span>
                 )}
@@ -161,9 +161,9 @@ export const AiPage: React.FC = () => {
 
           {isProcessing && (
             <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-lg p-3 bg-base-200">
-                <p className="text-sm">AI is thinking…</p>
-                <span className="loading loading-dots loading-sm mt-1" />
+              <div className="max-w-[80%] rounded-m p-12 bg-base-200">
+                <p className="text-body-m">AI is thinking…</p>
+                <span className="loading loading-dots loading-sm mt-4" />
               </div>
             </div>
           )}
@@ -172,8 +172,8 @@ export const AiPage: React.FC = () => {
         </div>
 
         {/* Input */}
-        <div className="border-t border-base-200 p-4">
-          <div className="flex gap-2">
+        <div className="border-t border-base-200 p-16">
+          <div className="flex gap-8">
             <TextArea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -194,7 +194,7 @@ export const AiPage: React.FC = () => {
               {isSubmitting ? "Sending…" : "Send"}
             </Button>
           </div>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-caption text-base-content/60 mt-8">
             {isProcessing
               ? "You can leave this page. We’ll notify you when the response is ready."
               : "Press Enter to send, Shift+Enter for new line"}
