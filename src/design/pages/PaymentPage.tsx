@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useToast } from "../../contexts/ToastContext";
 import { Button } from "../components/button/Button";
+import { ConfirmDialog } from "../components/overlay";
 import { LayoutPage } from ".";
 import { IProduct, ISubscription, ITransaction } from "../../modules/payment";
 import { PaymentController } from "../../modules/payment";
@@ -12,6 +13,7 @@ export const PaymentPage: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -117,7 +119,7 @@ export const PaymentPage: React.FC = () => {
             variant="secondary"
             fullWidth
             size="sm"
-            onClick={() => handleCancel(activeSub.id)}
+            onClick={() => setCancelTargetId(activeSub.id)}
           >
             Cancel Subscription
           </Button>
@@ -227,6 +229,22 @@ export const PaymentPage: React.FC = () => {
           </div>
         ))}
       </div>
+
+      <ConfirmDialog
+        isOpen={cancelTargetId !== null}
+        onClose={() => setCancelTargetId(null)}
+        onConfirm={() => {
+          if (cancelTargetId) {
+            handleCancel(cancelTargetId);
+            setCancelTargetId(null);
+          }
+        }}
+        title="Cancel Subscription"
+        message="Your subscription will remain active until the end of the billing period. Are you sure you want to cancel?"
+        confirmLabel="Cancel Subscription"
+        cancelLabel="Keep Subscription"
+        isDestructive={true}
+      />
     </LayoutPage>
   );
 };

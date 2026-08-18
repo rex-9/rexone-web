@@ -1,0 +1,67 @@
+// src/design/components/overlay/ConfirmDialog.tsx
+
+import React from "react";
+import { Dialog } from "./Dialog";
+import { Button } from "../button";
+
+export interface ConfirmDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  isDestructive?: boolean;
+  isLoading?: boolean;
+  className?: string;
+}
+
+export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
+  isDestructive = true,
+  isLoading = false,
+  className,
+}) => {
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      className={className}
+      footer={
+        <div className="flex justify-end gap-12">
+          <Button
+            type="button"
+            variant="tertiary"
+            onClick={onClose}
+            disabled={isLoading}
+          >
+            {cancelLabel}
+          </Button>
+          <Button
+            type="button"
+            variant={isDestructive ? "primary" : "secondary"}
+            className={
+              isDestructive
+                ? "!bg-error !text-white hover:!bg-error/90"
+                : ""
+            }
+            onClick={onConfirm}
+            isLoading={isLoading}
+          >
+            {confirmLabel}
+          </Button>
+        </div>
+      }
+    >
+      <p className="text-body-m text-base-content/80 py-8">{message}</p>
+    </Dialog>
+  );
+};

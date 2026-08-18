@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { LayoutPage } from "./LayoutPage";
-import { Button, TextArea } from "../components";
+import { Button, TextArea, ConfirmDialog } from "../components";
 import { useToast } from "../../contexts/ToastContext";
 import AiController from "../../modules/ai/ai.controller";
 import { IMessage } from "../../modules/ai/";
@@ -14,6 +14,7 @@ export const AiPage: React.FC = () => {
   const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -121,13 +122,46 @@ export const AiPage: React.FC = () => {
     }
   };
 
+  const handleClearHistory = async () => {
+    setIsClearDialogOpen(false);
+    await AiController.clearHistory(
+      null,
+      () => {
+        success("Chat history cleared");
+        setMessages([
+          {
+            id: "welcome",
+            role: "assistant",
+            content: "Hello! I'm your AI assistant. How can I help you today?",
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      },
+      (err) => error(err),
+    );
+  };
+
   return (
     <LayoutPage>
       <div className="flex flex-col h-[calc(100vh-200px)] max-w-3xl mx-auto w-full">
         {/* Header */}
-        <div className="text-center py-16 border-b border-base-200">
-          <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
-          <p className="text-body-s text-base-content/70">Powered by DeepSeek AI</p>
+        <div className="flex items-center justify-between py-16 border-b border-base-200">
+          <div className="w-[100px]" />
+          <div className="text-center flex-1">
+            <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
+            <p className="text-body-s text-base-content/70">Powered by DeepSeek AI</p>
+          </div>
+          <div className="w-[100px] flex justify-end">
+            {messages.length > 1 && (
+              <Button
+                variant="tertiary"
+                size="sm"
+                onClick={() => setIsClearDialogOpen(true)}
+              >
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Messages */}
@@ -201,6 +235,17 @@ export const AiPage: React.FC = () => {
           </p>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isClearDialogOpen}
+        onClose={() => setIsClearDialogOpen(false)}
+        onConfirm={handleClearHistory}
+        title="Clear History"
+        message="All messages in this conversation will be permanently deleted. Are you sure you want to clear chat history?"
+        confirmLabel="Clear History"
+        cancelLabel="Cancel"
+        isDestructive={true}
+      />
     </LayoutPage>
   );
 };
