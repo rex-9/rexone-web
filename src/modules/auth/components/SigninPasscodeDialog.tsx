@@ -3,10 +3,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
 import { useCountdown } from "../../../hooks";
-import { Button, Dialog, PasscodeInput, TextLink } from "..";
+import {
+  Button,
+  Dialog,
+  PasscodeInput,
+  TextLink,
+} from "../../../design/components";
 import { useNavigate } from "react-router-dom";
-import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../modules/auth";
+import { AuthStep, TAuthStep } from "..";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface SigninPasscodeDialogProps {

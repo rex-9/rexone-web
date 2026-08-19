@@ -2,9 +2,14 @@
 
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Button, Dialog, PasscodeInput, TextLink } from "..";
-import { AuthStep, TAuthStep } from "./type";
+import {
+  Button,
+  Dialog,
+  PasscodeInput,
+  TextLink,
+} from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
+import { AuthStep, TAuthStep } from "..";
 
 interface SignupPasscodeCreateDialogProps {
   email: string;

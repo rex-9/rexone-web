@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useToast } from "../../contexts/ToastContext";
-import { Button } from "../components/button/Button";
-import { LayoutPage } from "./LayoutPage";
+import { useToast } from "../../../contexts/ToastContext";
+import { Button } from "../../../design/components/button/Button";
+import { LayoutPage } from "../../../design/pages/LayoutPage";
 
 export const PaymentSuccessPage: React.FC = () => {
   const { success } = useToast();

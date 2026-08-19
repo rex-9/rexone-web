@@ -5,10 +5,15 @@ import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
 import { UserController } from "../../../controllers";
-import { Button, GoogleButton, TextInput, Dialog } from "..";
+import {
+  Button,
+  GoogleButton,
+  TextInput,
+  Dialog,
+} from "../../../design/components";
 import AppRoutes from "../../../AppRoutes";
-import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../modules/auth";
+import { AuthStep, TAuthStep } from "..";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface InitialDialogProps {
@@ -150,7 +155,8 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           });
         } else {
           setError(
-            result.errorMessage || t(AppLocales.Auth.Initial.GoogleSignInFailed),
+            result.errorMessage ||
+              t(AppLocales.Auth.Initial.GoogleSignInFailed),
           );
         }
       } catch (err: unknown) {

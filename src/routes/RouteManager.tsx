@@ -8,24 +8,23 @@ import {
 } from "react-router-dom";
 import AppRoutes from "../AppRoutes";
 import { ProtectedRoute, PublicRoute } from ".";
+import { NotFoundPage, HomePage, RootPage, ProfilePage } from "../design/pages";
+import { AnapanaPage } from "../modules/anapana/pages";
 import {
-  SignInPage,
-  SignUpPage,
-  SignOutPage,
+  AuthDialog,
   ConfirmEmailPage,
   ForgotPasscodePage,
   ResetPasscodePage,
-  NotFoundPage,
-  HomePage,
-  RootPage,
-  ProfilePage,
+  SignInPage,
+  SignOutPage,
+  SignUpPage,
+} from "../modules/auth";
+import {
+  PaymentCancelPage,
   PaymentPage,
   PaymentSuccessPage,
-  PaymentCancelPage,
-  AiPage,
-} from "../design/pages";
-import { AuthDialog } from "../design";
-import { AnapanaPage } from "../modules/anapana/pages";
+} from "../modules/payment/pages";
+import { AiPage } from "../modules/ai/pages";
 
 export const RouteManager = () => {
   const router = createBrowserRouter(

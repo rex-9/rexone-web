@@ -1,4 +1,4 @@
-import { AuthStep } from "./design/components/auth/type";
+import { AuthStep } from "./modules/auth";
 
 class AppRoutes {
   private static readonly API_VERSION = "/v1";

@@ -2,10 +2,15 @@
 
 import React, { useState } from "react";
 import { useCountdown } from "../../../hooks";
-import { Button, Dialog, TextInput, TextLink } from "..";
+import {
+  Button,
+  Dialog,
+  TextInput,
+  TextLink,
+} from "../../../design/components";
 import { useToast } from "../../../contexts";
-import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../modules/auth";
+import { AuthStep, TAuthStep } from "..";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface ForgotPasscodeDialogProps {

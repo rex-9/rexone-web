@@ -1,15 +1,14 @@
-// src/design/pages/auth/SignIn.tsx
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { LayoutPage } from "../LayoutPage";
 import AppRoutes from "../../../AppRoutes";
+import { LayoutPage } from "../../../design/pages";
 
-export const SignInPage: React.FC = () => {
+export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    navigate(AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial), {
+    // Redirect to home with dialog=auth param
+    navigate(AppRoutes.client.public.SIGN_IN, {
       replace: true,
     });
   }, [navigate]);

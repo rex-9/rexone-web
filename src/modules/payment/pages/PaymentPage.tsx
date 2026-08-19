@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useLoading } from "../../contexts/LoadingContext";
-import { useToast } from "../../contexts/ToastContext";
-import { Button } from "../components/button/Button";
-import { ConfirmDialog } from "../components/overlay";
-import { LayoutPage } from ".";
-import { IProduct, ISubscription, ITransaction } from "../../modules/payment";
-import { PaymentController } from "../../modules/payment";
+import { useLoading } from "../../../contexts/LoadingContext";
+import { useToast } from "../../../contexts/ToastContext";
+import { Button } from "../../../design/components/button/Button";
+import { ConfirmDialog } from "../../../design/components/overlay";
+import { LayoutPage } from "../../../design/pages";
+import { IProduct, ISubscription, ITransaction } from "..";
+import { PaymentController } from "..";
 
 export const PaymentPage: React.FC = () => {
   const { setLoading } = useLoading();
@@ -209,10 +209,17 @@ export const PaymentPage: React.FC = () => {
 
       <div className="grid md:grid-cols-2 gap-24">
         {products.map((product) => (
-          <div key={product.id} className="card bg-base-100 shadow-s rounded-m border border-base-200">
+          <div
+            key={product.id}
+            className="card bg-base-100 shadow-s rounded-m border border-base-200"
+          >
             <div className="card-body p-24">
-              <h3 className="card-title text-h3 font-semibold">{product.name}</h3>
-              <p className="text-body-s text-base-content/70">{product.description}</p>
+              <h3 className="card-title text-h3 font-semibold">
+                {product.name}
+              </h3>
+              <p className="text-body-s text-base-content/70">
+                {product.description}
+              </p>
 
               <div className="mt-16">
                 <span className="text-h2 font-semibold">{product.price}</span>

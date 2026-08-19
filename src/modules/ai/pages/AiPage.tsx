@@ -1,12 +1,14 @@
 // src/design/pages/AiPage.tsx
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { LayoutPage } from "./LayoutPage";
-import { Button, TextArea, ConfirmDialog } from "../components";
-import { useToast } from "../../contexts/ToastContext";
-import AiController from "../../modules/ai/ai.controller";
-import { IMessage } from "../../modules/ai/";
-import SocketService, { ISocketMessage } from "../../services/socket.service";
+import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { Button, TextArea, ConfirmDialog } from "../../../design/components";
+import { useToast } from "../../../contexts/ToastContext";
+import AiController from "../ai.controller";
+import { IMessage } from "..";
+import SocketService, {
+  ISocketMessage,
+} from "../../../services/socket.service";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
@@ -149,7 +151,9 @@ export const AiPage: React.FC = () => {
           <div className="w-[100px]" />
           <div className="text-center flex-1">
             <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
-            <p className="text-body-s text-base-content/70">Powered by DeepSeek AI</p>
+            <p className="text-body-s text-base-content/70">
+              Powered by DeepSeek AI
+            </p>
           </div>
           <div className="w-[100px] flex justify-end">
             {messages.length > 1 && (
@@ -180,7 +184,9 @@ export const AiPage: React.FC = () => {
                     : "bg-base-200"
                 }`}
               >
-                <p className="text-body-m whitespace-pre-wrap">{message.content}</p>
+                <p className="text-body-m whitespace-pre-wrap">
+                  {message.content}
+                </p>
                 <span className="text-caption opacity-50 mt-4 block">
                   {new Date(message.created_at).toLocaleTimeString()}
                 </span>
@@ -212,7 +218,9 @@ export const AiPage: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={isProcessing ? "AI is thinking…" : "Type your message..."}
+              placeholder={
+                isProcessing ? "AI is thinking…" : "Type your message..."
+              }
               rows={3}
               className="flex-1"
               disabled={isSubmitting || isProcessing}
