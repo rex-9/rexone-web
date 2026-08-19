@@ -69,6 +69,7 @@ flowchart TB
 # 1. `rexone-core` (The Backend Engine)
 
 ### 🛠️ Tech Stack & Infrastructure
+
 - **Runtime**: Ruby `4.0.4`, Rails `8.1.0` (API mode), PostgreSQL `18`.
 - **Docker Compose**: Orchestrates 3 core services:
   - `api` (Rails API on `:3000`)
@@ -77,27 +78,31 @@ flowchart TB
 - **Key Gems**: `devise`, `devise-jwt`, `solid_queue`, `solid_cable`, `solid_cache`, `discard` (soft deletes), `jsonapi-serializer`, `pagy` (pagination), `rails_pulse` (performance monitoring), `rails_error_dashboard` (exception tracking), `rswag` (OpenAPI/Swagger docs), `administrate` (server-rendered back office).
 
 ### 📦 Database, Schema & Models
+
 All tables use **UUID** primary keys (`gen_random_uuid()`), utilize **Discard** for soft deletes (`discarded_at`, `undiscarded_at`), and include the **Auditable** concern (`Current.auditor`) tracking `created_by_id`, `updated_by_id`, `discarded_by_id`, and `undiscarded_by_id`.
 
-| Domain | Models | Key Responsibilities |
-| --- | --- | --- |
-| **Identity & Users** | `User` | Devise authentication, JWT JTI revocation strategy, 6-digit confirmation codes, 6-digit password reset codes, Google account linking, Stripe customer generation, profile pictures via Assets. |
-| **IAM (RBAC)** | `Iam::Role`, `Iam::Permission`, `Iam::UserRole`, `Iam::RolePermission` | Granular resource-action permissions (`user.can?(action, resource)`). System roles (`super_admin`, `admin`, default `user`). Auto-assigned default role on signup. |
-| **Commerce** | `Payment::Product`, `Payment::Subscription`, `Payment::Transaction`, `Payment::WebhookEvent` | Stripe synced products & prices, subscription lifecycle (`cancel_at_period_end`, resumption, periods), transactions with payment method details, durable webhook event queue with deduplication and retry state. |
-| **Entitlements** | `Access` | Granted/revoked/expired access records tied to `User` and `Product`. |
-| **AI / Chat** | `Chat::Room`, `Chat::Message` | Conversational rooms, messages with roles (`user`, `assistant`), `ai_status` (`queued`, `processing`, `completed`, `failed`), system prompts, temperature, max tokens, metadata. |
-| **Media** | `Asset` | Uploaded media metadata (Cloudinary `public_id` or Local path, format, size, category, user/record ownership). |
-| **Telemetry** | `Log::Client` | Frontend error ingest (stack traces, device, OS, browser, URL, severity, occurrences, local/session storage keys, cookies, resolution status). |
+| Domain               | Models                                                                                       | Key Responsibilities                                                                                                                                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Identity & Users** | `User`                                                                                       | Devise authentication, JWT JTI revocation strategy, 6-digit confirmation codes, 6-digit password reset codes, Google account linking, Stripe customer generation, profile pictures via Assets.                   |
+| **IAM (RBAC)**       | `Iam::Role`, `Iam::Permission`, `Iam::UserRole`, `Iam::RolePermission`                       | Granular resource-action permissions (`user.can?(action, resource)`). System roles (`super_admin`, `admin`, default `user`). Auto-assigned default role on signup.                                               |
+| **Commerce**         | `Payment::Product`, `Payment::Subscription`, `Payment::Transaction`, `Payment::WebhookEvent` | Stripe synced products & prices, subscription lifecycle (`cancel_at_period_end`, resumption, periods), transactions with payment method details, durable webhook event queue with deduplication and retry state. |
+| **Entitlements**     | `Access`                                                                                     | Granted/revoked/expired access records tied to `User` and `Product`.                                                                                                                                             |
+| **AI / Chat**        | `Chat::Room`, `Chat::Message`                                                                | Conversational rooms, messages with roles (`user`, `assistant`), `ai_status` (`queued`, `processing`, `completed`, `failed`), system prompts, temperature, max tokens, metadata.                                 |
+| **Media**            | `Asset`                                                                                      | Uploaded media metadata (Cloudinary `public_id` or Local path, format, size, category, user/record ownership).                                                                                                   |
+| **Telemetry**        | `Log::Client`                                                                                | Frontend error ingest (stack traces, device, OS, browser, URL, severity, occurrences, local/session storage keys, cookies, resolution status).                                                                   |
 
 ### ⚙️ Services & Background Jobs (Solid Queue / Waka)
+
 Heavy or external provider operations sit behind clean service interfaces and execute in dedicated background queues (`config/queue.yml`):
+
 - **AI Queue (`ai`)**: `Ai::ProcessChatJob` communicates with DeepSeek (`AiService::Client`), runs asynchronously with room-level concurrency locks, commits assistant messages to Postgres, and alerts the user over WebSocket (`NotificationChannel`).
 - **Payments Queue (`payments`)**: `Payment::ProcessWebhookJob` asynchronously fulfills Stripe webhooks (checkout completed, invoice paid, subscription updated/deleted) with idempotency.
 - **Notifications Queue (`notifications`)**: `NotificationService` fans out work to `Notification::DeliverJob` for Action Cable broadcasts, OneSignal push notifications, and OneSignal transactional emails.
-- **Storage Queue (`storage`)**: `StorageService::DeleteJob` handles remote deletion asynchronously after DB commits.
+- **Storage Queue (`storage`)**: `Storage::DeleteJob` handles remote deletion asynchronously after DB commits.
 - **Recurring Maintenance** (`config/recurring.yml`): Tasks purge stale cache, expired access, old webhook events, and discarded records.
 
 ### 🛡️ Active Platform Session Control
+
 `ApplicationController` inspects the `X-Platform` header (`web` or `mobile`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous web and mobile logins for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
 
 ---
@@ -105,13 +110,16 @@ Heavy or external provider operations sit behind clean service interfaces and ex
 # 2. `rexone-web` (The React Client)
 
 ### 🛠️ Tech Stack
+
 - **Framework**: React `19`, TypeScript `6`, Vite `8`, Tailwind CSS `3`, DaisyUI, Headless UI, Heroicons, Lucide.
 - **State Management**: React Contexts (`AuthContext`, `LoadingContext`, `ToastContext`), Jotai atomic state.
 - **Networking**: Axios instance with centralized request/response interceptors; Action Cable JS client for WebSockets.
 - **Localization**: `i18next` with modular typed keys (`en`, `es`, `my`).
 
 ### 🎨 Design System (Atomic Architecture)
+
 Defined under `src/design/`:
+
 - **Atoms & Tokens**: Kindness Gold (`#F8D57E`), Clarity Blue (`#9EC9FF`), Deep Navy (`#14202E`), semantic palettes, Inter / SF Pro typography scale, 8-based spacing, soft radius (`xs` to `full`).
 - **Molecules & Overlays**:
   - Auth dialog suite (`AuthDialog`, `InitialDialog`, `SigninPasscodeDialog`, `SignupPasscodeCreateDialog`, `SignupPasscodeConfirmDialog`, `SignupInfoDialog`, `ConfirmEmailDialog`, `ForgotPasscodeDialog`).
@@ -120,6 +128,7 @@ Defined under `src/design/`:
   - Buttons (`Button`, `GoogleButton`, `SignOutButton`).
 
 ### 🧩 Domain Modules & Flows
+
 - **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passcodes are held purely in memory and never leaked into URL params or persistent storage.
 - **Commerce & Stripe**: Fetches products, triggers Checkout Session (`/v1/payment/session`), redirects to Stripe, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations.
 - **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or error event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
@@ -130,18 +139,22 @@ Defined under `src/design/`:
 # 3. `rexone_mobile` (The Flutter Mobile Client)
 
 ### 🛠️ Tech Stack & Architecture
+
 - **Framework**: Flutter `3.x`, Dart `3.x`.
 - **Architecture**: GetX MVC (Pages $\rightarrow$ Controllers $\rightarrow$ Services $\rightarrow$ Models), Centralized Dependency Injection via `InitialBinding`.
 - **Storage & Helpers**: `GetStorage` (local persistence), `Flutter ScreenUtil` (responsive UI scaling: `375x812` baseline), `Flutter Dotenv` (multi-environment: `.env.dev`, `.env.uat`, `.env.prod`), `Google Sign In`, `Pin Code Fields`, `WebView Flutter`, `Firebase Analytics`, `OneSignal Flutter`, `Upgrader`.
 
 ### 🎨 Mobile Design System (`lib/design/`)
+
 Rexone Mobile has a strictly governed design system accessible via `lib/design/design.dart`:
+
 - **Elements**: `AppColors` (Kindness Gold, Clarity Blue, Deep Navy, surfaces, text), `AppTypography`, `AppSpacing`, `AppStyles`, `AppIcons`, `AppMedia`, `AppTimers`, `AppTheme` (Light/Dark mode Material 3).
 - **Theme Extensions**: `context.colors.*` and `context.typo.*` for theme-aware reactive styling.
 - **Static Tokens**: `Design.spacing.*`, `Design.timers.*`, `Design.icons.*`, `Design.media.*`.
 - **Reusable UI Components**: `AppButton`, `AppInputField`, `AppPasscodeField`, `AppLoading`, `AppSnackbar`, `AppDialog` (with `AppDialog.confirm()` for destructive actions), `AppPage`, `AppListTile`, `AppToggle`.
 
 ### 🧩 Mobile Domain Capabilities
+
 - **Auth Flow**: Complete parity with Web & Core (email check, 6-digit passcode, OTP verification, Google OAuth challenge, session replacement). Zero hardcoded string literals.
 - **Push Notifications**: Powered by OneSignal (`PushNotiService`). Automatically syncs user IDs and tags on login/session restore and clears state on logout.
 - **Product Analytics**: Powered by Firebase Analytics (`AnalyticsService`). Integrates navigation observers for screen tracking and records authentication and application lifecycle events.
@@ -158,34 +171,35 @@ Rexone Mobile has a strictly governed design system accessible via `lib/design/d
 
 All three pillars of the Rexone platform are fully aligned at **100% feature parity**:
 
-| Capability Area | `rexone-core` | `rexone-web` | `rexone_mobile` |
-| --- | :---: | :---: | :---: |
-| **Auth: Email & 6-digit Passcode** | ✅ | ✅ | ✅ |
-| **Auth: Google Sign-In & Challenge Flow** | ✅ | ✅ | ✅ |
-| **Auth: Active Single-Platform Session Enforcement** | ✅ | ✅ | ✅ |
-| **Auth: Escalating Password Retry Cooldown (Redis)** | ✅ | ✅ | ✅ |
-| **Light & Dark Theming** | N/A | ✅ | ✅ |
-| **Multi-Language Localization (`en`, `es`, `my`)** | ✅ | ✅ | ✅ |
-| **HTTP `X-Locale` / `Accept-Language` Sync** | ✅ | ✅ | ✅ |
-| **Destructive Action Confirmation Prompts** | N/A | ✅ (`ConfirmDialog`) | ✅ (`AppDialog.confirm`) |
-| **Error Telemetry Ingest & Storage (`/v1/log/clients`)** | ✅ | ✅ | ✅ |
-| **Stripe: Product & Pricing Catalogue** | ✅ | ✅ | ✅ |
-| **Stripe: Checkout Session Handoff** | ✅ | ✅ (Redirect) | ✅ (WebView) |
-| **Stripe: Subscriptions & Cancellation/Resumption** | ✅ | ✅ | ✅ |
-| **Stripe: Transaction History** | ✅ | ✅ | ✅ |
-| **AI: Conversational Rooms & Message History** | ✅ | ✅ | ✅ |
-| **AI: Queued Background Execution (DeepSeek)** | ✅ | ✅ | ✅ |
-| **AI: Real-Time WebSocket Completion Alerts** | ✅ | ✅ | ✅ |
-| **Push Notifications (OneSignal)** | ✅ | N/A | ✅ |
-| **Product Analytics (Firebase)** | N/A | N/A | ✅ |
-| **In-App Version Upgrader** | N/A | N/A | ✅ |
-| **Automated Localization Parity Test Suite** | N/A | N/A | ✅ |
+| Capability Area                                          | `rexone-core` |     `rexone-web`     |     `rexone_mobile`      |
+| -------------------------------------------------------- | :-----------: | :------------------: | :----------------------: |
+| **Auth: Email & 6-digit Passcode**                       |      ✅       |          ✅          |            ✅            |
+| **Auth: Google Sign-In & Challenge Flow**                |      ✅       |          ✅          |            ✅            |
+| **Auth: Active Single-Platform Session Enforcement**     |      ✅       |          ✅          |            ✅            |
+| **Auth: Escalating Password Retry Cooldown (Redis)**     |      ✅       |          ✅          |            ✅            |
+| **Light & Dark Theming**                                 |      N/A      |          ✅          |            ✅            |
+| **Multi-Language Localization (`en`, `es`, `my`)**       |      ✅       |          ✅          |            ✅            |
+| **HTTP `X-Locale` / `Accept-Language` Sync**             |      ✅       |          ✅          |            ✅            |
+| **Destructive Action Confirmation Prompts**              |      N/A      | ✅ (`ConfirmDialog`) | ✅ (`AppDialog.confirm`) |
+| **Error Telemetry Ingest & Storage (`/v1/log/clients`)** |      ✅       |          ✅          |            ✅            |
+| **Stripe: Product & Pricing Catalogue**                  |      ✅       |          ✅          |            ✅            |
+| **Stripe: Checkout Session Handoff**                     |      ✅       |    ✅ (Redirect)     |       ✅ (WebView)       |
+| **Stripe: Subscriptions & Cancellation/Resumption**      |      ✅       |          ✅          |            ✅            |
+| **Stripe: Transaction History**                          |      ✅       |          ✅          |            ✅            |
+| **AI: Conversational Rooms & Message History**           |      ✅       |          ✅          |            ✅            |
+| **AI: Queued Background Execution (DeepSeek)**           |      ✅       |          ✅          |            ✅            |
+| **AI: Real-Time WebSocket Completion Alerts**            |      ✅       |          ✅          |            ✅            |
+| **Push Notifications (OneSignal)**                       |      ✅       |         N/A          |            ✅            |
+| **Product Analytics (Firebase)**                         |      N/A      |         N/A          |            ✅            |
+| **In-App Version Upgrader**                              |      N/A      |         N/A          |            ✅            |
+| **Automated Localization Parity Test Suite**             |      N/A      |         N/A          |            ✅            |
 
 ---
 
 # 5. 🔌 Interoperability & Communication Protocols
 
 ### 1. HTTP / REST API Conventions
+
 - **Base URL**: `/v1/`
 - **Standard Request Headers**:
   ```http
@@ -216,6 +230,7 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
   ```
 
 ### 2. Real-Time WebSockets (Action Cable / Solid Cable)
+
 - **Endpoint**: `/cable`
 - **Authentication**: JWT token sent during connection initialization or channel subscription params.
 - **Channel**: `NotificationChannel` (`notification_user_{user_id}`).
@@ -227,7 +242,9 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
   - `welcome`: Sent upon first successful Action Cable subscription.
 
 ### 3. Client Telemetry Contract (`POST /v1/log/clients`)
+
 Payload sent on uncaught errors in Web and Mobile:
+
 ```json
 {
   "log": {
@@ -252,6 +269,7 @@ Payload sent on uncaught errors in Web and Mobile:
 ```
 
 ### 4. Password Retry & Cooldown Escalation Protocol
+
 - Governed by Redis keys on Rexone Core:
   - `password:attempts:{user_id}`: Failed attempt counter (TTL 1 hour).
   - `password:cooldown:{user_id}`: Cooldown lock timestamp.
