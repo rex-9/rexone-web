@@ -7,12 +7,11 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
-import {
-  Admin,
-  IAdminNotificationFormValues,
-  IAdminRole,
-  IAdminUser,
-} from "../../../../modules/admin";
+import RoleController from "../../roles/role.controller";
+import { IAdminRole } from "../../roles/types";
+import { IAdminUser } from "../../users/types";
+import NotificationController from "../notification.controller";
+import { IAdminNotificationFormValues } from "../types";
 import {
   AdminFormShell,
   AdminFormAlert,
@@ -23,7 +22,7 @@ import {
   TextArea,
   TextInput,
   Button,
-} from "../../../components";
+} from "../../../../design/components";
 
 const initialValues: IAdminNotificationFormValues = {
   audience_type: "users",
@@ -78,11 +77,11 @@ export const AdminNotificationsPage: React.FC = () => {
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       void Promise.all([
-        Admin.NotificationController.getRecipients(
+        NotificationController.getRecipients(
           (nextUsers) => setUsers(nextUsers),
           (message) => setError(message),
         ),
-        Admin.RoleController.getRoles(
+        RoleController.getRoles(
           (nextRoles) => setRoles(nextRoles),
           (message) => setError(message),
         ),
@@ -230,7 +229,7 @@ export const AdminNotificationsPage: React.FC = () => {
     setError("");
     setIsSubmitting(true);
 
-    await Admin.NotificationController.createNotification(
+    await NotificationController.createNotification(
       {
         ...values,
         user_ids: values.audience_type === "users" ? values.user_ids : [],

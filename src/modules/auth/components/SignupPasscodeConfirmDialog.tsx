@@ -8,7 +8,7 @@ import {
   PasscodeInput,
   TextLink,
 } from "../../../design/components";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";

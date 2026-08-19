@@ -3,11 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
+import ChatController from "../chat.controller";
 import {
-  Admin,
   IAdminChatRoom,
   IAdminChatRoomFormValues,
-} from "../../../../modules/admin";
+} from "../types";
 import {
   AdminFormAlert,
   AdminFormShell,
@@ -16,7 +16,7 @@ import {
   AdminState,
   FormActionRow,
   TextInput,
-} from "../../../components";
+} from "../../../../design/components";
 
 export const AdminChatRoomEditPage: React.FC = () => {
   useDocumentTitle("Edit Chat Room");
@@ -34,7 +34,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
     if (!id) return;
 
     const timeoutId = window.setTimeout(() => {
-      void Admin.ChatController.getRoom(
+      void ChatController.getRoom(
         id,
         (nextRoom) => {
           setRoom(nextRoom);
@@ -62,7 +62,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await Admin.ChatController.updateRoom(
+    await ChatController.updateRoom(
       id,
       values,
       () => {

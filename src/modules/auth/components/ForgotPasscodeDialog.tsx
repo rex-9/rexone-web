@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useToast } from "../../../contexts";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 

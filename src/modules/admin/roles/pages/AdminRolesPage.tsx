@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
-import { Admin, IAdminRole } from "../../../../modules/admin";
+import RoleController from "../role.controller";
+import { IAdminRole } from "../types";
 import {
   AdminActionButton,
   AdminLayout,
@@ -16,7 +17,7 @@ import {
   AdminTable,
   ConfirmationDialog,
   IAdminTableColumn,
-} from "../../../components";
+} from "../../../../design/components";
 
 const countPermissions = (role: IAdminRole): number =>
   Object.values(role.permissions ?? {}).reduce(
@@ -40,7 +41,7 @@ export const AdminRolesPage: React.FC = () => {
     setIsLoading(true);
     setError("");
 
-    await Admin.RoleController.getRoles(
+    await RoleController.getRoles(
       (nextRoles) => {
         setRoles(nextRoles);
         setIsLoading(false);
@@ -145,7 +146,7 @@ export const AdminRolesPage: React.FC = () => {
 
     setIsDeleting(true);
 
-    await Admin.RoleController.deleteRole(
+    await RoleController.deleteRole(
       deleteTarget.id,
       () => {
         toast.success("Role deleted");

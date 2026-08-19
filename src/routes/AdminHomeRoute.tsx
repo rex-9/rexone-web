@@ -16,6 +16,7 @@ const adminEntryRoutes: Array<{
     resource: "notifications",
     path: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
   },
+  { resource: "products", path: AppRoutes.client.protected.ADMIN_PRODUCTS },
   { resource: "rooms", path: AppRoutes.client.protected.ADMIN_CHAT_ROOMS },
   {
     resource: "messages",

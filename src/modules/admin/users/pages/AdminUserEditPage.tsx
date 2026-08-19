@@ -3,18 +3,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
+import { IAdminRole } from "../../roles/types";
+import UserController from "../user.controller";
 import {
-  Admin,
-  IAdminRole,
   IAdminUser,
   IAdminUserFormValues,
-} from "../../../../modules/admin";
+} from "../types";
 import {
   AdminFormAlert,
   AdminLayout,
   AdminLoadingState,
   AdminState,
-} from "../../../components";
+} from "../../../../design/components";
 import { AdminUserForm } from "./AdminUserForm";
 
 export const AdminUserEditPage: React.FC = () => {
@@ -34,12 +34,12 @@ export const AdminUserEditPage: React.FC = () => {
 
     const timeoutId = window.setTimeout(() => {
       void Promise.all([
-        Admin.UserController.getUser(
+        UserController.getUser(
           id,
           (nextUser) => setUser(nextUser),
           (message) => setError(message),
         ),
-        Admin.UserController.getRoles(
+        UserController.getRoles(
           (nextRoles) => setRoles(nextRoles),
           (message) => setError(message),
         ),
@@ -55,7 +55,7 @@ export const AdminUserEditPage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await Admin.UserController.updateUser(
+    await UserController.updateUser(
       id,
       values,
       (_user, message) => {

@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
   BellAlertIcon,
   ChatBubbleLeftRightIcon,
+  CubeIcon,
   InboxStackIcon,
   KeyIcon,
   UserGroupIcon,
@@ -45,6 +46,12 @@ const navItems: IAdminNavItem[] = [
     to: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
     resource: "notifications",
     icon: BellAlertIcon,
+  },
+  {
+    label: "Products",
+    to: AppRoutes.client.protected.ADMIN_PRODUCTS,
+    resource: "products",
+    icon: CubeIcon,
   },
   {
     label: "Chat Rooms",

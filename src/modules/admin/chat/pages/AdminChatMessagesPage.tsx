@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
-import { Admin, IAdminUser } from "../../../../modules/admin";
+import ChatController from "../chat.controller";
+import { IAdminChatMessage } from "../types";
 import {
   AdminActionButton,
   AdminLayout,
@@ -18,44 +16,34 @@ import {
   AdminTable,
   ConfirmationDialog,
   IAdminTableColumn,
-} from "../../../components";
+} from "../../../../design/components";
+import { formatAdminDate, truncateAdminText } from "./adminPageUtils";
 
 const PAGE_SIZE = 10;
 
-const formatDate = (value: Date): string => {
-  if (!value) return "Not available";
-  return new Date(value).toLocaleDateString();
-};
+export const AdminChatMessagesPage: React.FC = () => {
+  useDocumentTitle("Chat Messages");
 
-const formatRoles = (user: IAdminUser): string => {
-  if (user.role_names?.length) return user.role_names.join(", ");
-  return "Unassigned";
-};
-
-export const AdminUsersPage: React.FC = () => {
-  useDocumentTitle("User");
-
-  const navigate = useNavigate();
   const toast = useToast();
-  const { can, isLoading: permissionsLoading } = usePermissions();
-  const [users, setUsers] = useState<IAdminUser[]>([]);
+  const navigate = useNavigate();
+  const { can } = usePermissions();
+  const [messages, setMessages] = useState<IAdminChatMessage[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminUser | null>(null);
+  const [deleteTarget, setDeleteTarget] =
+    useState<IAdminChatMessage | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const loadUsers = useCallback(async () => {
-    if (!can("read", "users")) return;
-
+  const loadMessages = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
-    await Admin.UserController.getUsers(
+    await ChatController.getMessages(
       { page, limit: PAGE_SIZE },
-      (nextUsers, nextPagination) => {
-        setUsers(nextUsers);
+      (nextMessages, nextPagination) => {
+        setMessages(nextMessages);
         setPagination(nextPagination ?? null);
         setIsLoading(false);
       },
@@ -64,67 +52,54 @@ export const AdminUsersPage: React.FC = () => {
         setIsLoading(false);
       },
     );
-  }, [can, page]);
+  }, [page]);
 
   useEffect(() => {
-    if (permissionsLoading) return;
-
     const timeoutId = window.setTimeout(() => {
-      void loadUsers();
+      void loadMessages();
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [loadUsers, permissionsLoading]);
+  }, [loadMessages]);
 
-  const columns = useMemo<IAdminTableColumn<IAdminUser>[]>(
+  const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
     () => [
+      { key: "role", header: "Role", render: (message) => message.role },
       {
-        key: "identity",
-        header: "User",
-        render: (user) => (
-          <div>
-            <div className="font-medium text-base-content">{user.name}</div>
-            <div className="text-body-s text-base-content opacity-60">
-              @{user.username}
-            </div>
-          </div>
-        ),
+        key: "content",
+        header: "Message",
+        render: (message) => truncateAdminText(message.content),
       },
       {
-        key: "email",
-        header: "Email",
-        render: (user) => user.email,
-      },
-      {
-        key: "role",
-        header: "Role",
-        render: (user) => formatRoles(user),
+        key: "room",
+        header: "Room ID",
+        render: (message) => message.room_id,
       },
       {
         key: "created",
         header: "Created",
-        render: (user) => formatDate(user.created_at),
+        render: (message) => formatAdminDate(message.created_at),
       },
       {
         key: "actions",
         header: "",
         className: "text-right",
-        render: (user) => (
+        render: (message) => (
           <div className="flex justify-end gap-8">
             <AdminActionButton
               action="update"
-              resource="users"
+              resource="chat_messages"
               can={can}
               size="sm"
               variant="secondary"
               className="h-[32px] w-[32px] p-0"
-              aria-label="Edit user"
+              aria-label="Edit chat message"
               title="Edit"
               onClick={() =>
                 navigate(
-                  AppRoutes.client.protected.ADMIN_USER_EDIT.replace(
+                  AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT.replace(
                     ":id",
-                    user.id,
+                    message.id,
                   ),
                 )
               }
@@ -133,14 +108,14 @@ export const AdminUsersPage: React.FC = () => {
             </AdminActionButton>
             <AdminActionButton
               action="delete"
-              resource="users"
+              resource="chat_messages"
               can={can}
               size="sm"
               variant="tertiary"
               className="h-[32px] w-[32px] p-0"
-              aria-label="Delete user"
+              aria-label="Delete chat message"
               title="Delete"
-              onClick={() => setDeleteTarget(user)}
+              onClick={() => setDeleteTarget(message)}
             >
               <TrashIcon className="h-[18px] w-[18px]" />
             </AdminActionButton>
@@ -152,17 +127,16 @@ export const AdminUsersPage: React.FC = () => {
   );
 
   const handleDelete = async () => {
-    if (!deleteTarget || !can("delete", "users")) return;
+    if (!deleteTarget) return;
 
     setIsDeleting(true);
-
-    await Admin.UserController.deleteUser(
+    await ChatController.deleteMessage(
       deleteTarget.id,
-      (message) => {
-        toast.success(message);
+      () => {
+        toast.success("Chat message deleted");
         setDeleteTarget(null);
         setIsDeleting(false);
-        void loadUsers();
+        void loadMessages();
       },
       (message) => {
         toast.error(message);
@@ -172,35 +146,24 @@ export const AdminUsersPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout
-      title="Users"
-      actionLabel={can("create", "users") ? "Create user" : undefined}
-      onAction={() => navigate(AppRoutes.client.protected.ADMIN_USER_CREATE)}
-    >
-      {isLoading || permissionsLoading ? (
+    <AdminLayout title="Chat Messages">
+      {isLoading ? (
         <AdminLoadingState />
       ) : error ? (
-        <AdminState title="Unable to load users" message={error} />
-      ) : users.length === 0 ? (
-        <AdminState
-          title="No users yet"
-          message="Users will appear here once the backend returns admin user records."
-        />
+        <AdminState title="Unable to load chat messages" message={error} />
+      ) : messages.length === 0 ? (
+        <AdminState title="No chat messages yet" message="Chat messages will appear here when conversations have messages." />
       ) : (
         <>
-          <AdminTable
-            columns={columns}
-            records={users}
-            getRowKey={(user) => user.id}
-          />
+          <AdminTable columns={columns} records={messages} getRowKey={(message) => message.id} />
           <AdminPagination pagination={pagination} onPageChange={setPage} />
         </>
       )}
 
       <ConfirmationDialog
         isOpen={Boolean(deleteTarget)}
-        title="Delete user"
-        message={`Delete ${deleteTarget?.email || "this user"}? This cannot be undone.`}
+        title="Delete chat message"
+        message="Delete this chat message? This cannot be undone."
         confirmLabel="Delete"
         isLoading={isDeleting}
         onClose={() => setDeleteTarget(null)}

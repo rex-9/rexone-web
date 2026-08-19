@@ -9,17 +9,6 @@ import {
 import AppRoutes from "../AppRoutes";
 import { AdminAccessRoute, AdminHomeRoute, ProtectedRoute, PublicRoute } from ".";
 import {
-  AdminChatMessageEditPage,
-  AdminChatMessagesPage,
-  AdminChatRoomEditPage,
-  AdminChatRoomsPage,
-  AdminNotificationsPage,
-  AdminRoleCreatePage,
-  AdminRoleEditPage,
-  AdminRolesPage,
-  AdminUserCreatePage,
-  AdminUserEditPage,
-  AdminUsersPage,
   HomePage,
   NotFoundPage,
   ProfilePage,
@@ -41,6 +30,22 @@ import {
   PaymentSuccessPage,
 } from "../modules/payment/pages";
 import { AiPage } from "../modules/ai/pages";
+import {
+  AdminChatMessageEditPage,
+  AdminChatMessagesPage,
+  AdminChatRoomEditPage,
+  AdminChatRoomsPage,
+  AdminNotificationsPage,
+  AdminProductCreatePage,
+  AdminProductEditPage,
+  AdminProductsPage,
+  AdminRoleCreatePage,
+  AdminRoleEditPage,
+  AdminRolesPage,
+  AdminUserCreatePage,
+  AdminUserEditPage,
+  AdminUsersPage,
+} from "../modules/admin";
 
 export const RouteManager = () => {
   const router = createBrowserRouter(
@@ -222,6 +227,30 @@ export const RouteManager = () => {
               <Route
                 path={AppRoutes.client.protected.ADMIN_NOTIFICATIONS}
                 element={<AdminNotificationsPage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="read" resource="products" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_PRODUCTS}
+                element={<AdminProductsPage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="create" resource="products" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_PRODUCT_CREATE}
+                element={<AdminProductCreatePage />}
+              />
+            </Route>
+            <Route
+              element={<AdminAccessRoute action="update" resource="products" />}
+            >
+              <Route
+                path={AppRoutes.client.protected.ADMIN_PRODUCT_EDIT}
+                element={<AdminProductEditPage />}
               />
             </Route>
           </Route>

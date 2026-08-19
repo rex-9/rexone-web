@@ -12,7 +12,7 @@ import {
   Dialog,
 } from "../../../design/components";
 import AppRoutes from "../../../AppRoutes";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 

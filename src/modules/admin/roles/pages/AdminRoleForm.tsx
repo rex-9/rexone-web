@@ -4,13 +4,13 @@ import {
   IAdminPermission,
   IAdminRole,
   IAdminRoleFormValues,
-} from "../../../../modules/admin";
+} from "../types";
 import {
   AdminFormShell,
   AdminPermissionMatrix,
   FormActionRow,
   TextInput,
-} from "../../../components";
+} from "../../../../design/components";
 
 interface AdminRoleFormProps {
   mode: "create" | "edit";

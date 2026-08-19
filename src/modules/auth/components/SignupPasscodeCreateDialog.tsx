@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 
 interface SignupPasscodeCreateDialogProps {
   email: string;

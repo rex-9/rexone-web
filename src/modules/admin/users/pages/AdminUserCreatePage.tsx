@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
-import { Admin, IAdminRole, IAdminUserFormValues } from "../../../../modules/admin";
-import { AdminFormAlert, AdminLayout, AdminLoadingState } from "../../../components";
+import { AdminFormAlert, AdminLayout, AdminLoadingState } from "../../../../design/components";
+import { IAdminRole } from "../../roles/types";
+import UserController from "../user.controller";
+import { IAdminUserFormValues } from "../types";
 import { AdminUserForm } from "./AdminUserForm";
 
 export const AdminUserCreatePage: React.FC = () => {
@@ -19,7 +21,7 @@ export const AdminUserCreatePage: React.FC = () => {
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
-      void Admin.UserController.getRoles(
+      void UserController.getRoles(
         (nextRoles) => setRoles(nextRoles),
         (message) => setError(message),
       ).finally(() => setIsLoadingRoles(false));
@@ -32,7 +34,7 @@ export const AdminUserCreatePage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await Admin.UserController.createUser(
+    await UserController.createUser(
       values,
       (_user, message) => {
         toast.success(message);

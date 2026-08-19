@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useCountdown } from "../../../hooks";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 import { useNavigate } from "react-router-dom";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";

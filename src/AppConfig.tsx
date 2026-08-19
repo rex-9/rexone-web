@@ -11,6 +11,8 @@ class AppConfig {
     import.meta.env.VITE_REACT_APP_CLIENT_BASE_URL || "http://localhost:4000";
   static readonly SERVER_WS_BASE_URL =
     import.meta.env.VITE_REACT_APP_SERVER_WS_BASE_URL || "ws://localhost:3000";
+  static readonly STRIPE_PUBLISHABLE_KEY =
+    import.meta.env.VITE_REACT_APP_STRIPE_PUBLISHABLE_KEY || "";
 }
 
 export default AppConfig;

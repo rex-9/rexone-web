@@ -1,49 +1,65 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
+import RoleController from "../role.controller";
 import {
-  Admin,
   IAdminPermission,
+  IAdminRole,
   IAdminRoleFormValues,
-} from "../../../../modules/admin";
+} from "../types";
 import {
   AdminFormAlert,
   AdminLayout,
   AdminLoadingState,
-} from "../../../components";
+  AdminState,
+} from "../../../../design/components";
 import { AdminRoleForm } from "./AdminRoleForm";
 
-export const AdminRoleCreatePage: React.FC = () => {
-  useDocumentTitle("Create Role");
+export const AdminRoleEditPage: React.FC = () => {
+  useDocumentTitle("Edit Role");
 
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const [role, setRole] = useState<IAdminRole | null>(null);
   const [permissions, setPermissions] = useState<IAdminPermission[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(Boolean(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!id) return;
+
     const timeoutId = window.setTimeout(() => {
-      void Admin.RoleController.getPermissions(
-        (nextPermissions) => setPermissions(nextPermissions),
-        (message) => setError(message),
-      ).finally(() => setIsLoading(false));
+      void Promise.all([
+        RoleController.getRole(
+          id,
+          (nextRole) => setRole(nextRole),
+          (message) => setError(message),
+        ),
+        RoleController.getPermissions(
+          (nextPermissions) => setPermissions(nextPermissions),
+          (message) => setError(message),
+        ),
+      ]).finally(() => setIsLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, []);
+  }, [id]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
-    setError("");
-    setIsSubmitting(true);
+    if (!id) return;
 
-    await Admin.RoleController.createRole(
+    setIsSubmitting(true);
+    setError("");
+
+    await RoleController.updateRole(
+      id,
       values,
       () => {
-        toast.success("Role created");
+        toast.success("Role updated");
         navigate(AppRoutes.client.protected.ADMIN_ROLES);
       },
       (message) => {
@@ -54,9 +70,15 @@ export const AdminRoleCreatePage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Create Role">
+    <AdminLayout title="Edit Role">
       {isLoading ? (
         <AdminLoadingState />
+      ) : !id ? (
+        <AdminState title="Unable to load role" message="Missing role id." />
+      ) : error && !role ? (
+        <AdminState title="Unable to load role" message={error} />
+      ) : !role ? (
+        <AdminState title="Unable to load role" message="Role was not found." />
       ) : (
         <>
           {error && (
@@ -64,9 +86,9 @@ export const AdminRoleCreatePage: React.FC = () => {
               <AdminFormAlert message={error} />
             </div>
           )}
-
           <AdminRoleForm
-            mode="create"
+            mode="edit"
+            role={role}
             permissions={permissions}
             isSubmitting={isSubmitting}
             onSubmit={handleSubmit}

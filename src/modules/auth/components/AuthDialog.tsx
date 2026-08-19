@@ -11,7 +11,7 @@ import {
   ConfirmEmailDialog,
   ForgotPasscodeDialog,
 } from ".";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 
 // Map steps to their previous step
 const stepHistory: Record<TAuthStep, TAuthStep | null> = {

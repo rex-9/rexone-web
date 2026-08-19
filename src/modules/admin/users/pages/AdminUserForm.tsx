@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from "react";
+import { IAdminRole } from "../../roles/types";
 import {
-  IAdminRole,
   IAdminUser,
   IAdminUserFormValues,
-} from "../../../../modules/admin";
+} from "../types";
 import {
   AdminFormShell,
   AdminPermissionMatrix,
   FormActionRow,
   IAdminPermissionMatrixItem,
   TextInput,
-} from "../../../components";
+} from "../../../../design/components";
 
 interface AdminUserFormProps {
   mode: "create" | "edit";

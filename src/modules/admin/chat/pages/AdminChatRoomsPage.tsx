@@ -5,7 +5,8 @@ import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
-import { Admin, IAdminChatRoom } from "../../../../modules/admin";
+import ChatController from "../chat.controller";
+import { IAdminChatRoom } from "../types";
 import {
   AdminActionButton,
   AdminLayout,
@@ -15,7 +16,7 @@ import {
   AdminTable,
   ConfirmationDialog,
   IAdminTableColumn,
-} from "../../../components";
+} from "../../../../design/components";
 import { formatAdminDate, truncateAdminText } from "./adminPageUtils";
 
 const PAGE_SIZE = 10;
@@ -38,7 +39,7 @@ export const AdminChatRoomsPage: React.FC = () => {
     setIsLoading(true);
     setError("");
 
-    await Admin.ChatController.getRooms(
+    await ChatController.getRooms(
       { page, limit: PAGE_SIZE },
       (nextRooms, nextPagination) => {
         setRooms(nextRooms);
@@ -128,7 +129,7 @@ export const AdminChatRoomsPage: React.FC = () => {
     if (!deleteTarget) return;
 
     setIsDeleting(true);
-    await Admin.ChatController.deleteRoom(
+    await ChatController.deleteRoom(
       deleteTarget.id,
       () => {
         toast.success("Chat room deleted");

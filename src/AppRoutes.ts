@@ -1,4 +1,4 @@
-import { AuthStep } from "./modules/auth";
+import { AuthStep } from "./modules/auth/types";
 
 class AppRoutes {
   private static readonly API_VERSION = "/v1";
@@ -37,6 +37,9 @@ class AppRoutes {
       ADMIN_ROLE_CREATE: "/admin/roles/create",
       ADMIN_ROLE_EDIT: "/admin/roles/:id/edit",
       ADMIN_NOTIFICATIONS: "/admin/notifications",
+      ADMIN_PRODUCTS: "/admin/products",
+      ADMIN_PRODUCT_CREATE: "/admin/products/create",
+      ADMIN_PRODUCT_EDIT: "/admin/products/:id/edit",
       ADMIN_CHAT_ROOMS: "/admin/chat/rooms",
       ADMIN_CHAT_ROOM_EDIT: "/admin/chat/rooms/:id/edit",
       ADMIN_CHAT_MESSAGES: "/admin/chat/messages",
@@ -89,6 +92,8 @@ class AppRoutes {
       ADMIN_IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/roles/permissions"), // GET
       ADMIN_NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // POST
       ADMIN_NOTIFICATION_RECIPIENTS: AppRoutes.adminApi("/notifications/recipients"), // GET
+      ADMIN_PAYMENT_PRODUCTS: AppRoutes.adminApi("/payment/products"), // GET, POST
+      ADMIN_PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PATCH, DELETE
       ADMIN_CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
       ADMIN_CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PATCH, DELETE
       ADMIN_CHAT_MESSAGES: AppRoutes.adminApi("/chat/messages"), // GET

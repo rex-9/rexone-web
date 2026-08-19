@@ -10,7 +10,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
-import { AuthStep, TAuthStep } from "..";
+import { AuthStep, TAuthStep } from "../types";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
