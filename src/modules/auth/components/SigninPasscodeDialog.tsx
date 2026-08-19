@@ -3,10 +3,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
 import { useCountdown } from "../../../hooks";
-import { Button, Dialog, PasscodeInput, TextLink } from "..";
+import {
+  Button,
+  Dialog,
+  PasscodeInput,
+  TextLink,
+} from "../../../design/components";
 import { useNavigate } from "react-router-dom";
-import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../modules/auth";
+import { AuthStep, TAuthStep } from "..";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface SigninPasscodeDialogProps {
@@ -41,7 +46,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
   // Load persisted cooldown state from localStorage
   useEffect(() => {
-    const key = `passcode-retry:${email}`;
+    const key = `passcode-retry:${email.trim().toLowerCase()}`;
     const saved = localStorage.getItem(key);
     if (saved) {
       try {
@@ -56,7 +61,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
   // Save cooldown state to localStorage
   const persistCooldownState = (cooldownUntilMs: number) => {
-    const key = `passcode-retry:${email}`;
+    const key = `passcode-retry:${email.trim().toLowerCase()}`;
     localStorage.setItem(key, JSON.stringify({ cooldownUntilMs }));
   };
 

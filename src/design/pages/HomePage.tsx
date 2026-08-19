@@ -38,9 +38,10 @@ export const HomePage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="space-y-4">
+      <div className="w-full max-w-sm space-y-16">
         <Button
           variant="secondary"
+          fullWidth
           onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
         >
           💳 View Plans & Pricing
@@ -48,6 +49,7 @@ export const HomePage: React.FC = () => {
 
         <Button
           variant="secondary"
+          fullWidth
           onClick={() => navigate(AppRoutes.client.protected.AI)}
         >
           🤖 AI Assistant

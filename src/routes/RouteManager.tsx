@@ -9,34 +9,38 @@ import {
 import AppRoutes from "../AppRoutes";
 import { AdminAccessRoute, AdminHomeRoute, ProtectedRoute, PublicRoute } from ".";
 import {
-  SignInPage,
-  SignUpPage,
-  SignOutPage,
+  AdminChatMessageEditPage,
+  AdminChatMessagesPage,
+  AdminChatRoomEditPage,
+  AdminChatRoomsPage,
+  AdminNotificationsPage,
+  AdminRoleCreatePage,
+  AdminRoleEditPage,
+  AdminRolesPage,
+  AdminUserCreatePage,
+  AdminUserEditPage,
+  AdminUsersPage,
+  HomePage,
+  NotFoundPage,
+  ProfilePage,
+  RootPage,
+} from "../design/pages";
+import { AnapanaPage } from "../modules/anapana/pages";
+import {
+  AuthDialog,
   ConfirmEmailPage,
   ForgotPasscodePage,
   ResetPasscodePage,
-  NotFoundPage,
-  HomePage,
-  RootPage,
-  ProfilePage,
+  SignInPage,
+  SignOutPage,
+  SignUpPage,
+} from "../modules/auth";
+import {
+  PaymentCancelPage,
   PaymentPage,
   PaymentSuccessPage,
-  PaymentCancelPage,
-  AiPage,
-  AdminChatMessageEditPage,
-  AdminChatRoomsPage,
-  AdminChatRoomEditPage,
-  AdminChatMessagesPage,
-  AdminNotificationsPage,
-  AdminRoleEditPage,
-  AdminRolesPage,
-  AdminRoleCreatePage,
-  AdminUsersPage,
-  AdminUserCreatePage,
-  AdminUserEditPage,
-} from "../design/pages";
-import { AuthDialog } from "../design";
-import { AnapanaPage } from "../modules/anapana/pages";
+} from "../modules/payment/pages";
+import { AiPage } from "../modules/ai/pages";
 
 export const RouteManager = () => {
   const router = createBrowserRouter(
@@ -104,14 +108,14 @@ export const RouteManager = () => {
               element={<PaymentCancelPage />}
             />
             <Route path={AppRoutes.client.protected.AI} element={<AiPage />} />
-	            <Route
-	              path={AppRoutes.client.protected.ADMIN}
-	              element={<AdminHomeRoute />}
-	            />
-	            <Route
-	              path={`${AppRoutes.client.protected.ADMIN}/`}
-	              element={<AdminHomeRoute />}
-	            />
+            <Route
+              path={AppRoutes.client.protected.ADMIN}
+              element={<AdminHomeRoute />}
+            />
+            <Route
+              path={`${AppRoutes.client.protected.ADMIN}/`}
+              element={<AdminHomeRoute />}
+            />
             <Route
               element={<AdminAccessRoute action="read" resource="users" />}
             >
@@ -187,9 +191,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={
-                <AdminAccessRoute action="update" resource="rooms" />
-              }
+              element={<AdminAccessRoute action="update" resource="rooms" />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT}
@@ -197,9 +199,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={
-                <AdminAccessRoute action="read" resource="messages" />
-              }
+              element={<AdminAccessRoute action="read" resource="messages" />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGES}
@@ -207,9 +207,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={
-                <AdminAccessRoute action="update" resource="messages" />
-              }
+              element={<AdminAccessRoute action="update" resource="messages" />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT}

@@ -1,10 +1,10 @@
 // src/design/components/auth/SignupInfoDialog.tsx
 
 import React, { useState } from "react";
-import { Button, Dialog, TextInput } from "..";
+import { Button, Dialog, TextInput } from "../../../design/components";
 import { useToast } from "../../../contexts";
-import { AuthStep, TAuthStep } from "./type";
-import { AuthController } from "../../../modules/auth";
+import { AuthStep, TAuthStep } from "..";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface SignupInfoDialogProps {

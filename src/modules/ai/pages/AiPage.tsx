@@ -1,12 +1,14 @@
 // src/design/pages/AiPage.tsx
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { LayoutPage } from "./LayoutPage";
-import { Button, TextArea } from "../components";
-import { useToast } from "../../contexts/ToastContext";
-import AiController from "../../modules/ai/ai.controller";
-import { IMessage } from "../../modules/ai/";
-import SocketService, { ISocketMessage } from "../../services/socket.service";
+import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { Button, TextArea, ConfirmDialog } from "../../../design/components";
+import { useToast } from "../../../contexts/ToastContext";
+import AiController from "../ai.controller";
+import { IMessage } from "..";
+import SocketService, {
+  ISocketMessage,
+} from "../../../services/socket.service";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
@@ -14,6 +16,7 @@ export const AiPage: React.FC = () => {
   const [input, setInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -121,17 +124,52 @@ export const AiPage: React.FC = () => {
     }
   };
 
+  const handleClearHistory = async () => {
+    setIsClearDialogOpen(false);
+    await AiController.clearHistory(
+      null,
+      () => {
+        success("Chat history cleared");
+        setMessages([
+          {
+            id: "welcome",
+            role: "assistant",
+            content: "Hello! I'm your AI assistant. How can I help you today?",
+            created_at: new Date().toISOString(),
+          },
+        ]);
+      },
+      (err) => error(err),
+    );
+  };
+
   return (
     <LayoutPage>
       <div className="flex flex-col h-[calc(100vh-200px)] max-w-3xl mx-auto w-full">
         {/* Header */}
-        <div className="text-center py-4 border-b border-base-200">
-          <h1 className="text-2xl font-bold">🤖 AI Assistant</h1>
-          <p className="text-sm text-gray-500">Powered by DeepSeek AI</p>
+        <div className="flex items-center justify-between py-16 border-b border-base-200">
+          <div className="w-[100px]" />
+          <div className="text-center flex-1">
+            <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
+            <p className="text-body-s text-base-content/70">
+              Powered by DeepSeek AI
+            </p>
+          </div>
+          <div className="w-[100px] flex justify-end">
+            {messages.length > 1 && (
+              <Button
+                variant="tertiary"
+                size="sm"
+                onClick={() => setIsClearDialogOpen(true)}
+              >
+                Clear
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-16 space-y-16">
           {messages.map((message) => (
             <div
               key={message.id}
@@ -140,18 +178,20 @@ export const AiPage: React.FC = () => {
               }`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`max-w-[80%] rounded-m p-12 ${
                   message.role === "user"
                     ? "bg-primary text-primary-content"
                     : "bg-base-200"
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                <span className="text-xs opacity-50 mt-1 block">
+                <p className="text-body-m whitespace-pre-wrap">
+                  {message.content}
+                </p>
+                <span className="text-caption opacity-50 mt-4 block">
                   {new Date(message.created_at).toLocaleTimeString()}
                 </span>
                 {message.metadata?.status === "failed" && (
-                  <span className="text-xs text-error mt-1 block">
+                  <span className="text-caption text-error mt-4 block">
                     AI could not complete this message. You can try again.
                   </span>
                 )}
@@ -161,9 +201,9 @@ export const AiPage: React.FC = () => {
 
           {isProcessing && (
             <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-lg p-3 bg-base-200">
-                <p className="text-sm">AI is thinking…</p>
-                <span className="loading loading-dots loading-sm mt-1" />
+              <div className="max-w-[80%] rounded-m p-12 bg-base-200">
+                <p className="text-body-m">AI is thinking…</p>
+                <span className="loading loading-dots loading-sm mt-4" />
               </div>
             </div>
           )}
@@ -172,13 +212,15 @@ export const AiPage: React.FC = () => {
         </div>
 
         {/* Input */}
-        <div className="border-t border-base-200 p-4">
-          <div className="flex gap-2">
+        <div className="border-t border-base-200 p-16">
+          <div className="flex gap-8">
             <TextArea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={isProcessing ? "AI is thinking…" : "Type your message..."}
+              placeholder={
+                isProcessing ? "AI is thinking…" : "Type your message..."
+              }
               rows={3}
               className="flex-1"
               disabled={isSubmitting || isProcessing}
@@ -194,13 +236,24 @@ export const AiPage: React.FC = () => {
               {isSubmitting ? "Sending…" : "Send"}
             </Button>
           </div>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-caption text-base-content/60 mt-8">
             {isProcessing
               ? "You can leave this page. We’ll notify you when the response is ready."
               : "Press Enter to send, Shift+Enter for new line"}
           </p>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={isClearDialogOpen}
+        onClose={() => setIsClearDialogOpen(false)}
+        onConfirm={handleClearHistory}
+        title="Clear History"
+        message="All messages in this conversation will be permanently deleted. Are you sure you want to clear chat history?"
+        confirmLabel="Clear History"
+        cancelLabel="Cancel"
+        isDestructive={true}
+      />
     </LayoutPage>
   );
 };

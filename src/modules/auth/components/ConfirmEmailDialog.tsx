@@ -2,11 +2,16 @@
 
 import React, { useState, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
-import { Button, Dialog, PasscodeInput, TextLink } from "..";
+import {
+  Button,
+  Dialog,
+  PasscodeInput,
+  TextLink,
+} from "../../../design/components";
 import { useCountdown } from "../../../hooks";
-import { AuthStep, TAuthStep } from "./type";
+import { AuthStep, TAuthStep } from "..";
 import { useNavigate } from "react-router-dom";
-import { AuthController } from "../../../modules/auth";
+import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface ConfirmEmailDialogProps {
