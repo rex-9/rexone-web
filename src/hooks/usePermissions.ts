@@ -11,7 +11,8 @@ interface IUsePermissionsResult {
 }
 
 export const usePermissions = (): IUsePermissionsResult => {
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
+  const isLoading = isAuthenticated && !currentUser;
 
   const isSuperAdmin = useMemo(
     () => currentUser?.role_names?.includes("super_admin") ?? false,
@@ -49,5 +50,5 @@ export const usePermissions = (): IUsePermissionsResult => {
 
   const refresh = useCallback(async () => undefined, []);
 
-  return { permissions, isLoading: false, error: "", can, refresh };
+  return { permissions, isLoading, error: "", can, refresh };
 };

@@ -6,7 +6,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../../hooks";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
 import { IAdminUser } from "../../users/types";
@@ -64,6 +64,8 @@ export const AdminNotificationsPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const { can, isLoading: permissionsLoading } = usePermissions();
+  const canReadRoles = can("read", "roles");
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [values, setValues] =
@@ -75,21 +77,30 @@ export const AdminNotificationsPage: React.FC = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (permissionsLoading) return;
+
     const timeoutId = window.setTimeout(() => {
-      void Promise.all([
+      const requests = [
         NotificationController.getRecipients(
           (nextUsers) => setUsers(nextUsers),
           (message) => setError(message),
         ),
-        RoleController.getRoles(
-          (nextRoles) => setRoles(nextRoles),
-          (message) => setError(message),
-        ),
-      ]).finally(() => setIsLoading(false));
+      ];
+
+      if (canReadRoles) {
+        requests.push(
+          RoleController.getRoles(
+            (nextRoles) => setRoles(nextRoles),
+            (message) => setError(message),
+          ),
+        );
+      }
+
+      void Promise.all(requests).finally(() => setIsLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, []);
+  }, [canReadRoles, permissionsLoading]);
 
   const sortedRoles = useMemo(
     () =>
@@ -251,7 +262,7 @@ export const AdminNotificationsPage: React.FC = () => {
 
   return (
     <AdminLayout title="Notifications">
-      {isLoading ? (
+      {isLoading || permissionsLoading ? (
         <AdminLoadingState />
       ) : error && users.length === 0 && roles.length === 0 ? (
         <AdminState title="Unable to load recipients" message={error} />
@@ -314,14 +325,21 @@ export const AdminNotificationsPage: React.FC = () => {
                               ? toggleAllUsers
                               : toggleAllRoles
                           }
-                          disabled={values.audience_type === "all"}
+                          disabled={
+                            values.audience_type === "all" ||
+                            (values.audience_type === "roles" && !canReadRoles)
+                          }
                         >
                           <CheckIcon className="h-[14px] w-[14px]" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="mb-10 grid gap-8 sm:grid-cols-3">
+                    <div
+                      className={`mb-10 grid gap-8 ${
+                        canReadRoles ? "sm:grid-cols-3" : "sm:grid-cols-2"
+                      }`}
+                    >
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
@@ -332,16 +350,20 @@ export const AdminNotificationsPage: React.FC = () => {
                         />
                         <span>Selected users</span>
                       </label>
-                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
-                        <input
-                          type="radio"
-                          name="audience_type"
-                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
-                          checked={values.audience_type === "roles"}
-                          onChange={() => updateValue("audience_type", "roles")}
-                        />
-                        <span>Selected roles</span>
-                      </label>
+                      {canReadRoles && (
+                        <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
+                          <input
+                            type="radio"
+                            name="audience_type"
+                            className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
+                            checked={values.audience_type === "roles"}
+                            onChange={() =>
+                              updateValue("audience_type", "roles")
+                            }
+                          />
+                          <span>Selected roles</span>
+                        </label>
+                      )}
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
@@ -495,7 +517,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 submitLabel="Send notification"
                 isSubmitting={isSubmitting}
                 onCancel={() => {
-                  navigate(AppRoutes.client.protected.ADMIN_USERS);
+                  navigate(AppRoutes.client.protected.ADMIN);
                 }}
               />
             </form>
