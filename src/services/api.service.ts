@@ -1,6 +1,7 @@
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 import AppConfig from "../AppConfig";
 import AppRoutes from "../AppRoutes";
+import { DialogParams } from "../constants";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
@@ -10,8 +11,8 @@ import {
   IApiPagination,
   IApiResponse,
   IJsonApiResource,
-  IPaginatedResult,
 } from "../models";
+import { DialogAuthSteps } from "../modules/auth";
 
 const PLATFORM_HEADER_VALUE = "web";
 
@@ -203,11 +204,8 @@ export const useAxiosInterceptor = () => {
             const nextUrl = new URL(
               window.location.origin + AppRoutes.client.public.ROOT,
             );
-            nextUrl.searchParams.set(
-              AppRoutes.dialog.param,
-              AppRoutes.dialog.auth,
-            );
-            nextUrl.searchParams.set("step", AppRoutes.dialog.steps.initial);
+            nextUrl.searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
+            nextUrl.searchParams.set("step", DialogAuthSteps.INITIAL);
 
             nextUrl.searchParams.set(
               "message",
@@ -272,17 +270,6 @@ export const parseFromList = <T>(
 };
 
 export const parsePaginatedResponse = <T>(
-  response: IApiResponse<IApiEnvelope<T[]>>,
-): IPaginatedResult<T> => {
-  const envelope = response.data;
-
-  return {
-    records: envelope?.data ?? [],
-    pagination: envelope?.meta?.pagination ?? null,
-  };
-};
-
-export const parsePaginatedJsonApiResponse = <T>(
   response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
 ): {
   records: (T & { id: string })[];

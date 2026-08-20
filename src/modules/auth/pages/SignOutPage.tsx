@@ -11,7 +11,7 @@ export const SignOutPage: React.FC = () => {
   const { signout, currentUser, token } = useAuth();
   const navigate = useNavigate();
 
-  const handleSignout = async () => {
+  const handleSignout = React.useCallback(async () => {
     if (token) {
       await AuthController.signOut();
     }
@@ -21,9 +21,7 @@ export const SignOutPage: React.FC = () => {
     }
 
     signout();
-    navigate(AppRoutes.client.public.ROOT, { replace: true });
-    console.log("logged out successfully.");
-  };
+  }, [token, currentUser, signout]);
 
   useEffect(() => {
     if (isSignOutInProgress) return;
@@ -32,7 +30,7 @@ export const SignOutPage: React.FC = () => {
     void handleSignout().finally(() => {
       isSignOutInProgress = false;
     });
-  }, []);
+  }, [handleSignout]);
 
   return null; // No UI
 };

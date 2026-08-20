@@ -8,7 +8,7 @@ import {
   PasscodeInput,
   TextLink,
 } from "../../../design/components";
-import { AuthStep, TAuthStep } from "../types";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { useAuth, useToast } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
@@ -74,7 +74,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
             success(t(AppLocales.Auth.SignUpPasscodeConfirm.ResetSuccess));
             onClose();
             navigate(
-              AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.initial, {
+              AppRoutes.buildDialogUrl(DialogAuthSteps.INITIAL, {
                 message: t(
                   AppLocales.Auth.SignUpPasscodeConfirm.SignInWithNewPasscode,
                 ),
@@ -129,7 +129,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
     }
 
     // Normal email sign-up - go to info page
-    navigateToStep(AuthStep.SIGNUP_INFO, { email, passcode });
+    navigateToStep(DialogAuthSteps.SIGNUP_INFO, { email, passcode });
   };
 
   const triggerSubmit = () => {
@@ -196,7 +196,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
         <div className="text-center text-sm">
           <TextLink
             label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
-            onClick={() => navigateToStep(AuthStep.INITIAL)}
+            onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
           />
         </div>
       </form>

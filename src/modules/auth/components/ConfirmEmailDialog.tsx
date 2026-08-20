@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useCountdown } from "../../../hooks";
-import { AuthStep, TAuthStep } from "../types";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { useNavigate } from "react-router-dom";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -161,7 +161,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
           </p>
           <TextLink
             label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
-            onClick={() => navigateToStep(AuthStep.INITIAL)}
+            onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
             className="text-body-s"
           />
         </div>
