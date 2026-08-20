@@ -10,7 +10,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
-import { AuthStep, TAuthStep } from "..";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -87,7 +87,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       setPasscode("");
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
-      navigateToStep(AuthStep.CONFIRM_EMAIL, { email });
+      navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - start countdown
       cooldown.start(result.cooldownRemaining);
@@ -218,11 +218,15 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
         <div className="flex justify-between text-sm">
           <TextLink
             label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
-            onClick={() => navigateToStep(AuthStep.INITIAL)}
+            onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
+            className="text-body-s"
           />
           <TextLink
             label={t(AppLocales.Auth.SignInPasscode.ForgotPasscode)}
-            onClick={() => navigateToStep(AuthStep.FORGOT_PASSCODE, { email })}
+            onClick={() =>
+              navigateToStep(DialogAuthSteps.FORGOT_PASSCODE, { email })
+            }
+            className="text-body-s"
           />
         </div>
       </form>

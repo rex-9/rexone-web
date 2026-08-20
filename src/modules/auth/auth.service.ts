@@ -14,7 +14,6 @@ export interface ISignInResponseData {
 export interface IGoogleSignInStartData {
   password_required: boolean;
   challenge_token?: string;
-  flow_token?: string;
   user?: IUser;
   token?: string;
   existing_user?: boolean;

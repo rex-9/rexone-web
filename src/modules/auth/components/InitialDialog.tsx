@@ -12,7 +12,7 @@ import {
   Dialog,
 } from "../../../design/components";
 import AppRoutes from "../../../AppRoutes";
-import { AuthStep, TAuthStep } from "..";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -91,28 +91,28 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
       switch (result) {
         case "exists_confirmed":
           // Existing confirmed user
-          navigateToStep(AuthStep.SIGNIN_PASSCODE, {
+          navigateToStep(DialogAuthSteps.SIGNIN_PASSCODE, {
             email: localEmail,
           });
           break;
 
         case "exists_unconfirmed":
-          // Existing but unconfirmed user
+          // Existing unconfirmed user - send new OTP and go to confirm
           await AuthController.sendConfirmationEmail(
             localEmail,
-            setError,
+            (err) => setEmailError(err),
             () => {},
             () => {},
           );
 
-          navigateToStep(AuthStep.CONFIRM_EMAIL, {
+          navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, {
             email: localEmail,
           });
           break;
 
         case "not_exists":
-          // Definitely a new user
-          navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, {
+          // New user
+          navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CREATE, {
             email: localEmail,
           });
           break;
@@ -150,7 +150,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           // New user - show passcode setup
           setGoogleChallengeToken(result.challengeToken);
 
-          navigateToStep(AuthStep.SIGNUP_PASSCODE_CREATE, {
+          navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CREATE, {
             email: result.user?.email || "",
           });
         } else {

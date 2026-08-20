@@ -15,11 +15,7 @@ export const PaymentPage: React.FC = () => {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = React.useCallback(async () => {
     setLoading(true);
     const [productsResult, subscriptionsResult, transactionsResult] =
       await Promise.all([
@@ -41,7 +37,11 @@ export const PaymentPage: React.FC = () => {
     }
 
     setLoading(false);
-  };
+  }, [setLoading]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleCheckout = (productId: string) => {
     PaymentController.createCheckout(
@@ -97,7 +97,7 @@ export const PaymentPage: React.FC = () => {
     );
   };
 
-  const renderProductActions = (product: any) => {
+  const renderProductActions = (product: IProduct) => {
     const activeSub = getActiveSubscription(product.id);
     const canceledSub = getCanceledSubscription(product.id);
     const fullyCanceledSub = getFullyCanceledSubscription(product.id);

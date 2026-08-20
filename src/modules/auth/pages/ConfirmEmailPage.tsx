@@ -6,6 +6,7 @@ import { useAuth, useToast } from "../../../contexts";
 import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "../../../modules/auth";
 import { AppLocales, useTranslate } from "../../../locales";
+import { DialogAuthSteps } from "..";
 
 export const ConfirmEmailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export const ConfirmEmailPage: React.FC = () => {
     // If email is provided, open verify email dialog
     if (email) {
       navigate(
-        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.confirmEmail, {
+        AppRoutes.buildDialogUrl(DialogAuthSteps.CONFIRM_EMAIL, {
           email,
         }),
         { replace: true },

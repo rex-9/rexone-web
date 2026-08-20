@@ -29,11 +29,6 @@ export interface IApiResponse<T = unknown> {
   error?: string;
 }
 
-export interface IPaginatedResult<T> {
-  records: T[];
-  pagination: IApiPagination | null;
-}
-
 export interface IJsonApiResource<T> {
   id: string;
   type: string;

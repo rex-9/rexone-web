@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useToast } from "../../../contexts";
-import { AuthStep, TAuthStep } from "..";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -97,7 +97,9 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
           <TextLink
             label={t(AppLocales.Auth.ForgotPasscode.BackToSignIn)}
             onClick={() =>
-              navigateToStep(AuthStep.SIGNIN_PASSCODE, { email: localEmail })
+              navigateToStep(DialogAuthSteps.SIGNIN_PASSCODE, {
+                email: localEmail,
+              })
             }
           />
         </div>

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Button, Dialog, TextInput } from "../../../design/components";
 import { useToast } from "../../../contexts";
-import { AuthStep, TAuthStep } from "..";
+import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -59,7 +59,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       setError,
       () => {
         // After signup, navigate to verify email step
-        navigateToStep(AuthStep.CONFIRM_EMAIL, { email, passcode });
+        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email, passcode });
         success(t(AppLocales.Auth.SignUpInfo.VerificationSent));
       },
     );

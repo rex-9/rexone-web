@@ -8,7 +8,7 @@ let isSignOutInProgress = false;
 export const SignOutPage: React.FC = () => {
   const { signout, currentUser, token } = useAuth();
 
-  const handleSignout = async () => {
+  const handleSignout = React.useCallback(async () => {
     if (token) {
       await AuthController.signOut();
     }
@@ -18,8 +18,7 @@ export const SignOutPage: React.FC = () => {
     }
 
     signout();
-    console.log("logged out successfully.");
-  };
+  }, [token, currentUser, signout]);
 
   useEffect(() => {
     if (isSignOutInProgress) return;
@@ -28,7 +27,7 @@ export const SignOutPage: React.FC = () => {
     void handleSignout().finally(() => {
       isSignOutInProgress = false;
     });
-  }, []);
+  }, [handleSignout]);
 
   return null; // No UI
 };
