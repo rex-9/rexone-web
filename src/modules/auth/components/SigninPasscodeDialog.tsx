@@ -40,34 +40,14 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   const [, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number>(3);
+  const [hasFailureHistory, setHasFailureHistory] = useState(false);
 
   // Countdown for cooldown period
   const cooldown = useCountdown(0);
 
-  // Load persisted cooldown state from localStorage
-  useEffect(() => {
-    const key = `passcode-retry:${email.trim().toLowerCase()}`;
-    const saved = localStorage.getItem(key);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const until = parsed.cooldownUntilMs || 0;
-        if (until > Date.now()) {
-          cooldown.startAt(until);
-        }
-      } catch {}
-    }
-  }, [email]);
-
-  // Save cooldown state to localStorage
-  const persistCooldownState = (cooldownUntilMs: number) => {
-    const key = `passcode-retry:${email.trim().toLowerCase()}`;
-    localStorage.setItem(key, JSON.stringify({ cooldownUntilMs }));
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (passcode.length !== 6) return;
+    if (passcode.length !== 6 || cooldown.isActive) return;
 
     setIsLoading(true);
     const result = await AuthController.signInWithEmailOrUsername(
@@ -83,17 +63,17 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
       cooldown.clear();
       setRemainingAttempts(3);
-      persistCooldownState(0);
+      setHasFailureHistory(false);
       setPasscode("");
+      setError("");
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - start countdown
       cooldown.start(result.cooldownRemaining);
-      const until = Date.now() + result.cooldownRemaining * 1000;
-      persistCooldownState(until);
       setRemainingAttempts(0);
+      setHasFailureHistory(true);
       setPasscode("");
       setError(
         t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
@@ -104,6 +84,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       // Failed attempt - update remaining attempts
       const attemptsLeft = result.remainingAttempts ?? 3;
       setRemainingAttempts(attemptsLeft);
+      setHasFailureHistory(true);
       setPasscode("");
 
       if (attemptsLeft > 0) {
@@ -120,14 +101,15 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   };
 
   // Reset attempts when cooldown expires
+  const prevIsActiveRef = useRef(cooldown.isActive);
   useEffect(() => {
-    if (!cooldown.isActive && cooldown.targetTimeMs > 0) {
+    if (prevIsActiveRef.current && !cooldown.isActive) {
       setRemainingAttempts(3);
       setError("");
-      persistCooldownState(0);
       setPasscode("");
     }
-  }, [cooldown.isActive]);
+    prevIsActiveRef.current = cooldown.isActive;
+  }, [cooldown.isActive, setPasscode]);
 
   const triggerSubmit = () => {
     if (formRef.current) {
@@ -143,10 +125,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
         seconds: cooldown.secondsLeft,
       });
     }
-    if (remainingAttempts === 0) {
-      return t(AppLocales.Auth.SignInPasscode.NoAttempts);
-    }
-    if (remainingAttempts <= 2) {
+    if (hasFailureHistory && remainingAttempts < 3) {
       return t(AppLocales.Auth.SignInPasscode.AttemptsRemaining, {
         attempts: remainingAttempts,
       });
@@ -166,9 +145,6 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     }
     if (isLoading) {
       return t(AppLocales.Auth.SignInPasscode.SigningIn);
-    }
-    if (remainingAttempts === 0) {
-      return t(AppLocales.Auth.SignInPasscode.PleaseWait);
     }
     return t(AppLocales.Auth.SignInPasscode.SignIn);
   };
