@@ -27,19 +27,16 @@ export function cn(...inputs: ClassValue[]) {
 // ============================================================
 
 /**
- * Get a color value from the color tokens
- * @example getColor('gold', 500) => '#F8D57E'
+ * Get brand color value
+ * @example getBrandColor('primary') => '#FF5E62'
  */
-export function getColor(
-  palette: "gold" | "blue" | "navy" | "gray",
-  shade: string | number,
-): string {
-  return colors[palette][shade as keyof (typeof colors)[typeof palette]];
+export function getBrandColor(brand: "primary" | "secondary" | "accent"): string {
+  return colors[brand];
 }
 
 /**
  * Get a semantic color value
- * @example getSemanticColor('success') => '#4CAF50'
+ * @example getSemanticColor('success') => '#10B981'
  */
 export function getSemanticColor(
   color: "success" | "warning" | "error" | "info",
@@ -101,10 +98,10 @@ export function getTypography(size: keyof typeof typography.fontSize) {
 
 /**
  * Create a CSS variable reference
- * @example cssVar('gold-500') => 'var(--mb-gold-500)'
+ * @example cssVar('primary') => 'var(--color-primary)'
  */
 export function cssVar(token: string): string {
-  return `var(--mb-${token})`;
+  return `var(--color-${token})`;
 }
 
 /**

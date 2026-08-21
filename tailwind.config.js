@@ -14,36 +14,36 @@ export default {
     plugin(({ addBase }) => {
       addBase({
         ':root, [data-theme="day"]': {
-          '--color-primary': colors.gold[500],
-          '--color-primary-content': colors.navy[900],
-          '--color-secondary': colors.blue[500],
-          '--color-secondary-content': colors.navy[900],
-          '--color-accent': colors.gold[400],
-          '--color-accent-content': colors.navy[900],
-          '--color-neutral': colors.gray[700],
-          '--color-neutral-content': '#FFFFFF',
-          '--color-base-100': colors.day.bg.primary,
-          '--color-base-200': colors.day.bg.secondary,
-          '--color-base-300': colors.day.bg.tertiary,
-          '--color-base-content': colors.navy[900],
+          '--color-primary': colors.primary,
+          '--color-primary-content': '#FFFFFF',
+          '--color-secondary': colors.secondary,
+          '--color-secondary-content': '#FFFFFF',
+          '--color-accent': colors.accent,
+          '--color-accent-content': '#FFFFFF',
+          '--color-base-100': colors.day.background,
+          '--color-base-200': colors.day.surface,
+          '--color-base-300': colors.day.card,
+          '--color-base-content': colors.day.textPrimary,
+          '--color-border': colors.day.border,
+          '--color-divider': colors.day.divider,
           '--color-info': colors.semantic.info,
           '--color-success': colors.semantic.success,
           '--color-warning': colors.semantic.warning,
           '--color-error': colors.semantic.error,
         },
         '[data-theme="night"]': {
-          '--color-primary': colors.night.gold.soft,
-          '--color-primary-content': colors.night.charcoal.darkest,
-          '--color-secondary': colors.blue[500],
-          '--color-secondary-content': colors.night.text.primary,
-          '--color-accent': colors.night.gold.glow,
-          '--color-accent-content': colors.night.charcoal.darkest,
-          '--color-neutral': colors.night.surface.elevated,
-          '--color-neutral-content': colors.night.text.primary,
-          '--color-base-100': colors.night.bg.primary,
-          '--color-base-200': colors.night.bg.secondary,
-          '--color-base-300': colors.night.bg.tertiary,
-          '--color-base-content': colors.night.text.primary,
+          '--color-primary': colors.primary,
+          '--color-primary-content': '#FFFFFF',
+          '--color-secondary': colors.secondary,
+          '--color-secondary-content': '#FFFFFF',
+          '--color-accent': colors.accent,
+          '--color-accent-content': '#FFFFFF',
+          '--color-base-100': colors.night.background,
+          '--color-base-200': colors.night.surface,
+          '--color-base-300': colors.night.card,
+          '--color-base-content': colors.night.textPrimary,
+          '--color-border': colors.night.border,
+          '--color-divider': colors.night.divider,
           '--color-info': colors.semantic.info,
           '--color-success': colors.semantic.success,
           '--color-warning': colors.semantic.warning,
@@ -54,30 +54,18 @@ export default {
   ],
   theme: {
     extend: {
-      // ===== COLORS =====
       colors: {
-        gold: colors.gold,
-        blue: colors.blue,
-        navy: colors.navy,
-        gray: colors.gray,
-        grey: colors.gray, // British spelling alias
+        primary: colors.primary,
+        secondary: colors.secondary,
+        accent: colors.accent,
+        glass: colors.glass,
       },
-
-      // ===== TYPOGRAPHY =====
       fontFamily: typography.fontFamily,
       fontWeight: typography.fontWeight,
       fontSize: typography.fontSize,
-
-      // ===== SPACING =====
       spacing: spacing,
-
-      // ===== RADIUS =====
       borderRadius: radius,
-
-      // ===== SHADOWS =====
       boxShadow: shadows,
-
-      // ===== ANIMATIONS =====
       keyframes: {
         fadeRise: {
           '0%': { opacity: '0', transform: 'translateY(8px)' },
