@@ -9,8 +9,10 @@ import {
   FormActionRow,
   TextInput,
 } from "../../../../design/components";
-
-type ProductPriceMode = "paid" | "free";
+import {
+  buildProductPayload,
+  ProductPriceMode,
+} from "../productForm.utils";
 
 interface AdminProductFormProps {
   mode: "create" | "edit";
@@ -77,20 +79,14 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
           : current.price_unit_amount > 0
             ? current.price_unit_amount
             : initialValues.price_unit_amount,
+      cycle: mode === "free" ? "" : current.cycle || initialValues.cycle,
     }));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    onSubmit({
-      name: values.name.trim(),
-      description: values.description?.trim() || "",
-      price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
-      currency: values.currency,
-      cycle: values.cycle || "",
-      active: values.active,
-    });
+    onSubmit(buildProductPayload(values, priceMode));
   };
 
   return (
@@ -156,16 +152,17 @@ export const AdminProductForm: React.FC<AdminProductFormProps> = ({
           </div>
           <div className="flex flex-col">
             <label className="mb-4 text-body-s font-medium text-base-content">
-              Billing cycle
+              Access duration
             </label>
             <select
               className="select select-bordered h-[52px] rounded-md border-2 border-base-300 bg-base-100 px-16 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
-              value={values.cycle || ""}
+              value={isFree ? "" : values.cycle || ""}
+              disabled={isFree}
               onChange={(event) =>
                 updateValue("cycle", event.target.value as AdminProductCycle)
               }
             >
-              <option value="">One-time</option>
+              <option value="">{isFree ? "Lifetime" : "One-time"}</option>
               <option value="month">Monthly</option>
               <option value="year">Yearly</option>
             </select>

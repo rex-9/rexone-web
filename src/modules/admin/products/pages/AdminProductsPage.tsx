@@ -106,7 +106,7 @@ export const AdminProductsPage: React.FC = () => {
             </div>
             {product.free && (
               <div className="text-caption text-base-content opacity-50">
-                Local
+                Free
               </div>
             )}
           </div>
