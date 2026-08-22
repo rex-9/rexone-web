@@ -1,11 +1,11 @@
 // src/services/ai.service.ts
-import { IApiEnvelope, IApiResponse } from "../../models";
+import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../models";
 import AppRoutes from "../../AppRoutes";
 import { api } from "../../services";
 import {
   IChatRequest,
   IChatResponse,
-  IHistoryResponse,
+  IMessage,
   IRoom,
   IRoomsResponse,
 } from "./types";
@@ -25,13 +25,14 @@ class AiService {
   // History
   async getHistory(
     roomId?: string,
-  ): Promise<IApiResponse<IApiEnvelope<IHistoryResponse>>> {
-    const params: Record<string, string> = {};
-    if (roomId) params.room_id = roomId;
+    params?: { page?: number; limit?: number },
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IMessage>[]>>> {
+    const queryParams: Record<string, any> = { ...params };
+    if (roomId) queryParams.room_id = roomId;
 
-    const response = await api.get<IHistoryResponse>(
+    const response = await api.get<IJsonApiResource<IMessage>[]>(
       AppRoutes.server.protected.AI_HISTORY,
-      params,
+      queryParams,
     );
     return response;
   }
@@ -63,9 +64,10 @@ class AiService {
   }
 
   // Rooms
-  async getRooms(): Promise<IApiResponse<IApiEnvelope<IRoomsResponse>>> {
+  async getRooms(params?: { page?: number; limit?: number }): Promise<IApiResponse<IApiEnvelope<IRoomsResponse>>> {
     const response = await api.get<IRoomsResponse>(
       AppRoutes.server.protected.AI_ROOMS,
+      params,
     );
     return response;
   }

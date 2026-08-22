@@ -10,21 +10,23 @@ import {
 
 class PaymentService {
   // ===== PRODUCTS =====
-  async getProducts(): Promise<
+  async getProducts(params?: { page?: number; limit?: number }): Promise<
     IApiResponse<IApiEnvelope<IJsonApiResource<IProduct>[]>>
   > {
     const response = await api.get<IJsonApiResource<IProduct>[]>(
       AppRoutes.server.protected.PAYMENT_PRODUCTS,
+      params,
     );
     return response;
   }
 
   // ===== SUBSCRIPTIONS =====
-  async getSubscriptions(): Promise<
+  async getSubscriptions(params?: { page?: number; limit?: number }): Promise<
     IApiResponse<IApiEnvelope<IJsonApiResource<ISubscription>[]>>
   > {
     const response = await api.get<IJsonApiResource<ISubscription>[]>(
       AppRoutes.server.protected.PAYMENT_SUBSCRIPTIONS,
+      params,
     );
     return response;
   }
@@ -54,11 +56,12 @@ class PaymentService {
   }
 
   // ===== TRANSACTIONS =====
-  async getTransactions(): Promise<
+  async getTransactions(params?: { page?: number; limit?: number }): Promise<
     IApiResponse<IApiEnvelope<IJsonApiResource<ITransaction>[]>>
   > {
     const response = await api.get<IJsonApiResource<ITransaction>[]>(
       AppRoutes.server.protected.PAYMENT_TRANSACTIONS,
+      params,
     );
     return response;
   }

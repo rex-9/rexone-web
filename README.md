@@ -98,6 +98,7 @@ The main boundaries are:
 - `services/` own HTTP, sockets, persistence, and other transport concerns.
 - `contexts/`, hooks, and Jotai atoms own shared client state and lifecycle behavior.
 - `models/` describe API envelopes, resources, pagination, users, and application data.
+- `constants/` centralizes storage keys, dialog steps, and URL parameters.
 - `locales/` owns i18n initialization, typed translation keys, and translation helpers.
 - `routes/` owns browser routing and public/protected access boundaries.
 
@@ -330,6 +331,7 @@ Only variables prefixed with `VITE_` are exposed to browser code. Never place pr
 rexone-web/
 ├── src/
 │   ├── assets/          # Static application media
+│   ├── constants/       # Storage keys, dialog steps, and route parameter constants
 │   ├── contexts/        # Authentication, loading, toast, and error boundaries
 │   ├── controllers/     # Cross-domain application coordination
 │   ├── design/          # Pages, components, and visual primitives

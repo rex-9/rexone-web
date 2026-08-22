@@ -6,9 +6,6 @@ import { Button, TextArea, ConfirmDialog } from "../../../design/components";
 import { useToast } from "../../../contexts/ToastContext";
 import AiController from "../ai.controller";
 import { IMessage } from "..";
-import SocketService, {
-  ISocketMessage,
-} from "../../../services/socket.service";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
@@ -26,9 +23,7 @@ export const AiPage: React.FC = () => {
   const loadHistory = useCallback(async () => {
     await AiController.loadHistory(
       null, // null for current room
-      (historyMessages, roomId, roomTitle, processing) => {
-        console.log("Room ID:", roomId, "Room Title:", roomTitle);
-        console.log("Loaded history:", historyMessages.length, "messages");
+      (historyMessages, _roomId, processing) => {
         if (historyMessages.length === 0) {
           setMessages([
             {
@@ -68,25 +63,10 @@ export const AiPage: React.FC = () => {
   }, [loadHistory]);
 
   useEffect(() => {
-    const handleAiMessage = (event: ISocketMessage) => {
-      const eventType =
-        typeof event.data?.type === "string" ? event.data.type : "";
-      const roomId =
-        typeof event.data?.room_id === "string" ? event.data.room_id : "";
-
-      if (
-        event.type !== "notification" ||
-        !["ai_response_ready", "ai_response_failed"].includes(eventType) ||
-        roomId !== AiController.getCurrentRoomId()
-      ) {
-        return;
-      }
-
+    const unsubscribe = AiController.subscribeToAiMessages(() => {
       loadHistory();
-    };
-
-    SocketService.addListener(handleAiMessage);
-    return () => SocketService.removeListener(handleAiMessage);
+    });
+    return unsubscribe;
   }, [loadHistory]);
 
   const handleSend = async () => {
@@ -99,8 +79,7 @@ export const AiPage: React.FC = () => {
     await AiController.chat(
       content,
       null, // roomId (auto-detected)
-      (queuedMessage, roomId) => {
-        console.log("Room ID:", roomId);
+      (queuedMessage, _roomId) => {
         setMessages((prev) => [
           ...prev.filter((message) => message.id !== "welcome"),
           queuedMessage,

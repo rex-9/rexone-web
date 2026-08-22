@@ -1,50 +1,55 @@
 import { PaymentService } from ".";
-import { parseFromList } from "../../services/api.service";
+import { parsePaginatedResponse } from "../../services/api.service";
 import { IProduct, ISubscription, ITransaction } from "./types";
+import { IApiPagination } from "../../models";
 
 class PaymentController {
   // ===== PRODUCTS =====
-  async getProducts(): Promise<{
+  async getProducts(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
     products?: IProduct[];
+    pagination?: IApiPagination | null;
     error?: string;
   }> {
     try {
-      const response = await PaymentService.getProducts();
-      const { status, data } = response.data || {};
+      const response = await PaymentService.getProducts(params);
+      const { status } = response.data || {};
 
-      if (status?.success && data) {
-        const products = parseFromList<IProduct>(data);
-        return { success: true, products };
+      if (status?.success) {
+        const { records, pagination } =
+          parsePaginatedResponse<IProduct>(response);
+        return { success: true, products: records, pagination };
       }
       return {
         success: false,
         error: status?.error || "Failed to fetch products",
       };
-    } catch (error) {
+    } catch {
       return { success: false, error: "An error occurred. Please try again." };
     }
   }
 
   // ===== SUBSCRIPTIONS =====
-  async getSubscriptions(): Promise<{
+  async getSubscriptions(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
     subscriptions?: ISubscription[];
+    pagination?: IApiPagination | null;
     error?: string;
   }> {
     try {
-      const response = await PaymentService.getSubscriptions();
-      const { status, data } = response.data || {};
+      const response = await PaymentService.getSubscriptions(params);
+      const { status } = response.data || {};
 
-      if (status?.success && data) {
-        const subscriptions = parseFromList<ISubscription>(data);
-        return { success: true, subscriptions };
+      if (status?.success) {
+        const { records, pagination } =
+          parsePaginatedResponse<ISubscription>(response);
+        return { success: true, subscriptions: records, pagination };
       }
       return {
         success: false,
         error: status?.error || "Failed to fetch subscriptions",
       };
-    } catch (error) {
+    } catch {
       return { success: false, error: "An error occurred. Please try again." };
     }
   }
@@ -64,7 +69,7 @@ class PaymentController {
         onError(status?.error || "Failed to cancel subscription");
       }
     } catch (error) {
-      onError("An error occurred. Please try again.");
+      onError(`An error occurred. Please try again. ${error}`);
     }
   }
 
@@ -83,29 +88,31 @@ class PaymentController {
         onError(status?.error || "Failed to resume subscription");
       }
     } catch (error) {
-      onError("An error occurred. Please try again.");
+      onError(`An error occurred. Please try again. ${error}`);
     }
   }
 
   // ===== TRANSACTIONS =====
-  async getTransactions(): Promise<{
+  async getTransactions(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
     transactions?: ITransaction[];
+    pagination?: IApiPagination | null;
     error?: string;
   }> {
     try {
-      const response = await PaymentService.getTransactions();
-      const { status, data } = response.data || {};
+      const response = await PaymentService.getTransactions(params);
+      const { status } = response.data || {};
 
-      if (status?.success && data) {
-        const transactions = parseFromList<ITransaction>(data);
-        return { success: true, transactions };
+      if (status?.success) {
+        const { records, pagination } =
+          parsePaginatedResponse<ITransaction>(response);
+        return { success: true, transactions: records, pagination };
       }
       return {
         success: false,
         error: status?.error || "Failed to fetch transactions",
       };
-    } catch (error) {
+    } catch {
       return { success: false, error: "An error occurred. Please try again." };
     }
   }
@@ -126,7 +133,7 @@ class PaymentController {
         onError(status?.error || "Failed to create checkout session");
       }
     } catch (error) {
-      onError("An error occurred. Please try again.");
+      onError(`An error occurred. Please try again. ${error}`);
     }
   }
 }

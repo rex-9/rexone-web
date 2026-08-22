@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import en from "./en.json";
 import es from "./es.json";
 import my from "./my.json";
+import { StorageKeys } from "../constants";
 
 const CLIENT_LOCALES = ["en", "es", "my"] as const;
 
@@ -11,7 +12,7 @@ const getInitialLanguage = (): string => {
 
   try {
     const storedLocale: unknown = JSON.parse(
-      window.localStorage.getItem("locale") ?? '"en"',
+      window.localStorage.getItem(StorageKeys.LOCALE) ?? '"en"',
     );
 
     return typeof storedLocale === "string" &&

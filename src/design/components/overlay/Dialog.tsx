@@ -57,7 +57,7 @@ export const Dialog: React.FC<DialogProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-navy-900 bg-opacity-40 backdrop-blur-sm" />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">

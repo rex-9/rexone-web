@@ -1,5 +1,3 @@
-import { IJsonApiResource } from "../../models";
-
 export interface IChatRequest {
   message: string;
   room_id?: string;
@@ -19,6 +17,7 @@ export interface IMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  room_id?: string;
   metadata?: {
     status?: "queued" | "processing" | "retrying" | "completed" | "failed";
     system_prompt?: string;
@@ -30,13 +29,6 @@ export interface IMessage {
     model?: string;
   };
   created_at: string;
-}
-
-export interface IHistoryResponse {
-  messages: IJsonApiResource<IMessage>[];
-  room_id: string;
-  room_title: string;
-  processing: boolean;
 }
 
 export interface IRoom {

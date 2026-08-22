@@ -11,24 +11,28 @@ import {
   ConfirmEmailDialog,
   ForgotPasscodeDialog,
 } from ".";
-import { AuthStep, TAuthStep } from "../types";
+import { TAuthStep } from "..";
+import { DialogParams, DialogAuthSteps } from "../../../constants";
 
 // Map steps to their previous step
 const stepHistory: Record<TAuthStep, TAuthStep | null> = {
-  [AuthStep.INITIAL]: null,
-  [AuthStep.SIGNIN_PASSCODE]: AuthStep.INITIAL,
-  [AuthStep.SIGNUP_PASSCODE_CREATE]: AuthStep.INITIAL,
-  [AuthStep.SIGNUP_PASSCODE_CONFIRM]: AuthStep.SIGNUP_PASSCODE_CREATE,
-  [AuthStep.SIGNUP_INFO]: AuthStep.SIGNUP_PASSCODE_CREATE,
-  [AuthStep.CONFIRM_EMAIL]: AuthStep.SIGNUP_INFO,
-  [AuthStep.FORGOT_PASSCODE]: AuthStep.SIGNIN_PASSCODE,
+  [DialogAuthSteps.INITIAL]: null,
+  [DialogAuthSteps.SIGNIN_PASSCODE]: DialogAuthSteps.INITIAL,
+  [DialogAuthSteps.SIGNUP_PASSCODE_CREATE]: DialogAuthSteps.INITIAL,
+  [DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM]:
+    DialogAuthSteps.SIGNUP_PASSCODE_CREATE,
+  [DialogAuthSteps.SIGNUP_INFO]: DialogAuthSteps.SIGNUP_PASSCODE_CREATE,
+  [DialogAuthSteps.CONFIRM_EMAIL]: DialogAuthSteps.SIGNUP_INFO,
+  [DialogAuthSteps.FORGOT_PASSCODE]: DialogAuthSteps.SIGNIN_PASSCODE,
 };
 
 export const AuthDialog: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const isOpen = searchParams.get("dialog") === "auth";
+  const isOpen = searchParams.get(DialogParams.DIALOG) === DialogParams.AUTH;
 
-  const step = (searchParams.get("step") as TAuthStep) || AuthStep.INITIAL;
+  const step =
+    (searchParams.get(DialogParams.STEP) as TAuthStep) ||
+    DialogAuthSteps.INITIAL;
   const email = searchParams.get("email") || "";
   const fullName = searchParams.get("fullName") || "";
   const username = searchParams.get("username") || "";
@@ -103,7 +107,7 @@ export const AuthDialog: React.FC = () => {
 
   const renderStep = () => {
     switch (step) {
-      case AuthStep.INITIAL:
+      case DialogAuthSteps.INITIAL:
         return (
           <InitialDialog
             email={email}
@@ -112,7 +116,7 @@ export const AuthDialog: React.FC = () => {
             onClose={handleClose}
           />
         );
-      case AuthStep.SIGNIN_PASSCODE:
+      case DialogAuthSteps.SIGNIN_PASSCODE:
         return (
           <SigninPasscodeDialog
             email={email}
@@ -123,7 +127,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case AuthStep.SIGNUP_PASSCODE_CREATE:
+      case DialogAuthSteps.SIGNUP_PASSCODE_CREATE:
         return (
           <SignupPasscodeCreateDialog
             email={email}
@@ -134,7 +138,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case AuthStep.SIGNUP_PASSCODE_CONFIRM:
+      case DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM:
         return (
           <SignupPasscodeConfirmDialog
             email={email}
@@ -146,7 +150,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case AuthStep.SIGNUP_INFO:
+      case DialogAuthSteps.SIGNUP_INFO:
         return (
           <SignupInfoDialog
             email={email}
@@ -159,7 +163,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case AuthStep.CONFIRM_EMAIL:
+      case DialogAuthSteps.CONFIRM_EMAIL:
         return (
           <ConfirmEmailDialog
             email={email}
@@ -169,7 +173,7 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case AuthStep.FORGOT_PASSCODE:
+      case DialogAuthSteps.FORGOT_PASSCODE:
         return (
           <ForgotPasscodeDialog
             email={email}

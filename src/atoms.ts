@@ -1,17 +1,18 @@
 // src/atoms/index.ts
 import { IMarker, IUser } from "./models";
 import { AtomService } from "./services";
+import { StorageKeys } from "./constants";
 
 // src/atoms/index.ts
 class Atoms {
   // ===== THEME =====
-  themeAtom = AtomService.getAtom<"day" | "night">("theme", "day");
+  themeAtom = AtomService.getAtom<"day" | "night">(StorageKeys.THEME, "day");
 
   // ===== LOCALE =====
-  localeAtom = AtomService.getAtom<string>("locale", "en");
+  localeAtom = AtomService.getAtom<string>(StorageKeys.LOCALE, "en");
 
   // ===== AUTH =====
-  tokenAtom = AtomService.getAtom<string | null>("token", null);
+  tokenAtom = AtomService.getAtom<string | null>(StorageKeys.TOKEN, null);
   currentUserAtom = AtomService.getAtom<IUser | null>("user", null);
 
   // ===== ANAPANA MODULE =====

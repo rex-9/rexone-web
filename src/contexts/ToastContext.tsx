@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { useTranslate } from "../locales";
+import React, { createContext, useCallback, useContext, useMemo, useState, ReactNode } from "react";
+import { translate } from "../locales";
 import { Toast, ToastType } from "../design/components/overlay/Toast";
 
 interface ToastContextType {
@@ -20,23 +20,38 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
     message: string;
     title?: string;
   } | null>(null);
-  const t = useTranslate();
 
-  const showToast = (type: ToastType, message: string, title?: string) => {
-    setToast({ type, message: t(message), title });
-  };
+  const showToast = useCallback(
+    (type: ToastType, message: string, title?: string) => {
+      setToast({ type, message: translate(message), title });
+    },
+    [],
+  );
 
-  const success = (message: string, title?: string) =>
-    showToast("success", message, title);
-  const error = (message: string, title?: string) =>
-    showToast("error", message, title);
-  const info = (message: string, title?: string) =>
-    showToast("info", message, title);
-  const warning = (message: string, title?: string) =>
-    showToast("warning", message, title);
+  const success = useCallback(
+    (message: string, title?: string) => showToast("success", message, title),
+    [showToast],
+  );
+  const error = useCallback(
+    (message: string, title?: string) => showToast("error", message, title),
+    [showToast],
+  );
+  const info = useCallback(
+    (message: string, title?: string) => showToast("info", message, title),
+    [showToast],
+  );
+  const warning = useCallback(
+    (message: string, title?: string) => showToast("warning", message, title),
+    [showToast],
+  );
+
+  const value = useMemo(
+    () => ({ showToast, success, error, info, warning }),
+    [showToast, success, error, info, warning],
+  );
 
   return (
-    <ToastContext.Provider value={{ showToast, success, error, info, warning }}>
+    <ToastContext.Provider value={value}>
       {children}
       {toast && (
         <Toast

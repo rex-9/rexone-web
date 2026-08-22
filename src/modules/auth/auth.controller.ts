@@ -6,6 +6,12 @@ import { IUser } from "../../models";
 import { apiHandler } from "../../services";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 
+const AUTH_ERRORS = {
+  UNAUTHORIZED: "Unauthorized",
+  SIGNATURE_EXPIRED: "Signature has expired",
+  NO_VERIFICATION_KEY: "No verification key available",
+} as const;
+
 class AuthController {
   // Sign in with token from URL (email confirmation)
   async signInWithToken(
@@ -80,17 +86,14 @@ class AuthController {
     }
   }
 
-  // Google sign in (NO passcode attempt limiter)
-  async signInWithGoogle(token: string): Promise<IGoogleSignInStartResult> {
-    const response = await AuthService.signInWithGoogle(token);
-    const { status, data } = response.data || {};
-
+  // Shared response handler
+  private _handleAuthResponse(
+    status: Record<string, any> | undefined,
+    data: Record<string, any> | undefined,
+    passcodeRequired: boolean,
+    challengeToken?: string,
+  ) {
     if (status?.success) {
-      // Map backend password_required to frontend passcodeRequired
-      const passcodeRequired = data?.password_required === true;
-
-      const challengeToken = data?.challenge_token || data?.flow_token || "";
-
       if (passcodeRequired) {
         if (!challengeToken) {
           return {
@@ -124,6 +127,22 @@ class AuthController {
     };
   }
 
+  // Google sign in (NO passcode attempt limiter)
+  async signInWithGoogle(token: string): Promise<IGoogleSignInStartResult> {
+    const response = await AuthService.signInWithGoogle(token);
+    const { status, data } = response.data || {};
+
+    const passcodeRequired = data?.password_required === true;
+    const challengeToken = data?.challenge_token || "";
+
+    return this._handleAuthResponse(
+      status,
+      data,
+      passcodeRequired,
+      challengeToken,
+    );
+  }
+
   // Complete Google sign in (NO passcode attempt limiter, NO retry)
   async completeGoogleSignIn(
     passcode: string,
@@ -135,19 +154,16 @@ class AuthController {
     );
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.token && data?.user) {
-      return {
-        success: true,
-        statusCode: status.code,
-        user: data.user,
-        token: data.token,
-      };
-    }
-
+    const result = this._handleAuthResponse(status, data, false);
     return {
-      success: false,
-      statusCode: status?.code || 422,
-      errorMessage: status?.error || "Failed to complete Google sign in.",
+      success: result.success,
+      statusCode: result.statusCode,
+      errorMessage:
+        result.errorMessage ||
+        status?.error ||
+        "Failed to complete Google sign in.",
+      user: result.user,
+      token: result.token,
     };
   }
 
@@ -260,9 +276,9 @@ class AuthController {
       const { status } = response.data || {};
       const statusError = status?.error;
       const isAlreadySignedOut =
-        statusError === "Unauthorized" ||
-        statusError === "Signature has expired" ||
-        statusError === "No verification key available";
+        statusError === AUTH_ERRORS.UNAUTHORIZED ||
+        statusError === AUTH_ERRORS.SIGNATURE_EXPIRED ||
+        statusError === AUTH_ERRORS.NO_VERIFICATION_KEY;
 
       if (status?.success || isAlreadySignedOut) {
         console.log("user signed out from server successfully.");

@@ -1,4 +1,4 @@
-import { AuthStep } from "./modules/auth/types";
+import { DialogParams } from "./constants";
 
 class AppRoutes {
   private static readonly API_VERSION = "/v1";
@@ -137,28 +137,12 @@ class AppRoutes {
     },
   };
 
-  // Dialog constants for URL params
-  static readonly dialog = {
-    param: "dialog",
-    auth: "auth",
-
-    steps: {
-      initial: AuthStep.INITIAL,
-      signinPasscode: AuthStep.SIGNIN_PASSCODE,
-      signupPasscodeCreate: AuthStep.SIGNUP_PASSCODE_CREATE,
-      signupPasscodeConfirm: AuthStep.SIGNUP_PASSCODE_CONFIRM,
-      signupInfo: AuthStep.SIGNUP_INFO,
-      confirmEmail: AuthStep.CONFIRM_EMAIL,
-      forgotPasscode: AuthStep.FORGOT_PASSCODE,
-    },
-  };
-
   // Helper to build dialog URLs
   static buildDialogUrl(step: string, params?: Record<string, string>): string {
     const url = new URL(window.location.origin + AppRoutes.client.public.ROOT);
 
-    url.searchParams.set(AppRoutes.dialog.param, AppRoutes.dialog.auth);
-    url.searchParams.set("step", step);
+    url.searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
+    url.searchParams.set(DialogParams.STEP, step);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {

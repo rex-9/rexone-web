@@ -19,7 +19,7 @@ export const TextLink: React.FC<TextLinkProps> = ({
   const t = useTranslate();
 
   const linkClasses = cn(
-    "text-gold-500 hover:text-gold-600 hover:underline transition-colors",
+    "text-primary hover:underline hover:opacity-90 transition-opacity",
     "font-semibold cursor-pointer",
     className,
   );

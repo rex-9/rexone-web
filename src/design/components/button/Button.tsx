@@ -21,10 +21,9 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const variants = {
-    primary: "bg-gold-500 text-navy-900 hover:bg-gold-600 active:bg-gold-700",
-    secondary:
-      "border-2 border-gold-500 text-gold-500 hover:bg-gold-500/10 active:bg-gold-500/20",
-    tertiary: "text-gray-700 hover:bg-gray-100 active:bg-gray-200",
+    primary: "bg-primary text-white hover:opacity-90 active:scale-[0.98] shadow-sm",
+    secondary: "border-2 border-primary text-primary hover:bg-primary/10 active:bg-primary/20",
+    tertiary: "text-base-content hover:bg-base-200 active:bg-base-300",
   };
 
   const sizes = {
@@ -40,7 +39,7 @@ export const Button: React.FC<ButtonProps> = ({
       className={cn(
         "inline-flex items-center justify-center whitespace-nowrap",
         "font-medium transition-all duration-200 ease-out",
-        "rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-400",
+        "rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
         variants[variant],
         sizes[size],
         fullWidth && "w-full",

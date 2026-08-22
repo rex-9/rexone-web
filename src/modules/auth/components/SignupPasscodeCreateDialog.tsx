@@ -9,7 +9,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
-import { AuthStep, TAuthStep } from "../types";
+import { DialogAuthSteps, TAuthStep } from "..";
 
 interface SignupPasscodeCreateDialogProps {
   email: string;
@@ -45,7 +45,7 @@ export const SignupPasscodeCreateDialog: React.FC<
       extra.reset_password_token = resetPasswordToken;
     }
 
-    navigateToStep(AuthStep.SIGNUP_PASSCODE_CONFIRM, extra);
+    navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM, extra);
   };
 
   const triggerSubmit = () => {
@@ -111,7 +111,7 @@ export const SignupPasscodeCreateDialog: React.FC<
         <div className="text-center text-sm">
           <TextLink
             label={t(AppLocales.Auth.Shared.UseDifferentEmail)}
-            onClick={() => navigateToStep(AuthStep.INITIAL)}
+            onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
           />
         </div>
       </form>

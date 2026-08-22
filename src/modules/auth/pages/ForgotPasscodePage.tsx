@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
+import { DialogAuthSteps } from "..";
 
 export const ForgotPasscodePage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,16 +14,15 @@ export const ForgotPasscodePage: React.FC = () => {
 
     if (email) {
       navigate(
-        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPasscode, {
+        AppRoutes.buildDialogUrl(DialogAuthSteps.FORGOT_PASSCODE, {
           email,
         }),
         { replace: true },
       );
     } else {
-      navigate(
-        AppRoutes.buildDialogUrl(AppRoutes.dialog.steps.forgotPasscode),
-        { replace: true },
-      );
+      navigate(AppRoutes.buildDialogUrl(DialogAuthSteps.FORGOT_PASSCODE), {
+        replace: true,
+      });
     }
   }, [navigate, location]);
 

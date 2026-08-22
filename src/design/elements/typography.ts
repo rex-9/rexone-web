@@ -10,8 +10,8 @@
 export const typography = {
   fontFamily: {
     primary:
-      'Inter, -apple-system, BlinkMacSystemFont, "SF Pro", Helvetica, Arial, sans-serif',
-    display: '"Cormorant Garamond", "Playfair Display", Georgia, serif',
+      'Inter, -apple-system, BlinkMacSystemFont, "SF Pro", Helvetica, Arial, sans-serif', // 👈 1. Change Body / UI font
+    display: '"Cormorant Garamond", "Playfair Display", Georgia, serif', // 👈 2. Change Headings / Display font here
     handwritten: '"Satisfy", "Caveat", cursive',
   },
 

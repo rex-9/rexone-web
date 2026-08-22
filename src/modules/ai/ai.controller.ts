@@ -2,6 +2,8 @@
 import AiService from "./ai.service";
 import { parseFromList } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
+import SocketService, { ISocketMessage } from "../../services/socket.service";
+import { IApiPagination } from "../../models";
 
 class AiController {
   private currentRoomId: string | null = null;
@@ -14,16 +16,37 @@ class AiController {
     return this.currentRoomId;
   }
 
+  subscribeToAiMessages(callback: () => void): () => void {
+    const handleAiMessage = (event: ISocketMessage) => {
+      const eventType = typeof event.data?.type === "string" ? event.data.type : "";
+      const roomId = typeof event.data?.room_id === "string" ? event.data.room_id : "";
+
+      if (
+        event.type !== "notification" ||
+        !["ai_response_ready", "ai_response_failed"].includes(eventType) ||
+        roomId !== this.currentRoomId
+      ) {
+        return;
+      }
+
+      callback();
+    };
+
+    SocketService.addListener(handleAiMessage);
+    return () => SocketService.removeListener(handleAiMessage);
+  }
+
   async getRooms(
-    onSuccess: (rooms: IRoom[]) => void,
+    onSuccess: (rooms: IRoom[], pagination?: IApiPagination | null) => void,
     onError: (error: string) => void,
+    params?: { page?: number; limit?: number },
   ): Promise<void> {
     try {
-      const response = await AiService.getRooms();
-      const { status, data } = response.data || {};
+      const response = await AiService.getRooms(params);
+      const { status, data, meta } = response.data || {};
 
       if (status?.success && data?.rooms) {
-        onSuccess(data.rooms);
+        onSuccess(data.rooms, meta?.pagination);
       } else {
         onError(status?.error || "Failed to load rooms");
       }
@@ -57,21 +80,27 @@ class AiController {
     onSuccess: (
       messages: IMessage[],
       roomId: string,
-      roomTitle: string,
       processing: boolean,
+      pagination?: IApiPagination | null,
     ) => void,
     onError: (error: string) => void,
+    params?: { page?: number; limit?: number },
   ): Promise<void> {
     try {
       const response = await AiService.getHistory(
         roomId || this.currentRoomId || undefined,
+        params,
       );
-      const { status, data } = response.data || {};
+      const { status, data, meta } = response.data || {};
 
-      if (status?.success && data?.messages) {
-        this.currentRoomId = data.room_id;
-        const messages = parseFromList<IMessage>(data.messages);
-        onSuccess(messages, data.room_id, data.room_title, data.processing);
+      if (status?.success && data) {
+        const messages = parseFromList<IMessage>(data);
+        const rId = messages[0]?.room_id ?? roomId ?? "";
+        const processing = messages.some((m) =>
+          ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),
+        );
+        this.currentRoomId = rId || null;
+        onSuccess(messages, rId, processing, meta?.pagination);
       } else {
         onError(status?.error || "Failed to load history");
       }
