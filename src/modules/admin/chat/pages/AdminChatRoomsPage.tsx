@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -9,24 +8,25 @@ import { IApiPagination } from "../../../../models";
 import ChatController from "../chat.controller";
 import { IAdminChatRoom } from "../types";
 import {
-  AdminActionButton,
   AdminLoadingState,
   AdminPagination,
   AdminState,
+  AdminTableActions,
   AdminTable,
   ConfirmDialog,
   IAdminTableColumn,
 } from "../../components";
-import { formatAdminDate, truncateAdminText } from "../../helpers/admin-page.helper";
+import { formatAdminDate, truncateAdminText } from "../../helpers/adminPage.helper";
 import {
-  ADMIN_ACTIONS,
+  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
+  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
 export const AdminChatRoomsPage: React.FC = () => {
-  useDocumentTitle("Chat Rooms");
+  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_ROOMS);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -91,39 +91,25 @@ export const AdminChatRoomsPage: React.FC = () => {
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (room) => (
-          <div className="flex justify-end gap-8">
-            <AdminActionButton
-              action={ADMIN_ACTIONS.UPDATE}
-              resource={ADMIN_RESOURCES.ROOMS}
-              size="sm"
-              variant="secondary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Edit chat room"
-              title="Edit"
-              onClick={() =>
-                navigate(
-                  AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT.replace(
-                    ":id",
-                    room.id,
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.ROOMS}
+            actions={[
+              {
+                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                onClick: () =>
+                  navigate(
+                    AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT.replace(
+                      ":id",
+                      room.id,
+                    ),
                   ),
-                )
-              }
-            >
-              <PencilSquareIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-            <AdminActionButton
-              action={ADMIN_ACTIONS.DELETE}
-              resource={ADMIN_RESOURCES.ROOMS}
-              size="sm"
-              variant="tertiary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Delete chat room"
-              title="Delete"
-              onClick={() => setDeleteTarget(room)}
-            >
-              <TrashIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-          </div>
+              },
+              {
+                type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                onClick: () => setDeleteTarget(room),
+              },
+            ]}
+          />
         ),
       },
     ],

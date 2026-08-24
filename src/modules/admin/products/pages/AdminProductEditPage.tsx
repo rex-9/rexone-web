@@ -9,23 +9,24 @@ import {
   IAdminProductFormValues,
 } from "../types";
 import {
-  AdminFormAlert,
+  AlertDialog,
   AdminLoadingState,
   AdminState,
 } from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
+import { ADMIN_PAGE_TITLES } from "../../constants";
 
 export const AdminProductEditPage: React.FC = () => {
-  useDocumentTitle("Edit Product");
+  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCT_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading, setLoading } = useLoading();
+  const { isOverlayLoading, setLoading } = useLoading();
   const [product, setProduct] = useState<IAdminProduct | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -46,8 +47,7 @@ export const AdminProductEditPage: React.FC = () => {
   const handleSubmit = async (values: IAdminProductFormValues) => {
     if (!id) return;
 
-    setIsSubmitting(true);
-    setError("");
+    setLoading(true, { overlay: false });
 
     await ProductController.updateProduct(
       id,
@@ -57,35 +57,32 @@ export const AdminProductEditPage: React.FC = () => {
         navigate(AppRoutes.client.protected.ADMIN_PRODUCTS);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       {!id ? (
         <AdminState title="Unable to load product" message="Missing product id." />
-      ) : isLoading ? (
+      ) : isOverlayLoading ? (
         <AdminLoadingState />
       ) : error && !product ? (
         <AdminState title="Unable to load product" message={error} />
       ) : (
-        <>
-          {error && (
-            <div className="mb-16">
-              <AdminFormAlert message={error} />
-            </div>
-          )}
-          <AdminProductForm
+        <AdminProductForm
             mode="edit"
             product={product}
-            isSubmitting={isSubmitting}
             onSubmit={handleSubmit}
             onCancel={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCTS)}
           />
-        </>
       )}
     </>
   );

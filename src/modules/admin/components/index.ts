@@ -1,5 +1,6 @@
 export { AdminActionButton } from "./AdminActionButton";
-export { AdminFormAlert } from "./AdminFormAlert";
+export { AdminTableActions } from "./AdminTableActions";
+export type { IAdminTableAction } from "./AdminTableActions";
 export { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 export { AdminLayout } from "./AdminLayout";
 export { AdminLoadingState, AdminState } from "./AdminState";
@@ -20,4 +21,8 @@ export {
   TextInput,
   Toggle,
 } from "../../../design/components/form";
-export { ConfirmDialog, Dialog } from "../../../design/components/overlay";
+export {
+  AlertDialog,
+  ConfirmDialog,
+  Dialog,
+} from "../../../design/components/overlay";

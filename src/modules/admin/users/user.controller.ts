@@ -64,6 +64,27 @@ class UserController {
       onSuccess?.(parseAdminUser(data));
   }
 
+  async getDiscardedUsers(
+    params?: { page?: number; limit?: number },
+    onSuccess?: (users: IAdminUser[], pagination?: IApiPagination) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    const response = await UserService.getDiscardedUsers(params);
+    const { status, data, meta } = response.data || {};
+
+    if (!status?.success || !data) {
+      onError?.(
+        status?.error ||
+          status?.message ||
+          response.error ||
+          userErrorMessage(AppLocales.Admin.Users.Errors.LoadListFailed),
+      );
+      return;
+    }
+
+    onSuccess?.(parseFromList<IAdminUser>(data), meta?.pagination);
+  }
+
   async createUser(
     values: IAdminUserFormValues,
     onSuccess?: (user: IAdminUser, message: string) => void,
@@ -126,6 +147,38 @@ class UserController {
       }
 
       onSuccess?.(status.message);
+  }
+
+  async discardUser(
+    id: string,
+    onSuccess?: (message: string) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    const response = await UserService.discardUser(id);
+    const { status, data } = response.data || {};
+
+    if (!status?.success || !data) {
+      onError?.(status?.error || status?.message || response.error || userErrorMessage(AppLocales.Admin.Users.Errors.DeleteFailed));
+      return;
+    }
+
+    onSuccess?.(status.message);
+  }
+
+  async restoreUser(
+    id: string,
+    onSuccess?: (message: string) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    const response = await UserService.restoreUser(id);
+    const { status, data } = response.data || {};
+
+    if (!status?.success || !data) {
+      onError?.(status?.error || status?.message || response.error || userErrorMessage(AppLocales.Admin.Users.Errors.UpdateFailed));
+      return;
+    }
+
+    onSuccess?.(status.message);
   }
 
   async getRoles(

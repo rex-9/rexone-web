@@ -29,7 +29,6 @@ type ProductPriceMode = "paid" | "free";
 interface IAdminProductFormProps {
   mode: "create" | "edit";
   product?: IAdminProduct | null;
-  isSubmitting: boolean;
   onSubmit: (values: IAdminProductFormValues) => void;
   onCancel: () => void;
 }
@@ -61,7 +60,6 @@ const buildInitialValues = (
 export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   mode,
   product,
-  isSubmitting,
   onSubmit,
   onCancel,
 }) => {
@@ -225,7 +223,6 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             ? ADMIN_PRODUCT_FORM_LABELS.CREATE_PRODUCT
             : ADMIN_PRODUCT_FORM_LABELS.SAVE_CHANGES
         }
-        isSubmitting={isSubmitting}
         onCancel={onCancel}
       />
     </form>

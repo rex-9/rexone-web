@@ -13,7 +13,7 @@ import { ProfileAvatar } from "../../../design/components/common/ProfileAvatar";
 import { LanguageDropdown } from "../../../design/components/settings/LanguageDropdown";
 import { ThemeToggle } from "../../../design/components/settings/ThemeToggle";
 import { ADMIN_ACTIONS } from "../constants";
-import { getAdminPageMeta } from "../helpers/admin-page.helper";
+import { getAdminPageMeta } from "../helpers/adminPage.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
 

@@ -5,9 +5,18 @@ import { IAdminUser } from "../users";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
+  IAdminNotificationTemplate,
 } from "./types";
 
 class NotificationService {
+  async getTemplates(): Promise<
+    IApiResponse<IApiEnvelope<IAdminNotificationTemplate[]>>
+  > {
+    return api.get<IAdminNotificationTemplate[]>(
+      AppRoutes.server.protected.ADMIN_NOTIFICATION_TEMPLATES,
+    );
+  }
+
   async getRecipients(): Promise<
     IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>
   > {
@@ -30,8 +39,7 @@ class NotificationService {
       {
         audience: this.buildAudience(values),
         channels,
-        title: values.title,
-        message: values.message,
+        event: values.event,
       },
     );
   }

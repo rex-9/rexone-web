@@ -1,41 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import { IAdminProductFormValues } from "../types";
-import { AdminFormAlert } from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
+import { ADMIN_PAGE_TITLES } from "../../constants";
+import { AlertDialog } from "../../components";
 
 export const AdminProductCreatePage: React.FC = () => {
-  useDocumentTitle("Create Product");
+  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCT_CREATE);
 
   const navigate = useNavigate();
   const toast = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const { setLoading } = useLoading();
+  const [alertMessage, setAlertMessage] = useState("");
 
   const handleSubmit = async (values: IAdminProductFormValues) => {
-    setIsSubmitting(true);
-    setError("");
+    setLoading(true, { overlay: false });
 
     try {
       await ProductController.createProduct(
         values,
         (_product, message) => {
+          setLoading(false, { overlay: false });
           toast.success(message || "Product created");
           navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
             replace: true,
           });
         },
         (message) => {
-          setError(message);
-          setIsSubmitting(false);
+          setAlertMessage(message);
+          setLoading(false, { overlay: false });
         },
       );
     } catch {
-      setError("Product was created, but the page could not return to products.");
+      setAlertMessage("Product was created, but the page could not return to products.");
+      setLoading(false, { overlay: false });
       navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
         replace: true,
       });
@@ -44,14 +47,13 @@ export const AdminProductCreatePage: React.FC = () => {
 
   return (
     <>
-      {error && (
-        <div className="mb-16">
-          <AdminFormAlert message={error} />
-        </div>
-      )}
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       <AdminProductForm
         mode="create"
-        isSubmitting={isSubmitting}
         onSubmit={handleSubmit}
         onCancel={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCTS)}
       />

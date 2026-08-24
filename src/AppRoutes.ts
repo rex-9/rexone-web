@@ -35,6 +35,7 @@ class AppRoutes {
       AI: "/ai",
       ADMIN: "/admin",
       ADMIN_USERS: "/admin/users",
+      ADMIN_USERS_RECYCLE_BIN: "/admin/users/recycle-bin",
       ADMIN_USER_CREATE: "/admin/users/create",
       ADMIN_USER_EDIT: "/admin/users/:id/edit",
       ADMIN_ROLES: "/admin/roles",
@@ -91,11 +92,15 @@ class AppRoutes {
       ADMIN_USERS: AppRoutes.adminApi("/users"), // GET, POST
       ADMIN_USER_ROLES: AppRoutes.adminApi("/users/roles"), // GET
       ADMIN_USER_DETAIL: AppRoutes.adminApi("/users/:id"), // GET, PATCH, PUT, DELETE
+      ADMIN_DISCARDED_USERS: AppRoutes.adminApi("/users/discarded"), // GET
+      ADMIN_USER_DISCARD: AppRoutes.adminApi("/users/:id/discard"), // POST
+      ADMIN_USER_UNDISCARD: AppRoutes.adminApi("/users/:id/undiscard"), // POST
       ADMIN_IAM_ROLES: AppRoutes.adminApi("/iam/roles"), // GET, POST
       ADMIN_IAM_ROLE_DETAIL: AppRoutes.adminApi("/iam/roles/:id"), // GET, PATCH, DELETE
       ADMIN_IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/roles/permissions"), // GET
       ADMIN_NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // POST
       ADMIN_NOTIFICATION_RECIPIENTS: AppRoutes.adminApi("/notifications/recipients"), // GET
+      ADMIN_NOTIFICATION_TEMPLATES: AppRoutes.adminApi("/notifications/templates"), // GET
       ADMIN_PAYMENT_PRODUCTS: AppRoutes.adminApi("/payment/products"), // GET, POST
       ADMIN_PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PATCH, DELETE
       ADMIN_CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET

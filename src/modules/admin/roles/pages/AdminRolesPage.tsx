@@ -1,8 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -11,17 +7,18 @@ import { useDocumentTitle } from "../../../../hooks";
 import RoleController from "../role.controller";
 import { IAdminRole } from "../types";
 import {
-  AdminActionButton,
   AdminLoadingState,
   AdminState,
+  AdminTableActions,
   AdminTable,
   ConfirmDialog,
   IAdminTableColumn,
 } from "../../components";
 import {
-  ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
+  ADMIN_PAGE_TITLES,
   ADMIN_RESOURCES,
+  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
@@ -32,7 +29,7 @@ const countPermissions = (role: IAdminRole): number =>
   );
 
 export const AdminRolesPage: React.FC = () => {
-  useDocumentTitle("Roles");
+  useDocumentTitle(ADMIN_PAGE_TITLES.ROLES);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -49,6 +46,7 @@ export const AdminRolesPage: React.FC = () => {
     await RoleController.getRoles(
       (nextRoles) => {
         setRoles(nextRoles);
+       
         setLoading(false);
       },
       (message) => {
@@ -103,42 +101,29 @@ export const AdminRolesPage: React.FC = () => {
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (role) => (
-          <div className="flex justify-end gap-8">
-            <AdminActionButton
-              action={ADMIN_ACTIONS.UPDATE}
-              resource={ADMIN_RESOURCES.ROLES}
-              size="sm"
-              variant="secondary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Edit role"
-              title="Edit"
-              onClick={() =>
-                navigate(
-                  AppRoutes.client.protected.ADMIN_ROLE_EDIT.replace(
-                    ":id",
-                    role.id,
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.ROLES}
+            actions={[
+              {
+                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                onClick: () =>
+                  navigate(
+                    AppRoutes.client.protected.ADMIN_ROLE_EDIT.replace(
+                      ":id",
+                      role.id,
+                    ),
                   ),
-                )
-              }
-            >
-              <PencilSquareIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-            {!role.system && (
-              <AdminActionButton
-                action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.ROLES}
-                type="button"
-                size="sm"
-                variant="tertiary"
-                className="h-[32px] w-[32px] p-0"
-                aria-label="Delete role"
-                title="Delete"
-                onClick={() => setDeleteTarget(role)}
-              >
-                <TrashIcon className="h-[18px] w-[18px]" />
-              </AdminActionButton>
-            )}
-          </div>
+              },
+              ...(!role.system
+                ? [
+                    {
+                      type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                      onClick: () => setDeleteTarget(role),
+                    },
+                  ]
+                : []),
+            ]}
+          />
         ),
       },
     ],
@@ -174,11 +159,13 @@ export const AdminRolesPage: React.FC = () => {
       ) : roles.length === 0 ? (
         <AdminState title="No roles yet" message="Created roles appear here." />
       ) : (
+        <>
         <AdminTable
           columns={columns}
           records={roles}
           getRowKey={(role) => role.id}
         />
+         </>
       )}
 
       <ConfirmDialog

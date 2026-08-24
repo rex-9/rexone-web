@@ -10,24 +10,25 @@ import {
   IAdminChatRoomFormValues,
 } from "../types";
 import {
-  AdminFormAlert,
+  AlertDialog,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextInput,
 } from "../../components";
+import { ADMIN_PAGE_TITLES } from "../../constants";
 
 export const AdminChatRoomEditPage: React.FC = () => {
-  useDocumentTitle("Edit Chat Room");
+  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_ROOM_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading, setLoading } = useLoading();
+  const { isOverlayLoading, setLoading } = useLoading();
   const [room, setRoom] = useState<IAdminChatRoom | null>(null);
   const [title, setTitle] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -60,39 +61,38 @@ export const AdminChatRoomEditPage: React.FC = () => {
       title: title.trim(),
     };
 
-    setIsSubmitting(true);
-    setError("");
+    setLoading(true, { overlay: false });
 
     await ChatController.updateRoom(
       id,
       values,
       () => {
+        setLoading(false, { overlay: false });
         toast.success("Chat room updated");
         navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       {!id ? (
         <AdminState title="Unable to load chat room" message="Missing room id." />
-      ) : isLoading ? (
+      ) : isOverlayLoading ? (
         <AdminLoadingState />
       ) : error && !room ? (
         <AdminState title="Unable to load chat room" message={error} />
       ) : (
-        <>
-          {error && (
-            <div className="mb-16">
-              <AdminFormAlert message={error} />
-            </div>
-          )}
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <TextInput
               label="Title"
               value={title}
@@ -101,13 +101,11 @@ export const AdminChatRoomEditPage: React.FC = () => {
             />
             <FormActionRow
               submitLabel="Save changes"
-              isSubmitting={isSubmitting}
               onCancel={() =>
                 navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS)
               }
             />
           </form>
-        </>
       )}
     </>
   );

@@ -3,6 +3,7 @@ import { IUser } from "../../../models";
 export interface IAdminUser extends IUser {
   id: string;
   confirmed?: boolean;
+  discarded_at?: Date | null;
   locked?: boolean;
 }
 

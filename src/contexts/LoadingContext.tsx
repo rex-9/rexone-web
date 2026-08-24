@@ -11,7 +11,8 @@ import React, {
 
 interface LoadingContextProps {
   isLoading: boolean;
-  setLoading: (loading: boolean) => void;
+  isOverlayLoading: boolean;
+  setLoading: (loading: boolean, options?: { overlay?: boolean }) => void;
 }
 
 const LoadingContext = createContext<LoadingContextProps | undefined>(
@@ -24,7 +25,9 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isOverlayLoading, setIsOverlayLoading] = useState(false);
   const resetTimeoutRef = useRef<number | null>(null);
+  const loadingModeRef = useRef<"overlay" | "inline" | null>(null);
 
   const clearResetTimeout = useCallback(() => {
     if (resetTimeoutRef.current !== null) {
@@ -34,17 +37,24 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   const setLoading = useCallback(
-    (loading: boolean) => {
+    (loading: boolean, options?: { overlay?: boolean }) => {
       clearResetTimeout();
 
       if (loading) {
+        const useOverlay =
+          options?.overlay ?? loadingModeRef.current !== "inline";
+
+        loadingModeRef.current = useOverlay ? "overlay" : "inline";
         setIsLoading(true);
+        setIsOverlayLoading(useOverlay);
         return;
       }
 
       resetTimeoutRef.current = window.setTimeout(() => {
         resetTimeoutRef.current = null;
+        loadingModeRef.current = null;
         setIsLoading(false);
+        setIsOverlayLoading(false);
       }, LOADING_RESET_DELAY_MS);
     },
     [clearResetTimeout],
@@ -53,8 +63,8 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => clearResetTimeout, [clearResetTimeout]);
 
   const value = useMemo(
-    () => ({ isLoading, setLoading }),
-    [isLoading, setLoading]
+    () => ({ isLoading, isOverlayLoading, setLoading }),
+    [isLoading, isOverlayLoading, setLoading]
   );
 
   return (

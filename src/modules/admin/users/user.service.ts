@@ -30,6 +30,15 @@ class UserService {
     );
   }
 
+  async getDiscardedUsers(
+    params?: IAdminUserListParams,
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
+    return api.get<IJsonApiResource<IAdminUser>[]>(
+      AppRoutes.server.protected.ADMIN_DISCARDED_USERS,
+      params ? { page: params.page, limit: params.limit } : undefined,
+    );
+  }
+
   async createUser(
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
@@ -53,6 +62,22 @@ class UserService {
   async deleteUser(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
       AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+    );
+  }
+
+  async discardUser(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
+    return api.post<AdminUserResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DISCARD, id),
+    );
+  }
+
+  async restoreUser(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
+    return api.post<AdminUserResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_UNDISCARD, id),
     );
   }
 

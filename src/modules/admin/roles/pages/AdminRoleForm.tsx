@@ -25,7 +25,6 @@ interface IAdminRoleFormProps {
   mode: "create" | "edit";
   role?: IAdminRole | null;
   permissions: IAdminPermission[];
-  isSubmitting: boolean;
   onSubmit: (values: IAdminRoleFormValues) => void;
   onCancel: () => void;
 }
@@ -34,7 +33,6 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
   mode,
   role,
   permissions,
-  isSubmitting,
   onSubmit,
   onCancel,
 }) => {
@@ -147,7 +145,6 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
             ? ADMIN_ROLE_FORM_LABELS.CREATE_ROLE
             : ADMIN_ROLE_FORM_LABELS.SAVE_CHANGES
         }
-        isSubmitting={isSubmitting}
         onCancel={onCancel}
       />
     </form>

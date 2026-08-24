@@ -1,8 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -12,10 +8,10 @@ import { IApiPagination } from "../../../../models";
 import { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
-  AdminActionButton,
   AdminLoadingState,
   AdminPagination,
   AdminState,
+  AdminTableActions,
   AdminTable,
   ConfirmDialog,
   IAdminTableColumn,
@@ -23,8 +19,10 @@ import {
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
+  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
+  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
@@ -34,7 +32,7 @@ const formatDate = (value?: Date): string => {
 };
 
 export const AdminProductsPage: React.FC = () => {
-  useDocumentTitle("Products");
+  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCTS);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -129,39 +127,26 @@ export const AdminProductsPage: React.FC = () => {
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (product) => (
-          <div className="flex justify-end gap-8">
-            <AdminActionButton
-              action={ADMIN_ACTIONS.UPDATE}
-              resource={ADMIN_RESOURCES.PRODUCTS}
-              size="sm"
-              variant="secondary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Edit product"
-              title="Edit"
-              onClick={() =>
-                navigate(
-                  AppRoutes.client.protected.ADMIN_PRODUCT_EDIT.replace(
-                    ":id",
-                    product.id,
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.PRODUCTS}
+            actions={[
+              {
+                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                onClick: () =>
+                  navigate(
+                    AppRoutes.client.protected.ADMIN_PRODUCT_EDIT.replace(
+                      ":id",
+                      product.id,
+                    ),
                   ),
-                )
-              }
-            >
-              <PencilSquareIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-            <AdminActionButton
-              action={ADMIN_ACTIONS.DELETE}
-              resource={ADMIN_RESOURCES.PRODUCTS}
-              size="sm"
-              variant="tertiary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Delete product"
-              title="Delete"
-              onClick={() => setDeleteTarget(product)}
-            >
-              <TrashIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-          </div>
+              },
+              {
+                type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                disabled: !product.active,
+                onClick: () => setDeleteTarget(product),
+              },
+            ]}
+          />
         ),
       },
     ],

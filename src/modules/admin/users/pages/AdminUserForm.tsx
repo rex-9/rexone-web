@@ -31,7 +31,6 @@ interface IAdminUserFormProps {
   mode: "create" | "edit";
   user?: IAdminUser | null;
   roles: IAdminRole[];
-  isSubmitting: boolean;
   onSubmit: (values: IAdminUserFormValues) => void;
   onCancel: () => void;
 }
@@ -64,7 +63,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   mode,
   user,
   roles,
-  isSubmitting,
   onSubmit,
   onCancel,
 }) => {
@@ -222,7 +220,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
             ? ADMIN_USER_FORM_LABELS.CREATE_USER
             : ADMIN_USER_FORM_LABELS.SAVE_CHANGES
         }
-        isSubmitting={isSubmitting}
         onCancel={onCancel}
       />
     </form>

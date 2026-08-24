@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  PencilSquareIcon,
-  TrashIcon,
+  ArchiveBoxIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -16,6 +15,7 @@ import {
   AdminLoadingState,
   AdminPagination,
   AdminState,
+  AdminTableActions,
   AdminTable,
   ConfirmDialog,
   IAdminTableColumn,
@@ -23,12 +23,14 @@ import {
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
+  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
+  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
-const formatDate = (value: Date): string => {
+const formatDate = (value?: Date | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
   return new Date(value).toLocaleDateString();
 };
@@ -38,8 +40,19 @@ const formatRoles = (user: IAdminUser): string => {
   return ADMIN_COMMON_LABELS.UNASSIGNED;
 };
 
-export const AdminUsersPage: React.FC = () => {
-  useDocumentTitle("User");
+type UserListView = "active" | "discarded";
+type UserLifecycleAction = "discard" | "restore" | "delete";
+
+interface IAdminUsersPageProps {
+  view?: UserListView;
+}
+
+export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
+  view = "active",
+}) => {
+  useDocumentTitle(
+    view === "active" ? ADMIN_PAGE_TITLES.USERS : ADMIN_PAGE_TITLES.USERS_RECYCLE_BIN,
+  );
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -49,8 +62,10 @@ export const AdminUsersPage: React.FC = () => {
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminUser | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [actionTarget, setActionTarget] = useState<IAdminUser | null>(null);
+  const [lifecycleAction, setLifecycleAction] =
+    useState<UserLifecycleAction | null>(null);
+  const [isLifecycleLoading, setIsLifecycleLoading] = useState(false);
 
   const loadUsers = useCallback(async () => {
     if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.USERS)) return;
@@ -58,7 +73,11 @@ export const AdminUsersPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    await UserController.getUsers(
+    const load = view === "active"
+      ? UserController.getUsers.bind(UserController)
+      : UserController.getDiscardedUsers.bind(UserController);
+
+    await load(
       { page, limit: ADMIN_PAGE_SIZE },
       (nextUsers, nextPagination) => {
         setUsers(nextUsers);
@@ -70,7 +89,7 @@ export const AdminUsersPage: React.FC = () => {
         setLoading(false);
       },
     );
-  }, [can, page, setLoading]);
+  }, [can, page, setLoading, view]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -81,6 +100,21 @@ export const AdminUsersPage: React.FC = () => {
 
     return () => window.clearTimeout(timeoutId);
   }, [loadUsers, permissionsLoading]);
+
+  const openLifecycleDialog = (
+    user: IAdminUser,
+    action: UserLifecycleAction,
+  ) => {
+    setActionTarget(user);
+    setLifecycleAction(action);
+  };
+
+  const closeLifecycleDialog = () => {
+    if (isLifecycleLoading) return;
+
+    setActionTarget(null);
+    setLifecycleAction(null);
+  };
 
   const columns = useMemo<IAdminTableColumn<IAdminUser>[]>(
     () => [
@@ -107,74 +141,108 @@ export const AdminUsersPage: React.FC = () => {
         render: (user) => formatRoles(user),
       },
       {
-        key: "created",
-        header: ADMIN_TABLE_HEADERS.CREATED,
-        render: (user) => formatDate(user.created_at),
+        key: "lifecycle_date",
+        header: view === "active" ? ADMIN_TABLE_HEADERS.CREATED : "Discarded",
+        render: (user) =>
+          formatDate(view === "active" ? user.created_at : user.discarded_at),
       },
       {
         key: "actions",
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (user) => (
-          <div className="flex justify-end gap-8">
-            <AdminActionButton
-              action={ADMIN_ACTIONS.UPDATE}
-              resource={ADMIN_RESOURCES.USERS}
-              size="sm"
-              variant="secondary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Edit user"
-              title="Edit"
-              onClick={() =>
-                navigate(
-                  AppRoutes.client.protected.ADMIN_USER_EDIT.replace(
-                    ":id",
-                    user.id,
-                  ),
-                )
-              }
-            >
-              <PencilSquareIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-            <AdminActionButton
-              action={ADMIN_ACTIONS.DELETE}
-              resource={ADMIN_RESOURCES.USERS}
-              size="sm"
-              variant="tertiary"
-              className="h-[32px] w-[32px] p-0"
-              aria-label="Delete user"
-              title="Delete"
-              onClick={() => setDeleteTarget(user)}
-            >
-              <TrashIcon className="h-[18px] w-[18px]" />
-            </AdminActionButton>
-          </div>
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.USERS}
+            actions={
+              view === "active" ? (
+                [
+                  {
+                    type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                    onClick: () =>
+                      navigate(
+                        AppRoutes.client.protected.ADMIN_USER_EDIT.replace(
+                          ":id",
+                          user.id,
+                        ),
+                      ),
+                  },
+                  {
+                    type: ADMIN_TABLE_ACTION_TYPES.DISCARD,
+                    onClick: () => openLifecycleDialog(user, "discard"),
+                  },
+                ]
+              ) : (
+                [
+                  {
+                    type: ADMIN_TABLE_ACTION_TYPES.RESTORE,
+                    onClick: () => openLifecycleDialog(user, "restore"),
+                  },
+                  {
+                    type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                    onClick: () => openLifecycleDialog(user, "delete"),
+                  },
+                ]
+              )
+            }
+          />
         ),
       },
     ],
-    [navigate],
+    [navigate, view],
   );
 
-  const handleDelete = async () => {
-    if (!deleteTarget || !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.USERS))
+  const handleLifecycleAction = async () => {
+    if (!actionTarget || !lifecycleAction || !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.USERS))
       return;
 
-    setIsDeleting(true);
+    setIsLifecycleLoading(true);
 
-    await UserController.deleteUser(
-      deleteTarget.id,
-      (message) => {
-        toast.success(message);
-        setDeleteTarget(null);
-        setIsDeleting(false);
-        void loadUsers();
-      },
-      (message) => {
-        toast.error(message);
-        setIsDeleting(false);
-      },
-    );
+    const onSuccess = (message: string) => {
+      toast.success(message);
+      setIsLifecycleLoading(false);
+      setActionTarget(null);
+      setLifecycleAction(null);
+      void loadUsers();
+    };
+
+    const onError = (message: string) => {
+      toast.error(message);
+      setIsLifecycleLoading(false);
+    };
+
+    if (lifecycleAction === "discard") {
+      await UserController.discardUser(actionTarget.id, onSuccess, onError);
+      return;
+    }
+
+    if (lifecycleAction === "restore") {
+      await UserController.restoreUser(actionTarget.id, onSuccess, onError);
+      return;
+    }
+
+    await UserController.deleteUser(actionTarget.id, onSuccess, onError);
   };
+
+  const lifecycleDialog = lifecycleAction === "discard"
+    ? {
+        title: "Discard user",
+        message: `Move ${actionTarget?.email || "this user"} to the recycle bin? You can restore this account later.`,
+        confirmLabel: "Discard",
+        isDestructive: false,
+      }
+    : lifecycleAction === "restore"
+      ? {
+          title: "Restore user",
+          message: `Restore ${actionTarget?.email || "this user"}? This account will return to the active users list.`,
+          confirmLabel: "Restore",
+          isDestructive: false,
+        }
+      : {
+          title: "Delete user permanently",
+          message: `Permanently delete ${actionTarget?.email || "this user"}? This cannot be undone.`,
+          confirmLabel: "Delete permanently",
+          isDestructive: true,
+        };
 
   return (
     <>
@@ -182,31 +250,59 @@ export const AdminUsersPage: React.FC = () => {
         <AdminLoadingState />
       ) : error ? (
         <AdminState title="Unable to load users" message={error} />
-      ) : users.length === 0 ? (
-        <AdminState
-          title="No users yet"
-          message="Users will appear here once the backend returns admin user records."
-        />
       ) : (
         <>
-          <AdminTable
-            columns={columns}
-            records={users}
-            getRowKey={(user) => user.id}
-          />
-          <AdminPagination pagination={pagination} onPageChange={setPage} />
+          {view === "active" && (
+            <div className="mb-12 flex justify-end">
+              <AdminActionButton
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.USERS}
+                size="sm"
+                variant="secondary"
+                className="h-[36px] w-[36px] p-0"
+                aria-label="Open recycle bin"
+                title="Recycle bin"
+                onClick={() =>
+                  navigate(AppRoutes.client.protected.ADMIN_USERS_RECYCLE_BIN)
+                }
+              >
+                <ArchiveBoxIcon className="h-[18px] w-[18px]" />
+              </AdminActionButton>
+            </div>
+          )}
+          {users.length === 0 ? (
+            <AdminState
+              title={view === "active" ? "No users yet" : "Recycle bin is empty"}
+              message={
+                view === "active"
+                  ? "Users will appear here once the backend returns admin user records."
+                  : "Discarded users can be restored or permanently deleted here."
+              }
+            />
+          ) : (
+            <>
+              <AdminTable
+                columns={columns}
+                records={users}
+                getRowKey={(user) => user.id}
+              />
+              <AdminPagination pagination={pagination} onPageChange={setPage} />
+            </>
+          )}
         </>
       )}
 
       <ConfirmDialog
-        isOpen={Boolean(deleteTarget)}
-        title="Delete user"
-        message={`Delete ${deleteTarget?.email || "this user"}? This cannot be undone.`}
-        confirmLabel="Delete"
-        isLoading={isDeleting}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        isOpen={Boolean(actionTarget && lifecycleAction)}
+        {...lifecycleDialog}
+        isLoading={isLifecycleLoading}
+        onClose={closeLifecycleDialog}
+        onConfirm={handleLifecycleAction}
       />
     </>
   );
 };
+
+export const AdminDiscardedUsersPage: React.FC = () => (
+  <AdminUsersPage view="discarded" />
+);

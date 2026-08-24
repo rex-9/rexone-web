@@ -7,18 +7,18 @@ import { useDocumentTitle } from "../../../../hooks";
 import UserController from "../user.controller";
 import { IAdminUserFormValues } from "../types";
 import { IAdminRole } from "../../roles/types";
-import { AdminFormAlert, AdminLoadingState } from "../../components";
+import { AlertDialog, AdminLoadingState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
+import { ADMIN_PAGE_TITLES } from "../../constants";
 
 export const AdminUserCreatePage: React.FC = () => {
-  useDocumentTitle("Create User");
+  useDocumentTitle(ADMIN_PAGE_TITLES.USER_CREATE);
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading: isLoadingRoles, setLoading } = useLoading();
+  const { isOverlayLoading: isLoadingRoles, setLoading } = useLoading();
   const [roles, setRoles] = useState<IAdminRole[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -26,7 +26,7 @@ export const AdminUserCreatePage: React.FC = () => {
 
       void UserController.getRoles(
         (nextRoles) => setRoles(nextRoles),
-        (message) => setError(message),
+        (message) => setAlertMessage(message),
       ).finally(() => setLoading(false));
     }, 0);
 
@@ -34,36 +34,35 @@ export const AdminUserCreatePage: React.FC = () => {
   }, [setLoading]);
 
   const handleSubmit = async (values: IAdminUserFormValues) => {
-    setError("");
-    setIsSubmitting(true);
+    setLoading(true, { overlay: false });
 
     await UserController.createUser(
       values,
       () => {
+        setLoading(false, { overlay: false });
         toast.success("User created");
         navigate(AppRoutes.client.protected.ADMIN_USERS);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
-      {error && (
-        <div className="mb-16">
-          <AdminFormAlert message={error} />
-        </div>
-      )}
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       {isLoadingRoles ? (
         <AdminLoadingState />
       ) : (
         <AdminUserForm
           mode="create"
           roles={roles}
-          isSubmitting={isSubmitting}
           onSubmit={handleSubmit}
           onCancel={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}
         />

@@ -10,24 +10,21 @@ import {
   IAdminRole,
   IAdminRoleFormValues,
 } from "../types";
-import {
-  AdminFormAlert,
-  AdminLoadingState,
-  AdminState,
-} from "../../components";
+import { AlertDialog, AdminLoadingState, AdminState } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
+import { ADMIN_PAGE_TITLES } from "../../constants";
 
 export const AdminRoleEditPage: React.FC = () => {
-  useDocumentTitle("Edit Role");
+  useDocumentTitle(ADMIN_PAGE_TITLES.ROLE_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading, setLoading } = useLoading();
+  const { isOverlayLoading, setLoading } = useLoading();
   const [role, setRole] = useState<IAdminRole | null>(null);
   const [permissions, setPermissions] = useState<IAdminPermission[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -54,49 +51,46 @@ export const AdminRoleEditPage: React.FC = () => {
   const handleSubmit = async (values: IAdminRoleFormValues) => {
     if (!id) return;
 
-    setIsSubmitting(true);
-    setError("");
+    setLoading(true, { overlay: false });
 
     await RoleController.updateRole(
       id,
       values,
       () => {
+        setLoading(false, { overlay: false });
         toast.success("Role updated");
         navigate(AppRoutes.client.protected.ADMIN_ROLES);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       {!id ? (
         <AdminState title="Unable to load role" message="Missing role id." />
-      ) : isLoading ? (
+      ) : isOverlayLoading ? (
         <AdminLoadingState />
       ) : error && !role ? (
         <AdminState title="Unable to load role" message={error} />
       ) : !role ? (
         <AdminState title="Unable to load role" message="Role was not found." />
       ) : (
-        <>
-          {error && (
-            <div className="mb-16">
-              <AdminFormAlert message={error} />
-            </div>
-          )}
-          <AdminRoleForm
+        <AdminRoleForm
             mode="edit"
             role={role}
             permissions={permissions}
-            isSubmitting={isSubmitting}
             onSubmit={handleSubmit}
             onCancel={() => navigate(AppRoutes.client.protected.ADMIN_ROLES)}
           />
-        </>
       )}
     </>
   );

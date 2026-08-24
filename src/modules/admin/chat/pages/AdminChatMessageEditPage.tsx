@@ -10,27 +10,28 @@ import {
   IAdminChatMessageFormValues,
 } from "../types";
 import {
-  AdminFormAlert,
+  AlertDialog,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextArea,
 } from "../../components";
+import { ADMIN_PAGE_TITLES } from "../../constants";
 
 const messageRoles = ["user", "assistant"];
 
 export const AdminChatMessageEditPage: React.FC = () => {
-  useDocumentTitle("Edit Chat Message");
+  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_MESSAGE_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading, setLoading } = useLoading();
+  const { isOverlayLoading, setLoading } = useLoading();
   const [message, setMessage] = useState<IAdminChatMessage | null>(null);
   const [role, setRole] = useState("user");
   const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -65,42 +66,41 @@ export const AdminChatMessageEditPage: React.FC = () => {
       content: content.trim(),
     };
 
-    setIsSubmitting(true);
-    setError("");
+    setLoading(true, { overlay: false });
 
     await ChatController.updateMessage(
       id,
       values,
       () => {
+        setLoading(false, { overlay: false });
         toast.success("Chat message updated");
         navigate(AppRoutes.client.protected.ADMIN_CHAT_MESSAGES);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
       {!id ? (
         <AdminState
           title="Unable to load chat message"
           message="Missing message id."
         />
-      ) : isLoading ? (
+      ) : isOverlayLoading ? (
         <AdminLoadingState />
       ) : error && !message ? (
         <AdminState title="Unable to load chat message" message={error} />
       ) : (
-        <>
-          {error && (
-            <div className="mb-16">
-              <AdminFormAlert message={error} />
-            </div>
-          )}
-          <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <div className="grid gap-16">
               <label className="flex flex-col gap-4">
                 <span className="text-body-s font-medium text-base-content">
@@ -128,13 +128,11 @@ export const AdminChatMessageEditPage: React.FC = () => {
             </div>
             <FormActionRow
               submitLabel="Save changes"
-              isSubmitting={isSubmitting}
               onCancel={() =>
                 navigate(AppRoutes.client.protected.ADMIN_CHAT_MESSAGES)
               }
             />
           </form>
-        </>
       )}
     </>
   );

@@ -12,15 +12,20 @@ import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
 import { IAdminUser } from "../../users/types";
 import NotificationController from "../notification.controller";
-import { IAdminNotificationFormValues } from "../types";
-import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import {
-  AdminFormAlert,
+  IAdminNotificationFormValues,
+  IAdminNotificationTemplate,
+} from "../types";
+import {
+  ADMIN_ACTIONS,
+  ADMIN_PAGE_TITLES,
+  ADMIN_RESOURCES,
+} from "../../constants";
+import {
+  AlertDialog,
   AdminLoadingState,
   AdminState,
   FormActionRow,
-  TextArea,
-  TextInput,
   Button,
 } from "../../components";
 
@@ -32,12 +37,11 @@ const NOTIFICATION_AUDIENCE_TYPES = {
 
 const NOTIFICATION_FIELDS = {
   AUDIENCE_TYPE: "audience_type",
-  MESSAGE: "message",
+  EVENT: "event",
   ROLE_IDS: "role_ids",
   SEND_EMAIL: "send_email",
   SEND_PUSH: "send_push",
   SEND_SOCKET: "send_socket",
-  TITLE: "title",
   USER_IDS: "user_ids",
 } as const;
 
@@ -51,31 +55,29 @@ const NOTIFICATION_LABELS = {
   DELIVERY_EMAIL: "Email",
   DELIVERY_PUSH: "Push",
   DELIVERY_SOCKET: "In app",
-  MESSAGE: "Message",
+  EVENT: "Event",
   NOTIFICATIONS: "Notifications",
-  NOTIFICATION_SENT: "Notification sent",
   RECIPIENTS: "Recipients",
   SELECT_ALL_ROLES: "Select all roles",
   SELECT_ALL_USERS: "Select all users",
   SELECTED_ROLES: "Selected roles",
   SELECTED_USERS: "Selected users",
   SEND_NOTIFICATION: "Send notification",
-  TITLE: "Title",
   UNABLE_TO_LOAD_RECIPIENTS: "Unable to load recipients",
 } as const;
 
 const NOTIFICATION_VALIDATION_MESSAGES = {
   DELIVERY_CHANNEL_REQUIRED: "Select at least one delivery channel.",
+  EVENT_REQUIRED: "Select an available notification event.",
   ROLE_REQUIRED: "Select at least one role.",
   USER_REQUIRED: "Select at least one user.",
 } as const;
 
 const initialValues: IAdminNotificationFormValues = {
+  event: "",
   audience_type: NOTIFICATION_AUDIENCE_TYPES.USERS,
   user_ids: [],
   role_ids: [],
-  title: "",
-  message: "",
   send_push: true,
   send_socket: true,
   send_email: false,
@@ -106,7 +108,7 @@ const matchesUserQuery = (user: IAdminUser, query: string) => {
 };
 
 export const AdminNotificationsPage: React.FC = () => {
-  useDocumentTitle("Notifications");
+  useDocumentTitle(ADMIN_PAGE_TITLES.NOTIFICATIONS);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -114,13 +116,14 @@ export const AdminNotificationsPage: React.FC = () => {
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
+  const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
   const [values, setValues] =
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [isRecipientFocused, setIsRecipientFocused] = useState(false);
-  const { isLoading, setLoading } = useLoading();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { isOverlayLoading, setLoading } = useLoading();
   const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -129,6 +132,10 @@ export const AdminNotificationsPage: React.FC = () => {
 
     const timeoutId = window.setTimeout(() => {
       const recipientRequests = [
+        NotificationController.getTemplates(
+          (nextTemplates) => setTemplates(nextTemplates),
+          (message) => setError(message),
+        ),
         NotificationController.getRecipients(
           (nextUsers) => setUsers(nextUsers),
           (message) => setError(message),
@@ -270,8 +277,13 @@ export const AdminNotificationsPage: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!values.event) {
+      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.EVENT_REQUIRED);
+      return;
+    }
+
     if (selectedChannels === 0) {
-      setError(NOTIFICATION_VALIDATION_MESSAGES.DELIVERY_CHANNEL_REQUIRED);
+      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.DELIVERY_CHANNEL_REQUIRED);
       return;
     }
 
@@ -279,7 +291,7 @@ export const AdminNotificationsPage: React.FC = () => {
       values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS &&
       selectedUserIds.length === 0
     ) {
-      setError(NOTIFICATION_VALIDATION_MESSAGES.USER_REQUIRED);
+      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.USER_REQUIRED);
       return;
     }
 
@@ -287,12 +299,11 @@ export const AdminNotificationsPage: React.FC = () => {
       values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES &&
       selectedRoleIds.length === 0
     ) {
-      setError(NOTIFICATION_VALIDATION_MESSAGES.ROLE_REQUIRED);
+      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.ROLE_REQUIRED);
       return;
     }
 
-    setError("");
-    setIsSubmitting(true);
+    setLoading(true, { overlay: false });
 
     await NotificationController.createNotification(
       {
@@ -305,24 +316,27 @@ export const AdminNotificationsPage: React.FC = () => {
           values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
             ? values.role_ids
             : [],
-        title: values.title.trim(),
-        message: values.message.trim(),
       },
-      () => {
-        toast.success(NOTIFICATION_LABELS.NOTIFICATION_SENT);
+      (_, message) => {
+        setLoading(false, { overlay: false });
+        toast.success(message);
         setValues(initialValues);
-        setIsSubmitting(false);
       },
       (message) => {
-        setError(message);
-        setIsSubmitting(false);
+        setAlertMessage(message);
+        setLoading(false, { overlay: false });
       },
     );
   };
 
   return (
     <>
-      {isLoading || permissionsLoading ? (
+      <AlertDialog
+        isOpen={Boolean(alertMessage)}
+        message={alertMessage}
+        onClose={() => setAlertMessage("")}
+      />
+      {isOverlayLoading || permissionsLoading ? (
         <AdminLoadingState />
       ) : error && users.length === 0 && roles.length === 0 ? (
         <AdminState title={NOTIFICATION_LABELS.UNABLE_TO_LOAD_RECIPIENTS} message={error} />
@@ -330,20 +344,47 @@ export const AdminNotificationsPage: React.FC = () => {
         <>
           <form onSubmit={handleSubmit}>
               <div className="grid gap-16 md:grid-cols-2">
-                {error && (
-                  <div className="md:col-span-2">
-                    <AdminFormAlert message={error} />
+                <div className="md:col-span-2">
+                  <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
+                    <h2 className="text-body-m font-semibold text-base-content">
+                      {NOTIFICATION_LABELS.EVENT}
+                    </h2>
                   </div>
-                )}
+                  <div className="flex flex-wrap gap-5">
+                    {templates.map((template) => {
+                      const isSelected = values.event === template.event;
+                      const categoryClass = isSelected
+                        ? "border-primary bg-primary text-primary-content shadow-sm"
+                        : template.admin_available
+                          ? "border-primary/40 bg-primary/5 text-base-content hover:border-primary hover:bg-primary/10"
+                        : template.category === "payment"
+                          ? "border-warning/50 bg-warning/10 text-warning-content"
+                          : "border-base-300 bg-base-200/70 text-base-content/60";
 
-                <TextInput
-                  label={NOTIFICATION_LABELS.TITLE}
-                  value={values.title}
-                  required
-                  onChange={(event) =>
-                    updateValue(NOTIFICATION_FIELDS.TITLE, event.target.value)
-                  }
-                />
+                      return (
+                        <button
+                          key={template.event}
+                          type="button"
+                          disabled={!template.admin_available}
+                          aria-pressed={isSelected}
+                          title={template.unavailable_reason || template.label}
+                          className={`inline-flex min-h-[36px] items-center gap-4 rounded-full border px-7 py-3 text-left transition ${categoryClass} disabled:cursor-not-allowed disabled:opacity-70`}
+                          onClick={() =>
+                            updateValue(NOTIFICATION_FIELDS.EVENT, template.event)
+                          }
+                        >
+                          {isSelected && <CheckIcon className="h-[13px] w-[13px] shrink-0" />}
+                          <span className="text-caption font-semibold">
+                            {template.label}
+                          </span>
+                          <span className={`text-[10px] capitalize ${isSelected ? "text-primary-content/75" : "opacity-60"}`}>
+                            {template.category}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
 
                 <div className="md:col-span-2">
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
@@ -542,18 +583,6 @@ export const AdminNotificationsPage: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <TextArea
-                    label={NOTIFICATION_LABELS.MESSAGE}
-                    value={values.message}
-                    required
-                    rows={4}
-                    onChange={(event) =>
-                      updateValue(NOTIFICATION_FIELDS.MESSAGE, event.target.value)
-                    }
-                  />
-                </div>
-
-                <div className="md:col-span-2">
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
@@ -588,7 +617,6 @@ export const AdminNotificationsPage: React.FC = () => {
 
               <FormActionRow
                 submitLabel={NOTIFICATION_LABELS.SEND_NOTIFICATION}
-                isSubmitting={isSubmitting}
                 onCancel={() => {
                   navigate(AppRoutes.client.protected.ADMIN_USERS);
                 }}

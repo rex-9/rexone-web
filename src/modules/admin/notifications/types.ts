@@ -1,12 +1,19 @@
 export interface IAdminNotificationFormValues {
+  event: string;
   audience_type: "users" | "roles" | "all";
   user_ids: string[];
   role_ids: string[];
-  title: string;
-  message: string;
   send_push: boolean;
   send_socket: boolean;
   send_email: boolean;
+}
+
+export interface IAdminNotificationTemplate {
+  event: string;
+  label: string;
+  category: "authentication" | "broadcast" | "payment" | string;
+  admin_available: boolean;
+  unavailable_reason?: string;
 }
 
 export interface IAdminNotificationDelivery {

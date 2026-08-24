@@ -48,6 +48,7 @@ import {
   AdminRoleEditPage,
   AdminRolesPage,
   AdminUserCreatePage,
+  AdminDiscardedUsersPage,
   AdminUserEditPage,
   AdminUsersPage,
 } from "../modules/admin";
@@ -132,6 +133,10 @@ const router = createBrowserRouter(
               <Route
                 path={AppRoutes.client.protected.ADMIN_USERS}
                 element={<AdminUsersPage />}
+              />
+              <Route
+                path={AppRoutes.client.protected.ADMIN_USERS_RECYCLE_BIN}
+                element={<AdminDiscardedUsersPage />}
               />
             </Route>
             <Route
