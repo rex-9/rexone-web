@@ -7,7 +7,10 @@ import {
   Outlet,
 } from "react-router-dom";
 import AppRoutes from "../AppRoutes";
-import { AdminAccessRoute, AdminHomeRoute, ProtectedRoute, PublicRoute } from ".";
+import { AdminHomeRoute } from "./AdminHomeRoute";
+import { AdminRootRoute } from "./AdminRootRoute";
+import { ProtectedRoute } from "./ProtectedRoute";
+import { PublicRoute } from "./PublicRoute";
 import {
   HomePage,
   NotFoundPage,
@@ -31,6 +34,8 @@ import {
 } from "../modules/payment/pages";
 import { AiPage } from "../modules/ai/pages";
 import {
+  ADMIN_ACTIONS,
+  ADMIN_RESOURCES,
   AdminChatMessageEditPage,
   AdminChatMessagesPage,
   AdminChatRoomEditPage,
@@ -46,10 +51,10 @@ import {
   AdminUserEditPage,
   AdminUsersPage,
 } from "../modules/admin";
+import { useAxiosInterceptor } from "../services";
 
-export const RouteManager = () => {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
+const router = createBrowserRouter(
+  createRoutesFromElements(
       <Route
         element={
           <>
@@ -122,7 +127,7 @@ export const RouteManager = () => {
               element={<AdminHomeRoute />}
             />
             <Route
-              element={<AdminAccessRoute action="read" resource="users" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.USERS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_USERS}
@@ -130,7 +135,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="create" resource="users" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.CREATE} resource={ADMIN_RESOURCES.USERS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_USER_CREATE}
@@ -138,7 +143,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="update" resource="users" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.USERS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_USER_EDIT}
@@ -147,9 +152,9 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute
-                  action="read"
-                  resource="roles"
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.ROLES}
                   superAdminOnly
                 />
               }
@@ -161,9 +166,9 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute
-                  action="create"
-                  resource="roles"
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.CREATE}
+                  resource={ADMIN_RESOURCES.ROLES}
                   superAdminOnly
                 />
               }
@@ -175,9 +180,9 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute
-                  action="update"
-                  resource="roles"
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.UPDATE}
+                  resource={ADMIN_RESOURCES.ROLES}
                   superAdminOnly
                 />
               }
@@ -188,7 +193,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="read" resource="rooms" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.ROOMS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_ROOMS}
@@ -196,7 +201,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="update" resource="rooms" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.ROOMS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT}
@@ -204,7 +209,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="read" resource="messages" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.MESSAGES} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGES}
@@ -212,7 +217,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="update" resource="messages" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.MESSAGES} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT}
@@ -221,7 +226,7 @@ export const RouteManager = () => {
             </Route>
             <Route
               element={
-                <AdminAccessRoute action="read" resource="notifications" />
+                <AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.NOTIFICATIONS} />
               }
             >
               <Route
@@ -230,7 +235,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="read" resource="products" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.PRODUCTS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_PRODUCTS}
@@ -238,7 +243,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="create" resource="products" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.CREATE} resource={ADMIN_RESOURCES.PRODUCTS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_PRODUCT_CREATE}
@@ -246,7 +251,7 @@ export const RouteManager = () => {
               />
             </Route>
             <Route
-              element={<AdminAccessRoute action="update" resource="products" />}
+              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.PRODUCTS} />}
             >
               <Route
                 path={AppRoutes.client.protected.ADMIN_PRODUCT_EDIT}
@@ -259,8 +264,11 @@ export const RouteManager = () => {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Route>,
-    ),
-  );
+  ),
+);
+
+export const RouteManager = () => {
+  useAxiosInterceptor();
 
   return <RouterProvider router={router} />;
 };

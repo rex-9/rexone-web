@@ -21,7 +21,6 @@ class ProductController {
     onSuccess?: (products: IAdminProduct[], pagination?: IApiPagination) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ProductService.getProducts(params);
       const { status, data, meta } = response.data || {};
 
@@ -36,10 +35,6 @@ class ProductController {
       }
 
       onSuccess?.(parseFromList<IAdminProduct>(data), meta?.pagination);
-    } catch (error) {
-      console.error("Error fetching admin products:", error);
-      onError?.("An error occurred while loading products.");
-    }
   }
 
   async getProduct(
@@ -47,7 +42,6 @@ class ProductController {
     onSuccess?: (product: IAdminProduct) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ProductService.getProduct(id);
       const { status, data } = response.data || {};
 
@@ -62,22 +56,17 @@ class ProductController {
       }
 
       onSuccess?.(parseAdminProduct(data));
-    } catch (error) {
-      console.error("Error fetching admin product:", error);
-      onError?.("An error occurred while loading the product.");
-    }
   }
 
   async createProduct(
     values: IAdminProductFormValues,
-    onSuccess?: (product: IAdminProduct, message: string) => void,
+    onSuccess?: (product: IAdminProduct | undefined, message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ProductService.createProduct(values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
+      if (!status?.success) {
         onError?.(
           status?.error ||
             status?.message ||
@@ -87,11 +76,7 @@ class ProductController {
         return;
       }
 
-      onSuccess?.(parseAdminProduct(data), status.message);
-    } catch (error) {
-      console.error("Error creating admin product:", error);
-      onError?.("An error occurred while creating the product.");
-    }
+      onSuccess?.(data ? parseAdminProduct(data) : undefined, status.message);
   }
 
   async updateProduct(
@@ -100,7 +85,6 @@ class ProductController {
     onSuccess?: (product: IAdminProduct, message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ProductService.updateProduct(id, values);
       const { status, data } = response.data || {};
 
@@ -115,10 +99,6 @@ class ProductController {
       }
 
       onSuccess?.(parseAdminProduct(data), status.message);
-    } catch (error) {
-      console.error("Error updating admin product:", error);
-      onError?.("An error occurred while updating the product.");
-    }
   }
 
   async deleteProduct(
@@ -126,7 +106,6 @@ class ProductController {
     onSuccess?: (message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ProductService.deleteProduct(id);
       const { status } = response.data || {};
 
@@ -141,10 +120,6 @@ class ProductController {
       }
 
       onSuccess?.(status.message);
-    } catch (error) {
-      console.error("Error deleting admin product:", error);
-      onError?.("An error occurred while deleting the product.");
-    }
   }
 }
 

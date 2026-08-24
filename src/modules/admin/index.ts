@@ -23,3 +23,4 @@ export const Admin = {
   UserController,
   UserService,
 };
+export * from "./constants";

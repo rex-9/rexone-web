@@ -1,6 +1,10 @@
 import React, { useMemo } from "react";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Button } from "../button";
+import { Button } from "../../../design/components/button";
+import {
+  ADMIN_PERMISSION_ACTION_ORDER,
+  ADMIN_PERMISSION_FALLBACKS,
+} from "../constants";
 
 export interface IAdminPermissionMatrixItem {
   id: string;
@@ -8,7 +12,7 @@ export interface IAdminPermissionMatrixItem {
   action: string;
 }
 
-interface AdminPermissionMatrixProps {
+interface IAdminPermissionMatrixProps {
   permissions: IAdminPermissionMatrixItem[];
   selectedPermissionIds?: string[];
   isSelectable?: boolean;
@@ -18,11 +22,11 @@ interface AdminPermissionMatrixProps {
   onClearPermissions?: (permissionIds: string[]) => void;
 }
 
-const actionOrder = ["read", "create", "update", "delete"];
-
 const normalizeResource = (value: string): string => {
   const normalized = value?.trim().toLowerCase();
-  return normalized && normalized !== "null" ? normalized : "unassigned";
+  return normalized && normalized !== ADMIN_PERMISSION_FALLBACKS.NULL_RESOURCE
+    ? normalized
+    : ADMIN_PERMISSION_FALLBACKS.UNASSIGNED_RESOURCE;
 };
 
 const formatLabel = (value: string): string =>
@@ -60,14 +64,14 @@ const groupPermissions = (
         resource,
         [...resourcePermissions].sort(
           (left, right) =>
-            actionOrder.indexOf(left.action) -
-            actionOrder.indexOf(right.action),
+            ADMIN_PERMISSION_ACTION_ORDER.indexOf(left.action) -
+            ADMIN_PERMISSION_ACTION_ORDER.indexOf(right.action),
         ),
       ],
     )
     .sort(([left], [right]) => left.localeCompare(right));
 
-export const AdminPermissionMatrix: React.FC<AdminPermissionMatrixProps> = ({
+export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
   permissions,
   selectedPermissionIds = [],
   isSelectable = false,
@@ -140,7 +144,7 @@ export const AdminPermissionMatrix: React.FC<AdminPermissionMatrixProps> = ({
                     >
                       <input
                         type="checkbox"
-                        className="checkbox checkbox-xs border-base-content/30 checked:border-gold-500 checked:bg-gold-500"
+                        className="checkbox checkbox-xs border-base-content/30 checked:border-primary checked:bg-primary"
                         checked={isChecked}
                         readOnly={!isSelectable}
                         onChange={() => onTogglePermission?.(permission.id)}

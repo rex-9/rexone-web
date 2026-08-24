@@ -11,6 +11,10 @@ class AppRoutes {
     return `${this.API_VERSION}/admin${path}`;
   }
 
+  static withId(path: string, id: string): string {
+    return path.replace(":id", id);
+  }
+
   static readonly client = {
     public: {
       SIGN_IN: "/signin",
@@ -98,7 +102,7 @@ class AppRoutes {
       ADMIN_CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PATCH, DELETE
       ADMIN_CHAT_MESSAGES: AppRoutes.adminApi("/chat/messages"), // GET
       ADMIN_CHAT_MESSAGE_DETAIL: AppRoutes.adminApi("/chat/messages/:id"), // GET, PATCH, DELETE
-      IAM_PERMISSIONS: AppRoutes.api("/iam/permissions"), // GET
+      IAM_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET
 
       // Media
       UPLOAD_ASSET: AppRoutes.api("/media/upload"), // POST

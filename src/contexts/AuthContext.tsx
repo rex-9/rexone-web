@@ -12,7 +12,6 @@ import React, {
 import { useAtom } from "jotai";
 import { IUser } from "../models/user.model";
 import atoms from "../atoms";
-import { UserController } from "../controllers";
 import { isTokenExpired } from "../helpers";
 import { useLoading } from "./LoadingContext";
 
@@ -68,16 +67,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     return () => window.clearTimeout(timeoutId);
   }, [signout, token]);
-
-  useEffect(() => {
-    if (!isAuthenticated || !token) return;
-
-    const timeoutId = window.setTimeout(() => {
-      void UserController.getCurrentUser(setCurrentUser);
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [isAuthenticated, setCurrentUser, token]);
 
   // Also check expiry periodically (every 1 hour)
   useEffect(() => {

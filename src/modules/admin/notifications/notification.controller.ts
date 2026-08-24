@@ -11,7 +11,6 @@ class NotificationController {
     onSuccess?: (users: IAdminUser[]) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await NotificationService.getRecipients();
       const { status, data } = response.data || {};
 
@@ -26,10 +25,6 @@ class NotificationController {
       }
 
       onSuccess?.(parseFromList<IAdminUser>(data));
-    } catch (error) {
-      console.error("Error fetching notification recipients:", error);
-      onError?.("An error occurred while loading notification recipients.");
-    }
   }
 
   async createNotification(
@@ -37,7 +32,6 @@ class NotificationController {
     onSuccess?: (delivered: IAdminNotificationDelivery) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await NotificationService.createNotification(values);
       const { status, data } = response.data || {};
 
@@ -52,10 +46,6 @@ class NotificationController {
       }
 
       onSuccess?.(data);
-    } catch (error) {
-      console.error("Error sending admin notification:", error);
-      onError?.("An error occurred while sending the notification.");
-    }
   }
 }
 

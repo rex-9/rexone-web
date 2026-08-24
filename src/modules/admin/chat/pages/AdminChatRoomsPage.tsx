@@ -2,56 +2,59 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
 import ChatController from "../chat.controller";
 import { IAdminChatRoom } from "../types";
 import {
   AdminActionButton,
-  AdminLayout,
   AdminLoadingState,
   AdminPagination,
   AdminState,
   AdminTable,
-  ConfirmationDialog,
+  ConfirmDialog,
   IAdminTableColumn,
-} from "../../../../design/components";
-import { formatAdminDate, truncateAdminText } from "./adminPageUtils";
-
-const PAGE_SIZE = 10;
+} from "../../components";
+import { formatAdminDate, truncateAdminText } from "../../helpers/admin-page.helper";
+import {
+  ADMIN_ACTIONS,
+  ADMIN_PAGE_SIZE,
+  ADMIN_RESOURCES,
+  ADMIN_TABLE_HEADERS,
+} from "../../constants";
 
 export const AdminChatRoomsPage: React.FC = () => {
   useDocumentTitle("Chat Rooms");
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [rooms, setRooms] = useState<IAdminChatRoom[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<IAdminChatRoom | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadRooms = useCallback(async () => {
-    setIsLoading(true);
+    setLoading(true);
     setError("");
 
     await ChatController.getRooms(
-      { page, limit: PAGE_SIZE },
+      { page, limit: ADMIN_PAGE_SIZE },
       (nextRooms, nextPagination) => {
         setRooms(nextRooms);
         setPagination(nextPagination ?? null);
-        setIsLoading(false);
+        setLoading(false);
       },
       (message) => {
         setError(message);
-        setIsLoading(false);
+        setLoading(false);
       },
     );
-  }, [page]);
+  }, [page, setLoading]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -63,32 +66,35 @@ export const AdminChatRoomsPage: React.FC = () => {
 
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
     () => [
-      { key: "title", header: "Room", render: (room) => room.title },
+      {
+        key: "title",
+        header: ADMIN_TABLE_HEADERS.ROOM,
+        render: (room) => room.title,
+      },
       {
         key: "messages",
-        header: "Messages",
+        header: ADMIN_TABLE_HEADERS.MESSAGES,
         render: (room) => room.message_count,
       },
       {
         key: "last",
-        header: "Last message",
+        header: ADMIN_TABLE_HEADERS.LAST_MESSAGE,
         render: (room) => truncateAdminText(room.last_message),
       },
       {
         key: "created",
-        header: "Created",
+        header: ADMIN_TABLE_HEADERS.CREATED,
         render: (room) => formatAdminDate(room.created_at),
       },
       {
         key: "actions",
-        header: "",
+        header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (room) => (
           <div className="flex justify-end gap-8">
             <AdminActionButton
-              action="update"
-              resource="chat_rooms"
-              can={can}
+              action={ADMIN_ACTIONS.UPDATE}
+              resource={ADMIN_RESOURCES.ROOMS}
               size="sm"
               variant="secondary"
               className="h-[32px] w-[32px] p-0"
@@ -106,9 +112,8 @@ export const AdminChatRoomsPage: React.FC = () => {
               <PencilSquareIcon className="h-[18px] w-[18px]" />
             </AdminActionButton>
             <AdminActionButton
-              action="delete"
-              resource="chat_rooms"
-              can={can}
+              action={ADMIN_ACTIONS.DELETE}
+              resource={ADMIN_RESOURCES.ROOMS}
               size="sm"
               variant="tertiary"
               className="h-[32px] w-[32px] p-0"
@@ -122,7 +127,7 @@ export const AdminChatRoomsPage: React.FC = () => {
         ),
       },
     ],
-    [can, navigate],
+    [navigate],
   );
 
   const handleDelete = async () => {
@@ -145,7 +150,7 @@ export const AdminChatRoomsPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Chat Rooms">
+    <>
       {isLoading ? (
         <AdminLoadingState />
       ) : error ? (
@@ -159,7 +164,7 @@ export const AdminChatRoomsPage: React.FC = () => {
         </>
       )}
 
-      <ConfirmationDialog
+      <ConfirmDialog
         isOpen={Boolean(deleteTarget)}
         title="Delete chat room"
         message={`Delete ${deleteTarget?.title || "this chat room"}? This will also delete its messages.`}
@@ -168,6 +173,6 @@ export const AdminChatRoomsPage: React.FC = () => {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 };

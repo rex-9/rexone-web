@@ -4,7 +4,7 @@ import AppRoutes from "../../../../AppRoutes";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import { IAdminProductFormValues } from "../types";
-import { AdminFormAlert, AdminLayout } from "../../../../design/components";
+import { AdminFormAlert } from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
 
@@ -20,21 +20,30 @@ export const AdminProductCreatePage: React.FC = () => {
     setIsSubmitting(true);
     setError("");
 
-    await ProductController.createProduct(
-      values,
-      (_product, message) => {
-        toast.success(message);
-        navigate(AppRoutes.client.protected.ADMIN_PRODUCTS);
-      },
-      (message) => {
-        setError(message);
-        setIsSubmitting(false);
-      },
-    );
+    try {
+      await ProductController.createProduct(
+        values,
+        (_product, message) => {
+          toast.success(message || "Product created");
+          navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
+            replace: true,
+          });
+        },
+        (message) => {
+          setError(message);
+          setIsSubmitting(false);
+        },
+      );
+    } catch {
+      setError("Product was created, but the page could not return to products.");
+      navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
+        replace: true,
+      });
+    }
   };
 
   return (
-    <AdminLayout title="Create Product">
+    <>
       {error && (
         <div className="mb-16">
           <AdminFormAlert message={error} />
@@ -46,6 +55,6 @@ export const AdminProductCreatePage: React.FC = () => {
         onSubmit={handleSubmit}
         onCancel={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCTS)}
       />
-    </AdminLayout>
+    </>
   );
 };

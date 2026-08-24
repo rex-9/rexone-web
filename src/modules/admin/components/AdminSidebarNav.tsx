@@ -12,7 +12,14 @@ import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
 import { AdminResource, hasAdminRole } from "../../../models";
-import { cn } from "../../utils";
+import {
+  ADMIN_ACTIONS,
+  ADMIN_NAV_LABELS,
+  ADMIN_NAV_SECTION_LABEL,
+  ADMIN_RESOURCES,
+  ADMIN_ROLE_NAMES,
+} from "../constants";
+import { cn } from "../../../design/utils";
 
 interface IAdminNavItem {
   label: string;
@@ -23,57 +30,58 @@ interface IAdminNavItem {
   superAdminOnly?: boolean;
 }
 
-interface AdminSidebarNavProps {
+interface IAdminSidebarNavProps {
   onNavigate: () => void;
 }
 
 const navItems: IAdminNavItem[] = [
   {
-    label: "Users",
+    label: ADMIN_NAV_LABELS.USERS,
     to: AppRoutes.client.protected.ADMIN_USERS,
-    resource: "users",
+    resource: ADMIN_RESOURCES.USERS,
     icon: UserGroupIcon,
   },
   {
-    label: "Roles",
+    label: ADMIN_NAV_LABELS.ROLES,
     to: AppRoutes.client.protected.ADMIN_ROLES,
-    resource: "roles",
+    resource: ADMIN_RESOURCES.ROLES,
     icon: KeyIcon,
     superAdminOnly: true,
   },
   {
-    label: "Notifications",
+    label: ADMIN_NAV_LABELS.NOTIFICATIONS,
     to: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
-    resource: "notifications",
+    resource: ADMIN_RESOURCES.NOTIFICATIONS,
     icon: BellAlertIcon,
   },
   {
-    label: "Products",
+    label: ADMIN_NAV_LABELS.PRODUCTS,
     to: AppRoutes.client.protected.ADMIN_PRODUCTS,
-    resource: "products",
+    resource: ADMIN_RESOURCES.PRODUCTS,
     icon: CubeIcon,
   },
   {
-    label: "Chat Rooms",
+    label: ADMIN_NAV_LABELS.CHAT_ROOMS,
     to: AppRoutes.client.protected.ADMIN_CHAT_ROOMS,
-    resource: "rooms",
+    resource: ADMIN_RESOURCES.ROOMS,
     icon: ChatBubbleLeftRightIcon,
   },
   {
-    label: "Chat Messages",
+    label: ADMIN_NAV_LABELS.CHAT_MESSAGES,
     to: AppRoutes.client.protected.ADMIN_CHAT_MESSAGES,
-    resource: "messages",
+    resource: ADMIN_RESOURCES.MESSAGES,
     icon: InboxStackIcon,
   },
 ];
 
-export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
+export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   onNavigate,
 }) => {
   const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
   const hasAdminAccess = hasAdminRole(currentUser?.role_names);
-  const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
+  const isSuperAdmin =
+    currentUser?.role_names?.includes(ADMIN_ROLE_NAMES.SUPER_ADMIN) ?? false;
 
   const enabledItems = useMemo(
     () =>
@@ -83,7 +91,8 @@ export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
           ? false
           : item.superAdminOnly
           ? isSuperAdmin
-          : isLoading || can(item.action ?? "read", item.resource),
+          : isLoading ||
+            can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
       })),
     [can, hasAdminAccess, isLoading, isSuperAdmin],
   );
@@ -91,7 +100,7 @@ export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
   return (
     <nav className="flex-1 overflow-y-auto px-16 py-20">
       <div className="mb-[10px] px-8 text-caption font-semibold uppercase text-base-content opacity-50">
-        Manage
+        {ADMIN_NAV_SECTION_LABEL}
       </div>
       <div className="space-y-[6px]">
         {enabledItems.map((item) => {
@@ -105,7 +114,7 @@ export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
                 cn(
                   "flex h-[44px] items-center gap-12 rounded-md px-12 text-body-m font-medium transition-colors",
                   isActive
-                    ? "bg-gold-500 text-navy-900 shadow-sm"
+                    ? "bg-primary text-navy-900 shadow-sm"
                     : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                 )
               }

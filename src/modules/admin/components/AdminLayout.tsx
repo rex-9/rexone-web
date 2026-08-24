@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Bars3Icon,
   BellIcon,
@@ -7,35 +7,33 @@ import {
 } from "@heroicons/react/24/outline";
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
-import { useAxiosInterceptor } from "../../../services";
-import { Button } from "../button";
-import { ProfileAvatar } from "../common/ProfileAvatar";
-import { LanguageDropdown } from "../settings/LanguageDropdown";
-import { ThemeToggle } from "../settings/ThemeToggle";
+import { usePermissions } from "../../../hooks";
+import { Button } from "../../../design/components/button";
+import { ProfileAvatar } from "../../../design/components/common/ProfileAvatar";
+import { LanguageDropdown } from "../../../design/components/settings/LanguageDropdown";
+import { ThemeToggle } from "../../../design/components/settings/ThemeToggle";
+import { ADMIN_ACTIONS } from "../constants";
+import { getAdminPageMeta } from "../helpers/admin-page.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
 
-interface AdminLayoutProps {
-  title: string;
-  description?: string;
-  eyebrow?: string;
-  actionLabel?: string;
-  onAction?: () => void;
+interface IAdminLayoutProps {
   children: React.ReactNode;
 }
 
-export const AdminLayout: React.FC<AdminLayoutProps> = ({
-  title,
-  eyebrow = "Admin",
-  actionLabel,
-  onAction,
-  children,
-}) => {
-  useAxiosInterceptor();
-
+export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const { currentUser } = useAuth();
+  const { can } = usePermissions();
+  const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const pageMeta = getAdminPageMeta(location.pathname);
+  const canPerformPageAction =
+    pageMeta?.actionLabel &&
+    pageMeta.actionTo &&
+    (!pageMeta.actionResource ||
+      can(ADMIN_ACTIONS.CREATE, pageMeta.actionResource));
 
   const displayName =
     currentUser?.name || currentUser?.username || currentUser?.email || "Admin";
@@ -47,7 +45,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       <div className="flex h-[72px] items-center gap-12 border-b border-base-300 px-24">
         <button
           type="button"
-          className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-gold-500 text-body-l font-semibold text-navy-900"
+          className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900"
           onClick={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}
           aria-label="Go to admin users"
         >
@@ -88,7 +86,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   );
 
   return (
-    <div className="min-h-screen bg-base-200 text-base-content">
+    <div className="min-h-screen w-full overflow-x-hidden bg-base-200 text-base-content">
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:block">
         {sidebar}
       </div>
@@ -105,8 +103,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
       )}
 
-      <div className="min-h-screen lg:pl-[280px]">
-        <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-300 bg-base-100/95 px-16 backdrop-blur md:px-24">
+      <div className="min-h-screen min-w-0 lg:pl-[280px]">
+        <header className="fixed left-0 right-0 top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-300 bg-base-100 px-16 md:px-24 lg:left-[280px]">
           <div className="flex min-w-0 items-center gap-12">
             <Button
               type="button"
@@ -118,8 +116,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
               <Bars3Icon className="h-[20px] w-[20px]" />
             </Button>
             <div className="min-w-0">
-              <div className="text-body-s font-medium uppercase text-gold-600">
-                {eyebrow}
+              <div className="text-body-s font-medium uppercase text-secondary">
+                Admin
               </div>
             </div>
           </div>
@@ -141,21 +139,28 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
           </div>
         </header>
 
-        <main className="px-16 py-20 md:px-24 lg:px-32">
-          <section className="mx-auto max-w-7xl">
+        <main className="min-w-0 px-16 pb-20 pt-[92px] md:px-24 lg:px-32">
+          <section className="mx-auto w-full max-w-7xl">
             <div className="mb-20 flex flex-col gap-14 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="text-body-s font-semibold uppercase text-gold-600">
-                  {eyebrow}
+                <div className="text-body-s font-semibold uppercase text-secondary">
+                  Admin
                 </div>
                 <h1 className="mt-4 text-h2 font-display font-semibold text-base-content">
-                  {title}
+                  {pageMeta?.title ?? ""}
                 </h1>
+                {pageMeta?.description && (
+                  <p className="mt-6 max-w-2xl text-body-m text-base-content opacity-70">
+                    {pageMeta.description}
+                  </p>
+                )}
               </div>
-              {actionLabel && onAction && (
+              {canPerformPageAction && (
                 <AdminHeaderActionButton
-                  label={actionLabel}
-                  onClick={onAction}
+                  label={pageMeta.actionLabel ?? ""}
+                  onClick={() =>
+                    navigate(pageMeta.actionTo ?? AppRoutes.client.protected.ADMIN_USERS)
+                  }
                 />
               )}
             </div>

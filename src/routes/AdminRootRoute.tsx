@@ -4,14 +4,16 @@ import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
 import { AdminAction, AdminResource, hasAdminRole } from "../models";
+import { AdminLayout } from "../modules/admin/components/AdminLayout";
+import { ADMIN_ROLE_NAMES } from "../modules/admin";
 
-interface AdminAccessRouteProps {
+interface IAdminRootRouteProps {
   action: AdminAction;
   resource: AdminResource;
   superAdminOnly?: boolean;
 }
 
-export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
+export const AdminRootRoute: React.FC<IAdminRootRouteProps> = ({
   action,
   resource,
   superAdminOnly = false,
@@ -19,7 +21,8 @@ export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
   const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
   const hasAdminAccess = hasAdminRole(currentUser?.role_names);
-  const isSuperAdmin = currentUser?.role_names?.includes("super_admin") ?? false;
+  const isSuperAdmin =
+    currentUser?.role_names?.includes(ADMIN_ROLE_NAMES.SUPER_ADMIN) ?? false;
 
   if (isLoading) {
     return (
@@ -29,9 +32,15 @@ export const AdminAccessRoute: React.FC<AdminAccessRouteProps> = ({
     );
   }
 
-  if (superAdminOnly) {
-    return isSuperAdmin ? <Outlet /> : <NotFoundPage />;
-  }
+  const isAllowed = superAdminOnly
+    ? isSuperAdmin
+    : hasAdminAccess && can(action, resource);
 
-  return hasAdminAccess && can(action, resource) ? <Outlet /> : <NotFoundPage />;
+  return isAllowed ? (
+    <AdminLayout>
+      <Outlet />
+    </AdminLayout>
+  ) : (
+    <NotFoundPage />
+  );
 };

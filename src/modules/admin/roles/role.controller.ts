@@ -11,7 +11,6 @@ class RoleController {
     onSuccess?: (roles: IAdminRole[]) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.getRoles();
       const { status, data } = response.data || {};
 
@@ -26,10 +25,6 @@ class RoleController {
       }
 
       onSuccess?.(parseFromList<IAdminRole>(data.roles));
-    } catch (error) {
-      console.error("Error fetching admin roles:", error);
-      onError?.("An error occurred while loading roles.");
-    }
   }
 
   async getRole(
@@ -37,7 +32,6 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.getRole(id);
       const { status, data } = response.data || {};
 
@@ -52,17 +46,12 @@ class RoleController {
       }
 
       onSuccess?.(data.role);
-    } catch (error) {
-      console.error("Error fetching admin role:", error);
-      onError?.("An error occurred while loading the role.");
-    }
   }
 
   async getPermissions(
     onSuccess?: (permissions: IAdminPermission[]) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.getPermissions();
       const { status, data } = response.data || {};
 
@@ -77,10 +66,6 @@ class RoleController {
       }
 
       onSuccess?.(parseFromList<IAdminPermission>(data.permissions));
-    } catch (error) {
-      console.error("Error fetching admin permissions:", error);
-      onError?.("An error occurred while loading permissions.");
-    }
   }
 
   async createRole(
@@ -88,7 +73,6 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.createRole(values);
       const { status, data } = response.data || {};
 
@@ -103,10 +87,6 @@ class RoleController {
       }
 
       onSuccess?.(data.role);
-    } catch (error) {
-      console.error("Error creating admin role:", error);
-      onError?.("An error occurred while creating the role.");
-    }
   }
 
   async updateRole(
@@ -115,7 +95,6 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.updateRole(id, values);
       const { status, data } = response.data || {};
 
@@ -130,10 +109,6 @@ class RoleController {
       }
 
       onSuccess?.(data.role);
-    } catch (error) {
-      console.error("Error updating admin role:", error);
-      onError?.("An error occurred while updating the role.");
-    }
   }
 
   async deleteRole(
@@ -141,7 +116,6 @@ class RoleController {
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await RoleService.deleteRole(id);
       const { status } = response.data || {};
 
@@ -156,10 +130,6 @@ class RoleController {
       }
 
       onSuccess?.();
-    } catch (error) {
-      console.error("Error deleting admin role:", error);
-      onError?.("An error occurred while deleting the role.");
-    }
   }
 }
 

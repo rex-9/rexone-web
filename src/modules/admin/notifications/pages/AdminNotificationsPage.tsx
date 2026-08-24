@@ -5,27 +5,73 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../../hooks";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
 import { IAdminUser } from "../../users/types";
 import NotificationController from "../notification.controller";
 import { IAdminNotificationFormValues } from "../types";
+import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import {
-  AdminFormShell,
   AdminFormAlert,
-  AdminLayout,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextArea,
   TextInput,
   Button,
-} from "../../../../design/components";
+} from "../../components";
+
+const NOTIFICATION_AUDIENCE_TYPES = {
+  ALL: "all",
+  ROLES: "roles",
+  USERS: "users",
+} as const;
+
+const NOTIFICATION_FIELDS = {
+  AUDIENCE_TYPE: "audience_type",
+  MESSAGE: "message",
+  ROLE_IDS: "role_ids",
+  SEND_EMAIL: "send_email",
+  SEND_PUSH: "send_push",
+  SEND_SOCKET: "send_socket",
+  TITLE: "title",
+  USER_IDS: "user_ids",
+} as const;
+
+const NOTIFICATION_LABELS = {
+  ALL_COUNT: "All",
+  ALL_USERS: "All users",
+  AUDIENCE: "Audience",
+  CLEAR_ALL_ROLES: "Clear all roles",
+  CLEAR_ALL_USERS: "Clear all users",
+  DELIVERY: "Delivery",
+  DELIVERY_EMAIL: "Email",
+  DELIVERY_PUSH: "Push",
+  DELIVERY_SOCKET: "In app",
+  MESSAGE: "Message",
+  NOTIFICATIONS: "Notifications",
+  NOTIFICATION_SENT: "Notification sent",
+  RECIPIENTS: "Recipients",
+  SELECT_ALL_ROLES: "Select all roles",
+  SELECT_ALL_USERS: "Select all users",
+  SELECTED_ROLES: "Selected roles",
+  SELECTED_USERS: "Selected users",
+  SEND_NOTIFICATION: "Send notification",
+  TITLE: "Title",
+  UNABLE_TO_LOAD_RECIPIENTS: "Unable to load recipients",
+} as const;
+
+const NOTIFICATION_VALIDATION_MESSAGES = {
+  DELIVERY_CHANNEL_REQUIRED: "Select at least one delivery channel.",
+  ROLE_REQUIRED: "Select at least one role.",
+  USER_REQUIRED: "Select at least one user.",
+} as const;
 
 const initialValues: IAdminNotificationFormValues = {
-  audience_type: "users",
+  audience_type: NOTIFICATION_AUDIENCE_TYPES.USERS,
   user_ids: [],
   role_ids: [],
   title: "",
@@ -36,12 +82,12 @@ const initialValues: IAdminNotificationFormValues = {
 };
 
 const channelCheckboxClassName =
-  "checkbox checkbox-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500";
+  "checkbox checkbox-sm border-base-content/40 checked:border-primary checked:bg-primary";
 
 const deliveryChannels = [
-  { field: "send_push", label: "Push" },
-  { field: "send_socket", label: "In app" },
-  { field: "send_email", label: "Email" },
+  { field: NOTIFICATION_FIELDS.SEND_PUSH, label: NOTIFICATION_LABELS.DELIVERY_PUSH },
+  { field: NOTIFICATION_FIELDS.SEND_SOCKET, label: NOTIFICATION_LABELS.DELIVERY_SOCKET },
+  { field: NOTIFICATION_FIELDS.SEND_EMAIL, label: NOTIFICATION_LABELS.DELIVERY_EMAIL },
 ] as const;
 
 const getUserLabel = (user: IAdminUser) =>
@@ -64,32 +110,43 @@ export const AdminNotificationsPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const { can } = usePermissions();
+  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [values, setValues] =
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [isRecipientFocused, setIsRecipientFocused] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, setLoading } = useLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    setLoading(true);
+
     const timeoutId = window.setTimeout(() => {
-      void Promise.all([
+      const recipientRequests = [
         NotificationController.getRecipients(
           (nextUsers) => setUsers(nextUsers),
           (message) => setError(message),
         ),
-        RoleController.getRoles(
-          (nextRoles) => setRoles(nextRoles),
-          (message) => setError(message),
-        ),
-      ]).finally(() => setIsLoading(false));
+      ];
+
+      if (canReadRoles) {
+        recipientRequests.push(
+          RoleController.getRoles(
+            (nextRoles) => setRoles(nextRoles),
+            (message) => setError(message),
+          ),
+        );
+      }
+
+      void Promise.all(recipientRequests).finally(() => setLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, []);
+  }, [canReadRoles, setLoading]);
 
   const sortedRoles = useMemo(
     () =>
@@ -179,12 +236,12 @@ export const AdminNotificationsPage: React.FC = () => {
   };
 
   const toggleAllUsers = () => {
-    updateValue("user_ids", areAllUsersSelected ? [] : userIds);
+    updateValue(NOTIFICATION_FIELDS.USER_IDS, areAllUsersSelected ? [] : userIds);
     setRecipientQuery("");
   };
 
   const toggleAllRoles = () => {
-    updateValue("role_ids", areAllRolesSelected ? [] : roleIds);
+    updateValue(NOTIFICATION_FIELDS.ROLE_IDS, areAllRolesSelected ? [] : roleIds);
   };
 
   const handleRecipientKeyDown = (
@@ -212,17 +269,23 @@ export const AdminNotificationsPage: React.FC = () => {
     event.preventDefault();
 
     if (selectedChannels === 0) {
-      setError("Select at least one delivery channel.");
+      setError(NOTIFICATION_VALIDATION_MESSAGES.DELIVERY_CHANNEL_REQUIRED);
       return;
     }
 
-    if (values.audience_type === "users" && selectedUserIds.length === 0) {
-      setError("Select at least one user.");
+    if (
+      values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS &&
+      selectedUserIds.length === 0
+    ) {
+      setError(NOTIFICATION_VALIDATION_MESSAGES.USER_REQUIRED);
       return;
     }
 
-    if (values.audience_type === "roles" && selectedRoleIds.length === 0) {
-      setError("Select at least one role.");
+    if (
+      values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES &&
+      selectedRoleIds.length === 0
+    ) {
+      setError(NOTIFICATION_VALIDATION_MESSAGES.ROLE_REQUIRED);
       return;
     }
 
@@ -232,13 +295,19 @@ export const AdminNotificationsPage: React.FC = () => {
     await NotificationController.createNotification(
       {
         ...values,
-        user_ids: values.audience_type === "users" ? values.user_ids : [],
-        role_ids: values.audience_type === "roles" ? values.role_ids : [],
+        user_ids:
+          values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
+            ? values.user_ids
+            : [],
+        role_ids:
+          values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
+            ? values.role_ids
+            : [],
         title: values.title.trim(),
         message: values.message.trim(),
       },
       () => {
-        toast.success("Notification sent");
+        toast.success(NOTIFICATION_LABELS.NOTIFICATION_SENT);
         setValues(initialValues);
         setIsSubmitting(false);
       },
@@ -250,15 +319,14 @@ export const AdminNotificationsPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Notifications">
+    <>
       {isLoading ? (
         <AdminLoadingState />
       ) : error && users.length === 0 && roles.length === 0 ? (
-        <AdminState title="Unable to load recipients" message={error} />
+        <AdminState title={NOTIFICATION_LABELS.UNABLE_TO_LOAD_RECIPIENTS} message={error} />
       ) : (
         <>
-          <AdminFormShell>
-            <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
               <div className="grid gap-16 md:grid-cols-2">
                 {error && (
                   <div className="md:col-span-2">
@@ -267,96 +335,119 @@ export const AdminNotificationsPage: React.FC = () => {
                 )}
 
                 <TextInput
-                  label="Title"
+                  label={NOTIFICATION_LABELS.TITLE}
                   value={values.title}
                   required
-                  onChange={(event) => updateValue("title", event.target.value)}
+                  onChange={(event) =>
+                    updateValue(NOTIFICATION_FIELDS.TITLE, event.target.value)
+                  }
                 />
 
                 <div className="md:col-span-2">
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
-                        Audience
+                        {NOTIFICATION_LABELS.AUDIENCE}
                       </h2>
                       <div className="flex items-center gap-8">
                         <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
-                          {values.audience_type === "users"
+                          {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                             ? `${selectedUserIds.length}/${sortedUsers.length}`
-                            : values.audience_type === "roles"
+                            : values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
                               ? `${selectedRoleIds.length}/${sortedRoles.length}`
-                              : "All"}
+                              : NOTIFICATION_LABELS.ALL_COUNT}
                         </span>
                         <Button
                           type="button"
                           variant="secondary"
                           className="h-[30px] w-[30px] p-0"
                           aria-label={
-                            values.audience_type === "users"
+                            values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? areAllUsersSelected
-                                ? "Clear all users"
-                                : "Select all users"
+                                ? NOTIFICATION_LABELS.CLEAR_ALL_USERS
+                                : NOTIFICATION_LABELS.SELECT_ALL_USERS
                               : areAllRolesSelected
-                                ? "Clear all roles"
-                                : "Select all roles"
+                                ? NOTIFICATION_LABELS.CLEAR_ALL_ROLES
+                                : NOTIFICATION_LABELS.SELECT_ALL_ROLES
                           }
                           title={
-                            values.audience_type === "users"
+                            values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? areAllUsersSelected
-                                ? "Clear all users"
-                                : "Select all users"
+                                ? NOTIFICATION_LABELS.CLEAR_ALL_USERS
+                                : NOTIFICATION_LABELS.SELECT_ALL_USERS
                               : areAllRolesSelected
-                                ? "Clear all roles"
-                                : "Select all roles"
+                                ? NOTIFICATION_LABELS.CLEAR_ALL_ROLES
+                                : NOTIFICATION_LABELS.SELECT_ALL_ROLES
                           }
                           onClick={
-                            values.audience_type === "users"
+                            values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? toggleAllUsers
                               : toggleAllRoles
                           }
-                          disabled={values.audience_type === "all"}
+                          disabled={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
                         >
                           <CheckIcon className="h-[14px] w-[14px]" />
                         </Button>
                       </div>
                     </div>
 
-                    <div className="mb-10 grid gap-8 sm:grid-cols-3">
+                    <div
+                      className={`mb-10 grid gap-8 ${
+                        canReadRoles ? "sm:grid-cols-3" : "sm:grid-cols-2"
+                      }`}
+                    >
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
                           name="audience_type"
-                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
-                          checked={values.audience_type === "users"}
-                          onChange={() => updateValue("audience_type", "users")}
+                          className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
+                          checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS}
+                          onChange={() =>
+                            updateValue(
+                              NOTIFICATION_FIELDS.AUDIENCE_TYPE,
+                              NOTIFICATION_AUDIENCE_TYPES.USERS,
+                            )
+                          }
                         />
-                        <span>Selected users</span>
+                        <span>{NOTIFICATION_LABELS.SELECTED_USERS}</span>
                       </label>
+                      {canReadRoles && (
+                        <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
+                          <input
+                            type="radio"
+                            name="audience_type"
+                            className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
+                            checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES}
+                            onChange={() =>
+                              updateValue(
+                                NOTIFICATION_FIELDS.AUDIENCE_TYPE,
+                                NOTIFICATION_AUDIENCE_TYPES.ROLES,
+                              )
+                            }
+                          />
+                          <span>{NOTIFICATION_LABELS.SELECTED_ROLES}</span>
+                        </label>
+                      )}
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
                           name="audience_type"
-                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
-                          checked={values.audience_type === "roles"}
-                          onChange={() => updateValue("audience_type", "roles")}
+                          className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
+                          checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
+                          onChange={() =>
+                            updateValue(
+                              NOTIFICATION_FIELDS.AUDIENCE_TYPE,
+                              NOTIFICATION_AUDIENCE_TYPES.ALL,
+                            )
+                          }
                         />
-                        <span>Selected roles</span>
-                      </label>
-                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
-                        <input
-                          type="radio"
-                          name="audience_type"
-                          className="radio radio-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500"
-                          checked={values.audience_type === "all"}
-                          onChange={() => updateValue("audience_type", "all")}
-                        />
-                        <span>All users</span>
+                        <span>{NOTIFICATION_LABELS.ALL_USERS}</span>
                       </label>
                     </div>
 
-                    {values.audience_type === "users" && (
+                    {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS && (
                       <div className="relative">
-                        <div className="flex min-h-[34px] flex-wrap items-center gap-5 rounded-md border border-base-300 bg-base-100 px-7 py-4 focus-within:border-gold-500 focus-within:ring-2 focus-within:ring-gold-500/20">
+                        <div className="flex min-h-[34px] flex-wrap items-center gap-5 rounded-md border border-base-300 bg-base-100 px-7 py-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
                           {selectedUsers.map((user) => (
                             <span
                               key={user.id}
@@ -381,7 +472,9 @@ export const AdminNotificationsPage: React.FC = () => {
                             value={recipientQuery}
                             className="min-w-[180px] flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
                             placeholder={
-                              selectedUsers.length === 0 ? "Recipients" : ""
+                              selectedUsers.length === 0
+                                ? NOTIFICATION_LABELS.RECIPIENTS
+                                : ""
                             }
                             onChange={(event) =>
                               setRecipientQuery(event.target.value)
@@ -403,7 +496,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 <button
                                   key={user.id}
                                   type="button"
-                                  className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-gold-500/10"
+                                  className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-primary/10"
                                   onMouseDown={(event) => {
                                     event.preventDefault();
                                     addUser(user.id);
@@ -417,7 +510,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                       {user.username || user.id}
                                     </span>
                                   </span>
-                                  <CheckIcon className="h-[14px] w-[14px] shrink-0 text-gold-500" />
+                                  <CheckIcon className="h-[14px] w-[14px] shrink-0 text-primary" />
                                 </button>
                               ))}
                             </div>
@@ -425,7 +518,7 @@ export const AdminNotificationsPage: React.FC = () => {
                       </div>
                     )}
 
-                    {values.audience_type === "roles" && (
+                    {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES && (
                       <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
                         {sortedRoles.map((role) => (
                           <label
@@ -448,12 +541,12 @@ export const AdminNotificationsPage: React.FC = () => {
 
                 <div className="md:col-span-2">
                   <TextArea
-                    label="Message"
+                    label={NOTIFICATION_LABELS.MESSAGE}
                     value={values.message}
                     required
                     rows={4}
                     onChange={(event) =>
-                      updateValue("message", event.target.value)
+                      updateValue(NOTIFICATION_FIELDS.MESSAGE, event.target.value)
                     }
                   />
                 </div>
@@ -462,10 +555,10 @@ export const AdminNotificationsPage: React.FC = () => {
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
-                        Delivery
+                        {NOTIFICATION_LABELS.DELIVERY}
                       </h2>
                       <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
-                        {selectedChannels}/3
+                        {selectedChannels}/{deliveryChannels.length}
                       </span>
                     </div>
 
@@ -492,16 +585,15 @@ export const AdminNotificationsPage: React.FC = () => {
               </div>
 
               <FormActionRow
-                submitLabel="Send notification"
+                submitLabel={NOTIFICATION_LABELS.SEND_NOTIFICATION}
                 isSubmitting={isSubmitting}
                 onCancel={() => {
                   navigate(AppRoutes.client.protected.ADMIN_USERS);
                 }}
               />
             </form>
-          </AdminFormShell>
         </>
       )}
-    </AdminLayout>
+    </>
   );
 };

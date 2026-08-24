@@ -6,13 +6,22 @@ import {
   IAdminRoleFormValues,
 } from "../types";
 import {
-  AdminFormShell,
   AdminPermissionMatrix,
   FormActionRow,
   TextInput,
-} from "../../../../design/components";
+} from "../../components";
 
-interface AdminRoleFormProps {
+const ADMIN_ROLE_FORM_LABELS = {
+  CREATE_ROLE: "Create role",
+  DESCRIPTION: "Description",
+  NAME_ERROR: "Admin panel roles must end with _admin, for example notification_admin.",
+  NAME_HELPER: "Use a name ending with _admin, such as notification_admin.",
+  PERMISSIONS: "Permissions",
+  ROLE_NAME: "Role name",
+  SAVE_CHANGES: "Save changes",
+} as const;
+
+interface IAdminRoleFormProps {
   mode: "create" | "edit";
   role?: IAdminRole | null;
   permissions: IAdminPermission[];
@@ -21,7 +30,7 @@ interface AdminRoleFormProps {
   onCancel: () => void;
 }
 
-export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
+export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
   mode,
   role,
   permissions,
@@ -73,9 +82,7 @@ export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
     const nextName = name.trim();
 
     if (shouldValidateAdminName && !isAdminRoleName(nextName)) {
-      setNameError(
-        "Admin panel roles must end with _admin, for example notification_admin.",
-      );
+      setNameError(ADMIN_ROLE_FORM_LABELS.NAME_ERROR);
       return;
     }
 
@@ -89,58 +96,60 @@ export const AdminRoleForm: React.FC<AdminRoleFormProps> = ({
   };
 
   return (
-    <AdminFormShell>
-      <form onSubmit={handleSubmit}>
-        <div className="grid gap-16 md:grid-cols-2">
-          <TextInput
-            label="Role name"
-            value={name}
-            required
-            disabled={role?.system}
-            error={nameError}
-            helperText={
-              shouldValidateAdminName
-                ? "Use a name ending with _admin, such as notification_admin."
-                : undefined
-            }
-            onChange={(event) => {
-              setName(event.target.value);
-              if (nameError) setNameError("");
-            }}
-          />
-          <TextInput
-            label="Description"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-          />
+    <form onSubmit={handleSubmit}>
+      <div className="grid gap-16 md:grid-cols-2">
+        <TextInput
+          label={ADMIN_ROLE_FORM_LABELS.ROLE_NAME}
+          value={name}
+          required
+          disabled={role?.system}
+          error={nameError}
+          helperText={
+            shouldValidateAdminName
+              ? ADMIN_ROLE_FORM_LABELS.NAME_HELPER
+              : undefined
+          }
+          onChange={(event) => {
+            setName(event.target.value);
+            if (nameError) setNameError("");
+          }}
+        />
+        <TextInput
+          label={ADMIN_ROLE_FORM_LABELS.DESCRIPTION}
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+        />
 
-          <div className="md:col-span-2">
-            <div className="rounded-md border border-base-300 bg-base-100 p-12">
-              <div className="mb-10 flex items-center justify-between gap-8">
-                <h2 className="text-body-m font-semibold text-base-content">
-                  Permissions
-                </h2>
-              </div>
-
-              <AdminPermissionMatrix
-                permissions={permissionItems}
-                selectedPermissionIds={selectedPermissionIds}
-                isSelectable
-                showSelectAll
-                onTogglePermission={togglePermission}
-                onSelectPermissions={selectPermissions}
-                onClearPermissions={clearPermissions}
-              />
+        <div className="md:col-span-2">
+          <div className="rounded-md border border-base-300 bg-base-100 p-12">
+            <div className="mb-10 flex items-center justify-between gap-8">
+              <h2 className="text-body-m font-semibold text-base-content">
+                {ADMIN_ROLE_FORM_LABELS.PERMISSIONS}
+              </h2>
             </div>
+
+            <AdminPermissionMatrix
+              permissions={permissionItems}
+              selectedPermissionIds={selectedPermissionIds}
+              isSelectable
+              showSelectAll
+              onTogglePermission={togglePermission}
+              onSelectPermissions={selectPermissions}
+              onClearPermissions={clearPermissions}
+            />
           </div>
         </div>
+      </div>
 
-        <FormActionRow
-          submitLabel={mode === "create" ? "Create role" : "Save changes"}
-          isSubmitting={isSubmitting}
-          onCancel={onCancel}
-        />
-      </form>
-    </AdminFormShell>
+      <FormActionRow
+        submitLabel={
+          mode === "create"
+            ? ADMIN_ROLE_FORM_LABELS.CREATE_ROLE
+            : ADMIN_ROLE_FORM_LABELS.SAVE_CHANGES
+        }
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+      />
+    </form>
   );
 };

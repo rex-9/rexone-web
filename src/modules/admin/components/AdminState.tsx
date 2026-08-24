@@ -1,14 +1,14 @@
 import React from "react";
-import { Button } from "../button";
+import { Button } from "../../../design/components/button";
 
-interface AdminStateProps {
+interface IAdminStateProps {
   title: string;
   message?: string;
   actionLabel?: string;
   onAction?: () => void;
 }
 
-export const AdminState: React.FC<AdminStateProps> = ({
+export const AdminState: React.FC<IAdminStateProps> = ({
   title,
   message,
   actionLabel,

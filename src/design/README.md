@@ -13,7 +13,7 @@ import { colors, typography, spacing, radius, shadows } from "@/design";
 ### 2. Use Tailwind Classes (Recommended)
 
 ```tsx
-<div className="bg-gold-500 text-navy-900 p-16 rounded-m shadow-s">
+<div className="bg-primary text-navy-900 p-16 rounded-m shadow-s">
   <h1 className="text-h1 font-semibold">Hello Rexone Design System</h1>
   <p className="text-body-m">Using design system tokens</p>
 </div>
@@ -23,7 +23,7 @@ import { colors, typography, spacing, radius, shadows } from "@/design";
 
 ```css
 .my-component {
-  background: var(--mb-gold-500);
+  background: var(--mb-primary);
   padding: var(--mb-spacing-16);
   border-radius: var(--mb-radius-m);
 }
@@ -33,7 +33,7 @@ import { colors, typography, spacing, radius, shadows } from "@/design";
 
 ### Colors
 
-- `gold-400`, `gold-500`, `gold-600`
+- `accent`, `primary`, `secondary`
 - `blue-400`, `blue-500`, `blue-600`
 - `navy-700`, `navy-900`
 - `gray-50`, `gray-100`, `gray-300`, `gray-500`, `gray-700`, `gray-900`
@@ -116,7 +116,7 @@ design-system/
 
 **Core Brand Colors:**
 
-- **Kindness Gold** (`gold-500`): `#F8D57E` - Primary brand color
+- **Kindness Gold** (`primary`): `#F8D57E` - Primary brand color
 - **Clarity Blue** (`blue-500`): `#9EC9FF` - Secondary brand color
 - **Deep Navy** (`navy-900`): `#14202E` - Anchor color
 
@@ -184,14 +184,14 @@ const spacing = getSpacing(16);
 The tokens are automatically available in Tailwind:
 
 ```tsx
-<div className="bg-gold-500 text-navy-900 p-8 rounded-m shadow-s">Content</div>
+<div className="bg-primary text-navy-900 p-8 rounded-m shadow-s">Content</div>
 ```
 
 ### Use CSS Variables
 
 ```css
 .my-component {
-  background-color: var(--mb-gold-500);
+  background-color: var(--mb-primary);
   padding: var(--mb-spacing-16);
   border-radius: var(--mb-radius-m);
   box-shadow: var(--mb-shadow-s);

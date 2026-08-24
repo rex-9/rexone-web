@@ -11,9 +11,6 @@ import {
   IAdminProductListParams,
 } from "./types";
 
-const buildProductPath = (id: string): string =>
-  AppRoutes.server.protected.ADMIN_PAYMENT_PRODUCT_DETAIL.replace(":id", id);
-
 export type AdminProductResponse =
   | IJsonApiResource<IAdminProduct>
   | { product: IAdminProduct };
@@ -31,7 +28,9 @@ class ProductService {
   async getProduct(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminProductResponse>>> {
-    return api.get<AdminProductResponse>(buildProductPath(id));
+    return api.get<AdminProductResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_PAYMENT_PRODUCT_DETAIL, id),
+    );
   }
 
   async createProduct(
@@ -47,13 +46,18 @@ class ProductService {
     id: string,
     values: IAdminProductFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminProductResponse>>> {
-    return api.patch<AdminProductResponse>(buildProductPath(id), {
-      product: values,
-    });
+    return api.put<AdminProductResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_PAYMENT_PRODUCT_DETAIL, id),
+      {
+        product: values,
+      },
+    );
   }
 
   async deleteProduct(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(buildProductPath(id));
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_PAYMENT_PRODUCT_DETAIL, id),
+    );
   }
 }
 

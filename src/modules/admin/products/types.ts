@@ -20,7 +20,7 @@ export interface IAdminProduct {
 
 export interface IAdminProductFormValues {
   name: string;
-  description?: string;
+  description: string;
   price_unit_amount: number;
   currency: string;
   cycle?: AdminProductCycle;

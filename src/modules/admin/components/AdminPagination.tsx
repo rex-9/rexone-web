@@ -1,13 +1,13 @@
 import React from "react";
 import { IApiPagination } from "../../../models";
-import { Button } from "../button";
+import { Button } from "../../../design/components/button";
 
-interface AdminPaginationProps {
+interface IAdminPaginationProps {
   pagination: IApiPagination | null;
   onPageChange: (page: number) => void;
 }
 
-export const AdminPagination: React.FC<AdminPaginationProps> = ({
+export const AdminPagination: React.FC<IAdminPaginationProps> = ({
   pagination,
   onPageChange,
 }) => {

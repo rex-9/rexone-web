@@ -5,8 +5,11 @@ import { cn } from "../../utils";
 
 export interface DropdownProps {
   options: Array<{ value: string; label: string }>;
-  value: string;
-  onValueChange: (value: string) => void;
+  value?: string;
+  values?: string[];
+  multiple?: boolean;
+  onValueChange?: (value: string) => void;
+  onValuesChange?: (values: string[]) => void;
   label?: string;
   error?: string;
   placeholder?: string;
@@ -17,7 +20,10 @@ export interface DropdownProps {
 export const Dropdown: React.FC<DropdownProps> = ({
   options,
   value,
+  values,
+  multiple = false,
   onValueChange,
+  onValuesChange,
   label,
   error,
   placeholder = "Select an option",
@@ -26,7 +32,14 @@ export const Dropdown: React.FC<DropdownProps> = ({
   ...props
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onValueChange(event.target.value);
+    if (multiple) {
+      onValuesChange?.(
+        Array.from(event.target.selectedOptions, (option) => option.value),
+      );
+      return;
+    }
+
+    onValueChange?.(event.target.value);
   };
 
   return (
@@ -38,7 +51,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
       )}
       <select
         {...props}
-        value={value}
+        multiple={multiple}
+        value={multiple ? values : (value ?? "")}
         onChange={handleChange}
         disabled={disabled}
         className={cn(
@@ -53,9 +67,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
           className,
         )}
       >
-        <option value="" disabled>
-          {placeholder}
-        </option>
+        {!multiple && (
+          <option value="" disabled>
+            {placeholder}
+          </option>
+        )}
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}

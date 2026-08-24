@@ -1,11 +1,11 @@
 import React from "react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
-interface AdminFormAlertProps {
+interface IAdminFormAlertProps {
   message: string;
 }
 
-export const AdminFormAlert: React.FC<AdminFormAlertProps> = ({ message }) => (
+export const AdminFormAlert: React.FC<IAdminFormAlertProps> = ({ message }) => (
   <div
     role="alert"
     className="flex items-center gap-8 rounded-md border border-error/20 bg-error/5 px-10 py-8 text-body-s text-error"

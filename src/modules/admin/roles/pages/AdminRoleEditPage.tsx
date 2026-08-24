@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import RoleController from "../role.controller";
@@ -11,10 +12,9 @@ import {
 } from "../types";
 import {
   AdminFormAlert,
-  AdminLayout,
   AdminLoadingState,
   AdminState,
-} from "../../../../design/components";
+} from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
 
 export const AdminRoleEditPage: React.FC = () => {
@@ -23,14 +23,16 @@ export const AdminRoleEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [role, setRole] = useState<IAdminRole | null>(null);
   const [permissions, setPermissions] = useState<IAdminPermission[]>([]);
-  const [isLoading, setIsLoading] = useState(Boolean(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
+
+    setLoading(true);
 
     const timeoutId = window.setTimeout(() => {
       void Promise.all([
@@ -43,11 +45,11 @@ export const AdminRoleEditPage: React.FC = () => {
           (nextPermissions) => setPermissions(nextPermissions),
           (message) => setError(message),
         ),
-      ]).finally(() => setIsLoading(false));
+      ]).finally(() => setLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [id]);
+  }, [id, setLoading]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
     if (!id) return;
@@ -70,11 +72,11 @@ export const AdminRoleEditPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Edit Role">
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : !id ? (
+    <>
+      {!id ? (
         <AdminState title="Unable to load role" message="Missing role id." />
+      ) : isLoading ? (
+        <AdminLoadingState />
       ) : error && !role ? (
         <AdminState title="Unable to load role" message={error} />
       ) : !role ? (
@@ -96,6 +98,6 @@ export const AdminRoleEditPage: React.FC = () => {
           />
         </>
       )}
-    </AdminLayout>
+    </>
   );
 };

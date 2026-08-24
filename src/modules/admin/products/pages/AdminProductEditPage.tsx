@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import {
@@ -9,10 +10,9 @@ import {
 } from "../types";
 import {
   AdminFormAlert,
-  AdminLayout,
   AdminLoadingState,
   AdminState,
-} from "../../../../design/components";
+} from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
 
@@ -22,24 +22,26 @@ export const AdminProductEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [product, setProduct] = useState<IAdminProduct | null>(null);
-  const [isLoading, setIsLoading] = useState(Boolean(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
 
+    setLoading(true);
+
     const timeoutId = window.setTimeout(() => {
       void ProductController.getProduct(
         id,
         (nextProduct) => setProduct(nextProduct),
         (message) => setError(message),
-      ).finally(() => setIsLoading(false));
+      ).finally(() => setLoading(false));
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [id]);
+  }, [id, setLoading]);
 
   const handleSubmit = async (values: IAdminProductFormValues) => {
     if (!id) return;
@@ -62,11 +64,11 @@ export const AdminProductEditPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Edit Product">
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : !id ? (
+    <>
+      {!id ? (
         <AdminState title="Unable to load product" message="Missing product id." />
+      ) : isLoading ? (
+        <AdminLoadingState />
       ) : error && !product ? (
         <AdminState title="Unable to load product" message={error} />
       ) : (
@@ -85,6 +87,6 @@ export const AdminProductEditPage: React.FC = () => {
           />
         </>
       )}
-    </AdminLayout>
+    </>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import ChatController from "../chat.controller";
@@ -10,13 +11,11 @@ import {
 } from "../types";
 import {
   AdminFormAlert,
-  AdminFormShell,
-  AdminLayout,
   AdminLoadingState,
   AdminState,
   FormActionRow,
   TextInput,
-} from "../../../../design/components";
+} from "../../components";
 
 export const AdminChatRoomEditPage: React.FC = () => {
   useDocumentTitle("Edit Chat Room");
@@ -24,14 +23,16 @@ export const AdminChatRoomEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [room, setRoom] = useState<IAdminChatRoom | null>(null);
   const [title, setTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(Boolean(id));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!id) return;
+
+    setLoading(true);
 
     const timeoutId = window.setTimeout(() => {
       void ChatController.getRoom(
@@ -39,17 +40,17 @@ export const AdminChatRoomEditPage: React.FC = () => {
         (nextRoom) => {
           setRoom(nextRoom);
           setTitle(nextRoom.title || "");
-          setIsLoading(false);
+          setLoading(false);
         },
         (message) => {
           setError(message);
-          setIsLoading(false);
+          setLoading(false);
         },
       );
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [id]);
+  }, [id, setLoading]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -77,11 +78,11 @@ export const AdminChatRoomEditPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout title="Edit Chat Room">
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : !id ? (
+    <>
+      {!id ? (
         <AdminState title="Unable to load chat room" message="Missing room id." />
+      ) : isLoading ? (
+        <AdminLoadingState />
       ) : error && !room ? (
         <AdminState title="Unable to load chat room" message={error} />
       ) : (
@@ -91,25 +92,23 @@ export const AdminChatRoomEditPage: React.FC = () => {
               <AdminFormAlert message={error} />
             </div>
           )}
-          <AdminFormShell>
-            <form onSubmit={handleSubmit}>
-              <TextInput
-                label="Title"
-                value={title}
-                required
-                onChange={(event) => setTitle(event.target.value)}
-              />
-              <FormActionRow
-                submitLabel="Save changes"
-                isSubmitting={isSubmitting}
-                onCancel={() =>
-                  navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS)
-                }
-              />
-            </form>
-          </AdminFormShell>
+          <form onSubmit={handleSubmit}>
+            <TextInput
+              label="Title"
+              value={title}
+              required
+              onChange={(event) => setTitle(event.target.value)}
+            />
+            <FormActionRow
+              submitLabel="Save changes"
+              isSubmitting={isSubmitting}
+              onCancel={() =>
+                navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS)
+              }
+            />
+          </form>
         </>
       )}
-    </AdminLayout>
+    </>
   );
 };

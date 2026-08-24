@@ -11,9 +11,6 @@ import {
   IAdminRoleFormValues,
 } from "./types";
 
-const buildRolePath = (id: string): string =>
-  AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL.replace(":id", id);
-
 class RoleService {
   async getRoles(): Promise<
     IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
@@ -26,7 +23,9 @@ class RoleService {
   async getRole(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
-    return api.get<{ role: IAdminRole }>(buildRolePath(id));
+    return api.get<{ role: IAdminRole }>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+    );
   }
 
   async getPermissions(): Promise<
@@ -52,11 +51,16 @@ class RoleService {
     id: string,
     values: IAdminRoleFormValues,
   ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
-    return api.patch<{ role: IAdminRole }>(buildRolePath(id), values);
+    return api.put<{ role: IAdminRole }>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+      values,
+    );
   }
 
   async deleteRole(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(buildRolePath(id));
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+    );
   }
 }
 

@@ -5,14 +5,29 @@ import {
   IAdminUserFormValues,
 } from "../types";
 import {
-  AdminFormShell,
+  AdminMultiSelectDropdown,
   AdminPermissionMatrix,
   FormActionRow,
   IAdminPermissionMatrixItem,
   TextInput,
-} from "../../../../design/components";
+} from "../../components";
 
-interface AdminUserFormProps {
+const ADMIN_USER_FORM_LABELS = {
+  CONFIRM_PASSWORD: "Confirm password",
+  CREATE_USER: "Create user",
+  DISPLAY_NAME: "Display name",
+  EMAIL: "Email",
+  NEW_PASSWORD: "New password",
+  NO_PERMISSIONS: "No permissions assigned.",
+  PASSWORD: "Password",
+  RELATED_PERMISSIONS: "Related permissions",
+  ROLES: "Roles",
+  ROLE_DROPDOWN_PLACEHOLDER: "Select roles",
+  SAVE_CHANGES: "Save changes",
+  USERNAME: "Username",
+} as const;
+
+interface IAdminUserFormProps {
   mode: "create" | "edit";
   user?: IAdminUser | null;
   roles: IAdminRole[];
@@ -45,10 +60,7 @@ const buildInitialValues = (
   };
 };
 
-const roleCheckboxClassName =
-  "checkbox checkbox-sm border-base-content/40 checked:border-gold-500 checked:bg-gold-500";
-
-export const AdminUserForm: React.FC<AdminUserFormProps> = ({
+export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   mode,
   user,
   roles,
@@ -64,15 +76,8 @@ export const AdminUserForm: React.FC<AdminUserFormProps> = ({
     setValues((current) => ({ ...current, [field]: value }));
   };
 
-  const toggleRole = (roleId: string) => {
-    setValues((current) => {
-      const roleIds = current.role_ids || [];
-      const nextRoleIds = roleIds.includes(roleId)
-        ? roleIds.filter((id) => id !== roleId)
-        : [...roleIds, roleId];
-
-      return { ...current, role_ids: nextRoleIds };
-    });
+  const handleRolesChange = (roleIds: string[]) => {
+    setValues((current) => ({ ...current, role_ids: roleIds }));
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -102,6 +107,14 @@ export const AdminUserForm: React.FC<AdminUserFormProps> = ({
     () => roles.filter((role) => selectedRoleIdSet.has(role.id)),
     [roles, selectedRoleIdSet],
   );
+  const roleOptions = useMemo(
+    () =>
+      roles.map((role) => ({
+        value: role.id,
+        label: role.name,
+      })),
+    [roles],
+  );
   const selectedRolePermissions = useMemo<IAdminPermissionMatrixItem[]>(
     () => {
       const permissionsByKey = new Map<string, IAdminPermissionMatrixItem>();
@@ -125,97 +138,93 @@ export const AdminUserForm: React.FC<AdminUserFormProps> = ({
   );
 
   return (
-    <AdminFormShell>
-      <form onSubmit={handleSubmit}>
-        <div className="grid gap-16 md:grid-cols-2">
-          <TextInput
-            label="Username"
-            value={values.username}
-            required
-            onChange={(event) => updateValue("username", event.target.value)}
-          />
-          <TextInput
-            label="Display name"
-            value={values.name}
-            required
-            onChange={(event) => updateValue("name", event.target.value)}
-          />
-          <TextInput
-            label="Email"
-            type="email"
-            value={values.email}
-            required
-            onChange={(event) => updateValue("email", event.target.value)}
-          />
-          <TextInput
-            label={mode === "create" ? "Password" : "New password"}
-            type="password"
-            value={values.password}
-            required={mode === "create"}
-            onChange={(event) => updateValue("password", event.target.value)}
-          />
-          <TextInput
-            label="Confirm password"
-            type="password"
-            value={values.password_confirmation}
-            required={mode === "create" || Boolean(values.password)}
-            onChange={(event) =>
-              updateValue("password_confirmation", event.target.value)
-            }
-          />
+    <form onSubmit={handleSubmit}>
+      <div className="grid gap-16 md:grid-cols-2">
+        <TextInput
+          label={ADMIN_USER_FORM_LABELS.USERNAME}
+          value={values.username}
+          required
+          onChange={(event) => updateValue("username", event.target.value)}
+        />
+        <TextInput
+          label={ADMIN_USER_FORM_LABELS.DISPLAY_NAME}
+          value={values.name}
+          required
+          onChange={(event) => updateValue("name", event.target.value)}
+        />
+        <TextInput
+          label={ADMIN_USER_FORM_LABELS.EMAIL}
+          type="email"
+          value={values.email}
+          required
+          onChange={(event) => updateValue("email", event.target.value)}
+        />
+        <TextInput
+          label={
+            mode === "create"
+              ? ADMIN_USER_FORM_LABELS.PASSWORD
+              : ADMIN_USER_FORM_LABELS.NEW_PASSWORD
+          }
+          type="password"
+          value={values.password}
+          required={mode === "create"}
+          onChange={(event) => updateValue("password", event.target.value)}
+        />
+        <TextInput
+          label={ADMIN_USER_FORM_LABELS.CONFIRM_PASSWORD}
+          type="password"
+          value={values.password_confirmation}
+          required={mode === "create" || Boolean(values.password)}
+          onChange={(event) =>
+            updateValue("password_confirmation", event.target.value)
+          }
+        />
 
-          <div className="md:col-span-2">
-            <div className="rounded-md border border-base-300 bg-base-100 p-12">
-              <div className="mb-10 flex items-center justify-between gap-8">
-                <h2 className="text-body-m font-semibold text-base-content">
-                  Roles
-                </h2>
-                <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
-                  {selectedRoleIds.length}/{roles.length}
-                </span>
-              </div>
-
-              <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                {roles.map((role) => (
-                  <label
-                    key={role.id}
-                    className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content"
-                  >
-                    <input
-                      type="checkbox"
-                      className={roleCheckboxClassName}
-                      checked={selectedRoleIdSet.has(role.id)}
-                      onChange={() => toggleRole(role.id)}
-                    />
-                    <span className="truncate">{role.name}</span>
-                  </label>
-                ))}
-              </div>
-
-              {selectedRoles.length > 0 && (
-                <div className="mt-14 space-y-10 border-t border-base-300 pt-12">
-                  <h3 className="text-body-s font-semibold text-base-content">
-                    Related permissions
-                  </h3>
-                  {selectedRolePermissions.length === 0 ? (
-                    <div className="text-body-s text-base-content opacity-60">
-                      No permissions assigned.
-                    </div>
-                  ) : (
-                    <AdminPermissionMatrix permissions={selectedRolePermissions} />
-                  )}
-                </div>
-              )}
+        <div className="md:col-span-2">
+          <div className="rounded-md border border-base-300 bg-base-100 p-12">
+            <div className="mb-10 flex items-center justify-between gap-8">
+              <h2 className="text-body-m font-semibold text-base-content">
+                {ADMIN_USER_FORM_LABELS.ROLES}
+              </h2>
+              <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
+                {selectedRoleIds.length}/{roles.length}
+              </span>
             </div>
+
+            <AdminMultiSelectDropdown
+              options={roleOptions}
+              selectedValues={selectedRoleIds}
+              onChange={handleRolesChange}
+              placeholder={ADMIN_USER_FORM_LABELS.ROLE_DROPDOWN_PLACEHOLDER}
+            />
+
+            {selectedRoles.length > 0 && (
+              <div className="mt-14 space-y-10 border-t border-base-300 pt-12">
+                <h3 className="text-body-s font-semibold text-base-content">
+                  {ADMIN_USER_FORM_LABELS.RELATED_PERMISSIONS}
+                </h3>
+                {selectedRolePermissions.length === 0 ? (
+                  <div className="text-body-s text-base-content opacity-60">
+                    {ADMIN_USER_FORM_LABELS.NO_PERMISSIONS}
+                  </div>
+                ) : (
+                  <AdminPermissionMatrix permissions={selectedRolePermissions} />
+                )}
+              </div>
+            )}
           </div>
         </div>
+      </div>
 
-        <FormActionRow
-          submitLabel={mode === "create" ? "Create user" : "Save changes"}
-          isSubmitting={isSubmitting}
-          onCancel={onCancel}
-        />
-      </form>
-    </AdminFormShell>
+      <FormActionRow
+        submitLabel={
+          mode === "create"
+            ? ADMIN_USER_FORM_LABELS.CREATE_USER
+            : ADMIN_USER_FORM_LABELS.SAVE_CHANGES
+        }
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+      />
+    </form>
   );
 };

@@ -8,9 +8,6 @@ import {
 } from "./types";
 import { IAdminRole } from "../roles";
 
-const buildAdminUserPath = (id: string): string =>
-  AppRoutes.server.protected.ADMIN_USER_DETAIL.replace(":id", id);
-
 export type AdminUserResponse =
   | IJsonApiResource<IAdminUser>
   | { user: IAdminUser };
@@ -28,7 +25,9 @@ class UserService {
   async getUser(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.get<AdminUserResponse>(buildAdminUserPath(id));
+    return api.get<AdminUserResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+    );
   }
 
   async createUser(
@@ -43,13 +42,18 @@ class UserService {
     id: string,
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.patch<AdminUserResponse>(buildAdminUserPath(id), {
+    return api.put<AdminUserResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+      {
       user: values,
-    });
+      },
+    );
   }
 
   async deleteUser(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(buildAdminUserPath(id));
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+    );
   }
 
   async getRoles(): Promise<

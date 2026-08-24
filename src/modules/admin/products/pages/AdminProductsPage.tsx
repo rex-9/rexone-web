@@ -5,6 +5,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
@@ -12,19 +13,23 @@ import { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
   AdminActionButton,
-  AdminLayout,
   AdminLoadingState,
   AdminPagination,
   AdminState,
   AdminTable,
-  ConfirmationDialog,
+  ConfirmDialog,
   IAdminTableColumn,
-} from "../../../../design/components";
-
-const PAGE_SIZE = 10;
+} from "../../components";
+import {
+  ADMIN_ACTIONS,
+  ADMIN_COMMON_LABELS,
+  ADMIN_PAGE_SIZE,
+  ADMIN_RESOURCES,
+  ADMIN_TABLE_HEADERS,
+} from "../../constants";
 
 const formatDate = (value?: Date): string => {
-  if (!value) return "Not available";
+  if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
   return new Date(value).toLocaleDateString();
 };
 
@@ -34,33 +39,33 @@ export const AdminProductsPage: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [products, setProducts] = useState<IAdminProduct[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<IAdminProduct | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadProducts = useCallback(async () => {
-    if (!can("read", "products")) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PRODUCTS)) return;
 
-    setIsLoading(true);
+    setLoading(true);
     setError("");
 
     await ProductController.getProducts(
-      { page, limit: PAGE_SIZE },
+      { page, limit: ADMIN_PAGE_SIZE },
       (nextProducts, nextPagination) => {
         setProducts(nextProducts);
         setPagination(nextPagination ?? null);
-        setIsLoading(false);
+        setLoading(false);
       },
       (message) => {
         setError(message);
-        setIsLoading(false);
+        setLoading(false);
       },
     );
-  }, [can, page]);
+  }, [can, page, setLoading]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -76,7 +81,7 @@ export const AdminProductsPage: React.FC = () => {
     () => [
       {
         key: "product",
-        header: "Product",
+        header: ADMIN_TABLE_HEADERS.PRODUCT,
         render: (product) => (
           <div>
             <div className="font-medium text-base-content">{product.name}</div>
@@ -88,45 +93,41 @@ export const AdminProductsPage: React.FC = () => {
       },
       {
         key: "price",
-        header: "Price",
+        header: ADMIN_TABLE_HEADERS.PRICE,
         render: (product) => product.price,
       },
       {
         key: "cycle",
-        header: "Cycle",
+        header: ADMIN_TABLE_HEADERS.CYCLE,
         render: (product) => product.period_label,
       },
       {
         key: "active",
-        header: "Status",
+        header: ADMIN_TABLE_HEADERS.STATUS,
         render: (product) => (
           <div>
             <div className={product.active ? "text-success" : "text-base-content opacity-60"}>
-              {product.active ? "Active" : "Inactive"}
+              {product.active
+                ? ADMIN_COMMON_LABELS.ACTIVE
+                : ADMIN_COMMON_LABELS.INACTIVE}
             </div>
-            {product.free && (
-              <div className="text-caption text-base-content opacity-50">
-                Local
-              </div>
-            )}
           </div>
         ),
       },
       {
         key: "created",
-        header: "Created",
+        header: ADMIN_TABLE_HEADERS.CREATED,
         render: (product) => formatDate(product.created_at),
       },
       {
         key: "actions",
-        header: "",
+        header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (product) => (
           <div className="flex justify-end gap-8">
             <AdminActionButton
-              action="update"
-              resource="products"
-              can={can}
+              action={ADMIN_ACTIONS.UPDATE}
+              resource={ADMIN_RESOURCES.PRODUCTS}
               size="sm"
               variant="secondary"
               className="h-[32px] w-[32px] p-0"
@@ -144,9 +145,8 @@ export const AdminProductsPage: React.FC = () => {
               <PencilSquareIcon className="h-[18px] w-[18px]" />
             </AdminActionButton>
             <AdminActionButton
-              action="delete"
-              resource="products"
-              can={can}
+              action={ADMIN_ACTIONS.DELETE}
+              resource={ADMIN_RESOURCES.PRODUCTS}
               size="sm"
               variant="tertiary"
               className="h-[32px] w-[32px] p-0"
@@ -160,11 +160,12 @@ export const AdminProductsPage: React.FC = () => {
         ),
       },
     ],
-    [can, navigate],
+    [navigate],
   );
 
   const handleDelete = async () => {
-    if (!deleteTarget || !can("delete", "products")) return;
+    if (!deleteTarget || !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS))
+      return;
 
     setIsDeleting(true);
 
@@ -184,11 +185,7 @@ export const AdminProductsPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout
-      title="Products"
-      actionLabel={can("create", "products") ? "Create product" : undefined}
-      onAction={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCT_CREATE)}
-    >
+    <>
       {isLoading || permissionsLoading ? (
         <AdminLoadingState />
       ) : error ? (
@@ -209,7 +206,7 @@ export const AdminProductsPage: React.FC = () => {
         </>
       )}
 
-      <ConfirmationDialog
+      <ConfirmDialog
         isOpen={Boolean(deleteTarget)}
         title="Delete product"
         message={`Archive ${deleteTarget?.name || "this product"}?`}
@@ -218,6 +215,6 @@ export const AdminProductsPage: React.FC = () => {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 };

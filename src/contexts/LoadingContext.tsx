@@ -1,4 +1,13 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  ReactNode,
+} from "react";
 
 interface LoadingContextProps {
   isLoading: boolean;
@@ -9,13 +18,47 @@ const LoadingContext = createContext<LoadingContextProps | undefined>(
   undefined
 );
 
+const LOADING_RESET_DELAY_MS = 50;
+
 export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const resetTimeoutRef = useRef<number | null>(null);
+
+  const clearResetTimeout = useCallback(() => {
+    if (resetTimeoutRef.current !== null) {
+      window.clearTimeout(resetTimeoutRef.current);
+      resetTimeoutRef.current = null;
+    }
+  }, []);
+
+  const setLoading = useCallback(
+    (loading: boolean) => {
+      clearResetTimeout();
+
+      if (loading) {
+        setIsLoading(true);
+        return;
+      }
+
+      resetTimeoutRef.current = window.setTimeout(() => {
+        resetTimeoutRef.current = null;
+        setIsLoading(false);
+      }, LOADING_RESET_DELAY_MS);
+    },
+    [clearResetTimeout],
+  );
+
+  useEffect(() => clearResetTimeout, [clearResetTimeout]);
+
+  const value = useMemo(
+    () => ({ isLoading, setLoading }),
+    [isLoading, setLoading]
+  );
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setLoading: setIsLoading }}>
+    <LoadingContext.Provider value={value}>
       {children}
     </LoadingContext.Provider>
   );

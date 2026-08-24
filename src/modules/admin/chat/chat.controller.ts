@@ -14,7 +14,6 @@ class ChatController {
     onSuccess?: (rooms: IAdminChatRoom[], pagination?: IApiPagination) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.getRooms(params);
       const { status, data, meta } = response.data || {};
 
@@ -24,10 +23,6 @@ class ChatController {
       }
 
       onSuccess?.(parseFromList<IAdminChatRoom>(data), meta?.pagination);
-    } catch (error) {
-      console.error("Error fetching admin chat rooms:", error);
-      onError?.("An error occurred while loading chat rooms.");
-    }
   }
 
   async deleteRoom(
@@ -51,7 +46,6 @@ class ChatController {
     onSuccess?: (room: IAdminChatRoom) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.getRoom(id);
       const { status, data } = response.data || {};
 
@@ -61,10 +55,6 @@ class ChatController {
       }
 
       onSuccess?.(data.room);
-    } catch (error) {
-      console.error("Error fetching admin chat room:", error);
-      onError?.("An error occurred while loading the chat room.");
-    }
   }
 
   async updateRoom(
@@ -73,7 +63,6 @@ class ChatController {
     onSuccess?: (room: IAdminChatRoom) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.updateRoom(id, values);
       const { status, data } = response.data || {};
 
@@ -83,10 +72,6 @@ class ChatController {
       }
 
       onSuccess?.(data.room);
-    } catch (error) {
-      console.error("Error updating admin chat room:", error);
-      onError?.("An error occurred while updating the chat room.");
-    }
   }
 
   async getMessages(
@@ -97,7 +82,6 @@ class ChatController {
     ) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.getMessages(params);
       const { status, data, meta } = response.data || {};
 
@@ -107,10 +91,6 @@ class ChatController {
       }
 
       onSuccess?.(parseFromList<IAdminChatMessage>(data), meta?.pagination);
-    } catch (error) {
-      console.error("Error fetching admin chat messages:", error);
-      onError?.("An error occurred while loading chat messages.");
-    }
   }
 
   async deleteMessage(
@@ -134,7 +114,6 @@ class ChatController {
     onSuccess?: (message: IAdminChatMessage) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.getMessage(id);
       const { status, data } = response.data || {};
 
@@ -144,10 +123,6 @@ class ChatController {
       }
 
       onSuccess?.(data.message);
-    } catch (error) {
-      console.error("Error fetching admin chat message:", error);
-      onError?.("An error occurred while loading the chat message.");
-    }
   }
 
   async updateMessage(
@@ -156,7 +131,6 @@ class ChatController {
     onSuccess?: (message: IAdminChatMessage) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
       const response = await ChatService.updateMessage(id, values);
       const { status, data } = response.data || {};
 
@@ -168,10 +142,6 @@ class ChatController {
       }
 
       onSuccess?.(data.message);
-    } catch (error) {
-      console.error("Error updating admin chat message:", error);
-      onError?.("An error occurred while updating the chat message.");
-    }
   }
 }
 

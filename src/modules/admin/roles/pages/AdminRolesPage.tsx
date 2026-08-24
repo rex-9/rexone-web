@@ -5,19 +5,25 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle } from "../../../../hooks";
 import RoleController from "../role.controller";
 import { IAdminRole } from "../types";
 import {
   AdminActionButton,
-  AdminLayout,
   AdminLoadingState,
   AdminState,
   AdminTable,
-  ConfirmationDialog,
+  ConfirmDialog,
   IAdminTableColumn,
-} from "../../../../design/components";
+} from "../../components";
+import {
+  ADMIN_ACTIONS,
+  ADMIN_COMMON_LABELS,
+  ADMIN_RESOURCES,
+  ADMIN_TABLE_HEADERS,
+} from "../../constants";
 
 const countPermissions = (role: IAdminRole): number =>
   Object.values(role.permissions ?? {}).reduce(
@@ -30,28 +36,27 @@ export const AdminRolesPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [roles, setRoles] = useState<IAdminRole[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<IAdminRole | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const loadRoles = useCallback(async () => {
-    setIsLoading(true);
+    setLoading(true);
     setError("");
 
     await RoleController.getRoles(
       (nextRoles) => {
         setRoles(nextRoles);
-        setIsLoading(false);
+        setLoading(false);
       },
       (message) => {
         setError(message);
-        setIsLoading(false);
+        setLoading(false);
       },
     );
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -65,7 +70,7 @@ export const AdminRolesPage: React.FC = () => {
     () => [
       {
         key: "name",
-        header: "Role",
+        header: ADMIN_TABLE_HEADERS.ROLE,
         render: (role) => (
           <div>
             <div className="font-medium text-base-content">{role.name}</div>
@@ -79,29 +84,29 @@ export const AdminRolesPage: React.FC = () => {
       },
       {
         key: "permissions",
-        header: "Permissions",
+        header: ADMIN_TABLE_HEADERS.PERMISSIONS,
         render: (role) => countPermissions(role),
       },
       {
         key: "users",
-        header: "Users",
+        header: ADMIN_TABLE_HEADERS.USERS,
         render: (role) => role.user_count ?? 0,
       },
       {
         key: "system",
-        header: "Type",
-        render: (role) => (role.system ? "System" : "Custom"),
+        header: ADMIN_TABLE_HEADERS.TYPE,
+        render: (role) =>
+          role.system ? ADMIN_COMMON_LABELS.SYSTEM : ADMIN_COMMON_LABELS.CUSTOM,
       },
       {
         key: "actions",
-        header: "",
+        header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (role) => (
           <div className="flex justify-end gap-8">
             <AdminActionButton
-              action="update"
-              resource="roles"
-              can={can}
+              action={ADMIN_ACTIONS.UPDATE}
+              resource={ADMIN_RESOURCES.ROLES}
               size="sm"
               variant="secondary"
               className="h-[32px] w-[32px] p-0"
@@ -120,9 +125,8 @@ export const AdminRolesPage: React.FC = () => {
             </AdminActionButton>
             {!role.system && (
               <AdminActionButton
-                action="delete"
-                resource="roles"
-                can={can}
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.ROLES}
                 type="button"
                 size="sm"
                 variant="tertiary"
@@ -138,7 +142,7 @@ export const AdminRolesPage: React.FC = () => {
         ),
       },
     ],
-    [can, navigate],
+    [navigate],
   );
 
   const handleDelete = async () => {
@@ -162,11 +166,7 @@ export const AdminRolesPage: React.FC = () => {
   };
 
   return (
-    <AdminLayout
-      title="Roles"
-      actionLabel="Create role"
-      onAction={() => navigate(AppRoutes.client.protected.ADMIN_ROLE_CREATE)}
-    >
+    <>
       {isLoading ? (
         <AdminLoadingState />
       ) : error ? (
@@ -181,7 +181,7 @@ export const AdminRolesPage: React.FC = () => {
         />
       )}
 
-      <ConfirmationDialog
+      <ConfirmDialog
         isOpen={Boolean(deleteTarget)}
         title="Delete role"
         message={`Delete ${deleteTarget?.name || "this role"}? This cannot be undone.`}
@@ -190,6 +190,6 @@ export const AdminRolesPage: React.FC = () => {
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
       />
-    </AdminLayout>
+    </>
   );
 };

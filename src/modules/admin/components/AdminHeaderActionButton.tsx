@@ -1,14 +1,14 @@
 import React from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { Button } from "../button";
+import { Button } from "../../../design/components/button";
 
-interface AdminHeaderActionButtonProps {
+interface IAdminHeaderActionButtonProps {
   label: string;
   onClick: () => void;
 }
 
 export const AdminHeaderActionButton: React.FC<
-  AdminHeaderActionButtonProps
+  IAdminHeaderActionButtonProps
 > = ({ label, onClick }) => (
   <Button
     type="button"
