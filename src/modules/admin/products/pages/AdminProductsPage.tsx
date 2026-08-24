@@ -111,6 +111,11 @@ export const AdminProductsPage: React.FC = () => {
                 ? ADMIN_COMMON_LABELS.ACTIVE
                 : ADMIN_COMMON_LABELS.INACTIVE}
             </div>
+            {product.free && (
+              <div className="text-caption text-base-content opacity-50">
+                Free
+              </div>
+            )}
           </div>
         ),
       },

@@ -23,6 +23,29 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include credentials in requests
 });
 
+const readStoredToken = (): string | null => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const storedToken = window.localStorage.getItem("token");
+    return storedToken ? JSON.parse(storedToken) : null;
+  } catch {
+    return null;
+  }
+};
+
+const getRequestToken = (config?: AxiosRequestConfig): string | null => {
+  const headers = AxiosHeaders.from(config?.headers as AxiosHeaders | undefined);
+  const authorization = headers.get("Authorization");
+  const value = Array.isArray(authorization)
+    ? authorization[0]
+    : authorization;
+
+  return typeof value === "string" && value.startsWith("Bearer ")
+    ? value.slice("Bearer ".length)
+    : null;
+};
+
 // Utility function to handle errors
 const handleError = <T = unknown>(
   error: unknown,
@@ -150,8 +173,10 @@ export const useAxiosInterceptor = () => {
           headers.set("Content-Type", "application/json");
         }
 
-        if (token) {
-          headers.set("Authorization", `Bearer ${token}`);
+        const activeToken = readStoredToken() ?? token;
+
+        if (activeToken) {
+          headers.set("Authorization", `Bearer ${activeToken}`);
         }
 
         config.headers = headers;
@@ -172,7 +197,12 @@ export const useAxiosInterceptor = () => {
       (error) => {
         console.log("interceptor response error ===>", error);
 
-        if (error?.response?.status === 401 && token) {
+        const requestToken = getRequestToken(error?.config);
+        const activeToken = readStoredToken() ?? token;
+        const isActiveRequest =
+          !requestToken || !activeToken || requestToken === activeToken;
+
+        if (error?.response?.status === 401 && token && isActiveRequest) {
           signout();
 
           if (typeof window !== "undefined") {

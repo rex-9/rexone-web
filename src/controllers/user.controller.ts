@@ -28,7 +28,12 @@ class UserController {
     try {
       const response = await UserService.getCurrentUser();
       const user = response.data?.data?.user;
-      setCurrentUser(user || null);
+
+      if (response.error || !user) {
+        return;
+      }
+      //setting current user in the state
+      setCurrentUser(user);
     } catch (error) {
       console.error("Error fetching current user:", error);
     }

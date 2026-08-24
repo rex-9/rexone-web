@@ -110,7 +110,7 @@ export const AdminNotificationsPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { can } = usePermissions();
+  const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
@@ -123,6 +123,8 @@ export const AdminNotificationsPage: React.FC = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (permissionsLoading) return;
+
     setLoading(true);
 
     const timeoutId = window.setTimeout(() => {
@@ -146,7 +148,7 @@ export const AdminNotificationsPage: React.FC = () => {
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [canReadRoles, setLoading]);
+  }, [canReadRoles, permissionsLoading, setLoading]);
 
   const sortedRoles = useMemo(
     () =>
@@ -320,7 +322,7 @@ export const AdminNotificationsPage: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || permissionsLoading ? (
         <AdminLoadingState />
       ) : error && users.length === 0 && roles.length === 0 ? (
         <AdminState title={NOTIFICATION_LABELS.UNABLE_TO_LOAD_RECIPIENTS} message={error} />
