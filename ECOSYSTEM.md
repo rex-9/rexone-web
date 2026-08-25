@@ -122,14 +122,14 @@ Defined under `src/design/`:
 
 - **Atoms & Tokens**: Kindness Gold (`#F8D57E`), Clarity Blue (`#9EC9FF`), Deep Navy (`#14202E`), semantic palettes, Inter / SF Pro typography scale, 8-based spacing, soft radius (`xs` to `full`).
 - **Molecules & Overlays**:
-  - Auth dialog suite (`AuthDialog`, `InitialDialog`, `SigninPasscodeDialog`, `SignupPasscodeCreateDialog`, `SignupPasscodeConfirmDialog`, `SignupInfoDialog`, `ConfirmEmailDialog`, `ForgotPasscodeDialog`).
-  - Inputs (`TextInput`, `TextArea`, `PasscodeInput`, `Dropdown`, `Toggle`).
+  - Auth dialog suite (`AuthDialog`, `InitialDialog`, `SigninPasswordDialog`, `SignupPasswordCreateDialog`, `SignupPasswordConfirmDialog`, `SignupInfoDialog`, `ConfirmEmailDialog`, `ForgotPasswordDialog`).
+  - Inputs (`TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`).
   - Overlays: Base `Dialog` molecule, `ConfirmDialog` (powered by `Dialog` underneath for destructive confirmations), `LoadingOverlay`, `Toast`.
   - Buttons (`Button`, `GoogleButton`, `SignOutButton`).
 
 ### 🧩 Domain Modules & Flows
 
-- **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passcodes are held purely in memory and never leaked into URL params or persistent storage.
+- **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passwords are held purely in memory and never leaked into URL params or persistent storage.
 - **Commerce & Stripe**: Fetches products, triggers Checkout Session (`/v1/payment/session`), redirects to Stripe, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations.
 - **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or error event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
 - **Telemetry & Error Logging**: Unhandled client exceptions and React Error Boundary catches are posted directly to Core at `POST /v1/log/clients` with storage keys snapshot.
@@ -151,11 +151,11 @@ Rexone Mobile has a strictly governed design system accessible via `lib/design/d
 - **Elements**: `AppColors` (Kindness Gold, Clarity Blue, Deep Navy, surfaces, text), `AppTypography`, `AppSpacing`, `AppStyles`, `AppIcons`, `AppMedia`, `AppTimers`, `AppTheme` (Light/Dark mode Material 3).
 - **Theme Extensions**: `context.colors.*` and `context.typo.*` for theme-aware reactive styling.
 - **Static Tokens**: `Design.spacing.*`, `Design.timers.*`, `Design.icons.*`, `Design.media.*`.
-- **Reusable UI Components**: `AppButton`, `AppInputField`, `AppPasscodeField`, `AppLoading`, `AppSnackbar`, `AppDialog` (with `AppDialog.confirm()` for destructive actions), `AppPage`, `AppListTile`, `AppToggle`.
+- **Reusable UI Components**: `AppButton`, `AppInputField`, `AppPasswordField`, `AppLoading`, `AppSnackbar`, `AppDialog` (with `AppDialog.confirm()` for destructive actions), `AppPage`, `AppListTile`, `AppToggle`.
 
 ### 🧩 Mobile Domain Capabilities
 
-- **Auth Flow**: Complete parity with Web & Core (email check, 6-digit passcode, OTP verification, Google OAuth challenge, session replacement). Zero hardcoded string literals.
+- **Auth Flow**: Complete parity with Web & Core (email check, 6-digit password, OTP verification, Google OAuth challenge, session replacement). Zero hardcoded string literals.
 - **Push Notifications**: Powered by OneSignal (`PushNotiService`). Automatically syncs user IDs and tags on login/session restore and clears state on logout.
 - **Product Analytics**: Powered by Firebase Analytics (`AnalyticsService`). Integrates navigation observers for screen tracking and records authentication and application lifecycle events.
 - **In-App Upgrader**: Powered by `upgrader`. Wraps root app builder with `UpgradeAlert` to notify users of critical or optional Play Store / App Store updates.
@@ -173,7 +173,7 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 
 | Capability Area                                          | `rexone-core` |     `rexone-web`     |     `rexone_mobile`      |
 | -------------------------------------------------------- | :-----------: | :------------------: | :----------------------: |
-| **Auth: Email & 6-digit Passcode**                       |      ✅       |          ✅          |            ✅            |
+| **Auth: Email & 6-digit Password**                       |      ✅       |          ✅          |            ✅            |
 | **Auth: Google Sign-In & Challenge Flow**                |      ✅       |          ✅          |            ✅            |
 | **Auth: Active Single-Platform Session Enforcement**     |      ✅       |          ✅          |            ✅            |
 | **Auth: Escalating Password Retry Cooldown (Redis)**     |      ✅       |          ✅          |            ✅            |

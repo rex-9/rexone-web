@@ -1,4 +1,4 @@
-// src/design/components/auth/SigninPasscodeDialog.tsx
+// src/design/components/auth/SigninPasswordDialog.tsx
 
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth, useToast } from "../../../contexts";
@@ -6,7 +6,7 @@ import { useCountdown } from "../../../hooks";
 import {
   Button,
   Dialog,
-  PasscodeInput,
+  PasswordInput,
   TextLink,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
@@ -14,19 +14,19 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SigninPasscodeDialogProps {
+interface SigninPasswordDialogProps {
   email: string;
-  passcode: string;
-  setPasscode: (value: string) => void;
+  password?: string;
+  setPassword?: (value: string) => void;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
 
-export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
+export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
   email,
-  passcode,
-  setPasscode,
+  password = "",
+  setPassword = () => {},
   navigateToStep,
   onClose,
   onBack,
@@ -47,12 +47,12 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (passcode.length !== 6 || cooldown.isActive) return;
+    if (password.length !== 6 || cooldown.isActive) return;
 
     setIsLoading(true);
     const result = await AuthController.signInWithEmailOrUsername(
       email,
-      passcode,
+      password,
       setError,
       setMessage,
       signin,
@@ -64,7 +64,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       cooldown.clear();
       setRemainingAttempts(3);
       setHasFailureHistory(false);
-      setPasscode("");
+      setPassword("");
       setError("");
       onClose();
       onClose();
@@ -76,7 +76,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       cooldown.start(result.cooldownRemaining);
       setRemainingAttempts(0);
       setHasFailureHistory(true);
-      setPasscode("");
+      setPassword("");
       setError(
         t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
           seconds: result.cooldownRemaining,
@@ -94,7 +94,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       const attemptsLeft = result.remainingAttempts;
       setRemainingAttempts(attemptsLeft);
       setHasFailureHistory(true);
-      setPasscode("");
+      setPassword("");
 
       if (attemptsLeft > 0) {
         setError(
@@ -115,10 +115,10 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
     if (prevIsActiveRef.current && !cooldown.isActive) {
       setRemainingAttempts(3);
       setError("");
-      setPasscode("");
+      setPassword("");
     }
     prevIsActiveRef.current = cooldown.isActive;
-  }, [cooldown.isActive, setPasscode]);
+  }, [cooldown.isActive, setPassword]);
 
   const triggerSubmit = () => {
     if (formRef.current) {
@@ -143,7 +143,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
   };
 
   const isSubmitDisabled =
-    isLoading || cooldown.isActive || passcode.length !== 6;
+    isLoading || cooldown.isActive || password.length !== 6;
 
   // Button text with countdown
   const getButtonText = (): string => {
@@ -177,11 +177,11 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
           </p>
         </div>
 
-        <PasscodeInput
-          idPrefix="signin-passcode"
-          value={passcode}
+        <PasswordInput
+          idPrefix="signin-password"
+          value={password}
           onChange={(value) => {
-            setPasscode(value);
+            setPassword(value);
             setError("");
           }}
           onComplete={triggerSubmit}
@@ -209,7 +209,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
           <TextLink
             label={t(AppLocales.Auth.SignInPasscode.ForgotPasscode)}
             onClick={() =>
-              navigateToStep(DialogAuthSteps.FORGOT_PASSCODE, { email })
+              navigateToStep(DialogAuthSteps.FORGOT_PASSWORD, { email })
             }
             className="text-body-s"
           />

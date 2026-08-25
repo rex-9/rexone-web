@@ -1,46 +1,51 @@
 import { test, expect } from "@playwright/test";
 import { users, generateTestUser } from "../../data/users";
+import { createUnconfirmedUser, cleanupUser } from "../../helpers/api";
 import { AuthPage } from "../../pages/auth.page";
-import { SignInPasscodePage } from "../../pages/sign-in-passcode.page";
+import { SignInPasswordPage } from "../../pages/sign-in-password.page";
 import { ConfirmEmailPage } from "../../pages/confirm-email.page";
 import { HomePage } from "../../pages/home.page";
 
 test.describe("Authentication > Sign in", () => {
   let authPage: AuthPage;
-  let signInPage: SignInPasscodePage;
+  let signInPage: SignInPasswordPage;
   let homePage: HomePage;
   let confirmPage: ConfirmEmailPage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    signInPage = new SignInPasscodePage(page);
+    signInPage = new SignInPasswordPage(page);
     homePage = new HomePage(page);
     confirmPage = new ConfirmEmailPage(page);
   });
 
-  test("allows an existing user to sign in with email and passcode", async () => {
+  test("allows an existing user to sign in with email and password", async () => {
     await authPage.goto();
     await authPage.enterEmail(users.existing.email);
     await authPage.submit();
 
     await signInPage.waitForVisible();
-    await signInPage.enterPasscode(users.existing.password);
+    await signInPage.enterPassword(users.existing.password);
     await homePage.assertIsAuthenticated();
   });
 
-  test("rejects an incorrect passcode and shows remaining attempts", async ({ page }) => {
+  test("rejects an incorrect password and shows remaining attempts", async ({ page }) => {
     await authPage.goto();
-    await authPage.enterEmail(users.superAdmin.email);
+    await authPage.enterEmail(users.existing.email);
     await authPage.submit();
 
     await signInPage.waitForVisible();
-    await signInPage.enterPasscode("000000"); // Wrong passcode
+    await signInPage.enterPassword("000000"); // Wrong password
     
-    await expect(page.getByText(/Incorrect passcode/i)).toBeVisible();
+    await expect(page.getByText(/Incorrect password|Incorrect passcode/i)).toBeVisible();
     await expect(page.getByText(/attempts remaining/i)).toBeVisible();
+
+    // Sign in with correct password to reset attempt limiter
+    await signInPage.enterPassword(users.existing.password);
+    await homePage.assertIsAuthenticated();
   });
 
-  test("preserves the email address across the passcode step", async ({ page }) => {
+  test("preserves the email address across the password step", async ({ page }) => {
     await authPage.goto();
     await authPage.enterEmail(users.existing.email);
     await authPage.submit();
@@ -56,27 +61,35 @@ test.describe("Authentication > Sign in", () => {
 
     await signInPage.waitForVisible();
     
-    // Enter wrong passcode 3 times to activate cooldown
+    // Enter wrong password up to 4 times to trigger lockout
     for (let i = 0; i < 4; i++) {
       if (await page.getByText(/Too many attempts|Try again in/i).first().isVisible()) break;
-      await signInPage.enterPasscode("000000");
-      await page.waitForTimeout(600);
+      await signInPage.enterPassword("000000");
+      await page.waitForTimeout(1000);
     }
 
     await expect(page.getByText(/Too many attempts|Try again in/i).first()).toBeVisible();
     await expect(signInPage.submitButton).toBeDisabled();
   });
 
-  test("redirects unconfirmed user to email confirmation", async ({ page }) => {
-    const unconfirmedUser = generateTestUser("unconfirmed");
+  test("redirects unconfirmed user directly to confirm email OTP when returning after drop-off", async ({ page }) => {
+    const unconfirmedUser = generateTestUser("unconf_drop");
+    
+    // 1. Create unconfirmed user in backend (via POST /signup)
+    await createUnconfirmedUser(unconfirmedUser);
+
+    // 2. User returns to auth screen and enters email
     await authPage.goto();
     await authPage.enterEmail(unconfirmedUser.email);
     await authPage.submit();
 
-    // Fresh/unconfirmed email routes through signup or confirm email
-    if (page.url().includes("step=confirm-email")) {
-      await confirmPage.waitForVisible();
-      await expect(page.getByText(unconfirmedUser.email)).toBeVisible();
-    }
+    // 3. User is routed directly to ConfirmEmail dialog (confirm OTP)
+    await confirmPage.waitForVisible();
+    await expect(page.getByText(unconfirmedUser.email)).toBeVisible();
+
+    // 4. Verify password signin and password creation screens are NOT shown
+    await expect(signInPage.inputs.first()).not.toBeVisible();
+
+    await cleanupUser(unconfirmedUser.email);
   });
 });

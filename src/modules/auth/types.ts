@@ -3,7 +3,7 @@ import { IUser } from "../../models";
 export interface IGoogleSignInStartResult {
   success: boolean;
   statusCode?: number;
-  passcodeRequired?: boolean; // Only when new user
+  passwordRequired?: boolean; // Only when new user
   challengeToken?: string; // Only when new user
   user?: IUser; // Only when existing user
   token?: string; // Only when existing user
@@ -20,4 +20,3 @@ export interface IGoogleSignInCompleteResult {
 
 // Re-export from constants (source of truth) so existing `import { DialogAuthSteps } from ".."` still works.
 export { DialogAuthSteps, type TAuthStep } from "../../constants";
-

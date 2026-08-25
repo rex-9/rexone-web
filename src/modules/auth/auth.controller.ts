@@ -33,10 +33,10 @@ class AuthController {
     );
   }
 
-  // Sign in with email/username + passcode (WITH attempt limiter)
+  // Sign in with email/username + password (WITH attempt limiter)
   async signInWithEmailOrUsername(
     signinKey: string,
-    passcode: string,
+    password: string,
     setError: (message: string) => void,
     setMessage: (message: string) => void,
     signin: (token: string, user: IUser) => void,
@@ -51,7 +51,7 @@ class AuthController {
     try {
       const response = await AuthService.signInWithEmailOrUsername(
         signinKey,
-        passcode,
+        password,
       );
       const { status, data } = response.data || {};
 
@@ -90,11 +90,11 @@ class AuthController {
   private _handleAuthResponse(
     status: Record<string, any> | undefined,
     data: Record<string, any> | undefined,
-    passcodeRequired: boolean,
+    passwordRequired: boolean,
     challengeToken?: string,
   ) {
     if (status?.success) {
-      if (passcodeRequired) {
+      if (passwordRequired) {
         if (!challengeToken) {
           return {
             success: false,
@@ -105,7 +105,7 @@ class AuthController {
         return {
           success: true,
           statusCode: status.code,
-          passcodeRequired: true,
+          passwordRequired: true,
           challengeToken,
           user: data?.user,
         };
@@ -114,7 +114,7 @@ class AuthController {
       return {
         success: true,
         statusCode: status.code,
-        passcodeRequired: false,
+        passwordRequired: false,
         user: data?.user,
         token: data?.token,
       };
@@ -127,29 +127,29 @@ class AuthController {
     };
   }
 
-  // Google sign in (NO passcode attempt limiter)
+  // Google sign in (NO password attempt limiter)
   async signInWithGoogle(token: string): Promise<IGoogleSignInStartResult> {
     const response = await AuthService.signInWithGoogle(token);
     const { status, data } = response.data || {};
 
-    const passcodeRequired = data?.password_required === true;
+    const passwordRequired = data?.password_required === true;
     const challengeToken = data?.challenge_token || "";
 
     return this._handleAuthResponse(
       status,
       data,
-      passcodeRequired,
+      passwordRequired,
       challengeToken,
     );
   }
 
-  // Complete Google sign in (NO passcode attempt limiter, NO retry)
+  // Complete Google sign in (NO password attempt limiter, NO retry)
   async completeGoogleSignIn(
-    passcode: string,
+    password: string,
     challengeToken: string,
   ): Promise<IGoogleSignInCompleteResult> {
     const response = await AuthService.completeGoogleSignIn(
-      passcode,
+      password,
       challengeToken,
     );
     const { status, data } = response.data || {};

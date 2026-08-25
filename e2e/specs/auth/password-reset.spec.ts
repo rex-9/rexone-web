@@ -1,18 +1,18 @@
 import { test, expect } from "@playwright/test";
 import { users } from "../../data/users";
 import { AuthPage } from "../../pages/auth.page";
-import { SignInPasscodePage } from "../../pages/sign-in-passcode.page";
-import { ForgotPasscodePage } from "../../pages/forgot-passcode.page";
+import { SignInPasswordPage } from "../../pages/sign-in-password.page";
+import { ForgotPasswordPage } from "../../pages/forgot-password.page";
 
 test.describe("Authentication > Password reset", () => {
   let authPage: AuthPage;
-  let signInPage: SignInPasscodePage;
-  let forgotPage: ForgotPasscodePage;
+  let signInPage: SignInPasswordPage;
+  let forgotPage: ForgotPasswordPage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    signInPage = new SignInPasscodePage(page);
-    forgotPage = new ForgotPasscodePage(page);
+    signInPage = new SignInPasswordPage(page);
+    forgotPage = new ForgotPasswordPage(page);
   });
 
   test("allows a user to request a password reset link", async ({ page }) => {
@@ -21,9 +21,9 @@ test.describe("Authentication > Password reset", () => {
     await authPage.submit();
 
     await signInPage.waitForVisible();
-    await signInPage.clickForgotPasscode();
+    await signInPage.clickForgotPassword();
 
-    await forgotPage.waitForVisible();
+    await forgotPage.emailInput.waitFor({ state: "visible" });
     // Email should carry over
     await expect(forgotPage.emailInput).toHaveValue(users.existing.email);
     
@@ -38,9 +38,9 @@ test.describe("Authentication > Password reset", () => {
     await authPage.submit();
 
     await signInPage.waitForVisible();
-    await signInPage.clickForgotPasscode();
+    await signInPage.clickForgotPassword();
 
-    await forgotPage.waitForVisible();
+    await forgotPage.emailInput.waitFor({ state: "visible" });
     await forgotPage.submit();
 
     await expect(page.getByText(/Reset link sent to your email/i)).toBeVisible();

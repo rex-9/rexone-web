@@ -91,7 +91,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
       switch (result) {
         case "exists_confirmed":
           // Existing confirmed user
-          navigateToStep(DialogAuthSteps.SIGNIN_PASSCODE, {
+          navigateToStep(DialogAuthSteps.SIGNIN_PASSWORD, {
             email: localEmail,
           });
           break;
@@ -112,7 +112,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 
         case "not_exists":
           // New user
-          navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CREATE, {
+          navigateToStep(DialogAuthSteps.SIGNUP_PASSWORD_CREATE, {
             email: localEmail,
           });
           break;
@@ -146,11 +146,11 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           success(t(AppLocales.Auth.Initial.GoogleSignInSuccess));
           onClose();
           navigate(AppRoutes.client.protected.HOME);
-        } else if (result.passcodeRequired && result.challengeToken) {
-          // New user - show passcode setup
+        } else if (result.passwordRequired && result.challengeToken) {
+          // New user - show password setup
           setGoogleChallengeToken(result.challengeToken);
 
-          navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CREATE, {
+          navigateToStep(DialogAuthSteps.SIGNUP_PASSWORD_CREATE, {
             email: result.user?.email || "",
           });
         } else {

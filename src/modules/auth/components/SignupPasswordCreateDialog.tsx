@@ -1,28 +1,35 @@
-// src/design/components/auth/SignupPasscodeCreateDialog.tsx
+// src/design/components/auth/SignupPasswordCreateDialog.tsx
 
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Button,
   Dialog,
-  PasscodeInput,
+  PasswordInput,
   TextLink,
 } from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
 import { DialogAuthSteps, TAuthStep } from "..";
 
-interface SignupPasscodeCreateDialogProps {
+interface SignupPasswordCreateDialogProps {
   email: string;
-  passcode: string;
-  setPasscode: (value: string) => void;
+  password?: string;
+  setPassword?: (value: string) => void;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
 
-export const SignupPasscodeCreateDialog: React.FC<
-  SignupPasscodeCreateDialogProps
-> = ({ email, passcode, setPasscode, navigateToStep, onClose, onBack }) => {
+export const SignupPasswordCreateDialog: React.FC<
+  SignupPasswordCreateDialogProps
+> = ({
+  email,
+  password = "",
+  setPassword = () => {},
+  navigateToStep,
+  onClose,
+  onBack,
+}) => {
   const t = useTranslate();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
@@ -33,19 +40,19 @@ export const SignupPasscodeCreateDialog: React.FC<
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode.length !== 6) {
+    if (password.length !== 6) {
       setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
 
-    const extra: Record<string, string> = { email, passcode };
+    const extra: Record<string, string> = { email, password };
 
     // Pass reset token to confirm step if present
     if (resetPasswordToken) {
       extra.reset_password_token = resetPasswordToken;
     }
 
-    navigateToStep(DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM, extra);
+    navigateToStep(DialogAuthSteps.SIGNUP_PASSWORD_CONFIRM, extra);
   };
 
   const triggerSubmit = () => {
@@ -87,11 +94,11 @@ export const SignupPasscodeCreateDialog: React.FC<
             {t(AppLocales.Auth.SignUpPasscodeCreate.Instruction)}
           </p>
         </div>
-        <PasscodeInput
-          idPrefix="create-passcode"
-          value={passcode}
+        <PasswordInput
+          idPrefix="create-password"
+          value={password}
           onChange={(value) => {
-            setPasscode(value);
+            setPassword(value);
             setError("");
           }}
           onComplete={triggerSubmit}
@@ -104,7 +111,7 @@ export const SignupPasscodeCreateDialog: React.FC<
           variant="primary"
           type="submit"
           fullWidth
-          disabled={passcode.length !== 6}
+          disabled={password.length !== 6}
         >
           {t(AppLocales.Auth.Shared.Continue)}
         </Button>

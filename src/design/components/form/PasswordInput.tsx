@@ -1,8 +1,8 @@
-// src/design/components/form/PasscodeInput.tsx
+// src/design/components/form/PasswordInput.tsx
 
 import React, { useRef, useEffect } from "react";
 
-export interface PasscodeInputProps {
+export interface PasswordInputProps {
   idPrefix: string;
   value: string;
   onChange: (value: string) => void;
@@ -14,7 +14,7 @@ export interface PasscodeInputProps {
   autoFocus?: boolean;
 }
 
-export const PasscodeInput: React.FC<PasscodeInputProps> = ({
+export const PasswordInput: React.FC<PasswordInputProps> = ({
   idPrefix,
   value,
   onChange,
@@ -175,3 +175,4 @@ export const PasscodeInput: React.FC<PasscodeInputProps> = ({
     </div>
   );
 };
+

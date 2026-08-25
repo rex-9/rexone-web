@@ -2,19 +2,19 @@ import { test, expect } from "@playwright/test";
 import { cleanupUser } from "../../helpers/api";
 import { generateTestUser } from "../../data/users";
 import { AuthPage } from "../../pages/auth.page";
-import { SignUpPasscodePage } from "../../pages/sign-up-passcode.page";
+import { SignUpPasswordPage } from "../../pages/sign-up-password.page";
 import { SignUpInfoPage } from "../../pages/sign-up-info.page";
 import { ConfirmEmailPage } from "../../pages/confirm-email.page";
 
 test.describe("Authentication > Sign up", () => {
   let authPage: AuthPage;
-  let signUpPasscodePage: SignUpPasscodePage;
+  let signUpPasswordPage: SignUpPasswordPage;
   let signUpInfoPage: SignUpInfoPage;
   let confirmEmailPage: ConfirmEmailPage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    signUpPasscodePage = new SignUpPasscodePage(page);
+    signUpPasswordPage = new SignUpPasswordPage(page);
     signUpInfoPage = new SignUpInfoPage(page);
     confirmEmailPage = new ConfirmEmailPage(page);
   });
@@ -25,13 +25,13 @@ test.describe("Authentication > Sign up", () => {
     await authPage.enterEmail(user.email);
     await authPage.submit();
 
-    // Create passcode
-    await signUpPasscodePage.waitForCreate();
-    await signUpPasscodePage.enterPasscode(user.password);
+    // Create password
+    await signUpPasswordPage.waitForCreate();
+    await signUpPasswordPage.enterPassword(user.password);
 
-    // Confirm passcode
-    await signUpPasscodePage.waitForConfirm();
-    await signUpPasscodePage.enterPasscode(user.password);
+    // Confirm password
+    await signUpPasswordPage.waitForConfirm();
+    await signUpPasswordPage.enterPassword(user.password);
 
     // Sign up info
     await signUpInfoPage.waitForVisible();
@@ -49,12 +49,12 @@ test.describe("Authentication > Sign up", () => {
     await authPage.enterEmail(user.email);
     await authPage.submit();
 
-    await signUpPasscodePage.waitForCreate();
+    await signUpPasswordPage.waitForCreate();
     await expect(page.getByText(user.email)).toBeVisible();
 
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.enterPassword(user.password);
 
-    await signUpPasscodePage.waitForConfirm();
+    await signUpPasswordPage.waitForConfirm();
     expect(page.url()).toContain(`email=${encodeURIComponent(user.email)}`);
   });
 
@@ -64,11 +64,11 @@ test.describe("Authentication > Sign up", () => {
     await authPage.enterEmail(user.email);
     await authPage.submit();
 
-    await signUpPasscodePage.waitForCreate();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForCreate();
+    await signUpPasswordPage.enterPassword(user.password);
 
-    await signUpPasscodePage.waitForConfirm();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForConfirm();
+    await signUpPasswordPage.enterPassword(user.password);
 
     await signUpInfoPage.waitForVisible();
     await signUpInfoPage.enterInfo(user.name, "Invalid-User_Name!123");
@@ -83,11 +83,11 @@ test.describe("Authentication > Sign up", () => {
     await authPage.enterEmail(user.email);
     await authPage.submit();
 
-    await signUpPasscodePage.waitForCreate();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForCreate();
+    await signUpPasswordPage.enterPassword(user.password);
 
-    await signUpPasscodePage.waitForConfirm();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForConfirm();
+    await signUpPasswordPage.enterPassword(user.password);
 
     await signUpInfoPage.waitForVisible();
     await signUpInfoPage.enterInfo("A", user.username);
@@ -102,11 +102,11 @@ test.describe("Authentication > Sign up", () => {
     await authPage.enterEmail(user.email);
     await authPage.submit();
 
-    await signUpPasscodePage.waitForCreate();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForCreate();
+    await signUpPasswordPage.enterPassword(user.password);
 
-    await signUpPasscodePage.waitForConfirm();
-    await signUpPasscodePage.enterPasscode(user.password);
+    await signUpPasswordPage.waitForConfirm();
+    await signUpPasswordPage.enterPassword(user.password);
 
     await signUpInfoPage.waitForVisible();
     await signUpInfoPage.enterInfo(user.name, "ab");

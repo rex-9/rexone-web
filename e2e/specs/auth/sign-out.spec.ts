@@ -1,18 +1,18 @@
 import { test, expect } from "@playwright/test";
 import { users } from "../../data/users";
 import { AuthPage } from "../../pages/auth.page";
-import { SignInPasscodePage } from "../../pages/sign-in-passcode.page";
+import { SignInPasswordPage } from "../../pages/sign-in-password.page";
 import { HomePage } from "../../pages/home.page";
 import AppRoutes from "../../../src/AppRoutes";
 
 test.describe("Authentication > Sign out", () => {
   let authPage: AuthPage;
-  let signInPage: SignInPasscodePage;
+  let signInPage: SignInPasswordPage;
   let homePage: HomePage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    signInPage = new SignInPasscodePage(page);
+    signInPage = new SignInPasswordPage(page);
     homePage = new HomePage(page);
   });
 
@@ -22,7 +22,7 @@ test.describe("Authentication > Sign out", () => {
     await authPage.submit();
     
     await signInPage.waitForVisible();
-    await signInPage.enterPasscode(users.existing.password);
+    await signInPage.enterPassword(users.existing.password);
     await homePage.assertIsAuthenticated();
 
     // Navigate to signout
