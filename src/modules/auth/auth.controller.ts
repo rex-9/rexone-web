@@ -167,6 +167,7 @@ class AuthController {
   // Sign up with email
   async signUpWithEmail(
     username: string,
+    name: string,
     email: string,
     password: string,
     passwordConfirmation: string,
@@ -178,6 +179,7 @@ class AuthController {
       () =>
         AuthService.signUpWithEmail(
           username,
+          name,
           email,
           password,
           passwordConfirmation,

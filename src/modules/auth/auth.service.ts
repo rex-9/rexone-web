@@ -74,6 +74,7 @@ class AuthService {
 
   async signUpWithEmail(
     username: string,
+    name: string,
     email: string,
     password: string,
     passwordConfirmation: string,
@@ -83,6 +84,7 @@ class AuthService {
       {
         user: {
           username,
+          name,
           email,
           password,
           password_confirmation: passwordConfirmation,
