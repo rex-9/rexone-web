@@ -53,6 +53,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
     setIsLoading(true);
     await AuthController.signUpWithEmail(
       username,
+      fullName,
       email,
       passcode,
       passcode, // passcode confirmation is same as passcode
