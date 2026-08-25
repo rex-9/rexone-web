@@ -16,8 +16,8 @@ class AppRoutes {
       SIGN_IN: "/signin",
       SIGN_UP: "/signup",
       CONFIRM_EMAIL: "/email/confirm",
-      FORGOT_PASSCODE: "/passcode/forgot",
-      RESET_PASSCODE: "/passcode/reset",
+      FORGOT_PASSWORD: "/password/forgot",
+      RESET_PASSWORD: "/password/reset",
       ROOT: "/",
     },
 
@@ -105,18 +105,17 @@ class AppRoutes {
 
   // Helper to build dialog URLs
   static buildDialogUrl(step: string, params?: Record<string, string>): string {
-    const url = new URL(window.location.origin + AppRoutes.client.public.ROOT);
-
-    url.searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
-    url.searchParams.set(DialogParams.STEP, step);
+    const searchParams = new URLSearchParams();
+    searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
+    searchParams.set(DialogParams.STEP, step);
 
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value) url.searchParams.set(key, value);
+        if (value) searchParams.set(key, value);
       });
     }
 
-    return url.pathname + url.search;
+    return `${AppRoutes.client.public.ROOT}?${searchParams.toString()}`;
   }
 }
 

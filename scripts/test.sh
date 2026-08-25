@@ -4,17 +4,17 @@
 # Rexone Web — E2E Test Runner (Playwright)
 #
 # Usage:
-#   ./scripts/run_e2e.sh [flow|file] [options]
+#   ./scripts/test.sh [flow|file] [options]
 #
 # Examples:
-#   ./scripts/run_e2e.sh                     # Run all auth flows
-#   ./scripts/run_e2e.sh sign-in             # Run Sign In flow
-#   ./scripts/run_e2e.sh sign-up             # Run Sign Up flow
-#   ./scripts/run_e2e.sh passcode            # Run Passcode flow
-#   ./scripts/run_e2e.sh password-reset      # Run Password Reset flow
-#   ./scripts/run_e2e.sh sso                 # Run SSO flow
-#   ./scripts/run_e2e.sh sign-out            # Run Sign Out flow
-#   ./scripts/run_e2e.sh e2e/specs/auth/sign-in.spec.ts  # Run specific file
+#   ./scripts/test.sh                     # Run all auth flows
+#   ./scripts/test.sh sign-in             # Run Sign In flow
+#   ./scripts/test.sh sign-up             # Run Sign Up flow
+#   ./scripts/test.sh passcode            # Run Passcode flow
+#   ./scripts/test.sh password-reset      # Run Password Reset flow
+#   ./scripts/test.sh sso                 # Run SSO flow
+#   ./scripts/test.sh sign-out            # Run Sign Out flow
+#   ./scripts/test.sh e2e/specs/auth/sign-in.spec.ts  # Run specific file
 #
 # Options:
 #   --headed, -h     Run tests with a visible browser window
@@ -38,7 +38,7 @@ for arg in "$@"; do
     --help)
       echo "Rexone Web — E2E Test Runner"
       echo ""
-      echo "Usage: ./scripts/run_e2e.sh [flow|file] [--headed|--ui|--debug]"
+      echo "Usage: ./scripts/test.sh [flow|file] [--headed|--ui|--debug]"
       echo ""
       echo "Available Flows:"
       echo "  all             Run all E2E test suites (default)"
@@ -74,10 +74,10 @@ for arg in "$@"; do
     sign-up|signup|register)
       TARGET="e2e/specs/auth/sign-up.spec.ts"
       ;;
-    passcode|pin)
-      TARGET="e2e/specs/auth/passcode.spec.ts"
+    password|passcode|pin)
+      TARGET="e2e/specs/auth/password.spec.ts"
       ;;
-    password-reset|reset-password|forgot|forgot-passcode)
+    password-reset|reset-password|forgot|forgot-password|forgot-passcode)
       TARGET="e2e/specs/auth/password-reset.spec.ts"
       ;;
     sso|google)
@@ -115,5 +115,12 @@ if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
   echo " Flags:  ${EXTRA_ARGS[*]}"
 fi
 echo "===================================================="
+
+cleanup_test_data() {
+  echo ""
+  echo "🧹 Cleaning up test users from database..."
+  docker exec dev-rexone-core-api bin/rails runner "User.where('email LIKE ? OR email LIKE ?', 'e2e-%', '%@rexone.test').destroy_all" 2>/dev/null || true
+}
+trap cleanup_test_data EXIT
 
 npx playwright test "$TARGET" "${EXTRA_ARGS[@]}"

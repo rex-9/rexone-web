@@ -112,11 +112,12 @@ The UI does not need to know how Axios is configured, and transport code does no
 ### Authentication & security
 
 - Email-based account discovery followed by sign-in or registration.
-- Six-digit passcode creation, confirmation, and sign-in flows.
+- Six-digit numeric passcode creation, confirmation, and sign-in flows.
 - Email confirmation code entry and resend cooldowns.
-- Forgot-passcode and reset-passcode flows.
+- Automatic drop-off recovery: returning unconfirmed users route directly to email confirmation OTP.
+- Forgot-password and reset-passcode flows.
 - Google OAuth sign-in, including the Core challenge flow for new accounts.
-- In-memory handling of passcodes; sensitive values are deliberately excluded from URL parameters.
+- In-memory handling of credentials; sensitive values are deliberately excluded from URL parameters.
 - JWT-backed authenticated requests through the centralized Axios client.
 - Central handling for expired or replaced sessions, with a localized sign-in message.
 - Protected and public route boundaries.
@@ -258,7 +259,7 @@ By default Vite listens on all interfaces. The checked-in development environmen
 The convenience script runs the Docker development stack:
 
 ```bash
-./scripts/run_dev.sh
+./scripts/dev.sh
 ```
 
 ### 3. Run with Docker Compose
@@ -278,22 +279,22 @@ Rexone Web includes a production-grade E2E test suite built with **[Playwright](
 ```text
 e2e/
 ├── data/
-│   └── users.ts            # Centralized test users & dynamic user factory
+│   └── users.ts               # Centralized test users & dynamic user factory
 ├── helpers/
-│   └── api.ts              # API helpers using standard application routes
-├── pages/                  # Page Object Model (POM) layer
-│   ├── auth.page.ts        # Initial email entry dialog
-│   ├── confirm-email.page.ts # 6-digit OTP verification dialog
-│   ├── forgot-passcode.page.ts # Password reset request dialog
-│   ├── home.page.ts        # Authenticated home page
-│   ├── sign-in-passcode.page.ts # 6-digit sign-in passcode dialog
-│   ├── sign-up-info.page.ts # Name & username profile dialog
-│   └── sign-up-passcode.page.ts # Passcode creation & confirmation
+│   └── api.ts                 # API helpers using standard application routes
+├── pages/                     # Page Object Model (POM) layer
+│   ├── auth.page.ts           # Initial email entry dialog
+│   ├── confirm-email.page.ts  # 6-digit OTP verification dialog
+│   ├── forgot-password.page.ts # Password reset request dialog
+│   ├── home.page.ts           # Authenticated home page
+│   ├── sign-in-password.page.ts # 6-digit sign-in password dialog
+│   ├── sign-up-info.page.ts   # Name & username profile dialog
+│   └── sign-up-password.page.ts # Password creation & confirmation dialogs
 └── specs/
     └── auth/
-        ├── passcode.spec.ts       # Passcode acceptance, mismatch, retry, state persistence
-        ├── password-reset.spec.ts # Forgot passcode, email delivery, 60s cooldown timer
-        ├── sign-in.spec.ts        # Sign in, wrong passcode, attempts countdown, 30s lockout
+        ├── password.spec.ts       # Password acceptance, mismatch, retry, state persistence
+        ├── password-reset.spec.ts # Forgot password, email delivery, 60s cooldown timer
+        ├── sign-in.spec.ts        # Sign in, wrong password, attempts countdown, 30s lockout, drop-off recovery
         ├── sign-out.spec.ts       # Sign out & session revocation
         ├── sign-up.spec.ts        # Full registration journey, validations, sanitization
         └── sso.spec.ts            # Google SSO authentication & challenge token setup
@@ -301,25 +302,25 @@ e2e/
 
 ### Running E2E Tests
 
-Rexone Web provides a unified test runner script at [`scripts/run_e2e.sh`](scripts/run_e2e.sh):
+Rexone Web provides a unified test runner script at [`scripts/test.sh`](scripts/test.sh):
 
 ```bash
 # Run all 19 E2E tests (default)
-./scripts/run_e2e.sh
+./scripts/test.sh
 # or: npm run test:e2e:all
 
 # Run specific flows
-./scripts/run_e2e.sh sign-in        # Sign-in flow & attempt limits
-./scripts/run_e2e.sh sign-up        # Registration & input validations
-./scripts/run_e2e.sh passcode       # Passcode matching & retries
-./scripts/run_e2e.sh password-reset # Reset request & cooldowns
-./scripts/run_e2e.sh sso            # Google SSO authentication
-./scripts/run_e2e.sh sign-out       # Sign-out & session termination
+./scripts/test.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
+./scripts/test.sh sign-up        # Registration & input validations
+./scripts/test.sh password       # Password matching & retries
+./scripts/test.sh password-reset # Reset request & cooldowns
+./scripts/test.sh sso            # Google SSO authentication
+./scripts/test.sh sign-out       # Sign-out & session termination
 
 # Interactive & Debugging Modes
-./scripts/run_e2e.sh --headed       # Watch tests in a real browser window
-./scripts/run_e2e.sh --ui           # Open Playwright's interactive visual UI
-./scripts/run_e2e.sh --debug        # Launch Playwright step-by-step inspector
+./scripts/test.sh --headed       # Watch tests in a real browser window
+./scripts/test.sh --ui           # Open Playwright's interactive visual UI
+./scripts/test.sh --debug        # Launch Playwright step-by-step inspector
 ```
 
 ### Test Guarantees
@@ -358,8 +359,8 @@ Only variables prefixed with `VITE_` are exposed to browser code. Never place pr
 | Public    | `/signin`          | Open the authentication dialog          |
 | Public    | `/signup`          | Enter the account creation flow         |
 | Public    | `/email/confirm`   | Handle confirmation links or code entry |
-| Public    | `/passcode/forgot` | Request account recovery                |
-| Public    | `/passcode/reset`  | Complete passcode reset links           |
+| Public    | `/password/forgot` | Request account recovery                |
+| Public    | `/password/reset`  | Complete password reset links           |
 | Public    | `/anapana`         | Anapana interval reminder               |
 | Protected | `/home`            | Authenticated home                      |
 | Protected | `/profile`         | Current-user profile                    |
@@ -381,8 +382,8 @@ rexone-web/
 │   ├── pages/           # Page Object Model (POM) classes
 │   └── specs/           # User journey test specifications
 ├── scripts/             # Development & test automation scripts
-│   ├── run_dev.sh       # Docker compose dev environment starter
-│   └── run_e2e.sh       # Playwright E2E runner CLI
+│   ├── dev.sh       # Docker compose dev environment starter
+│   └── test.sh       # Playwright E2E runner CLI
 ├── src/
 │   ├── assets/          # Static application media
 │   ├── constants/       # Storage keys, dialog steps, and route parameter constants
@@ -419,7 +420,7 @@ For production deployments:
 3. Serve the client over TLS and use `wss://` for real-time traffic.
 4. Configure the host to return `index.html` for client-side routes.
 5. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
-6. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/run_e2e.sh` in CI.
+6. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/test.sh` in CI.
 
 ## Related foundations
 

@@ -1,4 +1,4 @@
-// src/design/components/auth/ForgotPasscodeDialog.tsx
+// src/design/components/auth/ForgotPasswordDialog.tsx
 
 import React, { useState } from "react";
 import { useCountdown } from "../../../hooks";
@@ -13,7 +13,7 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface ForgotPasscodeDialogProps {
+interface ForgotPasswordDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
@@ -21,7 +21,7 @@ interface ForgotPasscodeDialogProps {
   onBack: () => void;
 }
 
-export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
+export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -97,7 +97,7 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
           <TextLink
             label={t(AppLocales.Auth.ForgotPasscode.BackToSignIn)}
             onClick={() =>
-              navigateToStep(DialogAuthSteps.SIGNIN_PASSCODE, {
+              navigateToStep(DialogAuthSteps.SIGNIN_PASSWORD, {
                 email: localEmail,
               })
             }
@@ -111,3 +111,4 @@ export const ForgotPasscodeDialog: React.FC<ForgotPasscodeDialogProps> = ({
     </Dialog>
   );
 };
+

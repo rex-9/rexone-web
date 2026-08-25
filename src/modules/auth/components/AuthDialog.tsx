@@ -4,42 +4,40 @@ import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   InitialDialog,
-  SigninPasscodeDialog,
-  SignupPasscodeCreateDialog,
-  SignupPasscodeConfirmDialog,
+  SigninPasswordDialog,
+  SignupPasswordCreateDialog,
+  SignupPasswordConfirmDialog,
   SignupInfoDialog,
   ConfirmEmailDialog,
-  ForgotPasscodeDialog,
+  ForgotPasswordDialog,
 } from ".";
 import { TAuthStep } from "..";
 import { DialogParams, DialogAuthSteps } from "../../../constants";
 
 // Map steps to their previous step
-const stepHistory: Record<TAuthStep, TAuthStep | null> = {
+const stepHistory: Record<string, TAuthStep | null> = {
   [DialogAuthSteps.INITIAL]: null,
-  [DialogAuthSteps.SIGNIN_PASSCODE]: DialogAuthSteps.INITIAL,
-  [DialogAuthSteps.SIGNUP_PASSCODE_CREATE]: DialogAuthSteps.INITIAL,
-  [DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM]:
-    DialogAuthSteps.SIGNUP_PASSCODE_CREATE,
-  [DialogAuthSteps.SIGNUP_INFO]: DialogAuthSteps.SIGNUP_PASSCODE_CREATE,
+  [DialogAuthSteps.SIGNIN_PASSWORD]: DialogAuthSteps.INITIAL,
+  [DialogAuthSteps.SIGNUP_PASSWORD_CREATE]: DialogAuthSteps.INITIAL,
+  [DialogAuthSteps.SIGNUP_PASSWORD_CONFIRM]:
+    DialogAuthSteps.SIGNUP_PASSWORD_CREATE,
+  [DialogAuthSteps.SIGNUP_INFO]: DialogAuthSteps.SIGNUP_PASSWORD_CREATE,
   [DialogAuthSteps.CONFIRM_EMAIL]: DialogAuthSteps.SIGNUP_INFO,
-  [DialogAuthSteps.FORGOT_PASSCODE]: DialogAuthSteps.SIGNIN_PASSCODE,
+  [DialogAuthSteps.FORGOT_PASSWORD]: DialogAuthSteps.SIGNIN_PASSWORD,
 };
 
 export const AuthDialog: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const isOpen = searchParams.get(DialogParams.DIALOG) === DialogParams.AUTH;
 
-  const step =
-    (searchParams.get(DialogParams.STEP) as TAuthStep) ||
-    DialogAuthSteps.INITIAL;
+  const rawStep = searchParams.get(DialogParams.STEP) || DialogAuthSteps.INITIAL;
   const email = searchParams.get("email") || "";
   const fullName = searchParams.get("fullName") || "";
   const username = searchParams.get("username") || "";
 
-  // Store passcodes in memory, NOT in URL
-  const [passcode, setPasscode] = useState("");
-  const [confirmPasscode, setConfirmPasscode] = useState("");
+  // Store passwords in memory, NOT in URL
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
@@ -53,8 +51,8 @@ export const AuthDialog: React.FC = () => {
       "challenge_token",
     ].forEach((key) => params.delete(key));
     setSearchParams(params, { replace: true });
-    setPasscode("");
-    setConfirmPasscode("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
   const navigateToStep = (
@@ -65,8 +63,11 @@ export const AuthDialog: React.FC = () => {
     params.set("step", newStep);
     if (extra) {
       Object.entries(extra).forEach(([key, value]) => {
-        // Never store passcodes in URL
-        if (key !== "passcode" && key !== "confirmPasscode") {
+        // Never store passwords in URL
+        if (
+          key !== "password" &&
+          key !== "confirmPassword"
+        ) {
           params.set(key, value);
         }
       });
@@ -74,14 +75,14 @@ export const AuthDialog: React.FC = () => {
     setSearchParams(params, { replace: true });
   };
 
-  const updatePasscode = (value: string) => setPasscode(value);
-  const updateConfirmPasscode = (value: string) => setConfirmPasscode(value);
+  const updatePassword = (value: string) => setPassword(value);
+  const updateConfirmPassword = (value: string) => setConfirmPassword(value);
 
   const handleBack = () => {
-    const prevStep = stepHistory[step];
+    const prevStep = stepHistory[rawStep];
     if (prevStep) {
-      setPasscode("");
-      setConfirmPasscode("");
+      setPassword("");
+      setConfirmPassword("");
       const params = new URLSearchParams(searchParams);
       params.set("step", prevStep);
       if (email) params.set("email", email);
@@ -94,8 +95,11 @@ export const AuthDialog: React.FC = () => {
   const updateUrl = (newParams: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
-      // Never store passcodes in URL
-      if (key !== "passcode" && key !== "confirmPasscode") {
+      // Never store passwords in URL
+      if (
+        key !== "password" &&
+        key !== "confirmPassword"
+      ) {
         if (value) params.set(key, value);
         else params.delete(key);
       }
@@ -106,7 +110,7 @@ export const AuthDialog: React.FC = () => {
   if (!isOpen) return null;
 
   const renderStep = () => {
-    switch (step) {
+    switch (rawStep) {
       case DialogAuthSteps.INITIAL:
         return (
           <InitialDialog
@@ -116,35 +120,35 @@ export const AuthDialog: React.FC = () => {
             onClose={handleClose}
           />
         );
-      case DialogAuthSteps.SIGNIN_PASSCODE:
+      case DialogAuthSteps.SIGNIN_PASSWORD:
         return (
-          <SigninPasscodeDialog
+          <SigninPasswordDialog
             email={email}
-            passcode={passcode}
-            setPasscode={updatePasscode}
+            password={password}
+            setPassword={updatePassword}
             navigateToStep={navigateToStep}
             onClose={handleClose}
             onBack={handleBack}
           />
         );
-      case DialogAuthSteps.SIGNUP_PASSCODE_CREATE:
+      case DialogAuthSteps.SIGNUP_PASSWORD_CREATE:
         return (
-          <SignupPasscodeCreateDialog
+          <SignupPasswordCreateDialog
             email={email}
-            passcode={passcode}
-            setPasscode={updatePasscode}
+            password={password}
+            setPassword={updatePassword}
             navigateToStep={navigateToStep}
             onClose={handleClose}
             onBack={handleBack}
           />
         );
-      case DialogAuthSteps.SIGNUP_PASSCODE_CONFIRM:
+      case DialogAuthSteps.SIGNUP_PASSWORD_CONFIRM:
         return (
-          <SignupPasscodeConfirmDialog
+          <SignupPasswordConfirmDialog
             email={email}
-            passcode={passcode}
-            confirmPasscode={confirmPasscode}
-            setConfirmPasscode={updateConfirmPasscode}
+            password={password}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={updateConfirmPassword}
             navigateToStep={navigateToStep}
             onClose={handleClose}
             onBack={handleBack}
@@ -154,7 +158,7 @@ export const AuthDialog: React.FC = () => {
         return (
           <SignupInfoDialog
             email={email}
-            passcode={passcode}
+            password={password}
             fullNameParam={fullName}
             userNameParam={username}
             navigateToStep={navigateToStep}
@@ -173,9 +177,9 @@ export const AuthDialog: React.FC = () => {
             onBack={handleBack}
           />
         );
-      case DialogAuthSteps.FORGOT_PASSCODE:
+      case DialogAuthSteps.FORGOT_PASSWORD:
         return (
-          <ForgotPasscodeDialog
+          <ForgotPasswordDialog
             email={email}
             navigateToStep={navigateToStep}
             updateUrl={updateUrl}

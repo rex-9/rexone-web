@@ -1,11 +1,11 @@
-// src/design/components/auth/SignupPasscodeConfirmDialog.tsx
+// src/design/components/auth/SignupPasswordConfirmDialog.tsx
 
 import React, { useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   Button,
   Dialog,
-  PasscodeInput,
+  PasswordInput,
   TextLink,
 } from "../../../design/components";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -15,23 +15,23 @@ import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SignupPasscodeConfirmDialogProps {
+interface SignupPasswordConfirmDialogProps {
   email: string;
-  passcode: string;
-  confirmPasscode: string;
-  setConfirmPasscode: (value: string) => void;
+  password?: string;
+  confirmPassword?: string;
+  setConfirmPassword?: (value: string) => void;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
 }
 
-export const SignupPasscodeConfirmDialog: React.FC<
-  SignupPasscodeConfirmDialogProps
+export const SignupPasswordConfirmDialog: React.FC<
+  SignupPasswordConfirmDialogProps
 > = ({
   email,
-  passcode,
-  confirmPasscode,
-  setConfirmPasscode,
+  password = "",
+  confirmPassword = "",
+  setConfirmPassword = () => {},
   navigateToStep,
   onClose,
   onBack,
@@ -50,13 +50,13 @@ export const SignupPasscodeConfirmDialog: React.FC<
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (confirmPasscode.length !== 6) {
+    if (confirmPassword.length !== 6) {
       setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
-    if (confirmPasscode !== passcode) {
+    if (confirmPassword !== password) {
       setError(t(AppLocales.Auth.SignUpPasscodeConfirm.PasscodesMismatch));
-      setConfirmPasscode("");
+      setConfirmPassword("");
       return;
     }
 
@@ -66,8 +66,8 @@ export const SignupPasscodeConfirmDialog: React.FC<
       try {
         await AuthController.resetPassword(
           resetPasswordToken,
-          passcode,
-          confirmPasscode,
+          password,
+          confirmPassword,
           setError,
           () => {
             // Navigate to sign in (initial dialog) on success
@@ -99,7 +99,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
       setIsLoading(true);
       try {
         const result = await AuthController.completeGoogleSignIn(
-          passcode,
+          password,
           googleChallengeToken,
         );
         if (result.success && result.token && result.user) {
@@ -129,7 +129,10 @@ export const SignupPasscodeConfirmDialog: React.FC<
     }
 
     // Normal email sign-up - go to info page
-    navigateToStep(DialogAuthSteps.SIGNUP_INFO, { email, passcode });
+    navigateToStep(DialogAuthSteps.SIGNUP_INFO, {
+      email,
+      password,
+    });
   };
 
   const triggerSubmit = () => {
@@ -170,11 +173,11 @@ export const SignupPasscodeConfirmDialog: React.FC<
             {t(AppLocales.Auth.SignUpPasscodeConfirm.Instruction)}
           </p>
         </div>
-        <PasscodeInput
-          idPrefix="confirm-passcode"
-          value={confirmPasscode}
+        <PasswordInput
+          idPrefix="confirm-password"
+          value={confirmPassword}
           onChange={(value) => {
-            setConfirmPasscode(value);
+            setConfirmPassword(value);
             setError("");
           }}
           onComplete={triggerSubmit}
@@ -187,7 +190,7 @@ export const SignupPasscodeConfirmDialog: React.FC<
           variant="primary"
           type="submit"
           fullWidth
-          disabled={isLoading || confirmPasscode.length !== 6}
+          disabled={isLoading || confirmPassword.length !== 6}
         >
           {isLoading
             ? t(AppLocales.Auth.SignUpPasscodeConfirm.Resetting)

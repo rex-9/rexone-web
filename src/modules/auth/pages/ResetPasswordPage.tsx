@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps } from "..";
 
-export const ResetPasscodePage: React.FC = () => {
+export const ResetPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -26,15 +26,15 @@ export const ResetPasscodePage: React.FC = () => {
 
     // If token is missing, go back to forgot password
     if (!token) {
-      navigate(AppRoutes.buildDialogUrl(DialogAuthSteps.FORGOT_PASSCODE), {
+      navigate(AppRoutes.buildDialogUrl(DialogAuthSteps.FORGOT_PASSWORD), {
         replace: true,
       });
       return;
     }
 
-    // If token exists, go to create passcode (reset password)
+    // If token exists, go to create password (reset password)
     navigate(
-      AppRoutes.buildDialogUrl(DialogAuthSteps.SIGNUP_PASSCODE_CREATE, {
+      AppRoutes.buildDialogUrl(DialogAuthSteps.SIGNUP_PASSWORD_CREATE, {
         reset_password_token: token,
         email: email || "",
       }),
@@ -44,3 +44,5 @@ export const ResetPasscodePage: React.FC = () => {
 
   return null;
 };
+
+

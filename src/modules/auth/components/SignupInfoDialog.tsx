@@ -9,7 +9,7 @@ import { AppLocales, useTranslate } from "../../../locales";
 
 interface SignupInfoDialogProps {
   email: string;
-  passcode: string;
+  password: string;
   fullNameParam: string;
   userNameParam: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
@@ -20,7 +20,7 @@ interface SignupInfoDialogProps {
 
 export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
   email,
-  passcode,
+  password,
   fullNameParam,
   userNameParam,
   navigateToStep,
@@ -55,12 +55,12 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       username,
       fullName,
       email,
-      passcode,
-      passcode, // passcode confirmation is same as passcode
+      password,
+      password, // password confirmation is same as password
       setError,
       () => {
         // After signup, navigate to verify email step
-        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email, passcode });
+        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
         success(t(AppLocales.Auth.SignUpInfo.VerificationSent));
       },
     );

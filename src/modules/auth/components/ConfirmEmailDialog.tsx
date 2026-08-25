@@ -5,7 +5,7 @@ import { useAuth, useToast } from "../../../contexts";
 import {
   Button,
   Dialog,
-  PasscodeInput,
+  PasswordInput,
   TextLink,
 } from "../../../design/components";
 import { useCountdown } from "../../../hooks";
@@ -103,10 +103,10 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
           }}
           className="space-y-16"
         >
-          <PasscodeInput
+          <PasswordInput
             idPrefix="confirm-email-code"
             value={otp}
-            onChange={(value) => {
+            onChange={(value: string) => {
               setOtp(value);
               updateUrl({ otp: value });
               setError("");

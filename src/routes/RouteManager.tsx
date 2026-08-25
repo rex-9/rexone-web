@@ -13,8 +13,8 @@ import { AnapanaPage } from "../modules/anapana/pages";
 import {
   AuthDialog,
   ConfirmEmailPage,
-  ForgotPasscodePage,
-  ResetPasscodePage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
   SignInPage,
   SignOutPage,
   SignUpPage,
@@ -56,12 +56,12 @@ export const RouteManager = () => {
               element={<ConfirmEmailPage />}
             />
             <Route
-              path={AppRoutes.client.public.FORGOT_PASSCODE}
-              element={<ForgotPasscodePage />}
+              path={AppRoutes.client.public.FORGOT_PASSWORD}
+              element={<ForgotPasswordPage />}
             />
             <Route
-              path={AppRoutes.client.public.RESET_PASSCODE}
-              element={<ResetPasscodePage />}
+              path={AppRoutes.client.public.RESET_PASSWORD}
+              element={<ResetPasswordPage />}
             />
           </Route>
 

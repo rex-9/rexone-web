@@ -35,6 +35,11 @@ export async function registerUser(user: TestUser): Promise<Response> {
     }),
   });
 
+  if (!res.ok) {
+    const errorBody = await res.text().catch(() => "");
+    throw new Error(`registerUser failed with ${res.status}: ${errorBody}`);
+  }
+
   return res;
 }
 
