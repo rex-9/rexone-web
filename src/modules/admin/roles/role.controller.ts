@@ -1,4 +1,5 @@
-import { parseFromList } from "../../../services/api.service";
+import { parseRecord } from "../../../services/api.service";
+import { AppLocales, translate } from "../../../locales";
 import RoleService from "./role.service";
 import {
   IAdminPermission,
@@ -19,12 +20,12 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load roles",
+            translate(AppLocales.Admin.Roles.Errors.LoadList),
         );
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminRole>(data.roles));
+      onSuccess?.(data.roles.map(parseRecord));
   }
 
   async getRole(
@@ -40,12 +41,12 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load role",
+            translate(AppLocales.Admin.Roles.Errors.LoadOne),
         );
         return;
       }
 
-      onSuccess?.(data.role);
+      onSuccess?.(parseRecord(data.role));
   }
 
   async getPermissions(
@@ -60,12 +61,12 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load permissions",
+            translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
         );
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminPermission>(data.permissions));
+      onSuccess?.(data.permissions.map(parseRecord));
   }
 
   async createRole(
@@ -81,12 +82,12 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to create role",
+            translate(AppLocales.Admin.Roles.Errors.Create),
         );
         return;
       }
 
-      onSuccess?.(data.role);
+      onSuccess?.(parseRecord(data.role));
   }
 
   async updateRole(
@@ -103,12 +104,12 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to update role",
+            translate(AppLocales.Admin.Roles.Errors.Update),
         );
         return;
       }
 
-      onSuccess?.(data.role);
+      onSuccess?.(parseRecord(data.role));
   }
 
   async deleteRole(
@@ -124,7 +125,7 @@ class RoleController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to delete role",
+            translate(AppLocales.Admin.Roles.Errors.Delete),
         );
         return;
       }

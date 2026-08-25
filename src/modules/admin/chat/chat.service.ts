@@ -18,7 +18,7 @@ class ChatService {
     limit?: number;
   }): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>[]>>> {
     return api.get<IJsonApiResource<IAdminChatRoom>[]>(
-      AppRoutes.server.protected.ADMIN_CHAT_ROOMS,
+      AppRoutes.server.protected.admin.CHAT_ROOMS,
       params,
     );
   }
@@ -27,7 +27,7 @@ class ChatService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<{ room: IAdminChatRoom }>>> {
     return api.get<{ room: IAdminChatRoom }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_ROOM_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
   }
 
@@ -36,14 +36,14 @@ class ChatService {
     values: IAdminChatRoomFormValues,
   ): Promise<IApiResponse<IApiEnvelope<{ room: IAdminChatRoom }>>> {
     return api.put<{ room: IAdminChatRoom }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_ROOM_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
       { room: values },
     );
   }
 
   async deleteRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_ROOM_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
   }
 
@@ -54,7 +54,7 @@ class ChatService {
     IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatMessage>[]>>
   > {
     return api.get<IJsonApiResource<IAdminChatMessage>[]>(
-      AppRoutes.server.protected.ADMIN_CHAT_MESSAGES,
+      AppRoutes.server.protected.admin.CHAT_MESSAGES,
       params,
     );
   }
@@ -63,7 +63,7 @@ class ChatService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<{ message: IAdminChatMessage }>>> {
     return api.get<{ message: IAdminChatMessage }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_MESSAGE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
   }
 
@@ -72,14 +72,14 @@ class ChatService {
     values: IAdminChatMessageFormValues,
   ): Promise<IApiResponse<IApiEnvelope<{ message: IAdminChatMessage }>>> {
     return api.put<{ message: IAdminChatMessage }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_MESSAGE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
       { message: values },
     );
   }
 
   async deleteMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_CHAT_MESSAGE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
   }
 }

@@ -1,19 +1,12 @@
 import { IApiPagination } from "../../../models";
-import { parseFromList } from "../../../services/api.service";
-import ProductService, { AdminProductResponse } from "./product.service";
+import { AppLocales, translate } from "../../../locales";
+import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
+import ProductService from "./product.service";
 import {
   IAdminProduct,
   IAdminProductFormValues,
   IAdminProductListParams,
 } from "./types";
-
-const parseAdminProduct = (data: AdminProductResponse): IAdminProduct => {
-  if ("attributes" in data) {
-    return { ...data.attributes, id: data.id };
-  }
-
-  return data.product;
-};
 
 class ProductController {
   async getProducts(
@@ -22,19 +15,20 @@ class ProductController {
     onError?: (error: string) => void,
   ): Promise<void> {
       const response = await ProductService.getProducts(params);
-      const { status, data, meta } = response.data || {};
+      const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
         onError?.(
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load products",
+            translate(AppLocales.Admin.Products.Errors.LoadList),
         );
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminProduct>(data), meta?.pagination);
+      const { records, pagination } = parsePaginatedResponse(response);
+      onSuccess?.(records, pagination ?? undefined);
   }
 
   async getProduct(
@@ -50,12 +44,34 @@ class ProductController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load product",
+            translate(AppLocales.Admin.Products.Errors.LoadOne),
         );
         return;
       }
 
-      onSuccess?.(parseAdminProduct(data));
+      onSuccess?.(parseRecord("attributes" in data ? data : data.product));
+  }
+
+  async getDiscardedProducts(
+    params?: IAdminProductListParams,
+    onSuccess?: (products: IAdminProduct[], pagination?: IApiPagination) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    const response = await ProductService.getDiscardedProducts(params);
+    const { status, data } = response.data || {};
+
+    if (!status?.success || !data) {
+      onError?.(
+        status?.error ||
+          status?.message ||
+          response.error ||
+          translate(AppLocales.Admin.Products.Errors.LoadList),
+      );
+      return;
+    }
+
+    const { records, pagination } = parsePaginatedResponse(response);
+    onSuccess?.(records, pagination ?? undefined);
   }
 
   async createProduct(
@@ -71,12 +87,17 @@ class ProductController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to create product",
+            translate(AppLocales.Admin.Products.Errors.Create),
         );
         return;
       }
 
-      onSuccess?.(data ? parseAdminProduct(data) : undefined, status.message);
+      onSuccess?.(
+        data
+          ? parseRecord("attributes" in data ? data : data.product)
+          : undefined,
+        status.message,
+      );
   }
 
   async updateProduct(
@@ -93,20 +114,23 @@ class ProductController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to update product",
+            translate(AppLocales.Admin.Products.Errors.Update),
         );
         return;
       }
 
-      onSuccess?.(parseAdminProduct(data), status.message);
+      onSuccess?.(
+        parseRecord("attributes" in data ? data : data.product),
+        status.message,
+      );
   }
 
-  async deleteProduct(
+  async discardProduct(
     id: string,
     onSuccess?: (message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await ProductService.deleteProduct(id);
+      const response = await ProductService.discardProduct(id);
       const { status } = response.data || {};
 
       if (!status?.success) {
@@ -114,12 +138,33 @@ class ProductController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to delete product",
+            translate(AppLocales.Admin.Products.Errors.Discard),
         );
         return;
       }
 
-      onSuccess?.(status.message);
+    onSuccess?.(status.message);
+  }
+
+  async restoreProduct(
+    id: string,
+    onSuccess?: (message: string) => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    const response = await ProductService.restoreProduct(id);
+    const { status, data } = response.data || {};
+
+    if (!status?.success || !data) {
+      onError?.(
+        status?.error ||
+          status?.message ||
+          response.error ||
+          translate(AppLocales.Admin.Products.Errors.Update),
+      );
+      return;
+    }
+
+    onSuccess?.(status.message);
   }
 }
 

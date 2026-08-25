@@ -40,7 +40,11 @@ export const PaymentPage: React.FC = () => {
   }, [setLoading]);
 
   useEffect(() => {
-    fetchData();
+    const timeoutId = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [fetchData]);
 
   const handleCheckout = (productId: string) => {

@@ -1,22 +1,29 @@
 import { UserService } from "../services";
 import { IApiEnvelope, IApiResponse, IUser } from "../models";
+import { AppLocales, translate } from "../locales";
 
 class UserController {
   async peekUser(
     email: string,
-  ): Promise<"exists_confirmed" | "exists_unconfirmed" | "not_exists"> {
+  ): Promise<
+    "exists_confirmed" | "exists_unconfirmed" | "not_exists" | "discarded"
+  > {
     const response = await UserService.peekUser(email);
 
     if (response.error || !response.data?.data) {
       console.error("Error peeking user:", response.error);
 
-      throw new Error("Failed to check user.");
+      throw new Error(translate(AppLocales.User.Errors.CheckFailed));
     }
 
-    const { user_exists, confirmed } = response.data.data;
+    const { user_exists, confirmed, discarded } = response.data.data;
 
     if (!user_exists) {
       return "not_exists";
+    }
+
+    if (discarded) {
+      return "discarded";
     }
 
     return confirmed ? "exists_confirmed" : "exists_unconfirmed";

@@ -7,17 +7,15 @@ export const ADMIN_ACTIONS = {
   DELETE: "delete",
   READ: "read",
   UPDATE: "update",
-} as const;
-
-export const ADMIN_TABLE_ACTION_TYPES = {
-  DELETE: "delete",
   DISCARD: "discard",
   EDIT: "edit",
   RESTORE: "restore",
 } as const;
 
-export type TAdminTableActionType =
-  (typeof ADMIN_TABLE_ACTION_TYPES)[keyof typeof ADMIN_TABLE_ACTION_TYPES];
+export type TAdminActionsType =
+  (typeof ADMIN_ACTIONS)[keyof typeof ADMIN_ACTIONS];
+
+
 
 export const ADMIN_RESOURCES = {
   MESSAGES: "messages",
@@ -40,6 +38,7 @@ export const ADMIN_PAGE_TITLES = {
   PRODUCT_CREATE: "Create Product",
   PRODUCT_EDIT: "Edit Product",
   PRODUCTS: "Products",
+  PRODUCTS_RECYCLE_BIN: "Product Recycle Bin",
   ROLE_CREATE: "Create Role",
   ROLE_EDIT: "Edit Role",
   ROLES: "Roles",
@@ -70,61 +69,65 @@ export interface IAdminPageMeta {
 }
 
 export const ADMIN_PAGE_META: Record<string, IAdminPageMeta> = {
-  [AppRoutes.client.protected.ADMIN_USERS]: {
+  [AppRoutes.client.protected.admin.USERS]: {
     title: ADMIN_PAGE_TITLES.USERS,
     actionLabel: "Create user",
-    actionTo: AppRoutes.client.protected.ADMIN_USER_CREATE,
+    actionTo: AppRoutes.client.protected.admin.USER_CREATE,
     actionResource: ADMIN_RESOURCES.USERS,
   },
-  [AppRoutes.client.protected.ADMIN_USERS_RECYCLE_BIN]: {
+  [AppRoutes.client.protected.admin.USERS_RECYCLE_BIN]: {
     title: ADMIN_PAGE_TITLES.USERS_RECYCLE_BIN,
     description: "Restore discarded users or permanently remove them.",
   },
-  [AppRoutes.client.protected.ADMIN_USER_CREATE]: {
+  [AppRoutes.client.protected.admin.USER_CREATE]: {
     title: ADMIN_PAGE_TITLES.USER_CREATE,
     description: "Add a user account using the admin user endpoint.",
   },
-  [AppRoutes.client.protected.ADMIN_USER_EDIT]: {
+  [AppRoutes.client.protected.admin.USER_EDIT]: {
     title: ADMIN_PAGE_TITLES.USER_EDIT,
     description: "Update account details and admin-assigned fields.",
   },
-  [AppRoutes.client.protected.ADMIN_ROLES]: {
+  [AppRoutes.client.protected.admin.ROLES]: {
     title: ADMIN_PAGE_TITLES.ROLES,
     actionLabel: "Create role",
-    actionTo: AppRoutes.client.protected.ADMIN_ROLE_CREATE,
+    actionTo: AppRoutes.client.protected.admin.ROLE_CREATE,
     actionResource: ADMIN_RESOURCES.ROLES,
   },
-  [AppRoutes.client.protected.ADMIN_ROLE_CREATE]: {
+  [AppRoutes.client.protected.admin.ROLE_CREATE]: {
     title: ADMIN_PAGE_TITLES.ROLE_CREATE,
   },
-  [AppRoutes.client.protected.ADMIN_ROLE_EDIT]: {
+  [AppRoutes.client.protected.admin.ROLE_EDIT]: {
     title: ADMIN_PAGE_TITLES.ROLE_EDIT,
   },
-  [AppRoutes.client.protected.ADMIN_NOTIFICATIONS]: {
+  [AppRoutes.client.protected.admin.NOTIFICATIONS]: {
     title: ADMIN_PAGE_TITLES.NOTIFICATIONS,
   },
-  [AppRoutes.client.protected.ADMIN_PRODUCTS]: {
+  [AppRoutes.client.protected.admin.PRODUCTS]: {
     title: ADMIN_PAGE_TITLES.PRODUCTS,
     actionLabel: "Create product",
-    actionTo: AppRoutes.client.protected.ADMIN_PRODUCT_CREATE,
+    actionTo: AppRoutes.client.protected.admin.PRODUCT_CREATE,
     actionResource: ADMIN_RESOURCES.PRODUCTS,
   },
-  [AppRoutes.client.protected.ADMIN_PRODUCT_CREATE]: {
+  [AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN]: {
+    title: ADMIN_PAGE_TITLES.PRODUCTS_RECYCLE_BIN,
+    description: "Restore discarded products to make them active in Stripe again.",
+  },
+  [AppRoutes.client.protected.admin.PRODUCT_CREATE]: {
     title: ADMIN_PAGE_TITLES.PRODUCT_CREATE,
   },
-  [AppRoutes.client.protected.ADMIN_PRODUCT_EDIT]: {
+  [AppRoutes.client.protected.admin.PRODUCT_EDIT]: {
     title: ADMIN_PAGE_TITLES.PRODUCT_EDIT,
   },
-  [AppRoutes.client.protected.ADMIN_CHAT_ROOMS]: {
+  [AppRoutes.client.protected.admin.CHAT_ROOMS]: {
     title: ADMIN_PAGE_TITLES.CHAT_ROOMS,
   },
-  [AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT]: {
+  [AppRoutes.client.protected.admin.CHAT_ROOM_EDIT]: {
     title: ADMIN_PAGE_TITLES.CHAT_ROOM_EDIT,
   },
-  [AppRoutes.client.protected.ADMIN_CHAT_MESSAGES]: {
+  [AppRoutes.client.protected.admin.CHAT_MESSAGES]: {
     title: ADMIN_PAGE_TITLES.CHAT_MESSAGES,
   },
-  [AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT]: {
+  [AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT]: {
     title: ADMIN_PAGE_TITLES.CHAT_MESSAGE_EDIT,
   },
 };

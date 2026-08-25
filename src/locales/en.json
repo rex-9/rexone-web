@@ -11,6 +11,14 @@
       "continue": "Continue",
       "use_different_email": "Use a different email",
       "session_expired": "Your session has expired. Please sign in again.",
+      "errors": {
+        "signin_failed": "Failed to sign in.",
+        "incorrect_passcode": "Incorrect passcode.",
+        "verification_code_sent": "Verification code sent.",
+        "google_passcode_required": "Google verification requires passcode setup.",
+        "google_authentication_failed": "Google authentication failed.",
+        "google_signin_complete_failed": "Failed to complete Google sign in."
+      },
       "validation": { "passcode_length": "Passcode must be 6 digits" }
     },
     "initial": {
@@ -22,6 +30,7 @@
       "validation": { "invalid_email": "Please enter a valid email address." },
       "errors": {
         "user_check_failed": "Failed to check user. Please try again.",
+        "account_discarded": "This account is in the recycle bin. Contact an administrator to restore it.",
         "google_signin_failed": "Google sign in failed",
         "google_signin_retry": "Google sign in failed. Please try again."
       },
@@ -179,8 +188,82 @@
         "delete_unexpected": "An error occurred while deleting the user.",
         "load_roles_unexpected": "An error occurred while loading roles."
       }
+    },
+    "chat": {
+      "errors": {
+        "load_rooms": "Failed to load rooms", "delete_room": "Failed to delete room",
+        "load_room": "Failed to load room", "update_room": "Failed to update room",
+        "load_messages": "Failed to load messages", "delete_message": "Failed to delete message",
+        "load_message": "Failed to load message", "update_message": "Failed to update message"
+      }
+    },
+    "products": {
+      "errors": {
+        "load_list": "Failed to load products", "load_one": "Failed to load product",
+        "create": "Failed to create product", "update": "Failed to update product",
+        "discard": "Failed to discard product"
+      }
+    },
+    "roles": {
+      "errors": {
+        "load_list": "Failed to load roles", "load_one": "Failed to load role",
+        "load_permissions": "Failed to load permissions", "create": "Failed to create role",
+        "update": "Failed to update role", "delete": "Failed to delete role"
+      }
+    },
+    "notifications": {
+      "actions": {
+        "clear_all_roles": "Clear all roles",
+        "clear_all_users": "Clear all users",
+        "remove_recipient": "Remove {{recipient}}",
+        "select_all_roles": "Select all roles",
+        "select_all_users": "Select all users",
+        "send": "Send notification"
+      },
+      "errors": {
+        "load_recipients": "Unable to load recipients",
+        "load_templates": "Unable to load notification events",
+        "send": "Unable to send notification"
+      },
+      "labels": {
+        "all": "All",
+        "all_users": "All users",
+        "audience": "Audience",
+        "delivery": "Delivery",
+        "email": "Email",
+        "event": "Event",
+        "in_app": "In app",
+        "push": "Push",
+        "recipients": "Recipients",
+        "selected_roles": "Selected roles",
+        "selected_users": "Selected users"
+      },
+      "validation": {
+        "delivery_channel_required": "Select at least one delivery channel.",
+        "event_required": "Select an available notification event.",
+        "role_required": "Select at least one role.",
+        "user_required": "Select at least one user."
+      }
     }
   },
+  "ai": {
+    "errors": {
+      "unexpected": "An error occurred. Please try again.",
+      "load_rooms": "Failed to load rooms", "create_room": "Failed to create room",
+      "load_history": "Failed to load history", "get_response": "Failed to get AI response",
+      "clear_history": "Failed to clear history", "rename_room": "Failed to rename room",
+      "delete_room": "Failed to delete room"
+    }
+  },
+  "payment": {
+    "errors": {
+      "unexpected": "An error occurred. Please try again.",
+      "load_products": "Failed to fetch products", "load_subscriptions": "Failed to fetch subscriptions",
+      "cancel_subscription": "Failed to cancel subscription", "resume_subscription": "Failed to resume subscription",
+      "load_transactions": "Failed to fetch transactions", "create_checkout": "Failed to create checkout session"
+    }
+  },
+  "user": { "errors": { "check_failed": "Failed to check user." } },
 
   "### ANAPANA_MODULE": "### ANAPANA_MODULE",
   "anapana_timer_title": "Anapana Interval Reminder",

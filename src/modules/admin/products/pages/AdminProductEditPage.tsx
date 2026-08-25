@@ -10,7 +10,7 @@ import {
 } from "../types";
 import {
   AlertDialog,
-  AdminLoadingState,
+  
   AdminState,
 } from "../../components";
 import ProductController from "../product.controller";
@@ -23,7 +23,7 @@ export const AdminProductEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading, setLoading } = useLoading();
+  const {setLoading } = useLoading();
   const [product, setProduct] = useState<IAdminProduct | null>(null);
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -54,7 +54,7 @@ export const AdminProductEditPage: React.FC = () => {
       values,
       (_product, message) => {
         toast.success(message);
-        navigate(AppRoutes.client.protected.ADMIN_PRODUCTS);
+        navigate(AppRoutes.client.protected.admin.PRODUCTS);
       },
       (message) => {
         setAlertMessage(message);
@@ -70,20 +70,16 @@ export const AdminProductEditPage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {!id ? (
-        <AdminState title="Unable to load product" message="Missing product id." />
-      ) : isOverlayLoading ? (
-        <AdminLoadingState />
-      ) : error && !product ? (
+      {error && !product ? (
         <AdminState title="Unable to load product" message={error} />
-      ) : (
+      ) : product? (
         <AdminProductForm
             mode="edit"
             product={product}
             onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCTS)}
+            onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
           />
-      )}
+      ):null}
     </>
   );
 };

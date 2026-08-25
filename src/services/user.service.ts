@@ -8,12 +8,14 @@ class UserService {
       IApiEnvelope<{
         user_exists: boolean;
         confirmed: boolean;
+        discarded: boolean;
       }>
     >
   > {
     return api.get<{
       user_exists: boolean;
       confirmed: boolean;
+      discarded: boolean;
     }>(AppRoutes.server.public.PEEK_USER, { email });
   }
 

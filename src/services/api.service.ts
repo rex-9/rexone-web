@@ -262,19 +262,22 @@ export const apiHandler = async <T>(
   }
 };
 
-// Helper to extract attributes from JSONAPI response
-export const parseFromList = <T>(
-  items: IJsonApiResource<T>[] | null | undefined,
-): (T & { id: string })[] => {
-  if (!Array.isArray(items)) return [];
+export const parseRecord = <T extends object>(
+  record: IJsonApiResource<T> | T,
+): T & { id: string } => {
+  if (
+    "attributes" in record &&
+    "type" in record &&
+    typeof record.attributes === "object" &&
+    record.attributes !== null
+  ) {
+    return { ...record.attributes, id: record.id };
+  }
 
-  return items.map((item) => ({
-    ...item.attributes,
-    id: item.id,
-  }));
+  return record as T & { id: string };
 };
 
-export const parsePaginatedResponse = <T>(
+export const parsePaginatedResponse = <T extends object>(
   response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
 ): {
   records: (T & { id: string })[];
@@ -283,7 +286,9 @@ export const parsePaginatedResponse = <T>(
   const envelope = response.data;
 
   return {
-    records: parseFromList(envelope?.data),
+    records: Array.isArray(envelope?.data)
+      ? envelope.data.map((record) => parseRecord<T>(record))
+      : [],
     pagination: envelope?.meta?.pagination ?? null,
   };
 };

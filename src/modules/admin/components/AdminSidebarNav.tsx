@@ -1,13 +1,5 @@
 import React, { useMemo } from "react";
 import { NavLink } from "react-router-dom";
-import {
-  BellAlertIcon,
-  ChatBubbleLeftRightIcon,
-  CubeIcon,
-  InboxStackIcon,
-  KeyIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/outline";
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
@@ -20,6 +12,7 @@ import {
   ADMIN_ROLE_NAMES,
 } from "../constants";
 import { cn } from "../../../design/utils";
+import { iconsLib } from "../../../assets";
 
 interface IAdminNavItem {
   label: string;
@@ -37,40 +30,40 @@ interface IAdminSidebarNavProps {
 const navItems: IAdminNavItem[] = [
   {
     label: ADMIN_NAV_LABELS.USERS,
-    to: AppRoutes.client.protected.ADMIN_USERS,
+    to: AppRoutes.client.protected.admin.USERS,
     resource: ADMIN_RESOURCES.USERS,
-    icon: UserGroupIcon,
+    icon: iconsLib.userGroup,
   },
   {
     label: ADMIN_NAV_LABELS.ROLES,
-    to: AppRoutes.client.protected.ADMIN_ROLES,
+    to: AppRoutes.client.protected.admin.ROLES,
     resource: ADMIN_RESOURCES.ROLES,
-    icon: KeyIcon,
+    icon: iconsLib.key,
     superAdminOnly: true,
   },
   {
     label: ADMIN_NAV_LABELS.NOTIFICATIONS,
-    to: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
+    to: AppRoutes.client.protected.admin.NOTIFICATIONS,
     resource: ADMIN_RESOURCES.NOTIFICATIONS,
-    icon: BellAlertIcon,
+    icon: iconsLib.bellAlert,
   },
   {
     label: ADMIN_NAV_LABELS.PRODUCTS,
-    to: AppRoutes.client.protected.ADMIN_PRODUCTS,
+    to: AppRoutes.client.protected.admin.PRODUCTS,
     resource: ADMIN_RESOURCES.PRODUCTS,
-    icon: CubeIcon,
+    icon: iconsLib.cube,
   },
   {
     label: ADMIN_NAV_LABELS.CHAT_ROOMS,
-    to: AppRoutes.client.protected.ADMIN_CHAT_ROOMS,
+    to: AppRoutes.client.protected.admin.CHAT_ROOMS,
     resource: ADMIN_RESOURCES.ROOMS,
-    icon: ChatBubbleLeftRightIcon,
+    icon: iconsLib.chatBubbleLeftRight,
   },
   {
     label: ADMIN_NAV_LABELS.CHAT_MESSAGES,
-    to: AppRoutes.client.protected.ADMIN_CHAT_MESSAGES,
+    to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
     resource: ADMIN_RESOURCES.MESSAGES,
-    icon: InboxStackIcon,
+    icon: iconsLib.inboxStack,
   },
 ];
 

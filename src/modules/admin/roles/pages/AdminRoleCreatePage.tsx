@@ -9,7 +9,7 @@ import {
   IAdminPermission,
   IAdminRoleFormValues,
 } from "../types";
-import { AlertDialog, AdminLoadingState } from "../../components";
+import { AlertDialog } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
 import { ADMIN_PAGE_TITLES } from "../../constants";
 
@@ -18,7 +18,7 @@ export const AdminRoleCreatePage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [permissions, setPermissions] = useState<IAdminPermission[]>([]);
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -43,7 +43,7 @@ export const AdminRoleCreatePage: React.FC = () => {
       () => {
         setLoading(false, { overlay: false });
         toast.success("Role created");
-        navigate(AppRoutes.client.protected.ADMIN_ROLES);
+        navigate(AppRoutes.client.protected.admin.ROLES);
       },
       (message) => {
         setAlertMessage(message);
@@ -59,14 +59,12 @@ export const AdminRoleCreatePage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {isOverlayLoading ? (
-        <AdminLoadingState />
-      ) : (
+      {(
         <AdminRoleForm
             mode="create"
             permissions={permissions}
             onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.ADMIN_ROLES)}
+            onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}
           />
       )}
     </>

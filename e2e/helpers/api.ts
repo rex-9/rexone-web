@@ -106,7 +106,8 @@ export async function deleteUserAccount(token: string): Promise<boolean> {
 /**
  * Clean up a test user by attempting to sign in and delete their account via standard routes.
  */
-export async function cleanupUser(_email?: string): Promise<void> {
+export async function cleanupUser(email?: string): Promise<void> {
+  void email;
   // Best-effort cleanup placeholder
 }
 

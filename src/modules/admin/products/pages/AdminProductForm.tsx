@@ -4,7 +4,13 @@ import {
   IAdminProduct,
   IAdminProductFormValues,
 } from "../types";
+import { ProductPriceMode } from "../productForm.utils";
 import { FormActionRow, TextInput } from "../../components";
+import {
+  PRODUCT_CURRENCY,
+  PRODUCT_CYCLE,
+  PRODUCT_TYPE,
+} from "../constants";
 
 const ADMIN_PRODUCT_FORM_LABELS = {
   ACTIVE: "Active",
@@ -24,8 +30,6 @@ const ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES = {
   DESCRIPTION_REQUIRED: "Description is required.",
 } as const;
 
-type ProductPriceMode = "paid" | "free";
-
 interface IAdminProductFormProps {
   mode: "create" | "edit";
   product?: IAdminProduct | null;
@@ -37,8 +41,8 @@ const initialValues: IAdminProductFormValues = {
   name: "",
   description: "",
   price_unit_amount: 1000,
-  currency: "usd",
-  cycle: "month",
+  currency: PRODUCT_CURRENCY.USD,
+  cycle: PRODUCT_CYCLE.MONTH,
   active: true,
 };
 
@@ -51,8 +55,8 @@ const buildInitialValues = (
     name: product.name || "",
     description: product.description || "",
     price_unit_amount: product.price_unit_amount,
-    currency: product.currency || "usd",
-    cycle: product.cycle || "",
+    currency: product.currency || PRODUCT_CURRENCY.USD,
+    cycle: product.cycle || PRODUCT_CYCLE.ONE_TIME,
     active: product.active,
   };
 };
@@ -67,11 +71,13 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     buildInitialValues(product),
   );
   const [priceMode, setPriceMode] = useState<ProductPriceMode>(() =>
-    product?.free || product?.price_unit_amount === 0 ? "free" : "paid",
+    product?.free || product?.price_unit_amount === 0
+      ? PRODUCT_TYPE.FREE
+      : PRODUCT_TYPE.PREMIUM,
   );
   const [descriptionError, setDescriptionError] = useState("");
 
-  const isFree = priceMode === "free";
+  const isFree = priceMode === PRODUCT_TYPE.FREE;
 
   const updateValue = (
     field: keyof IAdminProductFormValues,
@@ -85,14 +91,14 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     setValues((current) => ({
       ...current,
       price_unit_amount:
-        mode === "free"
+        mode === PRODUCT_TYPE.FREE
           ? 0
           : current.price_unit_amount > 0
             ? current.price_unit_amount
             : initialValues.price_unit_amount,
       cycle:
-        mode === "free"
-          ? ""
+        mode === PRODUCT_TYPE.FREE
+          ? PRODUCT_CYCLE.ONE_TIME
           : current.cycle || initialValues.cycle,
     }));
   };
@@ -115,7 +121,9 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       description,
       price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
       currency: values.currency,
-      cycle: isFree ? "" : values.cycle || "",
+      cycle: isFree
+        ? PRODUCT_CYCLE.ONE_TIME
+        : values.cycle || PRODUCT_CYCLE.ONE_TIME,
       active: values.active,
     });
   };
@@ -134,7 +142,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             {ADMIN_PRODUCT_FORM_LABELS.PRICE_TYPE}
           </label>
           <div className="grid gap-8 sm:grid-cols-2">
-            {(["paid", "free"] as const).map((option) => (
+            {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => (
               <label
                 key={option}
                 className="flex min-h-[52px] items-center gap-8 rounded-md border border-base-300 bg-base-100 px-12 text-body-s font-medium text-base-content"
@@ -147,7 +155,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
                   onChange={() => updatePriceMode(option)}
                 />
                 <span>
-                  {option === "paid"
+                  {option === PRODUCT_TYPE.PREMIUM
                     ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
                     : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
                 </span>
@@ -186,7 +194,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             value={values.currency}
             onChange={(event) => updateValue("currency", event.target.value)}
           >
-            <option value="usd">USD</option>
+            <option value={PRODUCT_CURRENCY.USD}>USD</option>
           </select>
         </div>
         <div className="flex flex-col">
@@ -195,15 +203,19 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           </label>
           <select
             className="select select-bordered h-[52px] rounded-md border-2 border-base-300 bg-base-100 px-16 text-body-m text-base-content disabled:cursor-not-allowed disabled:opacity-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            value={isFree ? "" : values.cycle || ""}
+            value={
+              isFree
+                ? PRODUCT_CYCLE.ONE_TIME
+                : values.cycle || PRODUCT_CYCLE.ONE_TIME
+            }
             disabled={isFree}
             onChange={(event) =>
               updateValue("cycle", event.target.value as AdminProductCycle)
             }
           >
-            <option value="">One-time</option>
-            <option value="month">Monthly</option>
-            <option value="year">Yearly</option>
+            <option value={PRODUCT_CYCLE.ONE_TIME}>One-time</option>
+            <option value={PRODUCT_CYCLE.MONTH}>Monthly</option>
+            <option value={PRODUCT_CYCLE.YEAR}>Yearly</option>
           </select>
         </div>
         <label className="flex min-h-[52px] items-center gap-10 rounded-md border border-base-300 px-12 text-body-s font-medium text-base-content md:self-end">

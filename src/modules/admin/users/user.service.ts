@@ -17,7 +17,7 @@ class UserService {
     params?: IAdminUserListParams,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
     return api.get<IJsonApiResource<IAdminUser>[]>(
-      AppRoutes.server.protected.ADMIN_USERS,
+      AppRoutes.server.protected.admin.USERS,
       params ? { page: params.page, limit: params.limit } : undefined,
     );
   }
@@ -26,7 +26,7 @@ class UserService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.get<AdminUserResponse>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
     );
   }
 
@@ -34,7 +34,7 @@ class UserService {
     params?: IAdminUserListParams,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
     return api.get<IJsonApiResource<IAdminUser>[]>(
-      AppRoutes.server.protected.ADMIN_DISCARDED_USERS,
+      AppRoutes.server.protected.admin.DISCARDED_USERS,
       params ? { page: params.page, limit: params.limit } : undefined,
     );
   }
@@ -42,7 +42,7 @@ class UserService {
   async createUser(
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.post<AdminUserResponse>(AppRoutes.server.protected.ADMIN_USERS, {
+    return api.post<AdminUserResponse>(AppRoutes.server.protected.admin.USERS, {
       user: values,
     });
   }
@@ -52,7 +52,7 @@ class UserService {
     values: IAdminUserFormValues,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.put<AdminUserResponse>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
       {
       user: values,
       },
@@ -61,7 +61,7 @@ class UserService {
 
   async deleteUser(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
     );
   }
 
@@ -69,7 +69,7 @@ class UserService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.post<AdminUserResponse>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_DISCARD, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.USER_DISCARD, id),
     );
   }
 
@@ -77,7 +77,7 @@ class UserService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.post<AdminUserResponse>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_USER_UNDISCARD, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.USER_UNDISCARD, id),
     );
   }
 
@@ -85,7 +85,7 @@ class UserService {
     IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
   > {
     return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>(
-      AppRoutes.server.protected.ADMIN_USER_ROLES,
+      AppRoutes.server.protected.admin.USER_ROLES,
     );
   }
 }

@@ -1,11 +1,12 @@
 import NotificationService from "./notification.service";
-import { parseFromList } from "../../../services/api.service";
+import { parseRecord } from "../../../services/api.service";
 import { IAdminUser } from "../users";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
   IAdminNotificationTemplate,
 } from "./types";
+import { NOTIFICATION_LOCALES } from "./constants";
 
 class NotificationController {
   async getTemplates(
@@ -16,7 +17,12 @@ class NotificationController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(status?.error || status?.message || response.error || "Failed to load notification templates");
+      onError?.(
+        status?.error ||
+          status?.message ||
+          response.error ||
+          NOTIFICATION_LOCALES.Errors.LoadTemplates,
+      );
       return;
     }
 
@@ -35,12 +41,12 @@ class NotificationController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to load notification recipients",
+            NOTIFICATION_LOCALES.Errors.LoadRecipients,
         );
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminUser>(data));
+      onSuccess?.(data.map(parseRecord));
   }
 
   async createNotification(
@@ -57,7 +63,7 @@ class NotificationController {
           status?.error ||
             status?.message ||
             response.error ||
-            "Failed to send notification",
+            NOTIFICATION_LOCALES.Errors.Send,
         );
         return;
       }

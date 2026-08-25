@@ -3,7 +3,7 @@ export { AdminTableActions } from "./AdminTableActions";
 export type { IAdminTableAction } from "./AdminTableActions";
 export { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 export { AdminLayout } from "./AdminLayout";
-export { AdminLoadingState, AdminState } from "./AdminState";
+export {  AdminState } from "./AdminState";
 export { AdminMultiSelectDropdown } from "./AdminMultiSelectDropdown";
 export { AdminPagination } from "./AdminPagination";
 export { AdminPermissionMatrix } from "./AdminPermissionMatrix";
@@ -16,7 +16,7 @@ export type { ButtonProps } from "../../../design/components/button/Button";
 export {
   Dropdown,
   FormContainer,
-  PasscodeInput,
+  PasswordInput,
   TextArea,
   TextInput,
   Toggle,

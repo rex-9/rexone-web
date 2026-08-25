@@ -1,4 +1,5 @@
 import { PaymentService } from ".";
+import { AppLocales, translate } from "../../locales";
 import { parsePaginatedResponse } from "../../services/api.service";
 import { IProduct, ISubscription, ITransaction } from "./types";
 import { IApiPagination } from "../../models";
@@ -22,10 +23,10 @@ class PaymentController {
       }
       return {
         success: false,
-        error: status?.error || "Failed to fetch products",
+        error: status?.error || translate(AppLocales.Payment.Errors.LoadProducts),
       };
     } catch {
-      return { success: false, error: "An error occurred. Please try again." };
+      return { success: false, error: translate(AppLocales.Payment.Errors.Unexpected) };
     }
   }
 
@@ -47,10 +48,11 @@ class PaymentController {
       }
       return {
         success: false,
-        error: status?.error || "Failed to fetch subscriptions",
+        error:
+          status?.error || translate(AppLocales.Payment.Errors.LoadSubscriptions),
       };
     } catch {
-      return { success: false, error: "An error occurred. Please try again." };
+      return { success: false, error: translate(AppLocales.Payment.Errors.Unexpected) };
     }
   }
 
@@ -66,10 +68,13 @@ class PaymentController {
       if (status?.success && data) {
         onSuccess(data);
       } else {
-        onError(status?.error || "Failed to cancel subscription");
+        onError(
+          status?.error || translate(AppLocales.Payment.Errors.CancelSubscription),
+        );
       }
     } catch (error) {
-      onError(`An error occurred. Please try again. ${error}`);
+      console.error(error);
+      onError(translate(AppLocales.Payment.Errors.Unexpected));
     }
   }
 
@@ -85,10 +90,13 @@ class PaymentController {
       if (status?.success && data) {
         onSuccess(data);
       } else {
-        onError(status?.error || "Failed to resume subscription");
+        onError(
+          status?.error || translate(AppLocales.Payment.Errors.ResumeSubscription),
+        );
       }
     } catch (error) {
-      onError(`An error occurred. Please try again. ${error}`);
+      console.error(error);
+      onError(translate(AppLocales.Payment.Errors.Unexpected));
     }
   }
 
@@ -110,10 +118,11 @@ class PaymentController {
       }
       return {
         success: false,
-        error: status?.error || "Failed to fetch transactions",
+        error:
+          status?.error || translate(AppLocales.Payment.Errors.LoadTransactions),
       };
     } catch {
-      return { success: false, error: "An error occurred. Please try again." };
+      return { success: false, error: translate(AppLocales.Payment.Errors.Unexpected) };
     }
   }
 
@@ -130,10 +139,11 @@ class PaymentController {
       if (status?.success && data?.checkout_url) {
         onSuccess(data.checkout_url);
       } else {
-        onError(status?.error || "Failed to create checkout session");
+        onError(status?.error || translate(AppLocales.Payment.Errors.CreateCheckout));
       }
     } catch (error) {
-      onError(`An error occurred. Please try again. ${error}`);
+      console.error(error);
+      onError(translate(AppLocales.Payment.Errors.Unexpected));
     }
   }
 }

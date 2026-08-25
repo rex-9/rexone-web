@@ -8,8 +8,8 @@ import { IApiPagination } from "../../../../models";
 import { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
-  AdminLoadingState,
   AdminPagination,
+  AdminActionButton,
   AdminState,
   AdminTableActions,
   AdminTable,
@@ -22,28 +22,40 @@ import {
   ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import { iconsLib } from "../../../../assets";
 
-const formatDate = (value?: Date): string => {
+const formatDate = (value?: Date | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
   return new Date(value).toLocaleDateString();
 };
 
-export const AdminProductsPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCTS);
+type ProductListView = "active" | "discarded";
+
+interface IAdminProductsPageProps {
+  view?: ProductListView;
+}
+
+export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
+  view = "active",
+}) => {
+  useDocumentTitle(
+    view === "active"
+      ? ADMIN_PAGE_TITLES.PRODUCTS
+      : ADMIN_PAGE_TITLES.PRODUCTS_RECYCLE_BIN,
+  );
 
   const navigate = useNavigate();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
-  const { isLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [products, setProducts] = useState<IAdminProduct[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminProduct | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [lifecycleTarget, setLifecycleTarget] = useState<IAdminProduct | null>(null);
+  const [isLifecycleLoading, setIsLifecycleLoading] = useState(false);
 
   const loadProducts = useCallback(async () => {
     if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PRODUCTS)) return;
@@ -51,7 +63,11 @@ export const AdminProductsPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    await ProductController.getProducts(
+    const load = view === "active"
+      ? ProductController.getProducts.bind(ProductController)
+      : ProductController.getDiscardedProducts.bind(ProductController);
+
+    await load(
       { page, limit: ADMIN_PAGE_SIZE },
       (nextProducts, nextPagination) => {
         setProducts(nextProducts);
@@ -63,7 +79,7 @@ export const AdminProductsPage: React.FC = () => {
         setLoading(false);
       },
     );
-  }, [can, page, setLoading]);
+  }, [can, page, setLoading, view]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -118,9 +134,10 @@ export const AdminProductsPage: React.FC = () => {
         ),
       },
       {
-        key: "created",
-        header: ADMIN_TABLE_HEADERS.CREATED,
-        render: (product) => formatDate(product.created_at),
+        key: "lifecycle_date",
+        header: view === "active" ? ADMIN_TABLE_HEADERS.CREATED : "Discarded",
+        render: (product) =>
+          formatDate(view === "active" ? product.created_at : product.discarded_at),
       },
       {
         key: "actions",
@@ -129,82 +146,131 @@ export const AdminProductsPage: React.FC = () => {
         render: (product) => (
           <AdminTableActions
             resource={ADMIN_RESOURCES.PRODUCTS}
-            actions={[
-              {
-                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
-                onClick: () =>
-                  navigate(
-                    AppRoutes.client.protected.ADMIN_PRODUCT_EDIT.replace(
-                      ":id",
-                      product.id,
-                    ),
-                  ),
-              },
-              {
-                type: ADMIN_TABLE_ACTION_TYPES.DELETE,
-                disabled: !product.active,
-                onClick: () => setDeleteTarget(product),
-              },
-            ]}
+            actions={
+              view === "active"
+                ? [
+                    {
+                      type: ADMIN_ACTIONS.EDIT,
+                      onClick: () =>
+                        navigate(
+                          AppRoutes.client.protected.admin.PRODUCT_EDIT.replace(
+                            ":id",
+                            product.id,
+                          ),
+                        ),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.DISCARD,
+                      disabled: !product.active,
+                      onClick: () => setLifecycleTarget(product),
+                    },
+                  ]
+                : [
+                    {
+                      type: ADMIN_ACTIONS.RESTORE,
+                      onClick: () => setLifecycleTarget(product),
+                    },
+                  ]
+            }
           />
         ),
       },
     ],
-    [navigate],
+    [navigate, view],
   );
 
-  const handleDelete = async () => {
-    if (!deleteTarget || !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS))
+  const handleLifecycleAction = async () => {
+    if (!lifecycleTarget || !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS))
       return;
 
-    setIsDeleting(true);
+    setIsLifecycleLoading(true);
 
-    await ProductController.deleteProduct(
-      deleteTarget.id,
-      (message) => {
-        toast.success(message);
-        setDeleteTarget(null);
-        setIsDeleting(false);
-        void loadProducts();
-      },
-      (message) => {
-        toast.error(message);
-        setIsDeleting(false);
-      },
+    const onSuccess = (message: string) => {
+      toast.success(message);
+      setLifecycleTarget(null);
+      setIsLifecycleLoading(false);
+      void loadProducts();
+    };
+    const onError = (message: string) => {
+      toast.error(message);
+      setIsLifecycleLoading(false);
+    };
+
+    const action = view === "active"
+      ? ProductController.discardProduct.bind(ProductController)
+      : ProductController.restoreProduct.bind(ProductController);
+
+    await action(
+      lifecycleTarget.id,
+      onSuccess,
+      onError,
     );
   };
 
   return (
     <>
-      {isLoading || permissionsLoading ? (
-        <AdminLoadingState />
-      ) : error ? (
+      { error ? (
         <AdminState title="Unable to load products" message={error} />
-      ) : products.length === 0 ? (
-        <AdminState
-          title="No products yet"
-          message="Products will appear here after they are created."
-        />
       ) : (
         <>
-          <AdminTable
-            columns={columns}
-            records={products}
-            getRowKey={(product) => product.id}
-          />
-          <AdminPagination pagination={pagination} onPageChange={setPage} />
+          {view === "active" && (
+            <div className="mb-12 flex justify-end">
+              <AdminActionButton
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PRODUCTS}
+                size="sm"
+                variant="secondary"
+                className="h-[36px] w-[36px] p-0"
+                aria-label="Open recycle bin"
+                title="Recycle bin"
+                onClick={() =>
+                  navigate(AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN)
+                }
+              >
+                <iconsLib.archiveBox className="h-[18px] w-[18px]" />
+              </AdminActionButton>
+            </div>
+          )}
+          {products.length === 0 ? (
+            <AdminState
+              title={view === "active" ? "No products yet" : "Recycle bin is empty"}
+              message={
+                view === "active"
+                  ? "Products will appear here after they are created."
+                  : "Discarded products can be restored here."
+              }
+            />
+          ) : (
+            <>
+              <AdminTable
+                columns={columns}
+                records={products}
+                getRowKey={(product) => product.id}
+              />
+              <AdminPagination pagination={pagination} onPageChange={setPage} />
+            </>
+          )}
         </>
       )}
 
       <ConfirmDialog
-        isOpen={Boolean(deleteTarget)}
-        title="Delete product"
-        message={`Archive ${deleteTarget?.name || "this product"}?`}
-        confirmLabel="Delete"
-        isLoading={isDeleting}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        isOpen={Boolean(lifecycleTarget)}
+        title={view === "active" ? "Discard product" : "Restore product"}
+        message={
+          view === "active"
+            ? `Move ${lifecycleTarget?.name || "this product"} to the recycle bin? It will be archived in Stripe.`
+            : `Restore ${lifecycleTarget?.name || "this product"}? It will become active in Stripe and return to the products list.`
+        }
+        confirmLabel={view === "active" ? ADMIN_COMMON_LABELS.DISCARD : ADMIN_COMMON_LABELS.RESTORE}
+        isDestructive={view === "active"}
+        isLoading={isLifecycleLoading}
+        onClose={() => !isLifecycleLoading && setLifecycleTarget(null)}
+        onConfirm={handleLifecycleAction}
       />
     </>
   );
 };
+
+export const AdminDiscardedProductsPage: React.FC = () => (
+  <AdminProductsPage view="discarded" />
+);

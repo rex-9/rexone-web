@@ -11,7 +11,7 @@ import {
 } from "../types";
 import {
   AlertDialog,
-  AdminLoadingState,
+  
   AdminState,
   FormActionRow,
   TextInput,
@@ -24,7 +24,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading, setLoading } = useLoading();
+  const {setLoading } = useLoading();
   const [room, setRoom] = useState<IAdminChatRoom | null>(null);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -69,7 +69,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
       () => {
         setLoading(false, { overlay: false });
         toast.success("Chat room updated");
-        navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS);
+        navigate(AppRoutes.client.protected.admin.CHAT_ROOMS);
       },
       (message) => {
         setAlertMessage(message);
@@ -85,13 +85,9 @@ export const AdminChatRoomEditPage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {!id ? (
-        <AdminState title="Unable to load chat room" message="Missing room id." />
-      ) : isOverlayLoading ? (
-        <AdminLoadingState />
-      ) : error && !room ? (
+      { error && !room ? (
         <AdminState title="Unable to load chat room" message={error} />
-      ) : (
+      ) : room? (
         <form onSubmit={handleSubmit}>
             <TextInput
               label="Title"
@@ -102,11 +98,11 @@ export const AdminChatRoomEditPage: React.FC = () => {
             <FormActionRow
               submitLabel="Save changes"
               onCancel={() =>
-                navigate(AppRoutes.client.protected.ADMIN_CHAT_ROOMS)
+                navigate(AppRoutes.client.protected.admin.CHAT_ROOMS)
               }
             />
           </form>
-      )}
+      ):null}
     </>
   );
 };

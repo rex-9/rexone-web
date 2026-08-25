@@ -79,7 +79,7 @@ export const AiPage: React.FC = () => {
     await AiController.chat(
       content,
       null, // roomId (auto-detected)
-      (queuedMessage, _roomId) => {
+      (queuedMessage) => {
         setMessages((prev) => [
           ...prev.filter((message) => message.id !== "welcome"),
           queuedMessage,

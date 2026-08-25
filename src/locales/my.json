@@ -9,6 +9,14 @@
       "email_label": "အီးမေးလ်", "email_placeholder": "your@email.com",
       "continue": "ဆက်လက်လုပ်ဆောင်ရန်", "use_different_email": "အခြားအီးမေးလ်ကို အသုံးပြုရန်",
       "session_expired": "သင့်အသုံးပြုချိန် ကုန်ဆုံးသွားပါပြီ။ ထပ်မံဝင်ရောက်ပါ။",
+      "errors": {
+        "signin_failed": "ဝင်ရောက်၍ မရပါ။",
+        "incorrect_passcode": "လျှို့ဝှက်နံပါတ် မမှန်ပါ။",
+        "verification_code_sent": "အတည်ပြုကုဒ် ပို့ပြီးပါပြီ။",
+        "google_passcode_required": "Google အတည်ပြုခြင်းအတွက် လျှို့ဝှက်နံပါတ် သတ်မှတ်ရန် လိုအပ်ပါသည်။",
+        "google_authentication_failed": "Google ဖြင့် အတည်ပြု၍ မရပါ။",
+        "google_signin_complete_failed": "Google ဖြင့် ဝင်ရောက်ခြင်း မပြီးမြောက်ပါ။"
+      },
       "validation": { "passcode_length": "လျှို့ဝှက်နံပါတ်သည် ဂဏန်း ၆ လုံး ဖြစ်ရမည်" }
     },
     "initial": {
@@ -18,6 +26,7 @@
       "validation": { "invalid_email": "မှန်ကန်သော အီးမေးလ်လိပ်စာကို ထည့်ပါ။" },
       "errors": {
         "user_check_failed": "အသုံးပြုသူကို စစ်ဆေး၍ မရပါ။ ထပ်မံကြိုးစားပါ။",
+        "account_discarded": "ဤအကောင့်ကို ပိတ်ဆို့ထားပါသည်။ ပြန်လည်ရယူရန် စီမံခန့်ခွဲသူထံ ဆက်သွယ်ပါ။",
         "google_signin_failed": "Google ဖြင့် ဝင်ရောက်ခြင်း မအောင်မြင်ပါ",
         "google_signin_retry": "Google ဖြင့် ဝင်ရောက်ခြင်း မအောင်မြင်ပါ။ ထပ်မံကြိုးစားပါ။"
       },
@@ -118,6 +127,40 @@
         "update_unexpected": "အသုံးပြုသူကို ပြင်ဆင်နေစဉ် အမှားဖြစ်ပွားခဲ့ပါသည်။",
         "delete_unexpected": "အသုံးပြုသူကို ဖျက်နေစဉ် အမှားဖြစ်ပွားခဲ့ပါသည်။",
         "load_roles_unexpected": "ရာထူးများကို ရယူနေစဉ် အမှားဖြစ်ပွားခဲ့ပါသည်။"
+      }
+    },
+    "notifications": {
+      "actions": {
+        "clear_all_roles": "ရာထူးအားလုံး ရှင်းရန်",
+        "clear_all_users": "အသုံးပြုသူအားလုံး ရှင်းရန်",
+        "remove_recipient": "{{recipient}} ကို ဖယ်ရှားရန်",
+        "select_all_roles": "ရာထူးအားလုံး ရွေးရန်",
+        "select_all_users": "အသုံးပြုသူအားလုံး ရွေးရန်",
+        "send": "အသိပေးချက် ပို့ရန်"
+      },
+      "errors": {
+        "load_recipients": "လက်ခံသူများကို ရယူ၍ မရပါ",
+        "load_templates": "အသိပေးချက် အဖြစ်အပျက်များကို ရယူ၍ မရပါ",
+        "send": "အသိပေးချက် ပို့၍ မရပါ"
+      },
+      "labels": {
+        "all": "အားလုံး",
+        "all_users": "အသုံးပြုသူအားလုံး",
+        "audience": "လက်ခံသူများ",
+        "delivery": "ပို့ဆောင်မှု",
+        "email": "အီးမေးလ်",
+        "event": "အဖြစ်အပျက်",
+        "in_app": "အက်ပ်အတွင်း",
+        "push": "Push",
+        "recipients": "လက်ခံသူများ",
+        "selected_roles": "ရွေးထားသော ရာထူးများ",
+        "selected_users": "ရွေးထားသော အသုံးပြုသူများ"
+      },
+      "validation": {
+        "delivery_channel_required": "အနည်းဆုံး ပို့ဆောင်မှုနည်းလမ်း တစ်ခု ရွေးပါ။",
+        "event_required": "ရရှိနိုင်သော အသိပေးချက် အဖြစ်အပျက်တစ်ခု ရွေးပါ။",
+        "role_required": "အနည်းဆုံး ရာထူးတစ်ခု ရွေးပါ။",
+        "user_required": "အနည်းဆုံး အသုံးပြုသူတစ်ဦး ရွေးပါ။"
       }
     }
   },

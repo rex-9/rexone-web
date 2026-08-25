@@ -1,16 +1,13 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { cleanupUser } from "../../helpers/api";
 import { users, generateTestUser } from "../../data/users";
 import { AuthPage } from "../../pages/auth.page";
-import { SignUpPasswordPage } from "../../pages/sign-up-password.page";
 
 test.describe("Authentication > SSO", () => {
   let authPage: AuthPage;
-  let signUpPasswordPage: SignUpPasswordPage;
 
   test.beforeEach(async ({ page }) => {
     authPage = new AuthPage(page);
-    signUpPasswordPage = new SignUpPasswordPage(page);
 
     await page.route("**/oauth2/v3/userinfo*", async (route) => {
       await route.fulfill({

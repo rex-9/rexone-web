@@ -10,7 +10,7 @@ import {
   IAdminUserFormValues,
 } from "../types";
 import { IAdminRole } from "../../roles/types";
-import { AlertDialog, AdminLoadingState, AdminState } from "../../components";
+import { AlertDialog,  AdminState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 import { ADMIN_PAGE_TITLES } from "../../constants";
 
@@ -20,7 +20,7 @@ export const AdminUserEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [user, setUser] = useState<IAdminUser | null>(null);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [error, setError] = useState("");
@@ -59,7 +59,7 @@ export const AdminUserEditPage: React.FC = () => {
       (_user, message) => {
         setLoading(false, { overlay: false });
         toast.success(message);
-        navigate(AppRoutes.client.protected.ADMIN_USERS);
+        navigate(AppRoutes.client.protected.admin.USERS);
       },
       (message) => {
         setAlertMessage(message);
@@ -75,21 +75,17 @@ export const AdminUserEditPage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {!id ? (
-        <AdminState title="Unable to load user" message="Missing user id." />
-      ) : isOverlayLoading ? (
-        <AdminLoadingState />
-      ) : error && !user ? (
+      {error && (!user || !id) ? (
         <AdminState title="Unable to load user" message={error} />
-      ) : (
+      ) : user ? (
         <AdminUserForm
-            mode="edit"
-            user={user}
-            roles={roles}
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}
-          />
-      )}
+          mode="edit"
+          user={user}
+          roles={roles}
+          onSubmit={handleSubmit}
+          onCancel={() => navigate(AppRoutes.client.protected.admin.USERS)}
+        />
+      ) : null}
     </>
   );
 };

@@ -1,23 +1,12 @@
-import { AppLocales, translate } from "../../../locales";
+import { AppLocales } from "../../../locales";
 import { IApiPagination } from "../../../models";
-import { parseFromList } from "../../../services/api.service";
+import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
 import UserService from "./user.service";
 import {
-  AdminUserResponse,
   IAdminUser,
   IAdminUserFormValues,
 } from "./";
 import { IAdminRole } from "../roles";
-
-const parseAdminUser = (data: AdminUserResponse): IAdminUser => {
-  if ("attributes" in data) {
-    return { ...data.attributes, id: data.id };
-  }
-
-  return data.user;
-};
-
-const userErrorMessage = (key: string): string => translate(key);
 
 class UserController {
   async getUsers(
@@ -26,21 +15,20 @@ class UserController {
     onError?: (error: string) => void,
   ): Promise<void> {
       const response = await UserService.getUsers(params);
-      const { status, data, meta } = response.data || {};
+      const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
         onError?.(
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.LoadListFailed),
+            AppLocales.Admin.Users.Errors.LoadListFailed,
         );
         return;
       }
 
-      const users = parseFromList<IAdminUser>(data);
-
-      onSuccess?.(users, meta?.pagination);
+      const { records, pagination } = parsePaginatedResponse(response);
+      onSuccess?.(records, pagination ?? undefined);
   }
 
   async getUser(
@@ -56,12 +44,12 @@ class UserController {
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.LoadOneFailed),
+            AppLocales.Admin.Users.Errors.LoadOneFailed,
         );
         return;
       }
 
-      onSuccess?.(parseAdminUser(data));
+      onSuccess?.(parseRecord("attributes" in data ? data : data.user));
   }
 
   async getDiscardedUsers(
@@ -70,19 +58,20 @@ class UserController {
     onError?: (error: string) => void,
   ): Promise<void> {
     const response = await UserService.getDiscardedUsers(params);
-    const { status, data, meta } = response.data || {};
+    const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
       onError?.(
         status?.error ||
           status?.message ||
           response.error ||
-          userErrorMessage(AppLocales.Admin.Users.Errors.LoadListFailed),
+          AppLocales.Admin.Users.Errors.LoadListFailed,
       );
       return;
     }
 
-    onSuccess?.(parseFromList<IAdminUser>(data), meta?.pagination);
+    const { records, pagination } = parsePaginatedResponse(response);
+    onSuccess?.(records, pagination ?? undefined);
   }
 
   async createUser(
@@ -98,12 +87,15 @@ class UserController {
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.CreateFailed),
+            AppLocales.Admin.Users.Errors.CreateFailed,
         );
         return;
       }
 
-      onSuccess?.(parseAdminUser(data), status.message);
+      onSuccess?.(
+        parseRecord("attributes" in data ? data : data.user),
+        status.message,
+      );
   }
 
   async updateUser(
@@ -120,12 +112,15 @@ class UserController {
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.UpdateFailed),
+            AppLocales.Admin.Users.Errors.UpdateFailed,
         );
         return;
       }
 
-      onSuccess?.(parseAdminUser(data), status.message);
+      onSuccess?.(
+        parseRecord("attributes" in data ? data : data.user),
+        status.message,
+      );
   }
 
   async deleteUser(
@@ -141,7 +136,7 @@ class UserController {
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.DeleteFailed),
+            AppLocales.Admin.Users.Errors.DeleteFailed,
         );
         return;
       }
@@ -158,7 +153,7 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(status?.error || status?.message || response.error || userErrorMessage(AppLocales.Admin.Users.Errors.DeleteFailed));
+      onError?.(status?.error || status?.message || response.error || AppLocales.Admin.Users.Errors.DeleteFailed);
       return;
     }
 
@@ -174,7 +169,7 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(status?.error || status?.message || response.error || userErrorMessage(AppLocales.Admin.Users.Errors.UpdateFailed));
+      onError?.(status?.error || status?.message || response.error || AppLocales.Admin.Users.Errors.UpdateFailed);
       return;
     }
 
@@ -193,12 +188,12 @@ class UserController {
             status?.error ||
             status?.message ||
             response.error ||
-            userErrorMessage(AppLocales.Admin.Users.Errors.LoadRolesFailed),
+            AppLocales.Admin.Users.Errors.LoadRolesFailed,
         );
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminRole>(data.roles));
+      onSuccess?.(data.roles.map(parseRecord));
   }
 }
 

@@ -1,6 +1,12 @@
+import type {
+  NotificationAudienceType,
+  NotificationDeliveryChannel,
+  NotificationEventCategory,
+} from "./constants";
+
 export interface IAdminNotificationFormValues {
   event: string;
-  audience_type: "users" | "roles" | "all";
+  audience_type: NotificationAudienceType;
   user_ids: string[];
   role_ids: string[];
   send_push: boolean;
@@ -11,16 +17,16 @@ export interface IAdminNotificationFormValues {
 export interface IAdminNotificationTemplate {
   event: string;
   label: string;
-  category: "authentication" | "broadcast" | "payment" | string;
+  category: NotificationEventCategory | string;
   admin_available: boolean;
   unavailable_reason?: string;
 }
 
 export interface IAdminNotificationDelivery {
   job_id?: string;
-  audience?: "users" | "roles" | "all";
+  audience?: NotificationAudienceType;
   recipient_count?: number;
-  channels?: string[];
+  channels?: NotificationDeliveryChannel[];
   count?: number;
   users?: Record<string, IAdminNotificationDelivery>;
   socket?: boolean;

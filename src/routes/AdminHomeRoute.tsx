@@ -11,16 +11,16 @@ const adminEntryRoutes: Array<{
   resource: AdminResource;
   path: string;
 }> = [
-  { resource: "users", path: AppRoutes.client.protected.ADMIN_USERS },
+  { resource: "users", path: AppRoutes.client.protected.admin.USERS },
   {
     resource: "notifications",
-    path: AppRoutes.client.protected.ADMIN_NOTIFICATIONS,
+    path: AppRoutes.client.protected.admin.NOTIFICATIONS,
   },
-  { resource: "products", path: AppRoutes.client.protected.ADMIN_PRODUCTS },
-  { resource: "rooms", path: AppRoutes.client.protected.ADMIN_CHAT_ROOMS },
+  { resource: "products", path: AppRoutes.client.protected.admin.PRODUCTS },
+  { resource: "rooms", path: AppRoutes.client.protected.admin.CHAT_ROOMS },
   {
     resource: "messages",
-    path: AppRoutes.client.protected.ADMIN_CHAT_MESSAGES,
+    path: AppRoutes.client.protected.admin.CHAT_MESSAGES,
   },
 ];
 

@@ -30,9 +30,3 @@ export const AdminState: React.FC<IAdminStateProps> = ({
     )}
   </div>
 );
-
-export const AdminLoadingState: React.FC = () => (
-  <div className="flex min-h-[240px] items-center justify-center">
-    <span className="loading loading-spinner loading-md" />
-  </div>
-);

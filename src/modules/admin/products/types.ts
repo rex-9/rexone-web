@@ -1,4 +1,7 @@
-export type AdminProductCycle = "" | "month" | "year";
+import { PRODUCT_CYCLE } from "./constants";
+
+export type AdminProductCycle =
+  (typeof PRODUCT_CYCLE)[keyof typeof PRODUCT_CYCLE];
 
 export interface IAdminProduct {
   id: string;
@@ -16,6 +19,8 @@ export interface IAdminProduct {
   stripe_price_id: string;
   created_at?: Date;
   updated_at?: Date;
+  discarded_at?: Date | null;
+  undiscarded_at?: Date | null;
 }
 
 export interface IAdminProductFormValues {

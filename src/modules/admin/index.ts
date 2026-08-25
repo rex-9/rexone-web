@@ -10,6 +10,8 @@ export * from "./notifications";
 export * from "./products";
 export * from "./roles";
 export * from "./users";
+export * from "./components";
+export * from "./helpers/adminPage.helper";
 
 export const Admin = {
   ChatController,

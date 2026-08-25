@@ -4,7 +4,7 @@
  * Auto-expanding textarea with same visual language as input fields
  */
 
-import React, { useRef, useEffect } from "react";
+import React, { useId, useRef, useEffect } from "react";
 import { cn } from "../../utils";
 
 export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -33,7 +33,8 @@ export const TextArea: React.FC<TextAreaProps> = ({
   ...props
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const inputId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const inputId = id || generatedId;
   const hasError = !!error;
   const displayText = error || helperText;
   const currentLength = typeof value === "string" ? value.length : 0;

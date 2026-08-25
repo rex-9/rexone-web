@@ -27,7 +27,7 @@ export const AdminProductCreatePage: React.FC = () => {
         (_product, message) => {
           setLoading(false, { overlay: false });
           toast.success(message || "Product created");
-          navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
+          navigate(AppRoutes.client.protected.admin.PRODUCTS, {
             replace: true,
           });
         },
@@ -39,7 +39,7 @@ export const AdminProductCreatePage: React.FC = () => {
     } catch {
       setAlertMessage("Product was created, but the page could not return to products.");
       setLoading(false, { overlay: false });
-      navigate(AppRoutes.client.protected.ADMIN_PRODUCTS, {
+      navigate(AppRoutes.client.protected.admin.PRODUCTS, {
         replace: true,
       });
     }
@@ -55,7 +55,7 @@ export const AdminProductCreatePage: React.FC = () => {
       <AdminProductForm
         mode="create"
         onSubmit={handleSubmit}
-        onCancel={() => navigate(AppRoutes.client.protected.ADMIN_PRODUCTS)}
+        onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
       />
     </>
   );

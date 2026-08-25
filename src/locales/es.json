@@ -9,6 +9,14 @@
       "email_label": "Correo electrónico", "email_placeholder": "tu@correo.com",
       "continue": "Continuar", "use_different_email": "Usar otro correo electrónico",
       "session_expired": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+      "errors": {
+        "signin_failed": "No se pudo iniciar sesión.",
+        "incorrect_passcode": "El código de acceso es incorrecto.",
+        "verification_code_sent": "Código de verificación enviado.",
+        "google_passcode_required": "La verificación de Google requiere configurar un código de acceso.",
+        "google_authentication_failed": "Falló la autenticación con Google.",
+        "google_signin_complete_failed": "No se pudo completar el inicio de sesión con Google."
+      },
       "validation": { "passcode_length": "El código de acceso debe tener 6 dígitos" }
     },
     "initial": {
@@ -18,6 +26,7 @@
       "validation": { "invalid_email": "Introduce una dirección de correo válida." },
       "errors": {
         "user_check_failed": "No se pudo comprobar el usuario. Inténtalo de nuevo.",
+        "account_discarded": "Esta cuenta está en la papelera. Contacta a un administrador para restaurarla.",
         "google_signin_failed": "Falló el inicio de sesión con Google",
         "google_signin_retry": "Falló el inicio de sesión con Google. Inténtalo de nuevo."
       },

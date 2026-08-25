@@ -1,6 +1,6 @@
 import React from "react";
-import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../../design/components/button";
+import { iconsLib } from "../../../assets";
 
 interface IAdminHeaderActionButtonProps {
   label: string;
@@ -17,7 +17,7 @@ export const AdminHeaderActionButton: React.FC<
     aria-label={label}
     title={label}
   >
-    <PlusIcon className="h-[18px] w-[18px]" />
+    <iconsLib.plus className="h-[18px] w-[18px]" />
     <span className="sr-only">{label}</span>
   </Button>
 );

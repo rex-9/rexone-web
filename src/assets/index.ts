@@ -22,7 +22,24 @@ import {
   LanguageIcon,
   UserIcon,
   HomeIcon,
-} from "@heroicons/react/24/solid";
+  ArrowPathIcon,
+  MinusCircleIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  PlusIcon,
+  Bars3Icon,
+  BellIcon,
+  ArrowRightStartOnRectangleIcon,
+  CheckIcon,
+  XMarkIcon,
+  BellAlertIcon,
+  ChatBubbleLeftRightIcon,
+  CubeIcon,
+  InboxStackIcon,
+  KeyIcon,
+  UserGroupIcon,
+  ArchiveBoxIcon,
+}from "@heroicons/react/24/outline";
 
 // Videos
 import sampleVideo from "./videos/sample.mp4";
@@ -77,4 +94,21 @@ export const iconsLib = {
   language: LanguageIcon,
   user: UserIcon,
   home: HomeIcon,
+  arrowPath: ArrowPathIcon,
+  minusCircle:MinusCircleIcon,
+  pencilSquare:PencilSquareIcon,
+  trash:TrashIcon,
+  plus:PlusIcon,
+  bar3: Bars3Icon,
+  bell: BellIcon,
+  logout: ArrowRightStartOnRectangleIcon,
+  checkr : CheckIcon,
+  xmark : XMarkIcon,
+  bellAlert :  BellAlertIcon,
+  chatBubbleLeftRight:ChatBubbleLeftRightIcon,
+  cube:CubeIcon,
+  inboxStack:InboxStackIcon,
+  key:KeyIcon,
+  userGroup:UserGroupIcon,
+  archiveBox : ArchiveBoxIcon
 } as const;

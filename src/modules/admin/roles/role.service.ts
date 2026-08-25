@@ -16,7 +16,7 @@ class RoleService {
     IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
   > {
     return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>(
-      AppRoutes.server.protected.ADMIN_IAM_ROLES,
+      AppRoutes.server.protected.admin.IAM_ROLES,
     );
   }
 
@@ -24,7 +24,7 @@ class RoleService {
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
     return api.get<{ role: IAdminRole }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
     );
   }
 
@@ -34,7 +34,7 @@ class RoleService {
     >
   > {
     return api.get<{ permissions: IJsonApiResource<IAdminPermission>[] }>(
-      AppRoutes.server.protected.ADMIN_IAM_ROLE_PERMISSIONS,
+      AppRoutes.server.protected.admin.IAM_ROLE_PERMISSIONS,
     );
   }
 
@@ -42,7 +42,7 @@ class RoleService {
     values: IAdminRoleFormValues,
   ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
     return api.post<{ role: IAdminRole }>(
-      AppRoutes.server.protected.ADMIN_IAM_ROLES,
+      AppRoutes.server.protected.admin.IAM_ROLES,
       values,
     );
   }
@@ -52,14 +52,14 @@ class RoleService {
     values: IAdminRoleFormValues,
   ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
     return api.put<{ role: IAdminRole }>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
       values,
     );
   }
 
   async deleteRole(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.ADMIN_IAM_ROLE_DETAIL, id),
+      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
     );
   }
 }

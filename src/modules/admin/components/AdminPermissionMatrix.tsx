@@ -1,10 +1,12 @@
 import React, { useMemo } from "react";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
 import { Button } from "../../../design/components/button";
 import {
+
   ADMIN_PERMISSION_ACTION_ORDER,
   ADMIN_PERMISSION_FALLBACKS,
 } from "../constants";
+import { iconsLib } from '../../../assets';
 
 export interface IAdminPermissionMatrixItem {
   id: string;
@@ -124,9 +126,9 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
                     }
                   >
                     {isResourceSelected ? (
-                      <XMarkIcon className="h-[14px] w-[14px]" />
+                      <iconsLib.xmark className="h-[14px] w-[14px]" />
                     ) : (
-                      <CheckIcon className="h-[14px] w-[14px]" />
+                      <iconsLib.checkr className="h-[14px] w-[14px]" />
                     )}
                    
                   </Button>

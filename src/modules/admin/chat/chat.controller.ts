@@ -1,5 +1,6 @@
 import { IApiPagination } from "../../../models";
-import { parseFromList } from "../../../services/api.service";
+import { AppLocales, translate } from "../../../locales";
+import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
 import ChatService from "./chat.service";
 import {
   IAdminChatMessage,
@@ -15,14 +16,15 @@ class ChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
       const response = await ChatService.getRooms(params);
-      const { status, data, meta } = response.data || {};
+      const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
-        onError?.(status?.error || response.error || "Failed to load rooms");
+        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadRooms));
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminChatRoom>(data), meta?.pagination);
+      const { records, pagination } = parsePaginatedResponse(response);
+      onSuccess?.(records, pagination ?? undefined);
   }
 
   async deleteRoom(
@@ -34,7 +36,7 @@ class ChatController {
     const { status } = response.data || {};
 
     if (!status?.success) {
-      onError?.(status?.error || response.error || "Failed to delete room");
+      onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.DeleteRoom));
       return;
     }
 
@@ -50,11 +52,11 @@ class ChatController {
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.room) {
-        onError?.(status?.error || response.error || "Failed to load room");
+        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadRoom));
         return;
       }
 
-      onSuccess?.(data.room);
+      onSuccess?.(parseRecord(data.room));
   }
 
   async updateRoom(
@@ -67,11 +69,11 @@ class ChatController {
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.room) {
-        onError?.(status?.error || response.error || "Failed to update room");
+        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.UpdateRoom));
         return;
       }
 
-      onSuccess?.(data.room);
+      onSuccess?.(parseRecord(data.room));
   }
 
   async getMessages(
@@ -83,14 +85,15 @@ class ChatController {
     onError?: (error: string) => void,
   ): Promise<void> {
       const response = await ChatService.getMessages(params);
-      const { status, data, meta } = response.data || {};
+      const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
-        onError?.(status?.error || response.error || "Failed to load messages");
+        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadMessages));
         return;
       }
 
-      onSuccess?.(parseFromList<IAdminChatMessage>(data), meta?.pagination);
+      const { records, pagination } = parsePaginatedResponse(response);
+      onSuccess?.(records, pagination ?? undefined);
   }
 
   async deleteMessage(
@@ -102,7 +105,7 @@ class ChatController {
     const { status } = response.data || {};
 
     if (!status?.success) {
-      onError?.(status?.error || response.error || "Failed to delete message");
+      onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.DeleteMessage));
       return;
     }
 
@@ -118,11 +121,11 @@ class ChatController {
       const { status, data } = response.data || {};
 
       if (!status?.success || !data?.message) {
-        onError?.(status?.error || response.error || "Failed to load message");
+        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadMessage));
         return;
       }
 
-      onSuccess?.(data.message);
+      onSuccess?.(parseRecord(data.message));
   }
 
   async updateMessage(
@@ -136,12 +139,12 @@ class ChatController {
 
       if (!status?.success || !data?.message) {
         onError?.(
-          status?.error || response.error || "Failed to update message",
+          status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.UpdateMessage),
         );
         return;
       }
 
-      onSuccess?.(data.message);
+      onSuccess?.(parseRecord(data.message));
   }
 }
 

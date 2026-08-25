@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  CheckIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useTranslate } from "../../../../locales";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
 import { IAdminUser } from "../../users/types";
@@ -17,61 +15,26 @@ import {
   IAdminNotificationTemplate,
 } from "../types";
 import {
+  NOTIFICATION_AUDIENCE_TYPES,
+  NOTIFICATION_DELIVERY_FIELDS,
+  NOTIFICATION_EVENT_CATEGORIES,
+  NOTIFICATION_FIELDS,
+  NOTIFICATION_KEYBOARD_KEYS,
+  NOTIFICATION_LOCALES,
+} from "../constants";
+import {
   ADMIN_ACTIONS,
   ADMIN_PAGE_TITLES,
   ADMIN_RESOURCES,
 } from "../../constants";
 import {
+
   AlertDialog,
-  AdminLoadingState,
   AdminState,
   FormActionRow,
   Button,
 } from "../../components";
-
-const NOTIFICATION_AUDIENCE_TYPES = {
-  ALL: "all",
-  ROLES: "roles",
-  USERS: "users",
-} as const;
-
-const NOTIFICATION_FIELDS = {
-  AUDIENCE_TYPE: "audience_type",
-  EVENT: "event",
-  ROLE_IDS: "role_ids",
-  SEND_EMAIL: "send_email",
-  SEND_PUSH: "send_push",
-  SEND_SOCKET: "send_socket",
-  USER_IDS: "user_ids",
-} as const;
-
-const NOTIFICATION_LABELS = {
-  ALL_COUNT: "All",
-  ALL_USERS: "All users",
-  AUDIENCE: "Audience",
-  CLEAR_ALL_ROLES: "Clear all roles",
-  CLEAR_ALL_USERS: "Clear all users",
-  DELIVERY: "Delivery",
-  DELIVERY_EMAIL: "Email",
-  DELIVERY_PUSH: "Push",
-  DELIVERY_SOCKET: "In app",
-  EVENT: "Event",
-  NOTIFICATIONS: "Notifications",
-  RECIPIENTS: "Recipients",
-  SELECT_ALL_ROLES: "Select all roles",
-  SELECT_ALL_USERS: "Select all users",
-  SELECTED_ROLES: "Selected roles",
-  SELECTED_USERS: "Selected users",
-  SEND_NOTIFICATION: "Send notification",
-  UNABLE_TO_LOAD_RECIPIENTS: "Unable to load recipients",
-} as const;
-
-const NOTIFICATION_VALIDATION_MESSAGES = {
-  DELIVERY_CHANNEL_REQUIRED: "Select at least one delivery channel.",
-  EVENT_REQUIRED: "Select an available notification event.",
-  ROLE_REQUIRED: "Select at least one role.",
-  USER_REQUIRED: "Select at least one user.",
-} as const;
+import { iconsLib } from '../../../../assets';
 
 const initialValues: IAdminNotificationFormValues = {
   event: "",
@@ -85,12 +48,6 @@ const initialValues: IAdminNotificationFormValues = {
 
 const channelCheckboxClassName =
   "checkbox checkbox-sm border-base-content/40 checked:border-primary checked:bg-primary";
-
-const deliveryChannels = [
-  { field: NOTIFICATION_FIELDS.SEND_PUSH, label: NOTIFICATION_LABELS.DELIVERY_PUSH },
-  { field: NOTIFICATION_FIELDS.SEND_SOCKET, label: NOTIFICATION_LABELS.DELIVERY_SOCKET },
-  { field: NOTIFICATION_FIELDS.SEND_EMAIL, label: NOTIFICATION_LABELS.DELIVERY_EMAIL },
-] as const;
 
 const getUserLabel = (user: IAdminUser) =>
   user.email || user.name || user.username || user.id;
@@ -111,6 +68,7 @@ export const AdminNotificationsPage: React.FC = () => {
   useDocumentTitle(ADMIN_PAGE_TITLES.NOTIFICATIONS);
 
   const navigate = useNavigate();
+  const t = useTranslate();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
@@ -121,7 +79,7 @@ export const AdminNotificationsPage: React.FC = () => {
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [isRecipientFocused, setIsRecipientFocused] = useState(false);
-  const { isOverlayLoading, setLoading } = useLoading();
+  const {setLoading } = useLoading();
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -257,7 +215,8 @@ export const AdminNotificationsPage: React.FC = () => {
     event: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (
-      (event.key === "Enter" || event.key === ",") &&
+      (event.key === NOTIFICATION_KEYBOARD_KEYS.ADD_RECIPIENT ||
+        event.key === NOTIFICATION_KEYBOARD_KEYS.SEPARATOR) &&
       recipientSuggestions.length > 0
     ) {
       event.preventDefault();
@@ -266,7 +225,7 @@ export const AdminNotificationsPage: React.FC = () => {
     }
 
     if (
-      event.key === "Backspace" &&
+      event.key === NOTIFICATION_KEYBOARD_KEYS.REMOVE_RECIPIENT &&
       recipientQuery.length === 0 &&
       selectedUserIds.length > 0
     ) {
@@ -278,12 +237,14 @@ export const AdminNotificationsPage: React.FC = () => {
     event.preventDefault();
 
     if (!values.event) {
-      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.EVENT_REQUIRED);
+      setAlertMessage(t(NOTIFICATION_LOCALES.Validation.EventRequired));
       return;
     }
 
     if (selectedChannels === 0) {
-      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.DELIVERY_CHANNEL_REQUIRED);
+      setAlertMessage(
+        t(NOTIFICATION_LOCALES.Validation.DeliveryChannelRequired),
+      );
       return;
     }
 
@@ -291,7 +252,7 @@ export const AdminNotificationsPage: React.FC = () => {
       values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS &&
       selectedUserIds.length === 0
     ) {
-      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.USER_REQUIRED);
+      setAlertMessage(t(NOTIFICATION_LOCALES.Validation.UserRequired));
       return;
     }
 
@@ -299,7 +260,7 @@ export const AdminNotificationsPage: React.FC = () => {
       values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES &&
       selectedRoleIds.length === 0
     ) {
-      setAlertMessage(NOTIFICATION_VALIDATION_MESSAGES.ROLE_REQUIRED);
+      setAlertMessage(t(NOTIFICATION_LOCALES.Validation.RoleRequired));
       return;
     }
 
@@ -336,10 +297,8 @@ export const AdminNotificationsPage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {isOverlayLoading || permissionsLoading ? (
-        <AdminLoadingState />
-      ) : error && users.length === 0 && roles.length === 0 ? (
-        <AdminState title={NOTIFICATION_LABELS.UNABLE_TO_LOAD_RECIPIENTS} message={error} />
+      {error && users.length === 0 && roles.length === 0 ? (
+        <AdminState title={t(NOTIFICATION_LOCALES.Errors.LoadRecipients)} message={error} />
       ) : (
         <>
           <form onSubmit={handleSubmit}>
@@ -347,7 +306,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 <div className="md:col-span-2">
                   <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
                     <h2 className="text-body-m font-semibold text-base-content">
-                      {NOTIFICATION_LABELS.EVENT}
+                      {t(NOTIFICATION_LOCALES.Labels.Event)}
                     </h2>
                   </div>
                   <div className="flex flex-wrap gap-5">
@@ -357,7 +316,7 @@ export const AdminNotificationsPage: React.FC = () => {
                         ? "border-primary bg-primary text-primary-content shadow-sm"
                         : template.admin_available
                           ? "border-primary/40 bg-primary/5 text-base-content hover:border-primary hover:bg-primary/10"
-                        : template.category === "payment"
+                        : template.category === NOTIFICATION_EVENT_CATEGORIES.PAYMENT
                           ? "border-warning/50 bg-warning/10 text-warning-content"
                           : "border-base-300 bg-base-200/70 text-base-content/60";
 
@@ -373,7 +332,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             updateValue(NOTIFICATION_FIELDS.EVENT, template.event)
                           }
                         >
-                          {isSelected && <CheckIcon className="h-[13px] w-[13px] shrink-0" />}
+                          {isSelected && <iconsLib.checkr className="h-[13px] w-[13px] shrink-0" />}
                           <span className="text-caption font-semibold">
                             {template.label}
                           </span>
@@ -390,7 +349,7 @@ export const AdminNotificationsPage: React.FC = () => {
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
-                        {NOTIFICATION_LABELS.AUDIENCE}
+                        {t(NOTIFICATION_LOCALES.Labels.Audience)}
                       </h2>
                       <div className="flex items-center gap-8">
                         <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
@@ -398,7 +357,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             ? `${selectedUserIds.length}/${sortedUsers.length}`
                             : values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
                               ? `${selectedRoleIds.length}/${sortedRoles.length}`
-                              : NOTIFICATION_LABELS.ALL_COUNT}
+                              : t(NOTIFICATION_LOCALES.Labels.All)}
                         </span>
                         <Button
                           type="button"
@@ -407,20 +366,20 @@ export const AdminNotificationsPage: React.FC = () => {
                           aria-label={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? areAllUsersSelected
-                                ? NOTIFICATION_LABELS.CLEAR_ALL_USERS
-                                : NOTIFICATION_LABELS.SELECT_ALL_USERS
+                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
+                                : t(NOTIFICATION_LOCALES.Actions.SelectAllUsers)
                               : areAllRolesSelected
-                                ? NOTIFICATION_LABELS.CLEAR_ALL_ROLES
-                                : NOTIFICATION_LABELS.SELECT_ALL_ROLES
+                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllRoles)
+                                : t(NOTIFICATION_LOCALES.Actions.SelectAllRoles)
                           }
                           title={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? areAllUsersSelected
-                                ? NOTIFICATION_LABELS.CLEAR_ALL_USERS
-                                : NOTIFICATION_LABELS.SELECT_ALL_USERS
+                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
+                                : t(NOTIFICATION_LOCALES.Actions.SelectAllUsers)
                               : areAllRolesSelected
-                                ? NOTIFICATION_LABELS.CLEAR_ALL_ROLES
-                                : NOTIFICATION_LABELS.SELECT_ALL_ROLES
+                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllRoles)
+                                : t(NOTIFICATION_LOCALES.Actions.SelectAllRoles)
                           }
                           onClick={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
@@ -429,7 +388,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           }
                           disabled={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
                         >
-                          <CheckIcon className="h-[14px] w-[14px]" />
+                          <iconsLib.checkr className="h-[14px] w-[14px]" />
                         </Button>
                       </div>
                     </div>
@@ -442,7 +401,7 @@ export const AdminNotificationsPage: React.FC = () => {
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
-                          name="audience_type"
+                          name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
                           className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                           checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS}
                           onChange={() =>
@@ -452,13 +411,13 @@ export const AdminNotificationsPage: React.FC = () => {
                             )
                           }
                         />
-                        <span>{NOTIFICATION_LABELS.SELECTED_USERS}</span>
+                        <span>{t(NOTIFICATION_LOCALES.Labels.SelectedUsers)}</span>
                       </label>
                       {canReadRoles && (
                         <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                           <input
                             type="radio"
-                            name="audience_type"
+                            name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
                             className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                             checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES}
                             onChange={() =>
@@ -468,13 +427,13 @@ export const AdminNotificationsPage: React.FC = () => {
                               )
                             }
                           />
-                          <span>{NOTIFICATION_LABELS.SELECTED_ROLES}</span>
+                          <span>{t(NOTIFICATION_LOCALES.Labels.SelectedRoles)}</span>
                         </label>
                       )}
                       <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
                         <input
                           type="radio"
-                          name="audience_type"
+                          name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
                           className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                           checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
                           onChange={() =>
@@ -484,7 +443,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             )
                           }
                         />
-                        <span>{NOTIFICATION_LABELS.ALL_USERS}</span>
+                        <span>{t(NOTIFICATION_LOCALES.Labels.AllUsers)}</span>
                       </label>
                     </div>
 
@@ -502,10 +461,12 @@ export const AdminNotificationsPage: React.FC = () => {
                               <button
                                 type="button"
                                 className="rounded-full p-1 text-base-content opacity-70 transition hover:bg-base-300 hover:opacity-100"
-                                aria-label={`Remove ${getUserLabel(user)}`}
+                                aria-label={t(NOTIFICATION_LOCALES.Actions.RemoveRecipient, {
+                                  recipient: getUserLabel(user),
+                                })}
                                 onClick={() => removeUser(user.id)}
                               >
-                                <XMarkIcon className="h-[12px] w-[12px]" />
+                                <iconsLib.xmark className="h-[12px] w-[12px]" />
                               </button>
                             </span>
                           ))}
@@ -516,7 +477,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             className="min-w-[180px] flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
                             placeholder={
                               selectedUsers.length === 0
-                                ? NOTIFICATION_LABELS.RECIPIENTS
+                                ? t(NOTIFICATION_LOCALES.Labels.Recipients)
                                 : ""
                             }
                             onChange={(event) =>
@@ -553,7 +514,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                       {user.username || user.id}
                                     </span>
                                   </span>
-                                  <CheckIcon className="h-[14px] w-[14px] shrink-0 text-primary" />
+                                  <iconsLib.checkr className="h-[14px] w-[14px] shrink-0 text-primary" />
                                 </button>
                               ))}
                             </div>
@@ -586,15 +547,15 @@ export const AdminNotificationsPage: React.FC = () => {
                   <div className="rounded-md border border-base-300 bg-base-100 p-12">
                     <div className="mb-10 flex items-center justify-between gap-8">
                       <h2 className="text-body-m font-semibold text-base-content">
-                        {NOTIFICATION_LABELS.DELIVERY}
+                        {t(NOTIFICATION_LOCALES.Labels.Delivery)}
                       </h2>
                       <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
-                        {selectedChannels}/{deliveryChannels.length}
+                        {selectedChannels}/{NOTIFICATION_DELIVERY_FIELDS.length}
                       </span>
                     </div>
 
                     <div className="grid gap-8 sm:grid-cols-3">
-                      {deliveryChannels.map(({ field, label }) => (
+                      {NOTIFICATION_DELIVERY_FIELDS.map(({ field, label }) => (
                         <label
                           key={field}
                           className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content"
@@ -607,7 +568,7 @@ export const AdminNotificationsPage: React.FC = () => {
                               updateValue(field, event.target.checked)
                             }
                           />
-                          <span>{label}</span>
+                          <span>{t(label)}</span>
                         </label>
                       ))}
                     </div>
@@ -616,9 +577,9 @@ export const AdminNotificationsPage: React.FC = () => {
               </div>
 
               <FormActionRow
-                submitLabel={NOTIFICATION_LABELS.SEND_NOTIFICATION}
+                submitLabel={t(NOTIFICATION_LOCALES.Actions.Send)}
                 onCancel={() => {
-                  navigate(AppRoutes.client.protected.ADMIN_USERS);
+                  navigate(AppRoutes.client.protected.admin.USERS);
                 }}
               />
             </form>

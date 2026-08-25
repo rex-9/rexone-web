@@ -11,7 +11,6 @@ import {
 } from "../types";
 import {
   AlertDialog,
-  AdminLoadingState,
   AdminState,
   FormActionRow,
   TextArea,
@@ -26,7 +25,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [message, setMessage] = useState<IAdminChatMessage | null>(null);
   const [role, setRole] = useState("user");
   const [content, setContent] = useState("");
@@ -74,7 +73,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
       () => {
         setLoading(false, { overlay: false });
         toast.success("Chat message updated");
-        navigate(AppRoutes.client.protected.ADMIN_CHAT_MESSAGES);
+        navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES);
       },
       (message) => {
         setAlertMessage(message);
@@ -90,16 +89,9 @@ export const AdminChatMessageEditPage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {!id ? (
-        <AdminState
-          title="Unable to load chat message"
-          message="Missing message id."
-        />
-      ) : isOverlayLoading ? (
-        <AdminLoadingState />
-      ) : error && !message ? (
+      {error && !message ? (
         <AdminState title="Unable to load chat message" message={error} />
-      ) : (
+      ) : message? (
         <form onSubmit={handleSubmit}>
             <div className="grid gap-16">
               <label className="flex flex-col gap-4">
@@ -129,11 +121,11 @@ export const AdminChatMessageEditPage: React.FC = () => {
             <FormActionRow
               submitLabel="Save changes"
               onCancel={() =>
-                navigate(AppRoutes.client.protected.ADMIN_CHAT_MESSAGES)
+                navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES)
               }
             />
           </form>
-      )}
+      ):null}
     </>
   );
 };

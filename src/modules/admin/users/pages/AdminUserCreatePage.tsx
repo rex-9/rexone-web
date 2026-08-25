@@ -7,7 +7,7 @@ import { useDocumentTitle } from "../../../../hooks";
 import UserController from "../user.controller";
 import { IAdminUserFormValues } from "../types";
 import { IAdminRole } from "../../roles/types";
-import { AlertDialog, AdminLoadingState } from "../../components";
+import { AlertDialog } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 import { ADMIN_PAGE_TITLES } from "../../constants";
 
@@ -16,7 +16,7 @@ export const AdminUserCreatePage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOverlayLoading: isLoadingRoles, setLoading } = useLoading();
+  const {setLoading } = useLoading();
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -41,7 +41,7 @@ export const AdminUserCreatePage: React.FC = () => {
       () => {
         setLoading(false, { overlay: false });
         toast.success("User created");
-        navigate(AppRoutes.client.protected.ADMIN_USERS);
+        navigate(AppRoutes.client.protected.admin.USERS);
       },
       (message) => {
         setAlertMessage(message);
@@ -57,16 +57,14 @@ export const AdminUserCreatePage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {isLoadingRoles ? (
-        <AdminLoadingState />
-      ) : (
+     
         <AdminUserForm
           mode="create"
           roles={roles}
           onSubmit={handleSubmit}
-          onCancel={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}
+          onCancel={() => navigate(AppRoutes.client.protected.admin.USERS)}
         />
-      )}
+      
     </>
   );
 };

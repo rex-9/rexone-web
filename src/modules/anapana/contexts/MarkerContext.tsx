@@ -12,7 +12,7 @@ interface MarkerContextType {
 
 const MarkerContext = createContext<MarkerContextType | undefined>(undefined);
 
-export const MarkerProvider: React.FC<React.PropsWithChildren<{}>> = ({
+export const MarkerProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [markers, setMarkers] = useAtom(atoms.markersAtom);

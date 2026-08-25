@@ -7,7 +7,7 @@ import { useDocumentTitle } from "../../../../hooks";
 import RoleController from "../role.controller";
 import { IAdminRole } from "../types";
 import {
-  AdminLoadingState,
+  
   AdminState,
   AdminTableActions,
   AdminTable,
@@ -18,7 +18,7 @@ import {
   ADMIN_COMMON_LABELS,
   ADMIN_PAGE_TITLES,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_ACTION_TYPES,
+  ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
@@ -33,7 +33,7 @@ export const AdminRolesPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { isLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [error, setError] = useState("");
   const [deleteTarget, setDeleteTarget] = useState<IAdminRole | null>(null);
@@ -105,10 +105,10 @@ export const AdminRolesPage: React.FC = () => {
             resource={ADMIN_RESOURCES.ROLES}
             actions={[
               {
-                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.ADMIN_ROLE_EDIT.replace(
+                    AppRoutes.client.protected.admin.ROLE_EDIT.replace(
                       ":id",
                       role.id,
                     ),
@@ -117,7 +117,7 @@ export const AdminRolesPage: React.FC = () => {
               ...(!role.system
                 ? [
                     {
-                      type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                      type: ADMIN_ACTIONS.DELETE,
                       onClick: () => setDeleteTarget(role),
                     },
                   ]
@@ -152,9 +152,7 @@ export const AdminRolesPage: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : error ? (
+      { error ? (
         <AdminState title="Unable to load roles" message={error} />
       ) : roles.length === 0 ? (
         <AdminState title="No roles yet" message="Created roles appear here." />

@@ -4,7 +4,7 @@
  * Standard text input with label, helper text, and error states
  */
 
-import React from "react";
+import React, { useId } from "react";
 import { cn } from "../../utils";
 
 export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -24,7 +24,8 @@ export const TextInput: React.FC<TextInputProps> = ({
   disabled,
   ...props
 }) => {
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const inputId = id || generatedId;
   const hasError = !!error;
   const displayText = error || helperText;
 

@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Bars3Icon,
-  BellIcon,
-  ArrowRightStartOnRectangleIcon,
-} from "@heroicons/react/24/outline";
+
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
@@ -16,6 +12,7 @@ import { ADMIN_ACTIONS } from "../constants";
 import { getAdminPageMeta } from "../helpers/adminPage.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
+import { iconsLib } from '../../../assets';
 
 interface IAdminLayoutProps {
   children: React.ReactNode;
@@ -46,7 +43,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
         <button
           type="button"
           className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900"
-          onClick={() => navigate(AppRoutes.client.protected.ADMIN_USERS)}
+          onClick={() => navigate(AppRoutes.client.protected.admin.USERS)}
           aria-label="Go to admin users"
         >
           R
@@ -78,7 +75,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           className="mt-10 h-[40px] w-full justify-start gap-10 px-12 text-base-content"
           onClick={() => navigate(AppRoutes.client.protected.SIGN_OUT)}
         >
-          <ArrowRightStartOnRectangleIcon className="h-[18px] w-[18px]" />
+          <iconsLib.logout className="h-[18px] w-[18px]" />
           <span>Log out</span>
         </Button>
       </div>
@@ -113,7 +110,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
               onClick={() => setIsSidebarOpen(true)}
               aria-label="Open admin navigation"
             >
-              <Bars3Icon className="h-[20px] w-[20px]" />
+              <iconsLib.bar3 className="h-[20px] w-[20px]" />
             </Button>
             <div className="min-w-0">
               <div className="text-body-s font-medium uppercase text-secondary">
@@ -129,7 +126,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
               className="hidden h-[40px] w-[40px] p-0 md:inline-flex"
               aria-label="Notifications"
             >
-              <BellIcon className="h-[20px] w-[20px]" />
+              <iconsLib.bell className="h-[20px] w-[20px]" />
             </Button>
             <ThemeToggle />
             <div className="hidden sm:block">
@@ -159,7 +156,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
                 <AdminHeaderActionButton
                   label={pageMeta.actionLabel ?? ""}
                   onClick={() =>
-                    navigate(pageMeta.actionTo ?? AppRoutes.client.protected.ADMIN_USERS)
+                    navigate(pageMeta.actionTo ?? AppRoutes.client.protected.admin.USERS)
                   }
                 />
               )}

@@ -1,23 +1,18 @@
 import React from "react";
-import {
-  ArrowPathIcon,
-  MinusCircleIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+
 import { AdminAction, AdminResource } from "../../../models";
+import { iconsLib } from "../../../assets";
 import { ButtonProps } from "../../../design/components/button/Button";
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
-  ADMIN_TABLE_ACTION_TYPES,
-  TAdminTableActionType,
+  TAdminActionsType,
 } from "../constants";
 import { AdminActionButton } from "./AdminActionButton";
 
 export interface IAdminTableAction {
   disabled?: boolean;
-  type: TAdminTableActionType;
+  type: TAdminActionsType;
   onClick: () => void;
 }
 
@@ -29,30 +24,30 @@ interface IAdminTableActionConfig {
 }
 
 const ADMIN_TABLE_ACTION_CONFIG: Record<
-  TAdminTableActionType,
+ AdminAction,
   IAdminTableActionConfig
 > = {
-  [ADMIN_TABLE_ACTION_TYPES.EDIT]: {
+  [ADMIN_ACTIONS.EDIT]: {
     action: ADMIN_ACTIONS.UPDATE,
-    icon: PencilSquareIcon,
+    icon: iconsLib.pencilSquare,
     label: ADMIN_COMMON_LABELS.EDIT,
     variant: "secondary",
   },
-  [ADMIN_TABLE_ACTION_TYPES.DELETE]: {
+  [ADMIN_ACTIONS.DELETE]: {
     action: ADMIN_ACTIONS.DELETE,
-    icon: TrashIcon,
+    icon: iconsLib.trash,
     label: ADMIN_COMMON_LABELS.DELETE,
     variant: "tertiary",
   },
-  [ADMIN_TABLE_ACTION_TYPES.DISCARD]: {
+  [ADMIN_ACTIONS.DISCARD]: {
     action: ADMIN_ACTIONS.DELETE,
-    icon: MinusCircleIcon,
+    icon: iconsLib.minusCircle,
     label: ADMIN_COMMON_LABELS.DISCARD,
     variant: "tertiary",
   },
-  [ADMIN_TABLE_ACTION_TYPES.RESTORE]: {
+  [ADMIN_ACTIONS.RESTORE]: {
     action: ADMIN_ACTIONS.DELETE,
-    icon: ArrowPathIcon,
+    icon: iconsLib.arrowPath,
     label: ADMIN_COMMON_LABELS.RESTORE,
     variant: "secondary",
   },

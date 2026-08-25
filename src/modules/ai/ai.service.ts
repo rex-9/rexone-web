@@ -27,7 +27,9 @@ class AiService {
     roomId?: string,
     params?: { page?: number; limit?: number },
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IMessage>[]>>> {
-    const queryParams: Record<string, any> = { ...params };
+    const queryParams: Record<string, string | number | undefined> = {
+      ...params,
+    };
     if (roomId) queryParams.room_id = roomId;
 
     const response = await api.get<IJsonApiResource<IMessage>[]>(

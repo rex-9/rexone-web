@@ -1,7 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  ArchiveBoxIcon,
-} from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -11,8 +8,7 @@ import { IApiPagination } from "../../../../models";
 import UserController from "../user.controller";
 import { IAdminUser } from "../types";
 import {
-  AdminActionButton,
-  AdminLoadingState,
+  AdminActionButton, 
   AdminPagination,
   AdminState,
   AdminTableActions,
@@ -26,9 +22,10 @@ import {
   ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_ACTION_TYPES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import { translate } from "../../../../locales";
+import { iconsLib } from '../../../../assets';
 
 const formatDate = (value?: Date | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
@@ -57,7 +54,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   const navigate = useNavigate();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
-  const { isLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [users, setUsers] = useState<IAdminUser[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
@@ -85,7 +82,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         setLoading(false);
       },
       (message) => {
-        setError(message);
+        setError(translate(message));
         setLoading(false);
       },
     );
@@ -157,28 +154,28 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
               view === "active" ? (
                 [
                   {
-                    type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                    type: ADMIN_ACTIONS.EDIT,
                     onClick: () =>
                       navigate(
-                        AppRoutes.client.protected.ADMIN_USER_EDIT.replace(
+                        AppRoutes.client.protected.admin.USER_EDIT.replace(
                           ":id",
                           user.id,
                         ),
                       ),
                   },
                   {
-                    type: ADMIN_TABLE_ACTION_TYPES.DISCARD,
+                    type: ADMIN_ACTIONS.DISCARD,
                     onClick: () => openLifecycleDialog(user, "discard"),
                   },
                 ]
               ) : (
                 [
                   {
-                    type: ADMIN_TABLE_ACTION_TYPES.RESTORE,
+                    type: ADMIN_ACTIONS.RESTORE,
                     onClick: () => openLifecycleDialog(user, "restore"),
                   },
                   {
-                    type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                    type: ADMIN_ACTIONS.DELETE,
                     onClick: () => openLifecycleDialog(user, "delete"),
                   },
                 ]
@@ -246,9 +243,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
 
   return (
     <>
-      {isLoading || permissionsLoading ? (
-        <AdminLoadingState />
-      ) : error ? (
+      {error ? (
         <AdminState title="Unable to load users" message={error} />
       ) : (
         <>
@@ -263,10 +258,10 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
                 aria-label="Open recycle bin"
                 title="Recycle bin"
                 onClick={() =>
-                  navigate(AppRoutes.client.protected.ADMIN_USERS_RECYCLE_BIN)
+                  navigate(AppRoutes.client.protected.admin.USERS_RECYCLE_BIN)
                 }
               >
-                <ArchiveBoxIcon className="h-[18px] w-[18px]" />
+                <iconsLib.archiveBox className="h-[18px] w-[18px]" />
               </AdminActionButton>
             </div>
           )}

@@ -85,7 +85,7 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
     } else {
       // Failed attempt - update remaining attempts
       if (result.remainingAttempts === undefined) {
-        setPasscode("");
+        setPassword("");
         setError(result.errorMessage || "Unable to sign in. Please try again.");
         setIsLoading(false);
         return;

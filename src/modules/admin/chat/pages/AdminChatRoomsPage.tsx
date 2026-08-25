@@ -8,7 +8,7 @@ import { IApiPagination } from "../../../../models";
 import ChatController from "../chat.controller";
 import { IAdminChatRoom } from "../types";
 import {
-  AdminLoadingState,
+  
   AdminPagination,
   AdminState,
   AdminTableActions,
@@ -21,7 +21,7 @@ import {
   ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_ACTION_TYPES,
+  ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
@@ -30,7 +30,7 @@ export const AdminChatRoomsPage: React.FC = () => {
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { isLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [rooms, setRooms] = useState<IAdminChatRoom[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
@@ -95,17 +95,17 @@ export const AdminChatRoomsPage: React.FC = () => {
             resource={ADMIN_RESOURCES.ROOMS}
             actions={[
               {
-                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.ADMIN_CHAT_ROOM_EDIT.replace(
+                    AppRoutes.client.protected.admin.CHAT_ROOM_EDIT.replace(
                       ":id",
                       room.id,
                     ),
                   ),
               },
               {
-                type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                type: ADMIN_ACTIONS.DELETE,
                 onClick: () => setDeleteTarget(room),
               },
             ]}
@@ -137,9 +137,7 @@ export const AdminChatRoomsPage: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : error ? (
+      {error ? (
         <AdminState title="Unable to load chat rooms" message={error} />
       ) : rooms.length === 0 ? (
         <AdminState title="No chat rooms yet" message="Chat rooms will appear here when users start conversations." />

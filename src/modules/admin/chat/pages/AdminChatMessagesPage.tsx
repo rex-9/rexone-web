@@ -8,7 +8,7 @@ import { IApiPagination } from "../../../../models";
 import ChatController from "../chat.controller";
 import { IAdminChatMessage } from "../types";
 import {
-  AdminLoadingState,
+  
   AdminPagination,
   AdminState,
   AdminTableActions,
@@ -21,7 +21,7 @@ import {
   ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_ACTION_TYPES,
+  ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 
@@ -30,7 +30,7 @@ export const AdminChatMessagesPage: React.FC = () => {
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { isLoading, setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [messages, setMessages] = useState<IAdminChatMessage[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
@@ -96,17 +96,17 @@ export const AdminChatMessagesPage: React.FC = () => {
             resource={ADMIN_RESOURCES.MESSAGES}
             actions={[
               {
-                type: ADMIN_TABLE_ACTION_TYPES.EDIT,
+                type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.ADMIN_CHAT_MESSAGE_EDIT.replace(
+                    AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT.replace(
                       ":id",
                       message.id,
                     ),
                   ),
               },
               {
-                type: ADMIN_TABLE_ACTION_TYPES.DELETE,
+                type: ADMIN_ACTIONS.DELETE,
                 onClick: () => setDeleteTarget(message),
               },
             ]}
@@ -138,9 +138,7 @@ export const AdminChatMessagesPage: React.FC = () => {
 
   return (
     <>
-      {isLoading ? (
-        <AdminLoadingState />
-      ) : error ? (
+      {error ? (
         <AdminState title="Unable to load chat messages" message={error} />
       ) : messages.length === 0 ? (
         <AdminState title="No chat messages yet" message="Chat messages will appear here when conversations have messages." />

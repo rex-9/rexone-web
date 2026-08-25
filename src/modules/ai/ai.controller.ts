@@ -1,9 +1,10 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { parseFromList } from "../../services/api.service";
+import { parsePaginatedResponse } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import { IApiPagination } from "../../models";
+import { AppLocales, translate } from "../../locales";
 
 class AiController {
   private currentRoomId: string | null = null;
@@ -48,10 +49,10 @@ class AiController {
       if (status?.success && data?.rooms) {
         onSuccess(data.rooms, meta?.pagination);
       } else {
-        onError(status?.error || "Failed to load rooms");
+        onError(status?.error || translate(AppLocales.Ai.Errors.LoadRooms));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -68,10 +69,10 @@ class AiController {
         this.currentRoomId = data.room.id;
         onSuccess(data.room);
       } else {
-        onError(status?.error || "Failed to create room");
+        onError(status?.error || translate(AppLocales.Ai.Errors.CreateRoom));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -91,21 +92,21 @@ class AiController {
         roomId || this.currentRoomId || undefined,
         params,
       );
-      const { status, data, meta } = response.data || {};
+      const { status, data } = response.data || {};
 
       if (status?.success && data) {
-        const messages = parseFromList<IMessage>(data);
+        const { records: messages, pagination } = parsePaginatedResponse(response);
         const rId = messages[0]?.room_id ?? roomId ?? "";
         const processing = messages.some((m) =>
           ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),
         );
         this.currentRoomId = rId || null;
-        onSuccess(messages, rId, processing, meta?.pagination);
+        onSuccess(messages, rId, processing, pagination);
       } else {
-        onError(status?.error || "Failed to load history");
+        onError(status?.error || translate(AppLocales.Ai.Errors.LoadHistory));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -129,10 +130,10 @@ class AiController {
         this.currentRoomId = data.room_id;
         onSuccess(data.message, data.room_id);
       } else {
-        onError(status?.error || "Failed to get AI response");
+        onError(status?.error || translate(AppLocales.Ai.Errors.GetResponse));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -150,10 +151,10 @@ class AiController {
       if (status?.success) {
         onSuccess?.();
       } else {
-        onError?.(status?.error || "Failed to clear history");
+        onError?.(status?.error || translate(AppLocales.Ai.Errors.ClearHistory));
       }
     } catch {
-      onError?.("An error occurred. Please try again.");
+      onError?.(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -170,10 +171,10 @@ class AiController {
       if (status?.success && data?.title) {
         onSuccess(data.title);
       } else {
-        onError(status?.error || "Failed to rename room");
+        onError(status?.error || translate(AppLocales.Ai.Errors.RenameRoom));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 
@@ -192,10 +193,10 @@ class AiController {
         }
         onSuccess();
       } else {
-        onError(status?.error || "Failed to delete room");
+        onError(status?.error || translate(AppLocales.Ai.Errors.DeleteRoom));
       }
     } catch {
-      onError("An error occurred. Please try again.");
+      onError(translate(AppLocales.Ai.Errors.Unexpected));
     }
   }
 }
