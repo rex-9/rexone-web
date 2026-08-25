@@ -66,6 +66,7 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       setHasFailureHistory(false);
       setPasscode("");
       setError("");
+      onClose();
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
@@ -82,7 +83,10 @@ export const SigninPasscodeDialog: React.FC<SigninPasscodeDialogProps> = ({
       );
     } else {
       // Failed attempt - update remaining attempts
-      const attemptsLeft = result.remainingAttempts ?? 3;
+      const attemptsLeft =
+        result.remainingAttempts !== undefined
+          ? result.remainingAttempts
+          : Math.max(0, remainingAttempts - 1);
       setRemainingAttempts(attemptsLeft);
       setHasFailureHistory(true);
       setPasscode("");

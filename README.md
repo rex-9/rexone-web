@@ -14,10 +14,11 @@ Built under the same creed as Rexone Core: **clear in thought, exact in structur
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 
-**Typed · Modular · Localized · Observable · API-driven**
+**Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Explore the client](#feature-map) · [Ecosystem Architecture](ECOSYSTEM.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
+[Explore the client](#feature-map) · [Ecosystem Architecture](ECOSYSTEM.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [E2E Testing](#end-to-end-testing-playwright) · [Connect the API](#configuration)
 
 </div>
 
@@ -39,7 +40,7 @@ Its boundaries are deliberate. UI components own interaction and presentation. C
 
 And no—the interface was not assembled by stacking dependencies until a demo appeared.
 
-Authentication edge cases were traced. Sensitive passcodes were kept out of URLs. Session replacement and expiry were handled centrally. Runtime and React failures were made observable. Translation keys were organized by domain. The client is built to remain understandable after the first release, not merely attractive before it.
+Authentication edge cases were traced. Sensitive passcodes were kept out of URLs. Session replacement and expiry were handled centrally. Runtime and React failures were made observable. Translation keys were organized by domain. Real user journeys are verified by automated Playwright E2E suites. The client is built to remain understandable after the first release, not merely attractive before it.
 
 ## The philosophy
 
@@ -55,20 +56,21 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 
 ## Feature map
 
-| Foundation | What is ready | Details |
-| --- | --- | --- |
-| Identity | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry | [Authentication & security](#authentication--security) |
-| Navigation | Public and protected routes with centralized route definitions | [Routing & access](#routing--access) |
-| Design | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography | [Design system](#design-system) |
-| State | React contexts, Jotai atoms, and deliberate browser persistence | [State & application flow](#state--application-flow) |
-| Commerce | Product selection, Stripe Checkout handoff, success, and cancellation flows | [Payments & entitlements](#payments--entitlements) |
-| Media | Authenticated upload requests and reusable image/video presentation | [Media & assets](#media--assets) |
-| AI | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities) |
-| Real time | Action Cable-compatible WebSocket lifecycle and reconnect handling | [Real-time delivery](#real-time-delivery) |
-| Localization | English, Spanish, and Burmese resources with organized typed keys | [Localization](#localization) |
-| Observability | React boundary, global browser capture, structured context, and Core API delivery | [Client observability](#client-observability) |
-| Quality | TypeScript builds, ESLint, Vitest, and production preview tooling | [Quality toolchain](#quality-toolchain) |
-| Delivery | Vite production output and a Docker-based development environment | [Delivery](#delivery) |
+| Foundation    | What is ready                                                                         | Details                                                |
+| ------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry          | [Authentication & security](#authentication--security) |
+| Navigation    | Public and protected routes with centralized route definitions                        | [Routing & access](#routing--access)                   |
+| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography            | [Design system](#design-system)                        |
+| State         | React contexts, Jotai atoms, and deliberate browser persistence                       | [State & application flow](#state--application-flow)   |
+| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows           | [Payments & entitlements](#payments--entitlements)     |
+| Media         | Authenticated upload requests and reusable image/video presentation                   | [Media & assets](#media--assets)                       |
+| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities)                    |
+| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                    | [Real-time delivery](#real-time-delivery)              |
+| Localization  | English, Spanish, and Burmese resources with organized typed keys                     | [Localization](#localization)                          |
+| Observability | React boundary, global browser capture, structured context, and Core API delivery     | [Client observability](#client-observability)          |
+| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model       | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview      | [Quality toolchain](#quality-toolchain)                |
+| Delivery      | Vite production output and a Docker-based development environment                     | [Delivery](#delivery)                                  |
 
 ## Architecture
 
@@ -101,6 +103,7 @@ The main boundaries are:
 - `constants/` centralizes storage keys, dialog steps, and URL parameters.
 - `locales/` owns i18n initialization, typed translation keys, and translation helpers.
 - `routes/` owns browser routing and public/protected access boundaries.
+- `e2e/` houses Page Objects, fixtures, and Playwright end-to-end specifications.
 
 The UI does not need to know how Axios is configured, and transport code does not decide how a dialog should behave. That separation keeps provider and backend details from spreading through presentation code.
 
@@ -152,11 +155,11 @@ Browser persistence is used selectively. For example, sign-in cooldown timing su
 
 The payment module communicates with Rexone Core for:
 
-- Available product retrieval.
+- Available product retrieval with pagination.
 - Stripe Checkout Session creation.
 - Payment success and cancellation routes.
 - Subscription listing, cancellation, and resumption contracts.
-- Transaction retrieval.
+- Transaction retrieval with pagination.
 - Access listing and entitlement checks.
 
 Stripe secrets and webhook processing remain on the backend. The browser owns product presentation and secure checkout handoff, not payment authority.
@@ -183,7 +186,7 @@ The AI module supports the Core API contracts for:
 - Real-time completion and failure events through the shared notification socket channel.
 - Automatic history refresh when a completed response belongs to the room currently on screen.
 - Global success or failure alerts while the user browses elsewhere in the application.
-- Room creation, deletion, and renaming.
+- Room creation, deletion, and renaming with pagination.
 - Conversation clearing.
 - Summarization.
 - Translation.
@@ -213,12 +216,15 @@ Frontend failures are treated as operational data, not console debris.
 
 This complements backend exception tracking: the server explains what failed there, while client telemetry explains what the user actually experienced here.
 
-### Quality toolchain
+---
 
-- TypeScript project builds for static verification.
-- ESLint with React Hooks and React Refresh rules.
-- Vitest for automated tests.
-- Vite production builds and local production preview.
+## Quality toolchain
+
+- **TypeScript Project Builds** for strict compile-time type safety.
+- **ESLint** with React Hooks and React Refresh rules.
+- **Vitest** for automated unit and component tests.
+- **Playwright** for end-to-end user journey verification.
+- **Vite** production builds and local production preview.
 - Dependency and browser-baseline checks through the npm toolchain.
 
 ## Getting started
@@ -252,7 +258,7 @@ By default Vite listens on all interfaces. The checked-in development environmen
 The convenience script runs the Docker development stack:
 
 ```bash
-./run_dev.sh
+./scripts/run_dev.sh
 ```
 
 ### 3. Run with Docker Compose
@@ -263,27 +269,67 @@ docker compose -f docker-compose.dev.yaml up --build
 
 The development service mounts the repository into the container, keeps container-managed `node_modules`, and publishes the port configured by `VITE_REACT_APP_PORT_MAP`.
 
-### Useful commands
+## End-to-End Testing (Playwright)
+
+Rexone Web includes a production-grade E2E test suite built with **[Playwright](https://playwright.dev/)**. Following Rails RSpec conventions, tests are organized by complete user journeys with deterministic setup, explicit state transitions, and meaningful boundary assertions.
+
+### Test Structure
+
+```text
+e2e/
+├── data/
+│   └── users.ts            # Centralized test users & dynamic user factory
+├── helpers/
+│   └── api.ts              # API helpers using standard application routes
+├── pages/                  # Page Object Model (POM) layer
+│   ├── auth.page.ts        # Initial email entry dialog
+│   ├── confirm-email.page.ts # 6-digit OTP verification dialog
+│   ├── forgot-passcode.page.ts # Password reset request dialog
+│   ├── home.page.ts        # Authenticated home page
+│   ├── sign-in-passcode.page.ts # 6-digit sign-in passcode dialog
+│   ├── sign-up-info.page.ts # Name & username profile dialog
+│   └── sign-up-passcode.page.ts # Passcode creation & confirmation
+└── specs/
+    └── auth/
+        ├── passcode.spec.ts       # Passcode acceptance, mismatch, retry, state persistence
+        ├── password-reset.spec.ts # Forgot passcode, email delivery, 60s cooldown timer
+        ├── sign-in.spec.ts        # Sign in, wrong passcode, attempts countdown, 30s lockout
+        ├── sign-out.spec.ts       # Sign out & session revocation
+        ├── sign-up.spec.ts        # Full registration journey, validations, sanitization
+        └── sso.spec.ts            # Google SSO authentication & challenge token setup
+```
+
+### Running E2E Tests
+
+Rexone Web provides a unified test runner script at [`scripts/run_e2e.sh`](scripts/run_e2e.sh):
 
 ```bash
-# Start the Vite development server
-npm run dev
+# Run all 19 E2E tests (default)
+./scripts/run_e2e.sh
+# or: npm run test:e2e:all
 
-# Run TypeScript checks and build production assets
-npm run build
+# Run specific flows
+./scripts/run_e2e.sh sign-in        # Sign-in flow & attempt limits
+./scripts/run_e2e.sh sign-up        # Registration & input validations
+./scripts/run_e2e.sh passcode       # Passcode matching & retries
+./scripts/run_e2e.sh password-reset # Reset request & cooldowns
+./scripts/run_e2e.sh sso            # Google SSO authentication
+./scripts/run_e2e.sh sign-out       # Sign-out & session termination
 
-# Run ESLint
-npm run lint
-
-# Run the test suite once
-npm test
-
-# Watch tests
-npm run test:watch
-
-# Preview the production build
-npm run preview
+# Interactive & Debugging Modes
+./scripts/run_e2e.sh --headed       # Watch tests in a real browser window
+./scripts/run_e2e.sh --ui           # Open Playwright's interactive visual UI
+./scripts/run_e2e.sh --debug        # Launch Playwright step-by-step inspector
 ```
+
+### Test Guarantees
+
+- **No Fake Routes**: Tests interact only with real application routes and existing controllers.
+- **Database Safety**: Tests use dynamic user factories (`generateTestUser()`) for mutation tests to ensure zero data pollution.
+- **Page Object Encapsulation**: Selectors, actions, and form interactions are centralized in Page Objects.
+- **Typed Constants**: All routes, steps, and storage keys use centralized `AppRoutes`, `DialogParams`, and `DialogAuthSteps` constants.
+
+---
 
 Production assets are written to `dist/`.
 
@@ -291,37 +337,37 @@ Production assets are written to `dist/`.
 
 The checked-in [`.env.example`](.env.example) documents the client settings.
 
-| Variable | Purpose | Development default |
-| --- | --- | --- |
-| `NODE_ENV` | Runtime environment label | `development` |
-| `VITE_REACT_APP_GOOGLE_CLIENT_ID` | Google OAuth browser client ID | Empty |
-| `VITE_REACT_APP_GOOGLE_CLIENT_SECRET` | Legacy checked-in configuration field; browser apps should not receive Google client secrets | Empty |
-| `VITE_REACT_APP_SERVER_BASE_URL` | Rexone Core HTTP base URL | `http://localhost:3000` |
-| `VITE_REACT_APP_CLIENT_BASE_URL` | Public web client base URL | `http://localhost:4000` |
-| `VITE_REACT_APP_SERVER_WS_BASE_URL` | Rexone Core WebSocket base URL | `ws://localhost:3000` |
-| `VITE_REACT_APP_PORT_MAP` | Docker host/container port mapping | `4000:4000` |
-| `VITE_REACT_APP_DOCKERFILE` | Dockerfile selected by Compose | `Dockerfile.dev` |
+| Variable                              | Purpose                                                                                      | Development default     |
+| ------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------- |
+| `NODE_ENV`                            | Runtime environment label                                                                    | `development`           |
+| `VITE_REACT_APP_GOOGLE_CLIENT_ID`     | Google OAuth browser client ID                                                               | Empty                   |
+| `VITE_REACT_APP_GOOGLE_CLIENT_SECRET` | Legacy checked-in configuration field; browser apps should not receive Google client secrets | Empty                   |
+| `VITE_REACT_APP_SERVER_BASE_URL`      | Rexone Core HTTP base URL                                                                    | `http://localhost:3000` |
+| `VITE_REACT_APP_CLIENT_BASE_URL`      | Public web client base URL                                                                   | `http://localhost:4000` |
+| `VITE_REACT_APP_SERVER_WS_BASE_URL`   | Rexone Core WebSocket base URL                                                               | `ws://localhost:3000`   |
+| `VITE_REACT_APP_PORT_MAP`             | Docker host/container port mapping                                                           | `4000:4000`             |
+| `VITE_REACT_APP_DOCKERFILE`           | Dockerfile selected by Compose                                                               | `Dockerfile.dev`        |
 
 Only variables prefixed with `VITE_` are exposed to browser code. Never place private credentials or provider secrets in them. In particular, Google client secrets belong on a trusted backend or provider configuration, not in a Vite application.
 
 ## Client route surface
 
-| Access | Route | Purpose |
-| --- | --- | --- |
-| Public | `/` | Root experience |
-| Public | `/signin` | Open the authentication dialog |
-| Public | `/signup` | Enter the account creation flow |
-| Public | `/email/confirm` | Handle confirmation links or code entry |
-| Public | `/passcode/forgot` | Request account recovery |
-| Public | `/passcode/reset` | Complete passcode reset links |
-| Public | `/anapana` | Anapana interval reminder |
-| Protected | `/home` | Authenticated home |
-| Protected | `/profile` | Current-user profile |
-| Protected | `/payment` | Products and checkout |
-| Protected | `/payment/success` | Checkout success return |
-| Protected | `/payment/cancel` | Checkout cancellation return |
-| Protected | `/ai` | AI workspace |
-| Protected | `/signout` | Sign out and provider cleanup |
+| Access    | Route              | Purpose                                 |
+| --------- | ------------------ | --------------------------------------- |
+| Public    | `/`                | Root experience                         |
+| Public    | `/signin`          | Open the authentication dialog          |
+| Public    | `/signup`          | Enter the account creation flow         |
+| Public    | `/email/confirm`   | Handle confirmation links or code entry |
+| Public    | `/passcode/forgot` | Request account recovery                |
+| Public    | `/passcode/reset`  | Complete passcode reset links           |
+| Public    | `/anapana`         | Anapana interval reminder               |
+| Protected | `/home`            | Authenticated home                      |
+| Protected | `/profile`         | Current-user profile                    |
+| Protected | `/payment`         | Products and checkout                   |
+| Protected | `/payment/success` | Checkout success return                 |
+| Protected | `/payment/cancel`  | Checkout cancellation return            |
+| Protected | `/ai`              | AI workspace                            |
+| Protected | `/signout`         | Sign out and provider cleanup           |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 
@@ -329,6 +375,14 @@ Only variables prefixed with `VITE_` are exposed to browser code. Never place pr
 
 ```text
 rexone-web/
+├── e2e/                 # Playwright End-to-End test suite
+│   ├── data/            # Centralized test users & factories
+│   ├── helpers/         # Standard API interaction helpers
+│   ├── pages/           # Page Object Model (POM) classes
+│   └── specs/           # User journey test specifications
+├── scripts/             # Development & test automation scripts
+│   ├── run_dev.sh       # Docker compose dev environment starter
+│   └── run_e2e.sh       # Playwright E2E runner CLI
 ├── src/
 │   ├── assets/          # Static application media
 │   ├── constants/       # Storage keys, dialog steps, and route parameter constants
@@ -348,7 +402,10 @@ rexone-web/
 ├── Dockerfile.dev
 ├── docker-compose.dev.yaml
 ├── package.json
-└── vite.config.ts
+├── playwright.config.ts # Playwright E2E test configuration
+├── tsconfig.json
+├── vite.config.ts
+└── vitest.config.ts
 ```
 
 ## Delivery
@@ -362,7 +419,7 @@ For production deployments:
 3. Serve the client over TLS and use `wss://` for real-time traffic.
 4. Configure the host to return `index.html` for client-side routes.
 5. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
-6. Run `npm run build`, `npm run lint`, and `npm test` in CI.
+6. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/run_e2e.sh` in CI.
 
 ## Related foundations
 
