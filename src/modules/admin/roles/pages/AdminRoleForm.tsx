@@ -11,7 +11,7 @@ import {
   FormContainer,
   TextInput,
 } from "../../components";
-import { ADMIN_ACTIONS } from "../../constants";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 import { ADMIN_ROLE_FORM_LABELS } from "../constants";
 
 interface IAdminRoleFormProps {
@@ -133,6 +133,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
       </div>
 
       <FormActionRow
+        cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
         submitLabel={
           mode === ADMIN_ACTIONS.CREATE
             ? ADMIN_ROLE_FORM_LABELS.CREATE_ROLE

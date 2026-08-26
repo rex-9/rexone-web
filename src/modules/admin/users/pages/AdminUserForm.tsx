@@ -12,7 +12,7 @@ import {
   IAdminPermissionMatrixItem,
   TextInput,
 } from "../../components";
-import { ADMIN_ACTIONS } from "../../constants";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 
 const ADMIN_USER_FORM_LABELS = {
   CONFIRM_PASSWORD: "Confirm password",
@@ -30,7 +30,7 @@ const ADMIN_USER_FORM_LABELS = {
 } as const;
 
 interface IAdminUserFormProps {
-  mode: "create" | "edit";
+  mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
   user?: IAdminUser | null;
   roles: IAdminRole[];
   onSubmit: (values: IAdminUserFormValues) => void;
@@ -218,6 +218,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
       </div>
 
       <FormActionRow
+        cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
         submitLabel={
           mode === ADMIN_ACTIONS.CREATE
             ? ADMIN_USER_FORM_LABELS.CREATE_USER

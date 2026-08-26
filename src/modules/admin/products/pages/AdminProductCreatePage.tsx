@@ -9,6 +9,7 @@ import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
 import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
 import { AlertDialog } from "../../components";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminProductCreatePage: React.FC = () => {
   useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.CREATE);
@@ -53,7 +54,7 @@ export const AdminProductCreatePage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
       <AdminProductForm
-        mode="create"
+        mode={ADMIN_ACTIONS.CREATE}
         onSubmit={handleSubmit}
         onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
       />

@@ -10,7 +10,12 @@ import { IAdminRole } from "../roles";
 
 export type AdminUserResponse =
   | IJsonApiResource<IAdminUser>
+  | IAdminUser
   | { user: IAdminUser };
+
+export type AdminUserRoleListResponse =
+  | IJsonApiResource<IAdminRole>[]
+  | { roles: IJsonApiResource<IAdminRole>[] };
 
 class UserService {
   async getUsers(
@@ -82,9 +87,9 @@ class UserService {
   }
 
   async getRoles(): Promise<
-    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminRole>[]>>
+    IApiResponse<IApiEnvelope<AdminUserRoleListResponse>>
   > {
-    return api.get<IJsonApiResource<IAdminRole>[]>(
+    return api.get<AdminUserRoleListResponse>(
       AppRoutes.server.protected.admin.USER_ROLES,
     );
   }

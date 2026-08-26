@@ -6,6 +6,7 @@ import {
 } from "../types";
 import { ProductPriceMode } from "../productForm.utils";
 import { FormActionRow, FormContainer, Radio, TextInput } from "../../components";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 import {
   PRODUCT_CURRENCY,
   PRODUCT_CYCLE,
@@ -31,7 +32,7 @@ const ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES = {
 } as const;
 
 interface IAdminProductFormProps {
-  mode: "create" | "edit";
+  mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
   product?: IAdminProduct | null;
   onSubmit: (values: IAdminProductFormValues) => void;
   onCancel: () => void;
@@ -224,8 +225,9 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       </div>
 
       <FormActionRow
+        cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
         submitLabel={
-          mode === "create"
+          mode === ADMIN_ACTIONS.CREATE
             ? ADMIN_PRODUCT_FORM_LABELS.CREATE_PRODUCT
             : ADMIN_PRODUCT_FORM_LABELS.SAVE_CHANGES
         }

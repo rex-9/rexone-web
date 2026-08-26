@@ -13,6 +13,9 @@ const adminPageMeta: Record<string, IAdminPageMeta> = {
   ...ADMIN_CHAT_PAGE_META,
 };
 
+const escapeRouteSegment = (segment: string): string =>
+  segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export const formatAdminDate = (value: Date): string => {
   if (!value) return "Not available";
   return new Date(value).toLocaleDateString();
@@ -27,7 +30,14 @@ export const getAdminPageMeta = (pathname: string): IAdminPageMeta | null => {
   const match = Object.keys(adminPageMeta).find((path) => {
     if (path === pathname) return true;
 
-    const pattern = new RegExp(`^${path.replace(/:[^/]+/g, "[^/]+")}$`);
+    const pattern = new RegExp(
+      `^${path
+        .split(/(:[^/]+)/)
+        .map((segment) =>
+          segment.startsWith(":") ? "[^/]+" : escapeRouteSegment(segment),
+        )
+        .join("")}$`,
+    );
     return pattern.test(pathname);
   });
 

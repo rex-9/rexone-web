@@ -40,7 +40,7 @@ export const AdminHomeRoute: React.FC = () => {
 
   const entry = hasAdminAccess
     ? adminEntryRoutes.find((item) =>
-        can(item.action ?? "read", item.resource),
+        can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
       )
     : null;
 

@@ -89,9 +89,9 @@ export const getApiError = <T>(
   response: IApiResponse<IApiEnvelope<T>>,
   fallback: string,
 ): string =>
-  response.data?.status?.error ??
-  response.data?.status?.message ??
-  response.error ??
+  response.data?.status?.error ||
+  response.data?.status?.message ||
+  response.error ||
   fallback;
 
 // Utility functions for each HTTP method

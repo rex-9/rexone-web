@@ -12,6 +12,9 @@ import {
   IAdminChatRoomFormValues,
 } from "./types";
 
+type AdminChatRoomResponse = IAdminChatRoom | { room: IAdminChatRoom };
+type AdminChatMessageResponse = IAdminChatMessage | { message: IAdminChatMessage };
+
 class ChatService {
   async getRooms(params?: {
     page?: number;
@@ -25,8 +28,8 @@ class ChatService {
 
   async getRoom(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<IAdminChatRoom>>> {
-    return api.get<IAdminChatRoom>(
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
+    return api.get<AdminChatRoomResponse>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
   }
@@ -34,8 +37,8 @@ class ChatService {
   async updateRoom(
     id: string,
     values: IAdminChatRoomFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<IAdminChatRoom>>> {
-    return api.put<IAdminChatRoom>(
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
+    return api.put<AdminChatRoomResponse>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
       { room: values },
     );
@@ -61,8 +64,8 @@ class ChatService {
 
   async getMessage(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<IAdminChatMessage>>> {
-    return api.get<IAdminChatMessage>(
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
+    return api.get<AdminChatMessageResponse>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
   }
@@ -70,8 +73,8 @@ class ChatService {
   async updateMessage(
     id: string,
     values: IAdminChatMessageFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<IAdminChatMessage>>> {
-    return api.put<IAdminChatMessage>(
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
+    return api.put<AdminChatMessageResponse>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
       { message: values },
     );

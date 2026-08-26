@@ -4,13 +4,13 @@ import { Button } from "../button";
 
 export interface FormActionRowProps {
   submitLabel: string;
-  cancelLabel?: string;
+  cancelLabel: string;
   onCancel: () => void;
 }
 
 export const FormActionRow: React.FC<FormActionRowProps> = ({
   submitLabel,
-  cancelLabel = "Cancel",
+  cancelLabel,
   onCancel,
 }) => {
   const { isLoading, isOverlayLoading } = useLoading();

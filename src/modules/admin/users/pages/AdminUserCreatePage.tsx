@@ -10,6 +10,7 @@ import { IAdminRole } from "../../roles/types";
 import { AlertDialog } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 import { ADMIN_USER_PAGE_TITLES } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminUserCreatePage: React.FC = () => {
   useDocumentTitle(ADMIN_USER_PAGE_TITLES.CREATE);
@@ -59,7 +60,7 @@ export const AdminUserCreatePage: React.FC = () => {
       />
      
         <AdminUserForm
-          mode="create"
+          mode={ADMIN_ACTIONS.CREATE}
           roles={roles}
           onSubmit={handleSubmit}
           onCancel={() => navigate(AppRoutes.client.protected.admin.USERS)}

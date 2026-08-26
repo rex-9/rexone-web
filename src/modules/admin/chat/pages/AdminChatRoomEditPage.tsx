@@ -11,13 +11,13 @@ import {
 } from "../types";
 import {
   AlertDialog,
-  
   AdminState,
   FormActionRow,
   FormContainer,
   TextInput,
 } from "../../components";
 import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
+import { ADMIN_COMMON_LABELS } from "../../constants";
 
 export const AdminChatRoomEditPage: React.FC = () => {
   useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.ROOM_EDIT);
@@ -25,7 +25,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const {setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [room, setRoom] = useState<IAdminChatRoom | null>(null);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -97,13 +97,14 @@ export const AdminChatRoomEditPage: React.FC = () => {
               onChange={(event) => setTitle(event.target.value)}
             />
             <FormActionRow
+              cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
               submitLabel="Save changes"
               onCancel={() =>
                 navigate(AppRoutes.client.protected.admin.CHAT_ROOMS)
               }
             />
           </FormContainer>
-      ):null}
+      ) : null}
     </>
   );
 };

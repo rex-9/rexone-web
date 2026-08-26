@@ -66,7 +66,7 @@ class ChatController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("room" in data ? data.room : data));
   }
 
   async updateRoom(
@@ -85,7 +85,7 @@ class ChatController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("room" in data ? data.room : data));
   }
 
   async getMessages(
@@ -149,7 +149,7 @@ class ChatController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("message" in data ? data.message : data));
   }
 
   async updateMessage(
@@ -171,7 +171,7 @@ class ChatController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("message" in data ? data.message : data));
   }
 }
 

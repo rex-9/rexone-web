@@ -17,6 +17,7 @@ import {
   TextArea,
 } from "../../components";
 import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
+import { ADMIN_COMMON_LABELS } from "../../constants";
 
 const messageRoles = ["user", "assistant"];
 
@@ -120,6 +121,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
               />
             </div>
             <FormActionRow
+              cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
               submitLabel="Save changes"
               onCancel={() =>
                 navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES)

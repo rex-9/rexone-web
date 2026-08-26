@@ -22,7 +22,8 @@ class RoleController {
         return;
       }
 
-      onSuccess?.(data.map(parseRecord));
+      const roles = Array.isArray(data) ? data : data.roles;
+      onSuccess?.(roles.map(parseRecord));
   }
 
   async getRole(
@@ -40,7 +41,7 @@ class RoleController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
   async getPermissions(
@@ -60,7 +61,8 @@ class RoleController {
         return;
       }
 
-      onSuccess?.(data.map(parseRecord));
+      const permissions = Array.isArray(data) ? data : data.permissions;
+      onSuccess?.(permissions.map(parseRecord));
   }
 
   async createRole(
@@ -78,7 +80,7 @@ class RoleController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
   async updateRole(
@@ -97,7 +99,7 @@ class RoleController {
         return;
       }
 
-      onSuccess?.(parseRecord(data));
+      onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
   async deleteRole(

@@ -46,6 +46,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           variant="tertiary"
           className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900"
           onClick={() => navigate(AppRoutes.client.protected.admin.USERS)}
+          aria-label="Go to admin users"
         >
           R
         </Button>

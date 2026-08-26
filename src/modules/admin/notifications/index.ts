@@ -3,7 +3,6 @@ import NotificationService from "./notification.service";
 
 export * from "./types";
 export * from "./constants";
-export * from "./constants";
 export * from "./pages";
 
 export { NotificationController, NotificationService };

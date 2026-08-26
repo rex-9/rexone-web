@@ -47,7 +47,7 @@ class UserController {
         return;
       }
 
-      onSuccess?.(parseRecord("attributes" in data ? data : data.user));
+      onSuccess?.(parseRecord("user" in data ? data.user : data));
   }
 
   async getDiscardedUsers(
@@ -85,7 +85,7 @@ class UserController {
       }
 
       onSuccess?.(
-        parseRecord("attributes" in data ? data : data.user),
+        parseRecord("user" in data ? data.user : data),
         status.message,
       );
   }
@@ -107,7 +107,7 @@ class UserController {
       }
 
       onSuccess?.(
-        parseRecord("attributes" in data ? data : data.user),
+        parseRecord("user" in data ? data.user : data),
         status.message,
       );
   }
@@ -180,7 +180,8 @@ class UserController {
         return;
       }
 
-      onSuccess?.(data.map(parseRecord));
+      const roles = Array.isArray(data) ? data : data.roles;
+      onSuccess?.(roles.map(parseRecord));
   }
 }
 

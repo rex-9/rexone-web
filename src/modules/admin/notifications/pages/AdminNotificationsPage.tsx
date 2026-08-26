@@ -22,13 +22,9 @@ import {
   NOTIFICATION_KEYBOARD_KEYS,
   NOTIFICATION_LOCALES,
 } from "../constants";
-import {
-  ADMIN_ACTIONS,
-  ADMIN_RESOURCES,
-} from "../../constants";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS, ADMIN_RESOURCES } from "../../constants";
 import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
 import {
-
   AlertDialog,
   AdminState,
   FormActionRow,
@@ -573,6 +569,7 @@ export const AdminNotificationsPage: React.FC = () => {
               </div>
 
               <FormActionRow
+                cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
                 submitLabel={t(NOTIFICATION_LOCALES.Actions.Send)}
                 onCancel={() => {
                   navigate(AppRoutes.client.protected.admin.USERS);

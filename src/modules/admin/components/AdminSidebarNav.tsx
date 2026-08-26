@@ -18,7 +18,7 @@ interface IAdminNavItem {
   label: string;
   to: string;
   resource: AdminResource;
-  action?: "read" | "create";
+  action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   superAdminOnly?: boolean;
 }

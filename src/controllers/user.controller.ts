@@ -11,7 +11,11 @@ class UserController {
     const response = await UserService.peekUser(email);
     const { status } = response.data || {};
 
-    if (status?.code === 403) {
+    if (
+      status?.code === 403 &&
+      response.data?.status?.error ===
+        translate(AppLocales.Auth.Initial.AccountDiscarded)
+    ) {
       return "discarded";
     }
 
@@ -52,7 +56,6 @@ class UserController {
       return;
     }
 
-    console.log("Image uploaded:", response.data?.data.url);
   }
 }
 
