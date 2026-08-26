@@ -8,21 +8,14 @@ import {
 import {
   AdminPermissionMatrix,
   FormActionRow,
+  FormContainer,
   TextInput,
 } from "../../components";
-
-const ADMIN_ROLE_FORM_LABELS = {
-  CREATE_ROLE: "Create role",
-  DESCRIPTION: "Description",
-  NAME_ERROR: "Admin panel roles must end with _admin, for example notification_admin.",
-  NAME_HELPER: "Use a name ending with _admin, such as notification_admin.",
-  PERMISSIONS: "Permissions",
-  ROLE_NAME: "Role name",
-  SAVE_CHANGES: "Save changes",
-} as const;
+import { ADMIN_ACTIONS } from "../../constants";
+import { ADMIN_ROLE_FORM_LABELS } from "../constants";
 
 interface IAdminRoleFormProps {
-  mode: "create" | "edit";
+  mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
   role?: IAdminRole | null;
   permissions: IAdminPermission[];
   onSubmit: (values: IAdminRoleFormValues) => void;
@@ -94,7 +87,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <FormContainer onSubmit={handleSubmit}>
       <div className="grid gap-16 md:grid-cols-2">
         <TextInput
           label={ADMIN_ROLE_FORM_LABELS.ROLE_NAME}
@@ -141,12 +134,12 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
 
       <FormActionRow
         submitLabel={
-          mode === "create"
+          mode === ADMIN_ACTIONS.CREATE
             ? ADMIN_ROLE_FORM_LABELS.CREATE_ROLE
             : ADMIN_ROLE_FORM_LABELS.SAVE_CHANGES
         }
         onCancel={onCancel}
       />
-    </form>
+    </FormContainer>
   );
 };

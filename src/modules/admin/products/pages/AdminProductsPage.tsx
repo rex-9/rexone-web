@@ -19,11 +19,15 @@ import {
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
-  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import {
+  ADMIN_PRODUCT_LABELS,
+  ADMIN_PRODUCT_PAGE_TITLES,
+  ADMIN_PRODUCT_TABLE_HEADERS,
+} from "../constants";
 import { iconsLib } from "../../../../assets";
 
 const formatDate = (value?: Date | null): string => {
@@ -42,8 +46,8 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
 }) => {
   useDocumentTitle(
     view === "active"
-      ? ADMIN_PAGE_TITLES.PRODUCTS
-      : ADMIN_PAGE_TITLES.PRODUCTS_RECYCLE_BIN,
+      ? ADMIN_PRODUCT_PAGE_TITLES.LIST
+      : ADMIN_PRODUCT_PAGE_TITLES.RECYCLE_BIN,
   );
 
   const navigate = useNavigate();
@@ -95,7 +99,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     () => [
       {
         key: "product",
-        header: ADMIN_TABLE_HEADERS.PRODUCT,
+        header: ADMIN_PRODUCT_TABLE_HEADERS.PRODUCT,
         render: (product) => (
           <div>
             <div className="font-medium text-base-content">{product.name}</div>
@@ -107,12 +111,12 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       },
       {
         key: "price",
-        header: ADMIN_TABLE_HEADERS.PRICE,
+        header: ADMIN_PRODUCT_TABLE_HEADERS.PRICE,
         render: (product) => product.price,
       },
       {
         key: "cycle",
-        header: ADMIN_TABLE_HEADERS.CYCLE,
+        header: ADMIN_PRODUCT_TABLE_HEADERS.CYCLE,
         render: (product) => product.period_label,
       },
       {
@@ -122,8 +126,8 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           <div>
             <div className={product.active ? "text-success" : "text-base-content opacity-60"}>
               {product.active
-                ? ADMIN_COMMON_LABELS.ACTIVE
-                : ADMIN_COMMON_LABELS.INACTIVE}
+                ? ADMIN_PRODUCT_LABELS.ACTIVE
+                : ADMIN_PRODUCT_LABELS.INACTIVE}
             </div>
             {product.free && (
               <div className="text-caption text-base-content opacity-50">
@@ -135,7 +139,10 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       },
       {
         key: "lifecycle_date",
-        header: view === "active" ? ADMIN_TABLE_HEADERS.CREATED : "Discarded",
+        header:
+          view === "active"
+            ? ADMIN_TABLE_HEADERS.CREATED
+            : ADMIN_PRODUCT_TABLE_HEADERS.DISCARDED,
         render: (product) =>
           formatDate(view === "active" ? product.created_at : product.discarded_at),
       },
@@ -153,8 +160,8 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
                       type: ADMIN_ACTIONS.EDIT,
                       onClick: () =>
                         navigate(
-                          AppRoutes.client.protected.admin.PRODUCT_EDIT.replace(
-                            ":id",
+                          AppRoutes.withId(
+                            AppRoutes.client.protected.admin.PRODUCT_EDIT,
                             product.id,
                           ),
                         ),

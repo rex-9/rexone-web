@@ -5,12 +5,14 @@ import {
   IAdminUserFormValues,
 } from "../types";
 import {
-  AdminMultiSelectDropdown,
   AdminPermissionMatrix,
+  Dropdown,
   FormActionRow,
+  FormContainer,
   IAdminPermissionMatrixItem,
   TextInput,
 } from "../../components";
+import { ADMIN_ACTIONS } from "../../constants";
 
 const ADMIN_USER_FORM_LABELS = {
   CONFIRM_PASSWORD: "Confirm password",
@@ -136,7 +138,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   );
 
   return (
-    <form onSubmit={handleSubmit}>
+    <FormContainer onSubmit={handleSubmit}>
       <div className="grid gap-16 md:grid-cols-2">
         <TextInput
           label={ADMIN_USER_FORM_LABELS.USERNAME}
@@ -159,20 +161,20 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
         />
         <TextInput
           label={
-            mode === "create"
+            mode === ADMIN_ACTIONS.CREATE
               ? ADMIN_USER_FORM_LABELS.PASSWORD
               : ADMIN_USER_FORM_LABELS.NEW_PASSWORD
           }
           type="password"
           value={values.password}
-          required={mode === "create"}
+          required={mode === ADMIN_ACTIONS.CREATE}
           onChange={(event) => updateValue("password", event.target.value)}
         />
         <TextInput
           label={ADMIN_USER_FORM_LABELS.CONFIRM_PASSWORD}
           type="password"
           value={values.password_confirmation}
-          required={mode === "create" || Boolean(values.password)}
+          required={mode === ADMIN_ACTIONS.CREATE || Boolean(values.password)}
           onChange={(event) =>
             updateValue("password_confirmation", event.target.value)
           }
@@ -189,10 +191,11 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
               </span>
             </div>
 
-            <AdminMultiSelectDropdown
+            <Dropdown
+              multiple
               options={roleOptions}
-              selectedValues={selectedRoleIds}
-              onChange={handleRolesChange}
+              values={selectedRoleIds}
+              onValuesChange={handleRolesChange}
               placeholder={ADMIN_USER_FORM_LABELS.ROLE_DROPDOWN_PLACEHOLDER}
             />
 
@@ -216,12 +219,12 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
 
       <FormActionRow
         submitLabel={
-          mode === "create"
+          mode === ADMIN_ACTIONS.CREATE
             ? ADMIN_USER_FORM_LABELS.CREATE_USER
             : ADMIN_USER_FORM_LABELS.SAVE_CHANGES
         }
         onCancel={onCancel}
       />
-    </form>
+    </FormContainer>
   );
 };

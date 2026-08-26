@@ -5,7 +5,7 @@ import {
   IAdminProductFormValues,
 } from "../types";
 import { ProductPriceMode } from "../productForm.utils";
-import { FormActionRow, TextInput } from "../../components";
+import { FormActionRow, FormContainer, Radio, TextInput } from "../../components";
 import {
   PRODUCT_CURRENCY,
   PRODUCT_CYCLE,
@@ -129,7 +129,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <FormContainer onSubmit={handleSubmit}>
       <div className="grid gap-16 md:grid-cols-2">
         <TextInput
           label={ADMIN_PRODUCT_FORM_LABELS.PRODUCT_NAME}
@@ -143,23 +143,17 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           </label>
           <div className="grid gap-8 sm:grid-cols-2">
             {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => (
-              <label
+              <Radio
                 key={option}
-                className="flex min-h-[52px] items-center gap-8 rounded-md border border-base-300 bg-base-100 px-12 text-body-s font-medium text-base-content"
+                name="price_type"
+                checked={priceMode === option}
+                onChange={() => updatePriceMode(option)}
+                containerClassName="min-h-[52px] bg-base-100"
               >
-                <input
-                  type="radio"
-                  name="price_type"
-                  className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
-                  checked={priceMode === option}
-                  onChange={() => updatePriceMode(option)}
-                />
-                <span>
-                  {option === PRODUCT_TYPE.PREMIUM
-                    ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
-                    : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
-                </span>
-              </label>
+                {option === PRODUCT_TYPE.PREMIUM
+                  ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
+                  : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
+              </Radio>
             ))}
           </div>
         </div>
@@ -237,6 +231,6 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         }
         onCancel={onCancel}
       />
-    </form>
+    </FormContainer>
   );
 };

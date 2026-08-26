@@ -1,4 +1,4 @@
-import { parseRecord } from "../../../services/api.service";
+import { getApiError, parseRecord } from "../../../services/api.service";
 import { AppLocales, translate } from "../../../locales";
 import RoleService from "./role.service";
 import {
@@ -15,17 +15,14 @@ class RoleController {
       const response = await RoleService.getRoles();
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.roles) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Roles.Errors.LoadList),
+          getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadList)),
         );
         return;
       }
 
-      onSuccess?.(data.roles.map(parseRecord));
+      onSuccess?.(data.map(parseRecord));
   }
 
   async getRole(
@@ -36,17 +33,14 @@ class RoleController {
       const response = await RoleService.getRole(id);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.role) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Roles.Errors.LoadOne),
+          getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadOne)),
         );
         return;
       }
 
-      onSuccess?.(parseRecord(data.role));
+      onSuccess?.(parseRecord(data));
   }
 
   async getPermissions(
@@ -56,17 +50,17 @@ class RoleController {
       const response = await RoleService.getPermissions();
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.permissions) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
+          getApiError(
+            response,
             translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
+          ),
         );
         return;
       }
 
-      onSuccess?.(data.permissions.map(parseRecord));
+      onSuccess?.(data.map(parseRecord));
   }
 
   async createRole(
@@ -77,17 +71,14 @@ class RoleController {
       const response = await RoleService.createRole(values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.role) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Roles.Errors.Create),
+          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Create)),
         );
         return;
       }
 
-      onSuccess?.(parseRecord(data.role));
+      onSuccess?.(parseRecord(data));
   }
 
   async updateRole(
@@ -99,17 +90,14 @@ class RoleController {
       const response = await RoleService.updateRole(id, values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.role) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Roles.Errors.Update),
+          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Update)),
         );
         return;
       }
 
-      onSuccess?.(parseRecord(data.role));
+      onSuccess?.(parseRecord(data));
   }
 
   async deleteRole(
@@ -122,10 +110,7 @@ class RoleController {
 
       if (!status?.success) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Roles.Errors.Delete),
+          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
         );
         return;
       }

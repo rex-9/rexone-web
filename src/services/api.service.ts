@@ -23,17 +23,6 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include credentials in requests
 });
 
-const readStoredToken = (): string | null => {
-  if (typeof window === "undefined") return null;
-
-  try {
-    const storedToken = window.localStorage.getItem("token");
-    return storedToken ? JSON.parse(storedToken) : null;
-  } catch {
-    return null;
-  }
-};
-
 const getRequestToken = (config?: AxiosRequestConfig): string | null => {
   const headers = AxiosHeaders.from(config?.headers as AxiosHeaders | undefined);
   const authorization = headers.get("Authorization");
@@ -95,6 +84,15 @@ const apiRequest = async <T>(
     return handleError(error);
   }
 };
+
+export const getApiError = <T>(
+  response: IApiResponse<IApiEnvelope<T>>,
+  fallback: string,
+): string =>
+  response.data?.status?.error ??
+  response.data?.status?.message ??
+  response.error ??
+  fallback;
 
 // Utility functions for each HTTP method
 export const api = {
@@ -173,10 +171,8 @@ export const useAxiosInterceptor = () => {
           headers.set("Content-Type", "application/json");
         }
 
-        const activeToken = readStoredToken() ?? token;
-
-        if (activeToken) {
-          headers.set("Authorization", `Bearer ${activeToken}`);
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
         }
 
         config.headers = headers;
@@ -198,9 +194,7 @@ export const useAxiosInterceptor = () => {
         console.log("interceptor response error ===>", error);
 
         const requestToken = getRequestToken(error?.config);
-        const activeToken = readStoredToken() ?? token;
-        const isActiveRequest =
-          !requestToken || !activeToken || requestToken === activeToken;
+        const isActiveRequest = !requestToken || !token || requestToken === token;
 
         if (error?.response?.status === 401 && token && isActiveRequest) {
           signout();
@@ -239,24 +233,14 @@ export const apiHandler = async <T>(
   onSuccess: (response: IApiEnvelope<T>) => void,
   onFailure?: () => void,
 ): Promise<void> => {
-  try {
-    const response = await apiFunction();
-    const envelope = response.data;
+  const response = await apiFunction();
+  const envelope = response.data;
 
-    if (envelope?.status?.success) {
-      setError("");
-      onSuccess(envelope);
-    } else {
-      setError(
-        envelope?.status?.error ??
-          envelope?.status?.message ??
-          `An error occurred when ${operation}.`,
-      );
-
-      onFailure?.();
-    }
-  } catch (error) {
-    setError(`An error occurred when ${operation}. error: ${error}`);
+  if (envelope?.status?.success) {
+    setError("");
+    onSuccess(envelope);
+  } else {
+    setError(getApiError(response, `An error occurred when ${operation}.`));
 
     onFailure?.();
   }
@@ -277,7 +261,7 @@ export const parseRecord = <T extends object>(
   return record as T & { id: string };
 };
 
-export const parsePaginatedResponse = <T extends object>(
+export const parsePageList = <T extends object>(
   response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
 ): {
   records: (T & { id: string })[];

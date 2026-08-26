@@ -24,15 +24,17 @@ import {
 } from "../constants";
 import {
   ADMIN_ACTIONS,
-  ADMIN_PAGE_TITLES,
   ADMIN_RESOURCES,
 } from "../../constants";
+import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
 import {
 
   AlertDialog,
   AdminState,
   FormActionRow,
+  FormContainer,
   Button,
+  Radio,
 } from "../../components";
 import { iconsLib } from '../../../../assets';
 
@@ -65,7 +67,7 @@ const matchesUserQuery = (user: IAdminUser, query: string) => {
 };
 
 export const AdminNotificationsPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.NOTIFICATIONS);
+  useDocumentTitle(ADMIN_NOTIFICATION_PAGE_TITLES.LIST);
 
   const navigate = useNavigate();
   const t = useTranslate();
@@ -301,7 +303,7 @@ export const AdminNotificationsPage: React.FC = () => {
         <AdminState title={t(NOTIFICATION_LOCALES.Errors.LoadRecipients)} message={error} />
       ) : (
         <>
-          <form onSubmit={handleSubmit}>
+          <FormContainer onSubmit={handleSubmit}>
               <div className="grid gap-16 md:grid-cols-2">
                 <div className="md:col-span-2">
                   <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
@@ -398,11 +400,8 @@ export const AdminNotificationsPage: React.FC = () => {
                         canReadRoles ? "sm:grid-cols-3" : "sm:grid-cols-2"
                       }`}
                     >
-                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
-                        <input
-                          type="radio"
+                      <Radio
                           name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
-                          className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                           checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS}
                           onChange={() =>
                             updateValue(
@@ -410,15 +409,13 @@ export const AdminNotificationsPage: React.FC = () => {
                               NOTIFICATION_AUDIENCE_TYPES.USERS,
                             )
                           }
-                        />
-                        <span>{t(NOTIFICATION_LOCALES.Labels.SelectedUsers)}</span>
-                      </label>
+                          containerClassName="min-h-[42px] px-10"
+                        >
+                          {t(NOTIFICATION_LOCALES.Labels.SelectedUsers)}
+                      </Radio>
                       {canReadRoles && (
-                        <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
-                          <input
-                            type="radio"
+                        <Radio
                             name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
-                            className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                             checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES}
                             onChange={() =>
                               updateValue(
@@ -426,15 +423,13 @@ export const AdminNotificationsPage: React.FC = () => {
                                 NOTIFICATION_AUDIENCE_TYPES.ROLES,
                               )
                             }
-                          />
-                          <span>{t(NOTIFICATION_LOCALES.Labels.SelectedRoles)}</span>
-                        </label>
+                            containerClassName="min-h-[42px] px-10"
+                          >
+                            {t(NOTIFICATION_LOCALES.Labels.SelectedRoles)}
+                        </Radio>
                       )}
-                      <label className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content">
-                        <input
-                          type="radio"
+                      <Radio
                           name={NOTIFICATION_FIELDS.AUDIENCE_TYPE}
-                          className="radio radio-sm border-base-content/40 checked:border-primary checked:bg-primary"
                           checked={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
                           onChange={() =>
                             updateValue(
@@ -442,9 +437,10 @@ export const AdminNotificationsPage: React.FC = () => {
                               NOTIFICATION_AUDIENCE_TYPES.ALL,
                             )
                           }
-                        />
-                        <span>{t(NOTIFICATION_LOCALES.Labels.AllUsers)}</span>
-                      </label>
+                          containerClassName="min-h-[42px] px-10"
+                        >
+                          {t(NOTIFICATION_LOCALES.Labels.AllUsers)}
+                      </Radio>
                     </div>
 
                     {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS && (
@@ -582,7 +578,7 @@ export const AdminNotificationsPage: React.FC = () => {
                   navigate(AppRoutes.client.protected.admin.USERS);
                 }}
               />
-            </form>
+            </FormContainer>
         </>
       )}
     </>

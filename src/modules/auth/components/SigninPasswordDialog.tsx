@@ -21,6 +21,9 @@ interface SigninPasswordDialogProps {
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
+  cooldownTargetTimeMs: number;
+  onCooldownStart: (targetTimeMs: number) => void;
+  onCooldownClear: () => void;
 }
 
 export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
@@ -30,6 +33,9 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
   navigateToStep,
   onClose,
   onBack,
+  cooldownTargetTimeMs,
+  onCooldownStart,
+  onCooldownClear,
 }) => {
   const { signin } = useAuth();
   const t = useTranslate();
@@ -44,69 +50,71 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
 
   // Countdown for cooldown period
   const cooldown = useCountdown(0);
+  const { startAt: startCooldownAt } = cooldown;
+
+  useEffect(() => {
+    if (cooldownTargetTimeMs > Date.now()) {
+      startCooldownAt(cooldownTargetTimeMs);
+    }
+  }, [cooldownTargetTimeMs, startCooldownAt]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password.length !== 6 || cooldown.isActive) return;
 
     setIsLoading(true);
-    const result = await AuthController.signInWithEmailOrUsername(
-      email,
-      password,
-      setError,
-      setMessage,
-      signin,
-      navigate,
-    );
-
-    if (result.success) {
-      success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
-      cooldown.clear();
-      setRemainingAttempts(3);
-      setHasFailureHistory(false);
-      setPassword("");
-      setError("");
-      onClose();
-      onClose();
-    } else if (result.otpSent) {
-      info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
-      navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
-    } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
-      // Cooldown active - start countdown
-      cooldown.start(result.cooldownRemaining);
-      setRemainingAttempts(0);
-      setHasFailureHistory(true);
-      setPassword("");
-      setError(
-        t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
-          seconds: result.cooldownRemaining,
-        }),
+    try {
+      const result = await AuthController.signInWithEmailOrUsername(
+        email,
+        password,
+        setError,
+        setMessage,
+        signin,
+        navigate,
       );
-    } else {
-      // Failed attempt - update remaining attempts
-      if (result.remainingAttempts === undefined) {
+
+      if (result.success) {
+        success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
+        cooldown.clear();
+        onCooldownClear();
+        setRemainingAttempts(3);
+        setHasFailureHistory(false);
+        setPassword("");
+        setError("");
+        onClose();
+      } else if (result.otpSent) {
+        info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
+        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
+      } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
+        const targetTimeMs = Date.now() + result.cooldownRemaining * 1000;
+        cooldown.startAt(targetTimeMs);
+        onCooldownStart(targetTimeMs);
+        setRemainingAttempts(0);
+        setHasFailureHistory(true);
+        setPassword("");
+        setError("");
+      } else if (result.remainingAttempts !== undefined) {
+        const attemptsLeft = result.remainingAttempts;
+        setRemainingAttempts(attemptsLeft);
+        setHasFailureHistory(true);
+        setPassword("");
+
+        if (attemptsLeft > 0) {
+          setError(
+            t(AppLocales.Auth.SignInPasscode.IncorrectPasscode, {
+              attempts: attemptsLeft,
+            }),
+          );
+        } else {
+          setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
+        }
+      } else {
         setPassword("");
         setError(result.errorMessage || "Unable to sign in. Please try again.");
-        setIsLoading(false);
-        return;
       }
-
-      const attemptsLeft = result.remainingAttempts;
-      setRemainingAttempts(attemptsLeft);
-      setHasFailureHistory(true);
-      setPassword("");
-
-      if (attemptsLeft > 0) {
-        setError(
-          t(AppLocales.Auth.SignInPasscode.IncorrectPasscode, {
-            attempts: attemptsLeft,
-          }),
-        );
-      } else {
-        setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
-      }
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   // Reset attempts when cooldown expires
@@ -116,9 +124,10 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
       setRemainingAttempts(3);
       setError("");
       setPassword("");
+      onCooldownClear();
     }
     prevIsActiveRef.current = cooldown.isActive;
-  }, [cooldown.isActive, setPassword]);
+  }, [cooldown.isActive, onCooldownClear, setPassword]);
 
   const triggerSubmit = () => {
     if (formRef.current) {
@@ -144,6 +153,12 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
 
   const isSubmitDisabled =
     isLoading || cooldown.isActive || password.length !== 6;
+
+  const displayedError = cooldown.isActive
+    ? t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
+        seconds: cooldown.secondsLeft,
+      })
+    : error;
 
   // Button text with countdown
   const getButtonText = (): string => {
@@ -186,7 +201,7 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
           }}
           onComplete={triggerSubmit}
           label=""
-          error={error}
+          error={displayedError}
           disabled={isLoading || cooldown.isActive}
           helperText={getHelperText()}
         />

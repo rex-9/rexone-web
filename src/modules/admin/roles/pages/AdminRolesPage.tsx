@@ -15,12 +15,15 @@ import {
   IAdminTableColumn,
 } from "../../components";
 import {
-  ADMIN_COMMON_LABELS,
-  ADMIN_PAGE_TITLES,
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import {
+  ADMIN_ROLE_LABELS,
+  ADMIN_ROLE_PAGE_TITLES,
+  ADMIN_ROLE_TABLE_HEADERS,
+} from "../constants";
 
 const countPermissions = (role: IAdminRole): number =>
   Object.values(role.permissions ?? {}).reduce(
@@ -29,7 +32,7 @@ const countPermissions = (role: IAdminRole): number =>
   );
 
 export const AdminRolesPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.ROLES);
+  useDocumentTitle(ADMIN_ROLE_PAGE_TITLES.LIST);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -68,7 +71,7 @@ export const AdminRolesPage: React.FC = () => {
     () => [
       {
         key: "name",
-        header: ADMIN_TABLE_HEADERS.ROLE,
+        header: ADMIN_ROLE_TABLE_HEADERS.ROLE,
         render: (role) => (
           <div>
             <div className="font-medium text-base-content">{role.name}</div>
@@ -82,19 +85,19 @@ export const AdminRolesPage: React.FC = () => {
       },
       {
         key: "permissions",
-        header: ADMIN_TABLE_HEADERS.PERMISSIONS,
+        header: ADMIN_ROLE_TABLE_HEADERS.PERMISSIONS,
         render: (role) => countPermissions(role),
       },
       {
         key: "users",
-        header: ADMIN_TABLE_HEADERS.USERS,
+        header: ADMIN_ROLE_TABLE_HEADERS.USERS,
         render: (role) => role.user_count ?? 0,
       },
       {
         key: "system",
-        header: ADMIN_TABLE_HEADERS.TYPE,
+        header: ADMIN_ROLE_TABLE_HEADERS.TYPE,
         render: (role) =>
-          role.system ? ADMIN_COMMON_LABELS.SYSTEM : ADMIN_COMMON_LABELS.CUSTOM,
+          role.system ? ADMIN_ROLE_LABELS.SYSTEM : ADMIN_ROLE_LABELS.CUSTOM,
       },
       {
         key: "actions",
@@ -108,8 +111,8 @@ export const AdminRolesPage: React.FC = () => {
                 type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.admin.ROLE_EDIT.replace(
-                      ":id",
+                    AppRoutes.withId(
+                      AppRoutes.client.protected.admin.ROLE_EDIT,
                       role.id,
                     ),
                   ),

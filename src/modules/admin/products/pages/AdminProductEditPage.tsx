@@ -15,10 +15,10 @@ import {
 } from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
 
 export const AdminProductEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCT_EDIT);
+  useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();

@@ -92,7 +92,6 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
   );
 
   return (
-    <div>
       <div className="grid gap-10 lg:grid-cols-2">
         {permissionGroups.map(([resource, resourcePermissions]) => {
           const resourcePermissionIds = resourcePermissions.map(
@@ -160,6 +159,5 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
           );
         })}
       </div>
-    </div>
   );
 };

@@ -86,7 +86,7 @@ class AiService {
 
   async deleteRoom(roomId: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     const response = await api.delete<null>(
-      AppRoutes.server.protected.AI_DELETE_ROOM.replace(":id", roomId),
+      AppRoutes.withId(AppRoutes.server.protected.AI_DELETE_ROOM, roomId),
     );
     return response;
   }

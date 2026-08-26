@@ -1,6 +1,6 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { parsePaginatedResponse } from "../../services/api.service";
+import { getApiError, parsePageList } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import { IApiPagination } from "../../models";
@@ -42,17 +42,13 @@ class AiController {
     onError: (error: string) => void,
     params?: { page?: number; limit?: number },
   ): Promise<void> {
-    try {
-      const response = await AiService.getRooms(params);
-      const { status, data, meta } = response.data || {};
+    const response = await AiService.getRooms(params);
+    const { status, data, meta } = response.data || {};
 
-      if (status?.success && data?.rooms) {
-        onSuccess(data.rooms, meta?.pagination);
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.LoadRooms));
-      }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success && data?.rooms) {
+      onSuccess(data.rooms, meta?.pagination);
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.LoadRooms)));
     }
   }
 
@@ -61,18 +57,14 @@ class AiController {
     onSuccess: (room: IRoom) => void,
     onError: (error: string) => void,
   ): Promise<void> {
-    try {
-      const response = await AiService.createRoom(title);
-      const { status, data } = response.data || {};
+    const response = await AiService.createRoom(title);
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.room) {
-        this.currentRoomId = data.room.id;
-        onSuccess(data.room);
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.CreateRoom));
-      }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success && data?.room) {
+      this.currentRoomId = data.room.id;
+      onSuccess(data.room);
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.CreateRoom)));
     }
   }
 
@@ -87,26 +79,22 @@ class AiController {
     onError: (error: string) => void,
     params?: { page?: number; limit?: number },
   ): Promise<void> {
-    try {
-      const response = await AiService.getHistory(
-        roomId || this.currentRoomId || undefined,
-        params,
-      );
-      const { status, data } = response.data || {};
+    const response = await AiService.getHistory(
+      roomId || this.currentRoomId || undefined,
+      params,
+    );
+    const { status, data } = response.data || {};
 
-      if (status?.success && data) {
-        const { records: messages, pagination } = parsePaginatedResponse(response);
-        const rId = messages[0]?.room_id ?? roomId ?? "";
-        const processing = messages.some((m) =>
-          ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),
-        );
-        this.currentRoomId = rId || null;
-        onSuccess(messages, rId, processing, pagination);
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.LoadHistory));
-      }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success && data) {
+      const { records: messages, pagination } = parsePageList(response);
+      const rId = messages[0]?.room_id ?? roomId ?? "";
+      const processing = messages.some((m) =>
+        ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),
+      );
+      this.currentRoomId = rId || null;
+      onSuccess(messages, rId, processing, pagination);
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.LoadHistory)));
     }
   }
 
@@ -116,24 +104,20 @@ class AiController {
     onSuccess: (message: IMessage, roomId: string) => void,
     onError: (error: string) => void,
   ): Promise<void> {
-    try {
-      const response = await AiService.chat({
-        message,
-        room_id: roomId || this.currentRoomId || undefined,
-        temperature: 0.7,
-        max_tokens: 2000,
-      });
+    const response = await AiService.chat({
+      message,
+      room_id: roomId || this.currentRoomId || undefined,
+      temperature: 0.7,
+      max_tokens: 2000,
+    });
 
-      const { status, data } = response.data || {};
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.message) {
-        this.currentRoomId = data.room_id;
-        onSuccess(data.message, data.room_id);
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.GetResponse));
-      }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success && data?.message) {
+      this.currentRoomId = data.room_id;
+      onSuccess(data.message, data.room_id);
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)));
     }
   }
 
@@ -142,19 +126,15 @@ class AiController {
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    try {
-      const response = await AiService.clearHistory(
-        roomId || this.currentRoomId || undefined,
-      );
-      const { status } = response.data || {};
+    const response = await AiService.clearHistory(
+      roomId || this.currentRoomId || undefined,
+    );
+    const { status } = response.data || {};
 
-      if (status?.success) {
-        onSuccess?.();
-      } else {
-        onError?.(status?.error || translate(AppLocales.Ai.Errors.ClearHistory));
-      }
-    } catch {
-      onError?.(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success) {
+      onSuccess?.();
+    } else {
+      onError?.(getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)));
     }
   }
 
@@ -164,17 +144,13 @@ class AiController {
     onSuccess: (title: string) => void,
     onError: (error: string) => void,
   ): Promise<void> {
-    try {
-      const response = await AiService.renameRoom(roomId, title);
-      const { status, data } = response.data || {};
+    const response = await AiService.renameRoom(roomId, title);
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.title) {
-        onSuccess(data.title);
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.RenameRoom));
-      }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+    if (status?.success && data?.title) {
+      onSuccess(data.title);
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.RenameRoom)));
     }
   }
 
@@ -183,20 +159,16 @@ class AiController {
     onSuccess: () => void,
     onError: (error: string) => void,
   ): Promise<void> {
-    try {
-      const response = await AiService.deleteRoom(roomId);
-      const { status } = response.data || {};
+    const response = await AiService.deleteRoom(roomId);
+    const { status } = response.data || {};
 
-      if (status?.success) {
-        if (this.currentRoomId === roomId) {
-          this.currentRoomId = null;
-        }
-        onSuccess();
-      } else {
-        onError(status?.error || translate(AppLocales.Ai.Errors.DeleteRoom));
+    if (status?.success) {
+      if (this.currentRoomId === roomId) {
+        this.currentRoomId = null;
       }
-    } catch {
-      onError(translate(AppLocales.Ai.Errors.Unexpected));
+      onSuccess();
+    } else {
+      onError(getApiError(response, translate(AppLocales.Ai.Errors.DeleteRoom)));
     }
   }
 }

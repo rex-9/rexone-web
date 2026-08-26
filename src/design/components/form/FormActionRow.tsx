@@ -1,17 +1,16 @@
 import React from "react";
-import { Button } from "../../../design/components/button";
 import { useLoading } from "../../../contexts/LoadingContext";
-import { ADMIN_COMMON_LABELS } from "../constants";
+import { Button } from "../button";
 
-interface IFormActionRowProps {
+export interface FormActionRowProps {
   submitLabel: string;
   cancelLabel?: string;
   onCancel: () => void;
 }
 
-export const FormActionRow: React.FC<IFormActionRowProps> = ({
+export const FormActionRow: React.FC<FormActionRowProps> = ({
   submitLabel,
-  cancelLabel = ADMIN_COMMON_LABELS.CANCEL,
+  cancelLabel = "Cancel",
   onCancel,
 }) => {
   const { isLoading, isOverlayLoading } = useLoading();

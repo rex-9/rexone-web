@@ -13,35 +13,33 @@ import {
 
 class RoleService {
   async getRoles(): Promise<
-    IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminRole>[]>>
   > {
-    return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>(
+    return api.get<IJsonApiResource<IAdminRole>[]>(
       AppRoutes.server.protected.admin.IAM_ROLES,
     );
   }
 
   async getRole(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
-    return api.get<{ role: IAdminRole }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminRole>>> {
+    return api.get<IAdminRole>(
       AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
     );
   }
 
   async getPermissions(): Promise<
-    IApiResponse<
-      IApiEnvelope<{ permissions: IJsonApiResource<IAdminPermission>[] }>
-    >
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminPermission>[]>>
   > {
-    return api.get<{ permissions: IJsonApiResource<IAdminPermission>[] }>(
+    return api.get<IJsonApiResource<IAdminPermission>[]>(
       AppRoutes.server.protected.admin.IAM_ROLE_PERMISSIONS,
     );
   }
 
   async createRole(
     values: IAdminRoleFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
-    return api.post<{ role: IAdminRole }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminRole>>> {
+    return api.post<IAdminRole>(
       AppRoutes.server.protected.admin.IAM_ROLES,
       values,
     );
@@ -50,8 +48,8 @@ class RoleService {
   async updateRole(
     id: string,
     values: IAdminRoleFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<{ role: IAdminRole }>>> {
-    return api.put<{ role: IAdminRole }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminRole>>> {
+    return api.put<IAdminRole>(
       AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
       values,
     );

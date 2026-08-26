@@ -5,11 +5,12 @@ import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
 import { Button } from "../../../design/components/button";
+import { PageLayout } from "../../../design/pages";
 import { ProfileAvatar } from "../../../design/components/common/ProfileAvatar";
 import { LanguageDropdown } from "../../../design/components/settings/LanguageDropdown";
 import { ThemeToggle } from "../../../design/components/settings/ThemeToggle";
 import { ADMIN_ACTIONS } from "../constants";
-import { getAdminPageMeta } from "../helpers/adminPage.helper";
+import { getAdminPageMeta } from "../helpers/admin.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
 import { iconsLib } from '../../../assets';
@@ -40,14 +41,14 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const sidebar = (
     <aside className="flex h-full w-[280px] flex-col border-r border-base-300 bg-base-100">
       <div className="flex h-[72px] items-center gap-12 border-b border-base-300 px-24">
-        <button
+        <Button
           type="button"
+          variant="tertiary"
           className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900"
           onClick={() => navigate(AppRoutes.client.protected.admin.USERS)}
-          aria-label="Go to admin users"
         >
           R
-        </button>
+        </Button>
         <div>
           <div className="text-body-m font-semibold text-base-content">
             Rexone
@@ -83,7 +84,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-base-200 text-base-content">
+    <PageLayout className="overflow-x-hidden bg-base-200 text-base-content">
       <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:block">
         {sidebar}
       </div>
@@ -168,6 +169,6 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           </section>
         </main>
       </div>
-    </div>
+    </PageLayout>
   );
 };

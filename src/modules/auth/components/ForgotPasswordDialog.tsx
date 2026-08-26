@@ -41,15 +41,18 @@ export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await AuthController.sendForgotPasswordMail(
-      localEmail,
-      setError,
-      setMessage,
-      () => cooldown.start(60),
-    );
-    setIsLoading(false);
-    if (!error) {
-      success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
+    try {
+      await AuthController.sendForgotPasswordMail(
+        localEmail,
+        setError,
+        setMessage,
+        () => {
+          cooldown.start(60);
+          success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
+        },
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,4 +114,3 @@ export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
     </Dialog>
   );
 };
-

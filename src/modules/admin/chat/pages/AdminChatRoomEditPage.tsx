@@ -14,12 +14,13 @@ import {
   
   AdminState,
   FormActionRow,
+  FormContainer,
   TextInput,
 } from "../../components";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
 
 export const AdminChatRoomEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_ROOM_EDIT);
+  useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.ROOM_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
       { error && !room ? (
         <AdminState title="Unable to load chat room" message={error} />
       ) : room? (
-        <form onSubmit={handleSubmit}>
+        <FormContainer onSubmit={handleSubmit}>
             <TextInput
               label="Title"
               value={title}
@@ -101,7 +102,7 @@ export const AdminChatRoomEditPage: React.FC = () => {
                 navigate(AppRoutes.client.protected.admin.CHAT_ROOMS)
               }
             />
-          </form>
+          </FormContainer>
       ):null}
     </>
   );

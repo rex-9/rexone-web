@@ -1,5 +1,5 @@
 import NotificationService from "./notification.service";
-import { parseRecord } from "../../../services/api.service";
+import { getApiError, parseRecord } from "../../../services/api.service";
 import { IAdminUser } from "../users";
 import {
   IAdminNotificationDelivery,
@@ -17,12 +17,7 @@ class NotificationController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(
-        status?.error ||
-          status?.message ||
-          response.error ||
-          NOTIFICATION_LOCALES.Errors.LoadTemplates,
-      );
+      onError?.(getApiError(response, NOTIFICATION_LOCALES.Errors.LoadTemplates));
       return;
     }
 
@@ -38,10 +33,7 @@ class NotificationController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            NOTIFICATION_LOCALES.Errors.LoadRecipients,
+          getApiError(response, NOTIFICATION_LOCALES.Errors.LoadRecipients),
         );
         return;
       }
@@ -59,12 +51,7 @@ class NotificationController {
       const isQueued = status?.code === 202;
 
       if ((!status?.success && !isQueued) || !data) {
-        onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            NOTIFICATION_LOCALES.Errors.Send,
-        );
+        onError?.(getApiError(response, NOTIFICATION_LOCALES.Errors.Send));
         return;
       }
 

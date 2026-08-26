@@ -7,11 +7,11 @@ import { useDocumentTitle } from "../../../../hooks";
 import { IAdminProductFormValues } from "../types";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
 import { AlertDialog } from "../../components";
 
 export const AdminProductCreatePage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.PRODUCT_CREATE);
+  useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.CREATE);
 
   const navigate = useNavigate();
   const toast = useToast();

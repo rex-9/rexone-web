@@ -12,10 +12,11 @@ import {
 import { IAdminRole } from "../../roles/types";
 import { AlertDialog,  AdminState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_USER_PAGE_TITLES } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminUserEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.USER_EDIT);
+  useDocumentTitle(ADMIN_USER_PAGE_TITLES.EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -79,7 +80,7 @@ export const AdminUserEditPage: React.FC = () => {
         <AdminState title="Unable to load user" message={error} />
       ) : user ? (
         <AdminUserForm
-          mode="edit"
+          mode={ADMIN_ACTIONS.EDIT}
           user={user}
           roles={roles}
           onSubmit={handleSubmit}

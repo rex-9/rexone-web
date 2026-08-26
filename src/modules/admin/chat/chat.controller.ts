@@ -1,6 +1,10 @@
 import { IApiPagination } from "../../../models";
 import { AppLocales, translate } from "../../../locales";
-import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
+import {
+  getApiError,
+  parsePageList,
+  parseRecord,
+} from "../../../services/api.service";
 import ChatService from "./chat.service";
 import {
   IAdminChatMessage,
@@ -19,11 +23,13 @@ class ChatController {
       const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
-        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadRooms));
+        onError?.(
+          getApiError(response, translate(AppLocales.Admin.Chat.Errors.LoadRooms)),
+        );
         return;
       }
 
-      const { records, pagination } = parsePaginatedResponse(response);
+      const { records, pagination } = parsePageList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -36,7 +42,9 @@ class ChatController {
     const { status } = response.data || {};
 
     if (!status?.success) {
-      onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.DeleteRoom));
+      onError?.(
+        getApiError(response, translate(AppLocales.Admin.Chat.Errors.DeleteRoom)),
+      );
       return;
     }
 
@@ -51,12 +59,14 @@ class ChatController {
       const response = await ChatService.getRoom(id);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.room) {
-        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadRoom));
+      if (!status?.success || !data) {
+        onError?.(
+          getApiError(response, translate(AppLocales.Admin.Chat.Errors.LoadRoom)),
+        );
         return;
       }
 
-      onSuccess?.(parseRecord(data.room));
+      onSuccess?.(parseRecord(data));
   }
 
   async updateRoom(
@@ -68,12 +78,14 @@ class ChatController {
       const response = await ChatService.updateRoom(id, values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.room) {
-        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.UpdateRoom));
+      if (!status?.success || !data) {
+        onError?.(
+          getApiError(response, translate(AppLocales.Admin.Chat.Errors.UpdateRoom)),
+        );
         return;
       }
 
-      onSuccess?.(parseRecord(data.room));
+      onSuccess?.(parseRecord(data));
   }
 
   async getMessages(
@@ -88,11 +100,16 @@ class ChatController {
       const { status, data } = response.data || {};
 
       if (!status?.success || !data) {
-        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadMessages));
+        onError?.(
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Chat.Errors.LoadMessages),
+          ),
+        );
         return;
       }
 
-      const { records, pagination } = parsePaginatedResponse(response);
+      const { records, pagination } = parsePageList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -105,7 +122,12 @@ class ChatController {
     const { status } = response.data || {};
 
     if (!status?.success) {
-      onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.DeleteMessage));
+      onError?.(
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Chat.Errors.DeleteMessage),
+        ),
+      );
       return;
     }
 
@@ -120,12 +142,14 @@ class ChatController {
       const response = await ChatService.getMessage(id);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.message) {
-        onError?.(status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.LoadMessage));
+      if (!status?.success || !data) {
+        onError?.(
+          getApiError(response, translate(AppLocales.Admin.Chat.Errors.LoadMessage)),
+        );
         return;
       }
 
-      onSuccess?.(parseRecord(data.message));
+      onSuccess?.(parseRecord(data));
   }
 
   async updateMessage(
@@ -137,14 +161,17 @@ class ChatController {
       const response = await ChatService.updateMessage(id, values);
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.message) {
+      if (!status?.success || !data) {
         onError?.(
-          status?.error || response.error || translate(AppLocales.Admin.Chat.Errors.UpdateMessage),
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Chat.Errors.UpdateMessage),
+          ),
         );
         return;
       }
 
-      onSuccess?.(parseRecord(data.message));
+      onSuccess?.(parseRecord(data));
   }
 }
 

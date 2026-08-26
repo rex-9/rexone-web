@@ -1,11 +1,10 @@
 import React from "react";
-import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
 export interface FormContainerProps {
-  title: string;
+  title?: string;
   children: React.ReactNode;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
   className?: string;
 }
 
@@ -15,17 +14,15 @@ export const FormContainer: React.FC<FormContainerProps> = ({
   onSubmit,
   className,
 }) => {
-  const t = useTranslate();
-
   return (
     <form
       onSubmit={onSubmit}
       className={cn(
-        "w-96 flex flex-col justify-center items-center bg-base-200 p-6 rounded shadow-md",
+        "w-full",
         className,
       )}
     >
-      <h2 className="text-2xl mb-4">{t(title)}</h2>
+      {title && <h2 className="mb-4 text-2xl">{title}</h2>}
       {children}
     </form>
   );

@@ -19,11 +19,15 @@ import {
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
-  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import {
+  ADMIN_USER_LABELS,
+  ADMIN_USER_PAGE_TITLES,
+  ADMIN_USER_TABLE_HEADERS,
+} from "../constants";
 import { translate } from "../../../../locales";
 import { iconsLib } from '../../../../assets';
 
@@ -34,7 +38,7 @@ const formatDate = (value?: Date | null): string => {
 
 const formatRoles = (user: IAdminUser): string => {
   if (user.role_names?.length) return user.role_names.join(", ");
-  return ADMIN_COMMON_LABELS.UNASSIGNED;
+  return ADMIN_USER_LABELS.UNASSIGNED;
 };
 
 type UserListView = "active" | "discarded";
@@ -48,7 +52,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   view = "active",
 }) => {
   useDocumentTitle(
-    view === "active" ? ADMIN_PAGE_TITLES.USERS : ADMIN_PAGE_TITLES.USERS_RECYCLE_BIN,
+    view === "active" ? ADMIN_USER_PAGE_TITLES.LIST : ADMIN_USER_PAGE_TITLES.RECYCLE_BIN,
   );
 
   const navigate = useNavigate();
@@ -117,7 +121,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     () => [
       {
         key: "identity",
-        header: ADMIN_TABLE_HEADERS.USER,
+        header: ADMIN_USER_TABLE_HEADERS.USER,
         render: (user) => (
           <div>
             <div className="font-medium text-base-content">{user.name}</div>
@@ -129,12 +133,12 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       },
       {
         key: "email",
-        header: ADMIN_TABLE_HEADERS.EMAIL,
+        header: ADMIN_USER_TABLE_HEADERS.EMAIL,
         render: (user) => user.email,
       },
       {
         key: "role",
-        header: ADMIN_TABLE_HEADERS.ROLE,
+        header: ADMIN_USER_TABLE_HEADERS.ROLE,
         render: (user) => formatRoles(user),
       },
       {
@@ -157,8 +161,8 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
                     type: ADMIN_ACTIONS.EDIT,
                     onClick: () =>
                       navigate(
-                        AppRoutes.client.protected.admin.USER_EDIT.replace(
-                          ":id",
+                        AppRoutes.withId(
+                          AppRoutes.client.protected.admin.USER_EDIT,
                           user.id,
                         ),
                       ),

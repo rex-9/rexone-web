@@ -25,8 +25,8 @@ class ChatService {
 
   async getRoom(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ room: IAdminChatRoom }>>> {
-    return api.get<{ room: IAdminChatRoom }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminChatRoom>>> {
+    return api.get<IAdminChatRoom>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
   }
@@ -34,8 +34,8 @@ class ChatService {
   async updateRoom(
     id: string,
     values: IAdminChatRoomFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<{ room: IAdminChatRoom }>>> {
-    return api.put<{ room: IAdminChatRoom }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminChatRoom>>> {
+    return api.put<IAdminChatRoom>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
       { room: values },
     );
@@ -61,8 +61,8 @@ class ChatService {
 
   async getMessage(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ message: IAdminChatMessage }>>> {
-    return api.get<{ message: IAdminChatMessage }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminChatMessage>>> {
+    return api.get<IAdminChatMessage>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
   }
@@ -70,8 +70,8 @@ class ChatService {
   async updateMessage(
     id: string,
     values: IAdminChatMessageFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<{ message: IAdminChatMessage }>>> {
-    return api.put<{ message: IAdminChatMessage }>(
+  ): Promise<IApiResponse<IApiEnvelope<IAdminChatMessage>>> {
+    return api.put<IAdminChatMessage>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
       { message: values },
     );

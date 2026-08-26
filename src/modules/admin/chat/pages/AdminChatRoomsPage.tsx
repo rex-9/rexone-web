@@ -16,17 +16,17 @@ import {
   ConfirmDialog,
   IAdminTableColumn,
 } from "../../components";
-import { formatAdminDate, truncateAdminText } from "../../helpers/adminPage.helper";
+import { formatAdminDate, truncateAdminText } from "../../helpers/admin.helper";
 import {
-  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import { ADMIN_CHAT_PAGE_TITLES, ADMIN_CHAT_TABLE_HEADERS } from "../constants";
 
 export const AdminChatRoomsPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_ROOMS);
+  useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.ROOMS);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -68,17 +68,17 @@ export const AdminChatRoomsPage: React.FC = () => {
     () => [
       {
         key: "title",
-        header: ADMIN_TABLE_HEADERS.ROOM,
+        header: ADMIN_CHAT_TABLE_HEADERS.ROOM,
         render: (room) => room.title,
       },
       {
         key: "messages",
-        header: ADMIN_TABLE_HEADERS.MESSAGES,
+        header: ADMIN_CHAT_TABLE_HEADERS.MESSAGES,
         render: (room) => room.message_count,
       },
       {
         key: "last",
-        header: ADMIN_TABLE_HEADERS.LAST_MESSAGE,
+        header: ADMIN_CHAT_TABLE_HEADERS.LAST_MESSAGE,
         render: (room) => truncateAdminText(room.last_message),
       },
       {
@@ -98,8 +98,8 @@ export const AdminChatRoomsPage: React.FC = () => {
                 type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.admin.CHAT_ROOM_EDIT.replace(
-                      ":id",
+                    AppRoutes.withId(
+                     AppRoutes.client.protected.admin.CHAT_ROOM_EDIT,
                       room.id,
                     ),
                   ),

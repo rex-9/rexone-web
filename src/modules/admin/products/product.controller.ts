@@ -1,6 +1,10 @@
 import { IApiPagination } from "../../../models";
 import { AppLocales, translate } from "../../../locales";
-import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
+import {
+  getApiError,
+  parsePageList,
+  parseRecord,
+} from "../../../services/api.service";
 import ProductService from "./product.service";
 import {
   IAdminProduct,
@@ -19,15 +23,12 @@ class ProductController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Products.Errors.LoadList),
+          getApiError(response, translate(AppLocales.Admin.Products.Errors.LoadList)),
         );
         return;
       }
 
-      const { records, pagination } = parsePaginatedResponse(response);
+      const { records, pagination } = parsePageList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -41,15 +42,12 @@ class ProductController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Products.Errors.LoadOne),
+          getApiError(response, translate(AppLocales.Admin.Products.Errors.LoadOne)),
         );
         return;
       }
 
-      onSuccess?.(parseRecord("attributes" in data ? data : data.product));
+      onSuccess?.(parseRecord("attributes" in data ? data : data.product ?? data));
   }
 
   async getDiscardedProducts(
@@ -62,15 +60,12 @@ class ProductController {
 
     if (!status?.success || !data) {
       onError?.(
-        status?.error ||
-          status?.message ||
-          response.error ||
-          translate(AppLocales.Admin.Products.Errors.LoadList),
+        getApiError(response, translate(AppLocales.Admin.Products.Errors.LoadList)),
       );
       return;
     }
 
-    const { records, pagination } = parsePaginatedResponse(response);
+    const { records, pagination } = parsePageList(response);
     onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -84,17 +79,14 @@ class ProductController {
 
       if (!status?.success) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Products.Errors.Create),
+          getApiError(response, translate(AppLocales.Admin.Products.Errors.Create)),
         );
         return;
       }
 
       onSuccess?.(
         data
-          ? parseRecord("attributes" in data ? data : data.product)
+          ? parseRecord("attributes" in data ? data : data.product ?? data)
           : undefined,
         status.message,
       );
@@ -111,16 +103,13 @@ class ProductController {
 
       if (!status?.success || !data) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Products.Errors.Update),
+          getApiError(response, translate(AppLocales.Admin.Products.Errors.Update)),
         );
         return;
       }
 
       onSuccess?.(
-        parseRecord("attributes" in data ? data : data.product),
+        parseRecord("attributes" in data ? data : data.product ?? data),
         status.message,
       );
   }
@@ -135,10 +124,7 @@ class ProductController {
 
       if (!status?.success) {
         onError?.(
-          status?.error ||
-            status?.message ||
-            response.error ||
-            translate(AppLocales.Admin.Products.Errors.Discard),
+          getApiError(response, translate(AppLocales.Admin.Products.Errors.Discard)),
         );
         return;
       }
@@ -156,10 +142,7 @@ class ProductController {
 
     if (!status?.success || !data) {
       onError?.(
-        status?.error ||
-          status?.message ||
-          response.error ||
-          translate(AppLocales.Admin.Products.Errors.Update),
+        getApiError(response, translate(AppLocales.Admin.Products.Errors.Update)),
       );
       return;
     }

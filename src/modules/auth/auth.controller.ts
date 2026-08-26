@@ -7,7 +7,7 @@ import AuthService, {
 import AppRoutes from "../../AppRoutes";
 import { AppLocales, translate } from "../../locales";
 import { IApiResponseStatus, IUser } from "../../models";
-import { apiHandler } from "../../services";
+import { apiHandler, getApiError } from "../../services";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 
 const AUTH_ERRORS = {
@@ -52,45 +52,40 @@ class AuthController {
     cooldownRemaining?: number;
     otpSent?: boolean;
   }> {
-    try {
-      const response = await AuthService.signInWithEmailOrUsername(
-        signinKey,
-        password,
+    const response = await AuthService.signInWithEmailOrUsername(
+      signinKey,
+      password,
+    );
+    const { status, data } = response.data || {};
+
+    // OTP sent (unconfirmed user)
+    if (status?.code === 200 && data?.otp_sent) {
+      setMessage(
+        status.message || translate(AppLocales.Auth.Shared.VerificationCodeSent),
       );
-      const { status, data } = response.data || {};
-
-      // OTP sent (unconfirmed user)
-      if (status?.code === 200 && data?.otp_sent) {
-        setMessage(
-          status.message || translate(AppLocales.Auth.Shared.VerificationCodeSent),
-        );
-        return { success: false, otpSent: true };
-      }
-
-      // Successful sign in
-      if (status?.success && data?.token && data?.user) {
-        setMessage(status.message);
-        signin(data.token, data.user);
-        navigate(AppRoutes.client.protected.HOME);
-        return { success: true };
-      }
-
-      // ❌ Failed attempt
-      const errorMessage =
-        status?.error || translate(AppLocales.Auth.Shared.IncorrectPasscode);
-      setError(errorMessage);
-
-      return {
-        success: false,
-        errorMessage,
-        remainingAttempts: data?.remaining_attempts,
-        cooldownRemaining: data?.cooldown_remaining,
-      };
-    } catch {
-      const errorMessage = translate(AppLocales.Auth.Shared.SignInFailed);
-      setError(errorMessage);
-      return { success: false, errorMessage };
+      return { success: false, otpSent: true };
     }
+
+    // Successful sign in
+    if (status?.success && data?.token && data?.user) {
+      setMessage(status.message);
+      signin(data.token, data.user);
+      navigate(AppRoutes.client.protected.HOME);
+      return { success: true };
+    }
+
+    const errorMessage = getApiError(
+      response,
+      translate(AppLocales.Auth.Shared.SignInFailed),
+    );
+    setError(errorMessage);
+
+    return {
+      success: false,
+      errorMessage,
+      remainingAttempts: data?.remaining_attempts,
+      cooldownRemaining: data?.cooldown_remaining,
+    };
   }
 
   // Shared response handler
@@ -281,22 +276,18 @@ class AuthController {
 
   // Sign out
   async signOut(): Promise<void> {
-    try {
-      const response = await AuthService.signOut();
-      const { status } = response.data || {};
-      const statusError = status?.error;
-      const isAlreadySignedOut =
-        statusError === AUTH_ERRORS.UNAUTHORIZED ||
-        statusError === AUTH_ERRORS.SIGNATURE_EXPIRED ||
-        statusError === AUTH_ERRORS.NO_VERIFICATION_KEY;
+    const response = await AuthService.signOut();
+    const { status } = response.data || {};
+    const statusError = status?.error || response.error;
+    const isAlreadySignedOut =
+      statusError === AUTH_ERRORS.UNAUTHORIZED ||
+      statusError === AUTH_ERRORS.SIGNATURE_EXPIRED ||
+      statusError === AUTH_ERRORS.NO_VERIFICATION_KEY;
 
-      if (status?.success || isAlreadySignedOut) {
-        console.log("user signed out from server successfully.");
-      } else {
-        console.log("server signout failed.");
-      }
-    } catch (error) {
-      console.log(`An error occurred during server sign out. error: ${error}`);
+    if (status?.success || isAlreadySignedOut) {
+      console.log("user signed out from server successfully.");
+    } else {
+      console.log("server signout failed.");
     }
   }
 }

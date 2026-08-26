@@ -82,9 +82,9 @@ class UserService {
   }
 
   async getRoles(): Promise<
-    IApiResponse<IApiEnvelope<{ roles: IJsonApiResource<IAdminRole>[] }>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminRole>[]>>
   > {
-    return api.get<{ roles: IJsonApiResource<IAdminRole>[] }>(
+    return api.get<IJsonApiResource<IAdminRole>[]>(
       AppRoutes.server.protected.admin.USER_ROLES,
     );
   }

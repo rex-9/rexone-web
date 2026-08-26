@@ -35,8 +35,8 @@ class PaymentService {
     subscriptionId: string,
   ): Promise<IApiResponse<IApiEnvelope<ISubscription>>> {
     const response = await api.post<ISubscription>(
-      AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_CANCEL.replace(
-        ":id",
+      AppRoutes.withId(
+       AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_CANCEL,
         subscriptionId,
       ),
     );
@@ -47,8 +47,8 @@ class PaymentService {
     subscriptionId: string,
   ): Promise<IApiResponse<IApiEnvelope<ISubscription>>> {
     const response = await api.post<ISubscription>(
-      AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_RESUME.replace(
-        ":id",
+      AppRoutes.withId(
+        AppRoutes.server.protected.PAYMENT_SUBSCRIPTION_RESUME,
         subscriptionId,
       ),
     );

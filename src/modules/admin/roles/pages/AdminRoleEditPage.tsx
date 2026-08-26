@@ -12,10 +12,11 @@ import {
 } from "../types";
 import { AlertDialog,  AdminState } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_ROLE_PAGE_TITLES } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminRoleEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.ROLE_EDIT);
+  useDocumentTitle(ADMIN_ROLE_PAGE_TITLES.EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ export const AdminRoleEditPage: React.FC = () => {
         <AdminState title="Unable to load role" message="Role was not found." />
       ) : (
         <AdminRoleForm
-            mode="edit"
+            mode={ADMIN_ACTIONS.EDIT}
             role={role}
             permissions={permissions}
             onSubmit={handleSubmit}

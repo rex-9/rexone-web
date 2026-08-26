@@ -11,10 +11,11 @@ import {
 } from "../types";
 import { AlertDialog } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_ROLE_PAGE_TITLES } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminRoleCreatePage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.ROLE_CREATE);
+  useDocumentTitle(ADMIN_ROLE_PAGE_TITLES.CREATE);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -61,7 +62,7 @@ export const AdminRoleCreatePage: React.FC = () => {
       />
       {(
         <AdminRoleForm
-            mode="create"
+            mode={ADMIN_ACTIONS.CREATE}
             permissions={permissions}
             onSubmit={handleSubmit}
             onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}

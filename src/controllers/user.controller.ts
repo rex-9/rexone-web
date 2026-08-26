@@ -9,6 +9,11 @@ class UserController {
     "exists_confirmed" | "exists_unconfirmed" | "not_exists" | "discarded"
   > {
     const response = await UserService.peekUser(email);
+    const { status } = response.data || {};
+
+    if (status?.code === 403) {
+      return "discarded";
+    }
 
     if (response.error || !response.data?.data) {
       console.error("Error peeking user:", response.error);
@@ -16,14 +21,10 @@ class UserController {
       throw new Error(translate(AppLocales.User.Errors.CheckFailed));
     }
 
-    const { user_exists, confirmed, discarded } = response.data.data;
+    const { user_exists, confirmed } = response.data.data;
 
     if (!user_exists) {
       return "not_exists";
-    }
-
-    if (discarded) {
-      return "discarded";
     }
 
     return confirmed ? "exists_confirmed" : "exists_unconfirmed";
@@ -32,28 +33,26 @@ class UserController {
   async getCurrentUser(
     setCurrentUser: (user: IUser | null) => void,
   ): Promise<void> {
-    try {
-      const response = await UserService.getCurrentUser();
-      const user = response.data?.data?.user;
+    const response = await UserService.getCurrentUser();
+    const user = response.data?.data?.user;
 
-      if (response.error || !user) {
-        return;
-      }
-      //setting current user in the state
-      setCurrentUser(user);
-    } catch (error) {
-      console.error("Error fetching current user:", error);
+    if (response.error || !user) {
+      return;
     }
+    //setting current user in the state
+    setCurrentUser(user);
   }
 
   async uploadImage(file: File): Promise<void> {
-    try {
-      const response: IApiResponse<IApiEnvelope<{ url: string }>> =
-        await UserService.uploadImage(file);
-      console.log("Image uploaded:", response.data?.data.url);
-    } catch (error) {
-      console.error("Error uploading image:", error);
+    const response: IApiResponse<IApiEnvelope<{ url: string }>> =
+      await UserService.uploadImage(file);
+
+    if (response.error) {
+      console.error("Error uploading image:", response.error);
+      return;
     }
+
+    console.log("Image uploaded:", response.data?.data.url);
   }
 }
 

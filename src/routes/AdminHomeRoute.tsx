@@ -5,9 +5,10 @@ import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
 import { AdminResource, hasAdminRole } from "../models";
+import { ADMIN_ACTIONS } from "../modules/admin";
 
 const adminEntryRoutes: Array<{
-  action?: "read" | "create";
+  action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
   resource: AdminResource;
   path: string;
 }> = [

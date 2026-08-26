@@ -16,17 +16,21 @@ import {
   ConfirmDialog,
   IAdminTableColumn,
 } from "../../components";
-import { formatAdminDate, truncateAdminText } from "../../helpers/adminPage.helper";
+import { formatAdminDate, truncateAdminText } from "../../helpers/admin.helper";
 import {
-  ADMIN_PAGE_TITLES,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
+import {
+  ADMIN_CHAT_MESSAGE_TABLE_KEYS,
+  ADMIN_CHAT_PAGE_TITLES,
+  ADMIN_CHAT_TABLE_HEADERS,
+} from "../constants";
 
 export const AdminChatMessagesPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_MESSAGES);
+  useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.MESSAGES);
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -68,27 +72,27 @@ export const AdminChatMessagesPage: React.FC = () => {
   const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
     () => [
       {
-        key: "role",
-        header: ADMIN_TABLE_HEADERS.ROLE,
+        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ROLE,
+        header: ADMIN_CHAT_TABLE_HEADERS.ROLE,
         render: (message) => message.role,
       },
       {
-        key: "content",
-        header: ADMIN_TABLE_HEADERS.MESSAGE,
+        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CONTENT,
+        header: ADMIN_CHAT_TABLE_HEADERS.MESSAGE,
         render: (message) => truncateAdminText(message.content),
       },
       {
-        key: "room",
-        header: ADMIN_TABLE_HEADERS.ROOM_ID,
+        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ROOM,
+        header: ADMIN_CHAT_TABLE_HEADERS.ROOM_ID,
         render: (message) => message.room_id,
       },
       {
-        key: "created",
+        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CREATED,
         header: ADMIN_TABLE_HEADERS.CREATED,
         render: (message) => formatAdminDate(message.created_at),
       },
       {
-        key: "actions",
+        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ACTIONS,
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (message) => (
@@ -99,8 +103,8 @@ export const AdminChatMessagesPage: React.FC = () => {
                 type: ADMIN_ACTIONS.EDIT,
                 onClick: () =>
                   navigate(
-                    AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT.replace(
-                      ":id",
+                    AppRoutes.withId(
+                      AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT,
                       message.id,
                     ),
                   ),

@@ -43,7 +43,10 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 
   // Read session message from URL params
   const message = searchParams.get("message");
-  const [displayMessage, setDisplayMessage] = useState(message || "");
+  const [dismissedMessage, setDismissedMessage] = useState<string | null>(
+    null,
+  );
+  const displayMessage = dismissedMessage === message ? "" : message || "";
 
   // Clear message param when dialog closes or user interacts
   const clearMessageParam = () => {
@@ -58,7 +61,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
     setEmailError("");
     updateUrl({ email: value });
     if (displayMessage) {
-      setDisplayMessage("");
+      setDismissedMessage(message);
       clearMessageParam();
     }
   };

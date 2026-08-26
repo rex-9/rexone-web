@@ -9,10 +9,10 @@ import { IAdminUserFormValues } from "../types";
 import { IAdminRole } from "../../roles/types";
 import { AlertDialog } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_USER_PAGE_TITLES } from "../constants";
 
 export const AdminUserCreatePage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.USER_CREATE);
+  useDocumentTitle(ADMIN_USER_PAGE_TITLES.CREATE);
 
   const navigate = useNavigate();
   const toast = useToast();

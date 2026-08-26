@@ -1,6 +1,10 @@
 import { AppLocales } from "../../../locales";
 import { IApiPagination } from "../../../models";
-import { parsePaginatedResponse, parseRecord } from "../../../services/api.service";
+import {
+  getApiError,
+  parsePageList,
+  parseRecord,
+} from "../../../services/api.service";
 import UserService from "./user.service";
 import {
   IAdminUser,
@@ -19,15 +23,12 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.LoadListFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.LoadListFailed),
         );
         return;
       }
 
-      const { records, pagination } = parsePaginatedResponse(response);
+      const { records, pagination } = parsePageList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -41,10 +42,7 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.LoadOneFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.LoadOneFailed),
         );
         return;
       }
@@ -62,15 +60,12 @@ class UserController {
 
     if (!status?.success || !data) {
       onError?.(
-        status?.error ||
-          status?.message ||
-          response.error ||
-          AppLocales.Admin.Users.Errors.LoadListFailed,
+        getApiError(response, AppLocales.Admin.Users.Errors.LoadListFailed),
       );
       return;
     }
 
-    const { records, pagination } = parsePaginatedResponse(response);
+    const { records, pagination } = parsePageList(response);
     onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -84,10 +79,7 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.CreateFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.CreateFailed),
         );
         return;
       }
@@ -109,10 +101,7 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.UpdateFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.UpdateFailed),
         );
         return;
       }
@@ -133,10 +122,7 @@ class UserController {
 
       if (!status?.success) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.DeleteFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.DeleteFailed),
         );
         return;
       }
@@ -153,7 +139,9 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(status?.error || status?.message || response.error || AppLocales.Admin.Users.Errors.DeleteFailed);
+      onError?.(
+        getApiError(response, AppLocales.Admin.Users.Errors.DeleteFailed),
+      );
       return;
     }
 
@@ -169,7 +157,9 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(status?.error || status?.message || response.error || AppLocales.Admin.Users.Errors.UpdateFailed);
+      onError?.(
+        getApiError(response, AppLocales.Admin.Users.Errors.UpdateFailed),
+      );
       return;
     }
 
@@ -183,17 +173,14 @@ class UserController {
       const response = await UserService.getRoles();
       const { status, data } = response.data || {};
 
-      if (!status?.success || !data?.roles) {
+      if (!status?.success || !data) {
         onError?.(
-            status?.error ||
-            status?.message ||
-            response.error ||
-            AppLocales.Admin.Users.Errors.LoadRolesFailed,
+          getApiError(response, AppLocales.Admin.Users.Errors.LoadRolesFailed),
         );
         return;
       }
 
-      onSuccess?.(data.roles.map(parseRecord));
+      onSuccess?.(data.map(parseRecord));
   }
 }
 

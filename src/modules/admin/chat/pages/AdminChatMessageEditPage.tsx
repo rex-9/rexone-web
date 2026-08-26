@@ -13,14 +13,15 @@ import {
   AlertDialog,
   AdminState,
   FormActionRow,
+  FormContainer,
   TextArea,
 } from "../../components";
-import { ADMIN_PAGE_TITLES } from "../../constants";
+import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
 
 const messageRoles = ["user", "assistant"];
 
 export const AdminChatMessageEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PAGE_TITLES.CHAT_MESSAGE_EDIT);
+  useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.MESSAGE_EDIT);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -92,7 +93,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
       {error && !message ? (
         <AdminState title="Unable to load chat message" message={error} />
       ) : message? (
-        <form onSubmit={handleSubmit}>
+        <FormContainer onSubmit={handleSubmit}>
             <div className="grid gap-16">
               <label className="flex flex-col gap-4">
                 <span className="text-body-s font-medium text-base-content">
@@ -124,7 +125,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
                 navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES)
               }
             />
-          </form>
+          </FormContainer>
       ):null}
     </>
   );

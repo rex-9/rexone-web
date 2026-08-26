@@ -1,3 +1,16 @@
+import AppRoutes from "../../../AppRoutes";
+import { IAdminPageMeta } from "../constants";
+
+export const ADMIN_NOTIFICATION_PAGE_TITLES = {
+  LIST: "Notifications",
+} as const;
+
+export const ADMIN_NOTIFICATION_PAGE_META: Record<string, IAdminPageMeta> = {
+  [AppRoutes.client.protected.admin.NOTIFICATIONS]: {
+    title: ADMIN_NOTIFICATION_PAGE_TITLES.LIST,
+  },
+};
+
 export const NOTIFICATION_AUDIENCE_TYPES = {
   ALL: "all",
   ROLES: "roles",
