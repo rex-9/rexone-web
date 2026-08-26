@@ -1,5 +1,19 @@
 import AppRoutes from "../../../AppRoutes";
 import { ADMIN_RESOURCES, IAdminPageMeta } from "../constants";
+import type { AdminRoleName } from "./types";
+
+export const ADMIN_ROLE_NAMES = {
+  ADMIN: "admin",
+  SUPER_ADMIN: "super_admin",
+  USER: "user",
+} as const;
+
+export const isAdminRoleName = (roleName: string): boolean =>
+  roleName === ADMIN_ROLE_NAMES.ADMIN || roleName.endsWith("_admin");
+
+export const hasAdminRole = (
+  roleNames: AdminRoleName[] | null | undefined,
+): boolean => roleNames?.some((roleName) => isAdminRoleName(roleName)) ?? false;
 
 export const ADMIN_ROLE_PAGE_TITLES = {
   CREATE: "Create Role",
@@ -12,6 +26,14 @@ export const ADMIN_ROLE_TABLE_HEADERS = {
   ROLE: "Role",
   TYPE: "Type",
   USERS: "Users",
+} as const;
+
+export const ADMIN_ROLE_TABLE_KEYS = {
+  ACTIONS: "actions",
+  NAME: "name",
+  PERMISSIONS: "permissions",
+  SYSTEM: "system",
+  USERS: "users",
 } as const;
 
 export const ADMIN_ROLE_LABELS = {

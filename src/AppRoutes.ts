@@ -127,7 +127,7 @@ class AppRoutes {
       admin: {
         USERS: AppRoutes.adminApi('/users'), // GET, POST
         USER_ROLES: AppRoutes.adminApi('/users/roles'), // GET
-        USER_DETAIL: AppRoutes.adminApi('/users/:id'), // GET, PATCH, PUT, DELETE
+        USER_DETAIL: AppRoutes.adminApi('/users/:id'), // GET, PATCH, PUT
         DISCARDED_USERS: AppRoutes.adminApi('/users/discarded'), // GET
         USER_DISCARD: AppRoutes.adminApi('/users/:id/discard'), // POST
         USER_UNDISCARD: AppRoutes.adminApi('/users/:id/undiscard'), // POST
@@ -135,9 +135,6 @@ class AppRoutes {
         IAM_ROLE_DETAIL: AppRoutes.adminApi('/iam/roles/:id'), // GET, PATCH, DELETE
         IAM_ROLE_PERMISSIONS: AppRoutes.adminApi('/iam/roles/permissions'), // GET
         NOTIFICATIONS: AppRoutes.adminApi('/notifications'), // POST
-        NOTIFICATION_RECIPIENTS: AppRoutes.adminApi(
-          '/notifications/recipients',
-        ), // GET
         NOTIFICATION_TEMPLATES: AppRoutes.adminApi(
           '/notifications/templates',
         ), // GET

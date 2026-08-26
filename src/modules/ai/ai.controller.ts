@@ -1,6 +1,6 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { getApiError, parsePageList } from "../../services/api.service";
+import { getApiError, parsePagyList } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import { IApiPagination } from "../../models";
@@ -86,7 +86,7 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records: messages, pagination } = parsePageList(response);
+      const { records: messages, pagination } = parsePagyList(response);
       const rId = messages[0]?.room_id ?? roomId ?? "";
       const processing = messages.some((m) =>
         ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),

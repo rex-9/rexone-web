@@ -27,6 +27,7 @@ import {
   ADMIN_USER_LABELS,
   ADMIN_USER_PAGE_TITLES,
   ADMIN_USER_TABLE_HEADERS,
+  ADMIN_USER_TABLE_KEYS,
 } from "../constants";
 import { translate } from "../../../../locales";
 import { iconsLib } from '../../../../assets';
@@ -42,7 +43,7 @@ const formatRoles = (user: IAdminUser): string => {
 };
 
 type UserListView = "active" | "discarded";
-type UserLifecycleAction = "discard" | "restore" | "delete";
+type UserLifecycleAction = "discard" | "restore";
 
 interface IAdminUsersPageProps {
   view?: UserListView;
@@ -120,7 +121,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   const columns = useMemo<IAdminTableColumn<IAdminUser>[]>(
     () => [
       {
-        key: "identity",
+        key: ADMIN_USER_TABLE_KEYS.IDENTITY,
         header: ADMIN_USER_TABLE_HEADERS.USER,
         render: (user) => (
           <div>
@@ -132,23 +133,23 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         ),
       },
       {
-        key: "email",
+        key: ADMIN_USER_TABLE_KEYS.EMAIL,
         header: ADMIN_USER_TABLE_HEADERS.EMAIL,
         render: (user) => user.email,
       },
       {
-        key: "role",
+        key: ADMIN_USER_TABLE_KEYS.ROLE,
         header: ADMIN_USER_TABLE_HEADERS.ROLE,
         render: (user) => formatRoles(user),
       },
       {
-        key: "lifecycle_date",
+        key: ADMIN_USER_TABLE_KEYS.LIFECYCLE_DATE,
         header: view === "active" ? ADMIN_TABLE_HEADERS.CREATED : "Discarded",
         render: (user) =>
           formatDate(view === "active" ? user.created_at : user.discarded_at),
       },
       {
-        key: "actions",
+        key: ADMIN_USER_TABLE_KEYS.ACTIONS,
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (user) => (
@@ -169,18 +170,14 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
                   },
                   {
                     type: ADMIN_ACTIONS.DISCARD,
-                    onClick: () => openLifecycleDialog(user, "discard"),
+                    onClick: () => openLifecycleDialog(user,  ADMIN_ACTIONS.DISCARD),
                   },
                 ]
               ) : (
                 [
                   {
                     type: ADMIN_ACTIONS.RESTORE,
-                    onClick: () => openLifecycleDialog(user, "restore"),
-                  },
-                  {
-                    type: ADMIN_ACTIONS.DELETE,
-                    onClick: () => openLifecycleDialog(user, "delete"),
+                    onClick: () => openLifecycleDialog(user,ADMIN_ACTIONS.RESTORE),
                   },
                 ]
               )
@@ -220,8 +217,6 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       await UserController.restoreUser(actionTarget.id, onSuccess, onError);
       return;
     }
-
-    await UserController.deleteUser(actionTarget.id, onSuccess, onError);
   };
 
   const lifecycleDialog = lifecycleAction === "discard"
@@ -239,10 +234,10 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
           isDestructive: false,
         }
       : {
-          title: "Delete user permanently",
-          message: `Permanently delete ${actionTarget?.email || "this user"}? This cannot be undone.`,
-          confirmLabel: "Delete permanently",
-          isDestructive: true,
+          title: "Restore user",
+          message: `Restore ${actionTarget?.email || "this user"}? This account will return to the active users list.`,
+          confirmLabel: "Restore",
+          isDestructive: false,
         };
 
   return (
@@ -275,7 +270,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
               message={
                 view === "active"
                   ? "Users will appear here once the backend returns admin user records."
-                  : "Discarded users can be restored or permanently deleted here."
+                  : "Discarded users can be restored here."
               }
             />
           ) : (

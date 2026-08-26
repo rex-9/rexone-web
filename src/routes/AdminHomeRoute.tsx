@@ -4,23 +4,24 @@ import AppRoutes from "../AppRoutes";
 import { useAuth } from "../contexts";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
-import { AdminResource, hasAdminRole } from "../models";
-import { ADMIN_ACTIONS } from "../modules/admin";
+import type { AdminResource } from "../modules/admin/roles";
+import { hasAdminRole } from "../modules/admin/roles";
+import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../modules/admin";
 
 const adminEntryRoutes: Array<{
   action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
   resource: AdminResource;
   path: string;
 }> = [
-  { resource: "users", path: AppRoutes.client.protected.admin.USERS },
+  { resource: ADMIN_RESOURCES.USERS, path: AppRoutes.client.protected.admin.USERS },
   {
-    resource: "notifications",
+    resource:ADMIN_RESOURCES.NOTIFICATIONS,
     path: AppRoutes.client.protected.admin.NOTIFICATIONS,
   },
-  { resource: "products", path: AppRoutes.client.protected.admin.PRODUCTS },
-  { resource: "rooms", path: AppRoutes.client.protected.admin.CHAT_ROOMS },
+  { resource: ADMIN_RESOURCES.PRODUCTS, path: AppRoutes.client.protected.admin.PRODUCTS },
+  { resource: ADMIN_RESOURCES.ROOMS, path: AppRoutes.client.protected.admin.CHAT_ROOMS },
   {
-    resource: "messages",
+    resource:ADMIN_RESOURCES.MESSAGES,
     path: AppRoutes.client.protected.admin.CHAT_MESSAGES,
   },
 ];

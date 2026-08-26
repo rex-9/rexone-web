@@ -58,12 +58,6 @@ export const ADMIN_NAV_LABELS = {
   USERS: "Users",
 } as const;
 
-export const ADMIN_ROLE_NAMES = {
-  ADMIN: "admin",
-  SUPER_ADMIN: "super_admin",
-  USER: "user",
-} as const;
-
 export const ADMIN_TABLE_HEADERS = {
   ACTIONS: "",
   CREATED: "Created",

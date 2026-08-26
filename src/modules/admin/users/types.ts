@@ -19,4 +19,5 @@ export interface IAdminUserFormValues {
 export interface IAdminUserListParams {
   page?: number;
   limit?: number;
+  search?: string;
 }

@@ -14,6 +14,14 @@ export const ADMIN_USER_TABLE_HEADERS = {
   USER: "User",
 } as const;
 
+export const ADMIN_USER_TABLE_KEYS = {
+  ACTIONS: "actions",
+  EMAIL: "email",
+  IDENTITY: "identity",
+  LIFECYCLE_DATE: "lifecycle_date",
+  ROLE: "role",
+} as const;
+
 export const ADMIN_USER_LABELS = {
   UNASSIGNED: "Unassigned",
 } as const;

@@ -27,6 +27,7 @@ import {
   ADMIN_PRODUCT_LABELS,
   ADMIN_PRODUCT_PAGE_TITLES,
   ADMIN_PRODUCT_TABLE_HEADERS,
+  ADMIN_PRODUCT_TABLE_KEYS,
 } from "../constants";
 import { iconsLib } from "../../../../assets";
 
@@ -98,7 +99,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   const columns = useMemo<IAdminTableColumn<IAdminProduct>[]>(
     () => [
       {
-        key: "product",
+        key: ADMIN_PRODUCT_TABLE_KEYS.PRODUCT,
         header: ADMIN_PRODUCT_TABLE_HEADERS.PRODUCT,
         render: (product) => (
           <div>
@@ -110,17 +111,17 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         ),
       },
       {
-        key: "price",
+        key: ADMIN_PRODUCT_TABLE_KEYS.PRICE,
         header: ADMIN_PRODUCT_TABLE_HEADERS.PRICE,
         render: (product) => product.price,
       },
       {
-        key: "cycle",
+        key: ADMIN_PRODUCT_TABLE_KEYS.CYCLE,
         header: ADMIN_PRODUCT_TABLE_HEADERS.CYCLE,
         render: (product) => product.period_label,
       },
       {
-        key: "active",
+        key: ADMIN_PRODUCT_TABLE_KEYS.STATUS,
         header: ADMIN_TABLE_HEADERS.STATUS,
         render: (product) => (
           <div>
@@ -138,7 +139,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         ),
       },
       {
-        key: "lifecycle_date",
+        key: ADMIN_PRODUCT_TABLE_KEYS.LIFECYCLE_DATE,
         header:
           view === "active"
             ? ADMIN_TABLE_HEADERS.CREATED
@@ -147,7 +148,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           formatDate(view === "active" ? product.created_at : product.discarded_at),
       },
       {
-        key: "actions",
+        key: ADMIN_PRODUCT_TABLE_KEYS.ACTIONS,
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (product) => (

@@ -15,6 +15,15 @@ export const ADMIN_PRODUCT_TABLE_HEADERS = {
   PRODUCT: "Product",
 } as const;
 
+export const ADMIN_PRODUCT_TABLE_KEYS = {
+  ACTIONS: "actions",
+  CYCLE: "cycle",
+  LIFECYCLE_DATE: "lifecycle_date",
+  PRICE: "price",
+  PRODUCT: "product",
+  STATUS: "active",
+} as const;
+
 export const ADMIN_PRODUCT_LABELS = {
   ACTIVE: "Active",
   INACTIVE: "Inactive",

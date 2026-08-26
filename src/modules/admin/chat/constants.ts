@@ -25,6 +25,14 @@ export const ADMIN_CHAT_MESSAGE_TABLE_KEYS = {
   ROOM: "room",
 } as const;
 
+export const ADMIN_CHAT_ROOM_TABLE_KEYS = {
+  ACTIONS: "actions",
+  CREATED: "created",
+  LAST_MESSAGE: "last",
+  MESSAGES: "messages",
+  TITLE: "title",
+} as const;
+
 export const ADMIN_CHAT_PAGE_META: Record<string, IAdminPageMeta> = {
   [AppRoutes.client.protected.admin.CHAT_ROOMS]: {
     title: ADMIN_CHAT_PAGE_TITLES.ROOMS,

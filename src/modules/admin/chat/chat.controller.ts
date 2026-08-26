@@ -2,7 +2,7 @@ import { IApiPagination } from "../../../models";
 import { AppLocales, translate } from "../../../locales";
 import {
   getApiError,
-  parsePageList,
+  parsePagyList,
   parseRecord,
 } from "../../../services/api.service";
 import ChatService from "./chat.service";
@@ -29,7 +29,7 @@ class ChatController {
         return;
       }
 
-      const { records, pagination } = parsePageList(response);
+      const { records, pagination } = parsePagyList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -109,7 +109,7 @@ class ChatController {
         return;
       }
 
-      const { records, pagination } = parsePageList(response);
+      const { records, pagination } = parsePagyList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 

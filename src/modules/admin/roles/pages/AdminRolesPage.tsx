@@ -23,6 +23,7 @@ import {
   ADMIN_ROLE_LABELS,
   ADMIN_ROLE_PAGE_TITLES,
   ADMIN_ROLE_TABLE_HEADERS,
+  ADMIN_ROLE_TABLE_KEYS,
 } from "../constants";
 
 const countPermissions = (role: IAdminRole): number =>
@@ -70,7 +71,7 @@ export const AdminRolesPage: React.FC = () => {
   const columns = useMemo<IAdminTableColumn<IAdminRole>[]>(
     () => [
       {
-        key: "name",
+        key: ADMIN_ROLE_TABLE_KEYS.NAME,
         header: ADMIN_ROLE_TABLE_HEADERS.ROLE,
         render: (role) => (
           <div>
@@ -84,23 +85,23 @@ export const AdminRolesPage: React.FC = () => {
         ),
       },
       {
-        key: "permissions",
+        key: ADMIN_ROLE_TABLE_KEYS.PERMISSIONS,
         header: ADMIN_ROLE_TABLE_HEADERS.PERMISSIONS,
         render: (role) => countPermissions(role),
       },
       {
-        key: "users",
+        key: ADMIN_ROLE_TABLE_KEYS.USERS,
         header: ADMIN_ROLE_TABLE_HEADERS.USERS,
         render: (role) => role.user_count ?? 0,
       },
       {
-        key: "system",
+        key: ADMIN_ROLE_TABLE_KEYS.SYSTEM,
         header: ADMIN_ROLE_TABLE_HEADERS.TYPE,
         render: (role) =>
           role.system ? ADMIN_ROLE_LABELS.SYSTEM : ADMIN_ROLE_LABELS.CUSTOM,
       },
       {
-        key: "actions",
+        key: ADMIN_ROLE_TABLE_KEYS.ACTIONS,
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (role) => (

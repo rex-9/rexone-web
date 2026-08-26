@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -8,6 +8,7 @@ import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { useTranslate } from "../../../../locales";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
+import UserController from "../../users/user.controller";
 import { IAdminUser } from "../../users/types";
 import NotificationController from "../notification.controller";
 import {
@@ -47,19 +48,32 @@ const initialValues: IAdminNotificationFormValues = {
 const channelCheckboxClassName =
   "checkbox checkbox-sm border-base-content/40 checked:border-primary checked:bg-primary";
 
+const RECIPIENT_SEARCH_MIN_LENGTH = 3;
+const RECIPIENT_SEARCH_DEBOUNCE_MS = 300;
+const RECIPIENT_SEARCH_LIMIT = 20;
+
 const getUserLabel = (user: IAdminUser) =>
   user.email || user.name || user.username || user.id;
 
 const matchesUserQuery = (user: IAdminUser, query: string) => {
   const normalizedQuery = query.trim().toLowerCase();
 
-  if (!normalizedQuery) {
-    return true;
+  if (normalizedQuery.length < RECIPIENT_SEARCH_MIN_LENGTH) {
+    return false;
   }
 
-  return [user.email, user.name, user.username, user.id]
+  return [user.email, user.name, user.username]
     .filter(Boolean)
     .some((value) => value.toLowerCase().includes(normalizedQuery));
+};
+
+const mergeUsersById = (currentUsers: IAdminUser[], nextUsers: IAdminUser[]) => {
+  const usersById = new Map<string, IAdminUser>();
+
+  currentUsers.forEach((user) => usersById.set(user.id, user));
+  nextUsers.forEach((user) => usersById.set(user.id, user));
+
+  return Array.from(usersById.values());
 };
 
 export const AdminNotificationsPage: React.FC = () => {
@@ -77,6 +91,7 @@ export const AdminNotificationsPage: React.FC = () => {
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
   const [isRecipientFocused, setIsRecipientFocused] = useState(false);
+  const [isRecipientSearching, setIsRecipientSearching] = useState(false);
   const {setLoading } = useLoading();
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -91,11 +106,7 @@ export const AdminNotificationsPage: React.FC = () => {
         NotificationController.getTemplates(
           (nextTemplates) => setTemplates(nextTemplates),
           (message) => setError(message),
-        ),
-        NotificationController.getRecipients(
-          (nextUsers) => setUsers(nextUsers),
-          (message) => setError(message),
-        ),
+        )
       ];
 
       if (canReadRoles) {
@@ -113,6 +124,40 @@ export const AdminNotificationsPage: React.FC = () => {
     return () => window.clearTimeout(timeoutId);
   }, [canReadRoles, permissionsLoading, setLoading]);
 
+  const searchRecipients = useCallback(async (search: string) => {
+    setIsRecipientSearching(true);
+
+    await UserController.getUsers(
+      { search, limit: RECIPIENT_SEARCH_LIMIT },
+      (nextUsers) => {
+        setUsers((currentUsers) => mergeUsersById(currentUsers, nextUsers));
+        setIsRecipientSearching(false);
+      },
+      (message) => {
+        setError(message);
+        setIsRecipientSearching(false);
+      },
+    );
+  }, []);
+
+  useEffect(() => {
+    const search = recipientQuery.trim();
+
+    if (
+      values.audience_type !== NOTIFICATION_AUDIENCE_TYPES.USERS ||
+      search.length < RECIPIENT_SEARCH_MIN_LENGTH
+    ) {
+      setIsRecipientSearching(false);
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      void searchRecipients(search);
+    }, RECIPIENT_SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [recipientQuery, searchRecipients, values.audience_type]);
+
   const sortedRoles = useMemo(
     () =>
       [...roles].sort((left, right) => left.name.localeCompare(right.name)),
@@ -128,7 +173,6 @@ export const AdminNotificationsPage: React.FC = () => {
     [users],
   );
   const roleIds = useMemo(() => sortedRoles.map((role) => role.id), [sortedRoles]);
-  const userIds = useMemo(() => sortedUsers.map((user) => user.id), [sortedUsers]);
   const selectedRoleIds = useMemo(() => values.role_ids, [values.role_ids]);
   const selectedUserIds = useMemo(() => values.user_ids, [values.user_ids]);
   const selectedRoleIdSet = useMemo(
@@ -155,7 +199,7 @@ export const AdminNotificationsPage: React.FC = () => {
     [availableUsers, recipientQuery],
   );
   const areAllUsersSelected =
-    userIds.length > 0 && selectedUserIds.length === userIds.length;
+    selectedUserIds.length > 0;
   const areAllRolesSelected =
     roleIds.length > 0 && selectedRoleIds.length === roleIds.length;
 
@@ -201,7 +245,7 @@ export const AdminNotificationsPage: React.FC = () => {
   };
 
   const toggleAllUsers = () => {
-    updateValue(NOTIFICATION_FIELDS.USER_IDS, areAllUsersSelected ? [] : userIds);
+    updateValue(NOTIFICATION_FIELDS.USER_IDS, []);
     setRecipientQuery("");
   };
 
@@ -319,7 +363,8 @@ export const AdminNotificationsPage: React.FC = () => {
                           : "border-base-300 bg-base-200/70 text-base-content/60";
 
                       return (
-                        <button
+                        <Button
+                        variant="tertiary"
                           key={template.event}
                           type="button"
                           disabled={!template.admin_available}
@@ -337,7 +382,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           <span className={`text-[10px] capitalize ${isSelected ? "text-primary-content/75" : "opacity-60"}`}>
                             {template.category}
                           </span>
-                        </button>
+                        </Button>
                       );
                     })}
                   </div>
@@ -352,7 +397,7 @@ export const AdminNotificationsPage: React.FC = () => {
                       <div className="flex items-center gap-8">
                         <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
                           {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
-                            ? `${selectedUserIds.length}/${sortedUsers.length}`
+                            ? selectedUserIds.length
                             : values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
                               ? `${selectedRoleIds.length}/${sortedRoles.length}`
                               : t(NOTIFICATION_LOCALES.Labels.All)}
@@ -363,18 +408,14 @@ export const AdminNotificationsPage: React.FC = () => {
                           className="h-[30px] w-[30px] p-0"
                           aria-label={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
-                              ? areAllUsersSelected
-                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
-                                : t(NOTIFICATION_LOCALES.Actions.SelectAllUsers)
+                              ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
                               : areAllRolesSelected
                                 ? t(NOTIFICATION_LOCALES.Actions.ClearAllRoles)
                                 : t(NOTIFICATION_LOCALES.Actions.SelectAllRoles)
                           }
                           title={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
-                              ? areAllUsersSelected
-                                ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
-                                : t(NOTIFICATION_LOCALES.Actions.SelectAllUsers)
+                              ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
                               : areAllRolesSelected
                                 ? t(NOTIFICATION_LOCALES.Actions.ClearAllRoles)
                                 : t(NOTIFICATION_LOCALES.Actions.SelectAllRoles)
@@ -384,7 +425,11 @@ export const AdminNotificationsPage: React.FC = () => {
                               ? toggleAllUsers
                               : toggleAllRoles
                           }
-                          disabled={values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL}
+                          disabled={
+                            values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL ||
+                            (values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS &&
+                              !areAllUsersSelected)
+                          }
                         >
                           <iconsLib.checkr className="h-[14px] w-[14px]" />
                         </Button>
@@ -450,7 +495,7 @@ export const AdminNotificationsPage: React.FC = () => {
                               <span className="max-w-[180px] truncate">
                                 {getUserLabel(user)}
                               </span>
-                              <button
+                              <Button
                                 type="button"
                                 className="rounded-full p-1 text-base-content opacity-70 transition hover:bg-base-300 hover:opacity-100"
                                 aria-label={t(NOTIFICATION_LOCALES.Actions.RemoveRecipient, {
@@ -459,7 +504,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 onClick={() => removeUser(user.id)}
                               >
                                 <iconsLib.xmark className="h-[12px] w-[12px]" />
-                              </button>
+                              </Button>
                             </span>
                           ))}
 
@@ -485,11 +530,19 @@ export const AdminNotificationsPage: React.FC = () => {
                           />
                         </div>
 
+                        {isRecipientFocused && isRecipientSearching && (
+                          <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 rounded-md border border-base-300 bg-base-100 px-10 py-8 text-body-s text-base-content/60 shadow-lg">
+                            Searching...
+                          </div>
+                        )}
+
                         {isRecipientFocused &&
+                          !isRecipientSearching &&
                           recipientSuggestions.length > 0 && (
                             <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
                               {recipientSuggestions.map((user) => (
-                                <button
+                                <Button
+                                variant="tertiary"
                                   key={user.id}
                                   type="button"
                                   className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-primary/10"
@@ -507,7 +560,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                     </span>
                                   </span>
                                   <iconsLib.checkr className="h-[14px] w-[14px] shrink-0 text-primary" />
-                                </button>
+                                </Button>
                               ))}
                             </div>
                           )}

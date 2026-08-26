@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AdminAction, AdminResource } from "../../../models";
+import type { AdminAction, AdminResource } from "../roles";
 import { iconsLib } from "../../../assets";
 import { ButtonProps } from "../../../design/components/button/Button";
 import {

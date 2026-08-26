@@ -1,6 +1,5 @@
 import NotificationService from "./notification.service";
-import { getApiError, parseRecord } from "../../../services/api.service";
-import { IAdminUser } from "../users";
+import { getApiError } from "../../../services/api.service";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
@@ -22,23 +21,6 @@ class NotificationController {
     }
 
     onSuccess?.(data);
-  }
-
-  async getRecipients(
-    onSuccess?: (users: IAdminUser[]) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-      const response = await NotificationService.getRecipients();
-      const { status, data } = response.data || {};
-
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(response, NOTIFICATION_LOCALES.Errors.LoadRecipients),
-        );
-        return;
-      }
-
-      onSuccess?.(data.map(parseRecord));
   }
 
   async createNotification(

@@ -23,7 +23,9 @@ class UserService {
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
     return api.get<IJsonApiResource<IAdminUser>[]>(
       AppRoutes.server.protected.admin.USERS,
-      params ? { page: params.page, limit: params.limit } : undefined,
+      params
+        ? { page: params.page, limit: params.limit, search: params.search }
+        : undefined,
     );
   }
 
@@ -61,12 +63,6 @@ class UserService {
       {
       user: values,
       },
-    );
-  }
-
-  async deleteUser(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
     );
   }
 

@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useAuth } from "../contexts";
-import { AdminAction, AdminResource, IPermission } from "../models";
+import type {
+  AdminAction,
+  AdminResource,
+  IPermission,
+} from "../modules/admin/roles";
 
 interface IUsePermissionsResult {
   permissions: IPermission[];

@@ -261,7 +261,7 @@ export const parseRecord = <T extends object>(
   return record as T & { id: string };
 };
 
-export const parsePageList = <T extends object>(
+export const parsePagyList = <T extends object>(
   response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
 ): {
   records: (T & { id: string })[];

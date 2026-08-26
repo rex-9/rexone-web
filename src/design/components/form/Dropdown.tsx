@@ -3,13 +3,8 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface DropdownProps {
+interface DropdownCommonProps {
   options: Array<{ value: string; label: string }>;
-  value?: string;
-  values?: string[];
-  multiple?: boolean;
-  onValueChange?: (value: string) => void;
-  onValuesChange?: (values: string[]) => void;
   label?: string;
   error?: string;
   placeholder?: string;
@@ -17,29 +12,39 @@ export interface DropdownProps {
   disabled?: boolean;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
-  options,
-  value,
-  values,
-  multiple = false,
-  onValueChange,
-  onValuesChange,
-  label,
-  error,
-  placeholder = "Select an option",
-  className,
-  disabled,
-  ...props
-}) => {
+interface DropdownSingleProps extends DropdownCommonProps {
+  multiple?: false;
+  value?: string;
+  onValueChange?: (value: string) => void;
+}
+
+interface DropdownMultipleProps extends DropdownCommonProps {
+  multiple: true;
+  value?: string[];
+  onValueChange?: (value: string[]) => void;
+}
+
+export type DropdownProps = DropdownSingleProps | DropdownMultipleProps;
+
+export const Dropdown: React.FC<DropdownProps> = (props) => {
+  const {
+    options,
+    label,
+    error,
+    placeholder = "Select an option",
+    className,
+    disabled,
+  } = props;
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (multiple) {
-      onValuesChange?.(
+    if (props.multiple) {
+      props.onValueChange?.(
         Array.from(event.target.selectedOptions, (option) => option.value),
       );
       return;
     }
 
-    onValueChange?.(event.target.value);
+    props.onValueChange?.(event.target.value);
   };
 
   return (
@@ -50,9 +55,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
         </label>
       )}
       <select
-        {...props}
-        multiple={multiple}
-        value={multiple ? values : (value ?? "")}
+        multiple={props.multiple ?? false}
+        value={props.value ?? (props.multiple ? [] : "")}
         onChange={handleChange}
         disabled={disabled}
         className={cn(
@@ -67,7 +71,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           className,
         )}
       >
-        {!multiple && (
+        {!props.multiple && (
           <option value="" disabled>
             {placeholder}
           </option>

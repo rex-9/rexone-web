@@ -23,7 +23,11 @@ import {
   ADMIN_ACTIONS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
-import { ADMIN_CHAT_PAGE_TITLES, ADMIN_CHAT_TABLE_HEADERS } from "../constants";
+import {
+  ADMIN_CHAT_PAGE_TITLES,
+  ADMIN_CHAT_ROOM_TABLE_KEYS,
+  ADMIN_CHAT_TABLE_HEADERS,
+} from "../constants";
 
 export const AdminChatRoomsPage: React.FC = () => {
   useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.ROOMS);
@@ -67,27 +71,27 @@ export const AdminChatRoomsPage: React.FC = () => {
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
     () => [
       {
-        key: "title",
+        key: ADMIN_CHAT_ROOM_TABLE_KEYS.TITLE,
         header: ADMIN_CHAT_TABLE_HEADERS.ROOM,
         render: (room) => room.title,
       },
       {
-        key: "messages",
+        key: ADMIN_CHAT_ROOM_TABLE_KEYS.MESSAGES,
         header: ADMIN_CHAT_TABLE_HEADERS.MESSAGES,
         render: (room) => room.message_count,
       },
       {
-        key: "last",
+        key: ADMIN_CHAT_ROOM_TABLE_KEYS.LAST_MESSAGE,
         header: ADMIN_CHAT_TABLE_HEADERS.LAST_MESSAGE,
         render: (room) => truncateAdminText(room.last_message),
       },
       {
-        key: "created",
+        key: ADMIN_CHAT_ROOM_TABLE_KEYS.CREATED,
         header: ADMIN_TABLE_HEADERS.CREATED,
         render: (room) => formatAdminDate(room.created_at),
       },
       {
-        key: "actions",
+        key: ADMIN_CHAT_ROOM_TABLE_KEYS.ACTIONS,
         header: ADMIN_TABLE_HEADERS.ACTIONS,
         className: "text-right",
         render: (room) => (

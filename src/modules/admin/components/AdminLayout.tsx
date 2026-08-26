@@ -92,7 +92,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
 
       {isSidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <button
+          <Button
             type="button"
             className="absolute inset-0 bg-navy-900/40"
             aria-label="Close admin navigation"

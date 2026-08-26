@@ -23,13 +23,8 @@ export interface IAdminNotificationTemplate {
 }
 
 export interface IAdminNotificationDelivery {
-  job_id?: string;
-  audience?: NotificationAudienceType;
-  recipient_count?: number;
-  channels?: NotificationDeliveryChannel[];
-  count?: number;
-  users?: Record<string, IAdminNotificationDelivery>;
-  socket?: boolean;
-  push?: boolean;
-  email?: boolean;
+  job_id: string;
+  audience: NotificationAudienceType;
+  recipient_count: number;
+  channels: NotificationDeliveryChannel[];
 }

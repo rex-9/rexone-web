@@ -1,4 +1,7 @@
-import { AdminRoleName, IUserPermissionMap } from "./access.model";
+import type {
+  AdminRoleName,
+  IUserPermissionMap,
+} from "../modules/admin/roles/types";
 
 export interface IUser {
   id?: string;

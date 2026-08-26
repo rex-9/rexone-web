@@ -117,7 +117,16 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     }
 
     setDescriptionError("");
-    onSubmit({
+    if(isFree){
+      onSubmit({
+      name: values.name.trim(),
+      description,
+      price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
+      currency: values.currency,
+      active: values.active,
+    });
+    }else{
+      onSubmit({
       name: values.name.trim(),
       description,
       price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
@@ -127,6 +136,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         : values.cycle || PRODUCT_CYCLE.ONE_TIME,
       active: values.active,
     });
+    }
+    
   };
 
   return (

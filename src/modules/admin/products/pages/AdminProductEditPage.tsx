@@ -16,6 +16,7 @@ import {
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
 import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 
 export const AdminProductEditPage: React.FC = () => {
   useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.EDIT);
@@ -74,7 +75,7 @@ export const AdminProductEditPage: React.FC = () => {
         <AdminState title="Unable to load product" message={error} />
       ) : product? (
         <AdminProductForm
-            mode="edit"
+            mode={ADMIN_ACTIONS.EDIT}
             product={product}
             onSubmit={handleSubmit}
             onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}

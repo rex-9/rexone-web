@@ -1,20 +1,21 @@
-import { AppLocales } from "../../../locales";
+import { AppLocales, translate } from "../../../locales";
 import { IApiPagination } from "../../../models";
 import {
   getApiError,
-  parsePageList,
+  parsePagyList,
   parseRecord,
 } from "../../../services/api.service";
 import UserService from "./user.service";
 import {
   IAdminUser,
   IAdminUserFormValues,
+  IAdminUserListParams,
 } from "./";
 import { IAdminRole } from "../roles";
 
 class UserController {
   async getUsers(
-    params?: { page?: number; limit?: number },
+    params?: IAdminUserListParams,
     onSuccess?: (users: IAdminUser[], pagination?: IApiPagination) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
@@ -28,7 +29,7 @@ class UserController {
         return;
       }
 
-      const { records, pagination } = parsePageList(response);
+      const { records, pagination } = parsePagyList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -65,7 +66,7 @@ class UserController {
       return;
     }
 
-    const { records, pagination } = parsePageList(response);
+    const { records, pagination } = parsePagyList(response);
     onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -110,24 +111,6 @@ class UserController {
         parseRecord("user" in data ? data.user : data),
         status.message,
       );
-  }
-
-  async deleteUser(
-    id: string,
-    onSuccess?: (message: string) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-      const response = await UserService.deleteUser(id);
-      const { status } = response.data || {};
-
-      if (!status?.success) {
-        onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.DeleteFailed),
-        );
-        return;
-      }
-
-      onSuccess?.(status.message);
   }
 
   async discardUser(
@@ -175,7 +158,7 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.LoadRolesFailed),
+          getApiError(response, translate(AppLocales.Admin.Users.Errors.LoadRolesFailed)),
         );
         return;
       }

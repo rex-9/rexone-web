@@ -1,6 +1,6 @@
 import { PaymentService } from ".";
 import { AppLocales, translate } from "../../locales";
-import { getApiError, parsePageList } from "../../services/api.service";
+import { getApiError, parsePagyList } from "../../services/api.service";
 import { IProduct, ISubscription, ITransaction } from "./types";
 import { IApiPagination } from "../../models";
 
@@ -16,7 +16,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } = parsePageList<IProduct>(response);
+      const { records, pagination } = parsePagyList<IProduct>(response);
       return { success: true, products: records, pagination };
     }
     return {
@@ -36,7 +36,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } = parsePageList<ISubscription>(response);
+      const { records, pagination } = parsePagyList<ISubscription>(response);
       return { success: true, subscriptions: records, pagination };
     }
     return {
@@ -99,7 +99,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } = parsePageList<ITransaction>(response);
+      const { records, pagination } = parsePagyList<ITransaction>(response);
       return { success: true, transactions: records, pagination };
     }
     return {

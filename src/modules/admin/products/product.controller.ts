@@ -2,7 +2,7 @@ import { IApiPagination } from "../../../models";
 import { AppLocales, translate } from "../../../locales";
 import {
   getApiError,
-  parsePageList,
+  parsePagyList,
   parseRecord,
 } from "../../../services/api.service";
 import ProductService from "./product.service";
@@ -28,7 +28,7 @@ class ProductController {
         return;
       }
 
-      const { records, pagination } = parsePageList(response);
+      const { records, pagination } = parsePagyList(response);
       onSuccess?.(records, pagination ?? undefined);
   }
 
@@ -65,7 +65,7 @@ class ProductController {
       return;
     }
 
-    const { records, pagination } = parsePageList(response);
+    const { records, pagination } = parsePagyList(response);
     onSuccess?.(records, pagination ?? undefined);
   }
 

@@ -1,7 +1,6 @@
 import AppRoutes from "../../../AppRoutes";
-import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../../models";
+import { IApiEnvelope, IApiResponse } from "../../../models";
 import { api } from "../../../services";
-import { IAdminUser } from "../users";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
@@ -19,14 +18,6 @@ class NotificationService {
   > {
     return api.get<IAdminNotificationTemplate[]>(
       AppRoutes.server.protected.admin.NOTIFICATION_TEMPLATES,
-    );
-  }
-
-  async getRecipients(): Promise<
-    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>
-  > {
-    return api.get<IJsonApiResource<IAdminUser>[]>(
-      AppRoutes.server.protected.admin.NOTIFICATION_RECIPIENTS,
     );
   }
 

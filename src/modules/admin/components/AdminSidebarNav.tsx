@@ -3,13 +3,13 @@ import { NavLink } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
-import { AdminResource, hasAdminRole } from "../../../models";
+import { ADMIN_ROLE_NAMES, hasAdminRole } from "../roles";
+import type { AdminResource } from "../roles";
 import {
   ADMIN_ACTIONS,
   ADMIN_NAV_LABELS,
   ADMIN_NAV_SECTION_LABEL,
   ADMIN_RESOURCES,
-  ADMIN_ROLE_NAMES,
 } from "../constants";
 import { cn } from "../../../design/utils";
 import { iconsLib } from "../../../assets";

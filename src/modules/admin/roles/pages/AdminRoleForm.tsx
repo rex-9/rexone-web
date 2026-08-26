@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { isAdminRoleName } from "../../../../models";
+import { isAdminRoleName } from "../constants";
 import {
   IAdminPermission,
   IAdminRole,
