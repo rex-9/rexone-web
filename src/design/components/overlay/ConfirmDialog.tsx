@@ -4,7 +4,7 @@ import React from "react";
 import { Dialog } from "./Dialog";
 import { Button } from "../button";
 
-export interface ConfirmDialogProps {
+export interface IConfirmDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -17,7 +17,7 @@ export interface ConfirmDialogProps {
   className?: string;
 }
 
-export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
+export const ConfirmDialog: React.FC<IConfirmDialogProps> = ({
   isOpen,
   onClose,
   onConfirm,

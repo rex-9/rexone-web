@@ -2,11 +2,13 @@ import React from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 import { Button } from "../button";
 
-export interface FormActionRowProps {
+export interface IFormActionRowProps {
   submitLabel: string;
   cancelLabel: string;
   onCancel: () => void;
 }
+
+export type FormActionRowProps = IFormActionRowProps;
 
 export const FormActionRow: React.FC<FormActionRowProps> = ({
   submitLabel,

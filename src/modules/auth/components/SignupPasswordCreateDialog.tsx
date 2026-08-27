@@ -11,7 +11,7 @@ import {
 import { AppLocales, useTranslate } from "../../../locales";
 import { DialogAuthSteps, TAuthStep } from "..";
 
-interface SignupPasswordCreateDialogProps {
+interface ISignupPasswordCreateDialogProps {
   email: string;
   password?: string;
   setPassword?: (value: string) => void;
@@ -21,7 +21,7 @@ interface SignupPasswordCreateDialogProps {
 }
 
 export const SignupPasswordCreateDialog: React.FC<
-  SignupPasswordCreateDialogProps
+  ISignupPasswordCreateDialogProps
 > = ({
   email,
   password = "",

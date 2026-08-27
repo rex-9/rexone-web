@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-interface UseCountdownResult {
+interface IUseCountdownResult {
   secondsLeft: number;
   isActive: boolean;
   targetTimeMs: number;
@@ -9,7 +9,7 @@ interface UseCountdownResult {
   clear: () => void;
 }
 
-export const useCountdown = (defaultSeconds = 0): UseCountdownResult => {
+export const useCountdown = (defaultSeconds = 0): IUseCountdownResult => {
   const [targetTimeMs, setTargetTimeMs] = useState(0);
   const [nowMs, setNowMs] = useState(() => Date.now());
 

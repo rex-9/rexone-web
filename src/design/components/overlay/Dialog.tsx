@@ -14,7 +14,7 @@ import {
 } from "@headlessui/react";
 import { cn } from "../../utils";
 
-export interface DialogProps {
+export interface IDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onBack?: () => void;
@@ -24,7 +24,7 @@ export interface DialogProps {
   className?: string;
 }
 
-export const Dialog: React.FC<DialogProps> = ({
+export const Dialog: React.FC<IDialogProps> = ({
   isOpen,
   onClose,
   onBack,

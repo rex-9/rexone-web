@@ -130,7 +130,13 @@ const router = createBrowserRouter(
               element={<AdminHomeRoute />}
             />
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.USERS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.USERS}
+                  superAdminOnly
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.USERS}
@@ -142,7 +148,13 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.CREATE} resource={ADMIN_RESOURCES.USERS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.CREATE}
+                  resource={ADMIN_RESOURCES.USERS}
+                  superAdminOnly
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.USER_CREATE}
@@ -150,7 +162,13 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.USERS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.UPDATE}
+                  resource={ADMIN_RESOURCES.USERS}
+                  superAdminOnly
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.USER_EDIT}

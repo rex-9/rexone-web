@@ -5,8 +5,8 @@ export const useDocumentTitle = (title: string) => {
   useEffect(() => {
     const previousTitle = document.title;
     document.title = title
-      ? `${AppConfig.APP_TITLE} | ${title}`
-      : AppConfig.APP_TITLE;
+      ? `${AppConfig.APP_NAME} | ${title}`
+      : AppConfig.APP_NAME;
 
     return () => {
       document.title = previousTitle;

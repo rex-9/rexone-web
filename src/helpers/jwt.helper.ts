@@ -1,7 +1,7 @@
 // src/utils/jwt.ts
 import { jwtDecode } from "jwt-decode";
 
-export interface JwtPayload {
+export interface IJwtPayload {
   exp: number;
   sub: string;
   jti: string;
@@ -15,7 +15,7 @@ export interface JwtPayload {
  */
 export const getTokenExpiry = (token: string): number | null => {
   try {
-    const decoded = jwtDecode<JwtPayload>(token);
+    const decoded = jwtDecode<IJwtPayload>(token);
     // JWT exp is in seconds, convert to milliseconds
     return decoded.exp ? decoded.exp * 1000 : null;
   } catch {
@@ -54,7 +54,7 @@ export const getTokenExpirySeconds = (token: string): number | null => {
 export const isValidToken = (token: string): boolean => {
   if (!token) return false;
   try {
-    const decoded = jwtDecode<JwtPayload>(token);
+    const decoded = jwtDecode<IJwtPayload>(token);
     // Check if token has required fields
     if (!decoded.exp || !decoded.sub) return false;
     // Check if not expired

@@ -1,14 +1,14 @@
 import AppRoutes from "../../AppRoutes";
 import { TextLink } from "../";
 import { useAuth } from "../../contexts";
-import { LayoutPage } from "./LayoutPage";
+import { PageLayout } from "./PageLayout";
 import { AppLocales } from "../../locales";
 
 export const NotFoundPage: React.FC = () => {
   const { token } = useAuth();
 
   return (
-    <LayoutPage>
+    <PageLayout>
       404 Not Found
       <TextLink
         to={
@@ -18,6 +18,6 @@ export const NotFoundPage: React.FC = () => {
         }
         label={AppLocales.GoBack}
       />
-    </LayoutPage>
+    </PageLayout>
   );
 };

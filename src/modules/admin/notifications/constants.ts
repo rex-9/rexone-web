@@ -66,6 +66,7 @@ export const NOTIFICATION_LOCALES = {
   Errors: {
     LoadRecipients: "admin.notifications.errors.load_recipients",
     LoadTemplates: "admin.notifications.errors.load_templates",
+    SearchUsers: "admin.notifications.errors.search_users",
     Send: "admin.notifications.errors.send",
   },
   Labels: {

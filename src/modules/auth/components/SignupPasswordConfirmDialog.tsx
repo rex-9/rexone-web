@@ -15,7 +15,7 @@ import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SignupPasswordConfirmDialogProps {
+interface ISignupPasswordConfirmDialogProps {
   email: string;
   password?: string;
   confirmPassword?: string;
@@ -26,7 +26,7 @@ interface SignupPasswordConfirmDialogProps {
 }
 
 export const SignupPasswordConfirmDialog: React.FC<
-  SignupPasswordConfirmDialogProps
+  ISignupPasswordConfirmDialogProps
 > = ({
   email,
   password = "",

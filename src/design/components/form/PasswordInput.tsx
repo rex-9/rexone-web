@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 
-export interface PasswordInputProps {
+export interface IPasswordInputProps {
   idPrefix: string;
   value: string;
   onChange: (value: string) => void;
@@ -14,7 +14,7 @@ export interface PasswordInputProps {
   autoFocus?: boolean;
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({
+export const PasswordInput: React.FC<IPasswordInputProps> = ({
   idPrefix,
   value,
   onChange,

@@ -1,7 +1,7 @@
 // src/design/pages/AiPage.tsx
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { PageLayout } from "../../../design/pages";
 import { Button, TextArea, ConfirmDialog } from "../../../design/components";
 import { useToast } from "../../../contexts/ToastContext";
 import AiController from "../ai.controller";
@@ -123,7 +123,7 @@ export const AiPage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div className="flex flex-col h-[calc(100vh-200px)] max-w-3xl mx-auto w-full">
         {/* Header */}
         <div className="flex items-center justify-between py-16 border-b border-base-200">
@@ -233,6 +233,6 @@ export const AiPage: React.FC = () => {
         cancelLabel="Cancel"
         isDestructive={true}
       />
-    </LayoutPage>
+    </PageLayout>
   );
 };

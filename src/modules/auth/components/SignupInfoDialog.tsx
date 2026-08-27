@@ -7,7 +7,7 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SignupInfoDialogProps {
+interface ISignupInfoDialogProps {
   email: string;
   password: string;
   fullNameParam: string;
@@ -18,7 +18,7 @@ interface SignupInfoDialogProps {
   onBack: () => void;
 }
 
-export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
+export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
   email,
   password,
   fullNameParam,

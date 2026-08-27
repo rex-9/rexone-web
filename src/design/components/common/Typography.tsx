@@ -1,13 +1,13 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface TypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface ITypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   className?: string;
   variant?: "primary" | "secondary";
 }
 
-export const Typography: React.FC<TypographyProps> = ({
+export const Typography: React.FC<ITypographyProps> = ({
   children,
   variant = "secondary",
   className = "text-base font-normal",

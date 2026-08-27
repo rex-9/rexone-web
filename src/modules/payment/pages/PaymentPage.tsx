@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 import { useToast } from "../../../contexts/ToastContext";
+import { useAuth } from "../../../contexts";
 import { Button } from "../../../design/components/button/Button";
 import { ConfirmDialog } from "../../../design/components/overlay";
-import { LayoutPage } from "../../../design/pages";
+import { PageLayout } from "../../../design/pages";
 import { IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
 
 export const PaymentPage: React.FC = () => {
+  const { isAuthenticated } = useAuth();
   const { setLoading } = useLoading();
   const { success, error } = useToast();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -16,31 +18,42 @@ export const PaymentPage: React.FC = () => {
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
   const fetchData = React.useCallback(async () => {
+    if (!isAuthenticated) return;
+
     setLoading(true);
-    const [productsResult, subscriptionsResult, transactionsResult] =
-      await Promise.all([
-        PaymentController.getProducts(),
+    try {
+      const productsResult = await PaymentController.getProducts();
+
+      if (!productsResult.success) {
+        if (productsResult.error) error(productsResult.error);
+        return;
+      }
+
+      setProducts(productsResult.products ?? []);
+
+      const [subscriptionsResult, transactionsResult] = await Promise.all([
         PaymentController.getSubscriptions(),
         PaymentController.getTransactions(),
       ]);
 
-    if (productsResult.success && productsResult.products) {
-      setProducts(productsResult.products);
-    }
+      if (subscriptionsResult.success && subscriptionsResult.subscriptions) {
+        setSubscriptions(subscriptionsResult.subscriptions);
+      }
 
-    if (subscriptionsResult.success && subscriptionsResult.subscriptions) {
-      setSubscriptions(subscriptionsResult.subscriptions);
+      if (transactionsResult.success && transactionsResult.transactions) {
+        setTransactions(transactionsResult.transactions);
+      }
+    } finally {
+      setLoading(false);
     }
-
-    if (transactionsResult.success && transactionsResult.transactions) {
-      setTransactions(transactionsResult.transactions);
-    }
-
-    setLoading(false);
-  }, [setLoading]);
+  }, [error, isAuthenticated, setLoading]);
 
   useEffect(() => {
-    fetchData();
+    const timeoutId = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [fetchData]);
 
   const handleCheckout = (productId: string) => {
@@ -199,7 +212,7 @@ export const PaymentPage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div className="text-center space-y-8 mb-16">
         <h1 className="text-h1 font-semibold text-center">Choose Your Plan</h1>
         <p className="text-body-m text-base-content/70 text-center">
@@ -252,6 +265,6 @@ export const PaymentPage: React.FC = () => {
         cancelLabel="Keep Subscription"
         isDestructive={true}
       />
-    </LayoutPage>
+    </PageLayout>
   );
 };

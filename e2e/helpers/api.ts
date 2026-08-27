@@ -8,7 +8,7 @@ import type { TestUser } from "../data/users";
 
 const API_BASE = "http://localhost:3000";
 
-interface ApiResponsePayload {
+interface IApiResponsePayload {
   status?: { code?: number; message?: string; error?: string };
   data?: { token?: string; user?: Record<string, unknown> };
 }
@@ -79,7 +79,7 @@ export async function signInUser(
     }),
   });
 
-  const json = (await res.json().catch(() => ({}))) as ApiResponsePayload;
+  const json = (await res.json().catch(() => ({}))) as IApiResponsePayload;
   return {
     status: res.status,
     token: json?.data?.token || null,

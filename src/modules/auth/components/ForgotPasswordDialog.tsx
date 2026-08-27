@@ -13,7 +13,7 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface ForgotPasswordDialogProps {
+interface IForgotPasswordDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
@@ -21,7 +21,7 @@ interface ForgotPasswordDialogProps {
   onBack: () => void;
 }
 
-export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
+export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,

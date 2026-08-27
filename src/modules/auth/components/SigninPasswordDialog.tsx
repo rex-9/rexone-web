@@ -14,7 +14,7 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SigninPasswordDialogProps {
+interface ISigninPasswordDialogProps {
   email: string;
   password?: string;
   setPassword?: (value: string) => void;
@@ -26,7 +26,7 @@ interface SigninPasswordDialogProps {
   onCooldownClear: () => void;
 }
 
-export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
+export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
   email,
   password = "",
   setPassword = () => {},

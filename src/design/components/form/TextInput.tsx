@@ -7,14 +7,14 @@
 import React, { useId } from "react";
 import { cn } from "../../utils";
 
-export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface ITextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
 }
 
-export const TextInput: React.FC<TextInputProps> = ({
+export const TextInput: React.FC<ITextInputProps> = ({
   label,
   helperText,
   error,

@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "../../utils";
 
-interface DropdownCommonProps {
+interface IDropdownCommonProps {
   options: Array<{ value: string; label: string }>;
   label?: string;
   error?: string;
@@ -12,19 +12,19 @@ interface DropdownCommonProps {
   disabled?: boolean;
 }
 
-interface DropdownSingleProps extends DropdownCommonProps {
+interface IDropdownSingleProps extends IDropdownCommonProps {
   multiple?: false;
   value?: string;
   onValueChange?: (value: string) => void;
 }
 
-interface DropdownMultipleProps extends DropdownCommonProps {
+interface IDropdownMultipleProps extends IDropdownCommonProps {
   multiple: true;
   value?: string[];
   onValueChange?: (value: string[]) => void;
 }
 
-export type DropdownProps = DropdownSingleProps | DropdownMultipleProps;
+export type DropdownProps = IDropdownSingleProps | IDropdownMultipleProps;
 
 export const Dropdown: React.FC<DropdownProps> = (props) => {
   const {

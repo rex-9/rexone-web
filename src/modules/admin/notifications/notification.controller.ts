@@ -1,5 +1,6 @@
 import NotificationService from "./notification.service";
 import { getApiError } from "../../../services/api.service";
+import { translate } from "../../../locales";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
@@ -16,7 +17,9 @@ class NotificationController {
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
-      onError?.(getApiError(response, NOTIFICATION_LOCALES.Errors.LoadTemplates));
+      onError?.(
+        getApiError(response, translate(NOTIFICATION_LOCALES.Errors.LoadTemplates)),
+      );
       return;
     }
 
@@ -33,7 +36,9 @@ class NotificationController {
       const isQueued = status?.code === 202;
 
       if ((!status?.success && !isQueued) || !data) {
-        onError?.(getApiError(response, NOTIFICATION_LOCALES.Errors.Send));
+        onError?.(
+          getApiError(response, translate(NOTIFICATION_LOCALES.Errors.Send)),
+        );
         return;
       }
 

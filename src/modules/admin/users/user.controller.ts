@@ -24,7 +24,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.LoadListFailed),
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Users.Errors.LoadListFailed),
+          ),
         );
         return;
       }
@@ -43,7 +46,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.LoadOneFailed),
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Users.Errors.LoadOneFailed),
+          ),
         );
         return;
       }
@@ -61,7 +67,10 @@ class UserController {
 
     if (!status?.success || !data) {
       onError?.(
-        getApiError(response, AppLocales.Admin.Users.Errors.LoadListFailed),
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Users.Errors.LoadListFailed),
+        ),
       );
       return;
     }
@@ -80,7 +89,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.CreateFailed),
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Users.Errors.CreateFailed),
+          ),
         );
         return;
       }
@@ -102,7 +114,10 @@ class UserController {
 
       if (!status?.success || !data) {
         onError?.(
-          getApiError(response, AppLocales.Admin.Users.Errors.UpdateFailed),
+          getApiError(
+            response,
+            translate(AppLocales.Admin.Users.Errors.UpdateFailed),
+          ),
         );
         return;
       }
@@ -123,7 +138,10 @@ class UserController {
 
     if (!status?.success || !data) {
       onError?.(
-        getApiError(response, AppLocales.Admin.Users.Errors.DeleteFailed),
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Users.Errors.DeleteFailed),
+        ),
       );
       return;
     }
@@ -141,7 +159,10 @@ class UserController {
 
     if (!status?.success || !data) {
       onError?.(
-        getApiError(response, AppLocales.Admin.Users.Errors.UpdateFailed),
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Users.Errors.UpdateFailed),
+        ),
       );
       return;
     }

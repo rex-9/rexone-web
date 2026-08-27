@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts";
 import AppRoutes from "../../../AppRoutes";
 
-export interface ProfileAvatarProps {
+export interface IProfileAvatarProps {
   className?: string;
 }
 
-export const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ className }) => {
+export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({ className }) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);

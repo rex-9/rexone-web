@@ -7,7 +7,7 @@
 import React, { useId, useRef, useEffect } from "react";
 import { cn } from "../../utils";
 
-export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   helperText?: string;
   error?: string;
@@ -17,7 +17,7 @@ export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   showCounter?: boolean;
 }
 
-export const TextArea: React.FC<TextAreaProps> = ({
+export const TextArea: React.FC<ITextAreaProps> = ({
   label,
   helperText,
   error,

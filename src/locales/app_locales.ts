@@ -194,11 +194,6 @@ export const AppLocales = {
       CreateCheckout: "payment.errors.create_checkout",
     },
   },
-  User: {
-    Errors: {
-      CheckFailed: "user.errors.check_failed",
-    },
-  },
   Home: "home",
   GoBack: "go_back",
   Submit: "submit",

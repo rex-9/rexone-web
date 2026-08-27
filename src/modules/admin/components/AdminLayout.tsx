@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import AppRoutes from "../../../AppRoutes";
+import { iconsLib } from "../../../assets";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
 import { Button } from "../../../design/components/button";
+import { HeadNavbarBrand } from "../../../design/components/common";
 import { PageLayout } from "../../../design/pages";
-import { ProfileAvatar } from "../../../design/components/common/ProfileAvatar";
-import { LanguageDropdown } from "../../../design/components/settings/LanguageDropdown";
-import { ThemeToggle } from "../../../design/components/settings/ThemeToggle";
-import { ADMIN_ACTIONS } from "../constants";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../constants";
 import { getAdminPageMeta } from "../helpers/admin.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 import { AdminSidebarNav } from "./AdminSidebarNav";
-import { iconsLib } from '../../../assets';
 
 interface IAdminLayoutProps {
   children: React.ReactNode;
@@ -27,6 +25,14 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const pageMeta = getAdminPageMeta(location.pathname);
+  const recycleAction =
+    pageMeta?.hasRecycleBin && pageMeta.actionResource
+      ? {
+          label: ADMIN_COMMON_LABELS.OPENRECYCLEBIN,
+          onClick: () => navigate(`${location.pathname}/recycle-bin`),
+          resource: pageMeta.actionResource,
+        }
+      : undefined;
   const canPerformPageAction =
     pageMeta?.actionLabel &&
     pageMeta.actionTo &&
@@ -37,108 +43,75 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
     currentUser?.name || currentUser?.username || currentUser?.email || "Admin";
 
   const closeSidebar = () => setIsSidebarOpen(false);
+  const toggleSidebar = () => setIsSidebarOpen((current) => !current);
 
   const sidebar = (
-    <aside className="flex h-full w-[280px] flex-col border-r border-base-300 bg-base-100">
-      <div className="flex h-[72px] items-center gap-12 border-b border-base-300 px-24">
+    <aside
+      className={`fixed bottom-0 left-0 top-0 z-40 flex flex-col border-r border-base-300 bg-base-100 transition-[width] duration-200 ${
+        isSidebarOpen ? "w-[280px]" : "w-[72px]"
+      } lg:w-[280px]`}
+    >
+      <div className="flex h-[72px] items-center gap-12 border-b border-base-300 px-16">
+        <HeadNavbarBrand
+          className={`min-w-0 flex-1 ${isSidebarOpen ? "flex" : "hidden"} lg:flex`}
+        />
         <Button
           type="button"
           variant="tertiary"
-          className="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900"
-          onClick={() => navigate(AppRoutes.client.protected.admin.USERS)}
-          aria-label="Go to admin users"
+          className="h-[40px] w-[40px] shrink-0 p-0 lg:hidden"
+          onClick={toggleSidebar}
+          aria-label={
+            isSidebarOpen ? "Close admin navigation" : "Open admin navigation"
+          }
         >
-          R
+          <iconsLib.bar3 className="h-[20px] w-[20px]" />
         </Button>
-        <div>
-          <div className="text-body-m font-semibold text-base-content">
-            Rexone
-          </div>
-          <div className="text-body-s text-base-content opacity-60">
-            Control Center
-          </div>
-        </div>
       </div>
 
-      <AdminSidebarNav onNavigate={closeSidebar} />
+      <div className={`${isSidebarOpen ? "flex" : "hidden"} min-h-0 flex-1 flex-col lg:flex`}>
+        <AdminSidebarNav onNavigate={closeSidebar} />
 
-      <div className="border-t border-base-300 p-16">
-        <div className="rounded-md bg-base-200 p-12">
-          <div className="text-body-s font-medium text-base-content">
-            Signed in as
+        <div className="border-t border-base-300 p-16">
+          <div className="rounded-md bg-base-200 p-12">
+            <div className="text-body-s font-medium text-base-content">
+              Signed in as
+            </div>
+            <div className="mt-4 truncate text-body-s text-base-content opacity-70">
+              {displayName}
+            </div>
           </div>
-          <div className="mt-4 truncate text-body-s text-base-content opacity-70">
-            {displayName}
-          </div>
+          <Button
+            type="button"
+            variant="tertiary"
+            className="mt-10 h-[40px] w-full justify-start gap-10 px-12 text-base-content"
+            onClick={() => navigate(AppRoutes.client.protected.SIGN_OUT)}
+          >
+            <iconsLib.logout className="h-[18px] w-[18px]" />
+            <span>Log out</span>
+          </Button>
         </div>
-        <Button
-          type="button"
-          variant="tertiary"
-          className="mt-10 h-[40px] w-full justify-start gap-10 px-12 text-base-content"
-          onClick={() => navigate(AppRoutes.client.protected.SIGN_OUT)}
-        >
-          <iconsLib.logout className="h-[18px] w-[18px]" />
-          <span>Log out</span>
-        </Button>
       </div>
     </aside>
   );
 
   return (
-    <PageLayout className="overflow-x-hidden bg-base-200 text-base-content">
-      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:block">
-        {sidebar}
-      </div>
+    <PageLayout
+      className="overflow-x-hidden bg-base-200 text-base-content"
+      isAdmin
+    >
+      {sidebar}
 
       {isSidebarOpen && (
-        <div className="fixed inset-0 z-40 lg:hidden">
-          <Button
-            type="button"
-            className="absolute inset-0 bg-navy-900/40"
-            aria-label="Close admin navigation"
-            onClick={closeSidebar}
-          />
-          <div className="absolute inset-y-0 left-0">{sidebar}</div>
-        </div>
+        <Button
+          type="button"
+          className="fixed bottom-0 left-[280px] right-0 top-0 z-30 bg-navy-900/40 lg:hidden"
+          aria-label="Close admin navigation"
+          onClick={closeSidebar}
+        />
       )}
 
-      <div className="min-h-screen min-w-0 lg:pl-[280px]">
-        <header className="fixed left-0 right-0 top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-300 bg-base-100 px-16 md:px-24 lg:left-[280px]">
-          <div className="flex min-w-0 items-center gap-12">
-            <Button
-              type="button"
-              variant="tertiary"
-              className="h-[40px] w-[40px] p-0 lg:hidden"
-              onClick={() => setIsSidebarOpen(true)}
-              aria-label="Open admin navigation"
-            >
-              <iconsLib.bar3 className="h-[20px] w-[20px]" />
-            </Button>
-            <div className="min-w-0">
-              <div className="text-body-s font-medium uppercase text-secondary">
-                Admin
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            <Button
-              type="button"
-              variant="tertiary"
-              className="hidden h-[40px] w-[40px] p-0 md:inline-flex"
-              aria-label="Notifications"
-            >
-              <iconsLib.bell className="h-[20px] w-[20px]" />
-            </Button>
-            <ThemeToggle />
-            <div className="hidden sm:block">
-              <LanguageDropdown />
-            </div>
-            <ProfileAvatar />
-          </div>
-        </header>
-
-        <main className="min-w-0 px-16 pb-20 pt-[92px] md:px-24 lg:px-32">
+      <div className="min-h-screen min-w-0 pl-[72px] lg:pl-[280px]">
+        <main className="min-w-0 px-16 pb-20 pt-20 md:px-24 lg:px-32">
           <section className="mx-auto w-full max-w-7xl">
             <div className="mb-20 flex flex-col gap-14 md:flex-row md:items-end md:justify-between">
               <div>
@@ -158,8 +131,11 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
                 <AdminHeaderActionButton
                   label={pageMeta.actionLabel ?? ""}
                   onClick={() =>
-                    navigate(pageMeta.actionTo ?? AppRoutes.client.protected.admin.USERS)
+                    navigate(
+                      pageMeta.actionTo ?? AppRoutes.client.protected.admin.USERS,
+                    )
                   }
+                  recycle={recycleAction}
                 />
               )}
             </div>

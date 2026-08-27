@@ -2,25 +2,25 @@
 import { Component, ErrorInfo, ReactNode } from "react";
 import LogController from "../modules/log/log.controller";
 
-interface ErrorBoundaryProps {
+interface IErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface IErrorBoundaryState {
   hasError: boolean;
 }
 
 export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
+  IErrorBoundaryProps,
+  IErrorBoundaryState
 > {
-  constructor(props: ErrorBoundaryProps) {
+  constructor(props: IErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(): ErrorBoundaryState {
+  static getDerivedStateFromError(): IErrorBoundaryState {
     return { hasError: true };
   }
 

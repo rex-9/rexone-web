@@ -32,6 +32,7 @@ export const ADMIN_USER_PAGE_META: Record<string, IAdminPageMeta> = {
     actionLabel: "Create user",
     actionTo: AppRoutes.client.protected.admin.USER_CREATE,
     actionResource: ADMIN_RESOURCES.USERS,
+    hasRecycleBin: true,
   },
   [AppRoutes.client.protected.admin.USERS_RECYCLE_BIN]: {
     title: ADMIN_USER_PAGE_TITLES.RECYCLE_BIN,

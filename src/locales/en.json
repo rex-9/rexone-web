@@ -223,6 +223,7 @@
       "errors": {
         "load_recipients": "Unable to load recipients",
         "load_templates": "Unable to load notification events",
+        "search_users": "User search is unavailable in the current API.",
         "send": "Unable to send notification"
       },
       "labels": {
@@ -263,7 +264,6 @@
       "load_transactions": "Failed to fetch transactions", "create_checkout": "Failed to create checkout session"
     }
   },
-  "user": { "errors": { "check_failed": "Failed to check user." } },
 
   "### ANAPANA_MODULE": "### ANAPANA_MODULE",
   "anapana_timer_title": "Anapana Interval Reminder",

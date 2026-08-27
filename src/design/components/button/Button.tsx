@@ -3,12 +3,14 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "tertiary";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   isLoading?: boolean;
 }
+
+export type ButtonProps = IButtonProps;
 
 export const Button: React.FC<ButtonProps> = ({
   variant = "primary",

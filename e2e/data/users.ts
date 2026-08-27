@@ -4,12 +4,14 @@
 // Uses seeded test users for confirmed sign-in/reset and dynamic users for registration.
 //
 
-export interface TestUser {
+export interface ITestUser {
   email: string;
   name: string;
   username: string;
   password: string; // 6-digit passcode
 }
+
+export type TestUser = ITestUser;
 
 let userCounter = 0;
 

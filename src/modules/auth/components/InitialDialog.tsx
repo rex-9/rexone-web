@@ -117,7 +117,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
           break;
       }
     } catch (err: unknown) {
-      console.error("Failed to check user:", err);
+      console.log("Failed to check user:", err);
       setError(
         err instanceof Error
           ? err.message

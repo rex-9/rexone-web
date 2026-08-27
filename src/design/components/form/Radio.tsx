@@ -1,11 +1,13 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface RadioProps
+export interface IRadioProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
   children: React.ReactNode;
   containerClassName?: string;
 }
+
+export type RadioProps = IRadioProps;
 
 export const Radio: React.FC<RadioProps> = ({
   children,

@@ -8,7 +8,6 @@ import { IApiPagination } from "../../../../models";
 import UserController from "../user.controller";
 import { IAdminUser } from "../types";
 import {
-  AdminActionButton, 
   AdminPagination,
   AdminState,
   AdminTableActions,
@@ -30,7 +29,6 @@ import {
   ADMIN_USER_TABLE_KEYS,
 } from "../constants";
 import { translate } from "../../../../locales";
-import { iconsLib } from '../../../../assets';
 
 const formatDate = (value?: Date | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
@@ -246,24 +244,6 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         <AdminState title="Unable to load users" message={error} />
       ) : (
         <>
-          {view === "active" && (
-            <div className="mb-12 flex justify-end">
-              <AdminActionButton
-                action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.USERS}
-                size="sm"
-                variant="secondary"
-                className="h-[36px] w-[36px] p-0"
-                aria-label="Open recycle bin"
-                title="Recycle bin"
-                onClick={() =>
-                  navigate(AppRoutes.client.protected.admin.USERS_RECYCLE_BIN)
-                }
-              >
-                <iconsLib.archiveBox className="h-[18px] w-[18px]" />
-              </AdminActionButton>
-            </div>
-          )}
           {users.length === 0 ? (
             <AdminState
               title={view === "active" ? "No users yet" : "Recycle bin is empty"}

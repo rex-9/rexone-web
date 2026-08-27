@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
-import { LayoutPage } from "../../../design/pages";
+import { PageLayout } from "../../../design/pages";
 
 export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ export const SignUpPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div />
-    </LayoutPage>
+    </PageLayout>
   );
 };

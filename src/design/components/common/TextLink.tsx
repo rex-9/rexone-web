@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
-export interface TextLinkProps {
+export interface ITextLinkProps {
   label: string;
   to?: string;
   onClick?: () => void;
   className?: string;
 }
 
-export const TextLink: React.FC<TextLinkProps> = ({
+export const TextLink: React.FC<ITextLinkProps> = ({
   label,
   to,
   onClick,

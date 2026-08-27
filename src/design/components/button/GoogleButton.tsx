@@ -5,12 +5,12 @@ import { cn } from "../../utils";
 import { icons } from "../../../assets";
 import { Image } from "..";
 
-export interface GoogleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IGoogleButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
   fullWidth?: boolean;
 }
 
-export const GoogleButton: React.FC<GoogleButtonProps> = ({
+export const GoogleButton: React.FC<IGoogleButtonProps> = ({
   isLoading = false,
   fullWidth = true,
   disabled,

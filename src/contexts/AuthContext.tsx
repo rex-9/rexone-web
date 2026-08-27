@@ -15,7 +15,7 @@ import atoms from "../atoms";
 import { isTokenExpired } from "../helpers";
 import { useLoading } from "./LoadingContext";
 
-interface AuthContextType {
+interface IAuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   currentUser: IUser | null;
@@ -26,7 +26,7 @@ interface AuthContextType {
   setGoogleChallengeToken: (token: string | null) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<IAuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -116,7 +116,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): IAuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");

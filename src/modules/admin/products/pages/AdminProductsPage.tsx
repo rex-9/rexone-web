@@ -9,7 +9,6 @@ import { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
   AdminPagination,
-  AdminActionButton,
   AdminState,
   AdminTableActions,
   AdminTable,
@@ -29,7 +28,6 @@ import {
   ADMIN_PRODUCT_TABLE_HEADERS,
   ADMIN_PRODUCT_TABLE_KEYS,
 } from "../constants";
-import { iconsLib } from "../../../../assets";
 
 const formatDate = (value?: Date | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
@@ -221,24 +219,6 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         <AdminState title="Unable to load products" message={error} />
       ) : (
         <>
-          {view === "active" && (
-            <div className="mb-12 flex justify-end">
-              <AdminActionButton
-                action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.PRODUCTS}
-                size="sm"
-                variant="secondary"
-                className="h-[36px] w-[36px] p-0"
-                aria-label="Open recycle bin"
-                title="Recycle bin"
-                onClick={() =>
-                  navigate(AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN)
-                }
-              >
-                <iconsLib.archiveBox className="h-[18px] w-[18px]" />
-              </AdminActionButton>
-            </div>
-          )}
           {products.length === 0 ? (
             <AdminState
               title={view === "active" ? "No products yet" : "Recycle bin is empty"}

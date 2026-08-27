@@ -91,7 +91,8 @@ class AppRoutes {
       CURRENT_USER: AppRoutes.api('/users/current'), // GET
 
 
-      IAM_PERMISSIONS: AppRoutes.adminApi('/iam/permissions'), // GET
+      IAM_PERMISSIONS: AppRoutes.api('/iam/permissions/current'), // GET
+      IAM_ROLES: AppRoutes.api('/iam/roles/current'), // GET
 
       // Media
       UPLOAD_ASSET: AppRoutes.api('/media/upload'), // POST
@@ -126,14 +127,16 @@ class AppRoutes {
       // API for Client Admin Dashboard
       admin: {
         USERS: AppRoutes.adminApi('/users'), // GET, POST
-        USER_ROLES: AppRoutes.adminApi('/users/roles'), // GET
+        USER_ROLES: AppRoutes.adminApi('/iam/roles'), // GET
         USER_DETAIL: AppRoutes.adminApi('/users/:id'), // GET, PATCH, PUT
         DISCARDED_USERS: AppRoutes.adminApi('/users/discarded'), // GET
         USER_DISCARD: AppRoutes.adminApi('/users/:id/discard'), // POST
         USER_UNDISCARD: AppRoutes.adminApi('/users/:id/undiscard'), // POST
         IAM_ROLES: AppRoutes.adminApi('/iam/roles'), // GET, POST
         IAM_ROLE_DETAIL: AppRoutes.adminApi('/iam/roles/:id'), // GET, PATCH, DELETE
-        IAM_ROLE_PERMISSIONS: AppRoutes.adminApi('/iam/roles/permissions'), // GET
+        IAM_PERMISSIONS: AppRoutes.adminApi('/iam/permissions'), // GET, POST
+        IAM_PERMISSION_DETAIL: AppRoutes.adminApi('/iam/permissions/:id'), // GET, PATCH, DELETE
+        IAM_ROLE_PERMISSIONS: AppRoutes.adminApi('/iam/permissions'), // GET
         NOTIFICATIONS: AppRoutes.adminApi('/notifications'), // POST
         NOTIFICATION_TEMPLATES: AppRoutes.adminApi(
           '/notifications/templates',

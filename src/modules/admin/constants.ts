@@ -45,6 +45,7 @@ export interface IAdminPageMeta {
   actionLabel?: string;
   actionTo?: string;
   actionResource?: TAdminResourceName;
+  hasRecycleBin?: boolean;
 }
 
 export const ADMIN_NAV_SECTION_LABEL = "Manage";
@@ -71,4 +72,5 @@ export const ADMIN_COMMON_LABELS = {
   EDIT: "Edit",
   NOT_AVAILABLE: "Not available",
   RESTORE: "Restore",
+  OPENRECYCLEBIN: "Open recycle bin"
 } as const;

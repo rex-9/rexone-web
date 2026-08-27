@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import SocketService, { ISocketMessage } from "../services/socket.service";
 
-interface Notification {
+interface INotification {
   id: string;
   message: string;
   data: Record<string, unknown>;
@@ -13,7 +13,7 @@ interface Notification {
 export const useSocket = () => {
   const { token, isAuthenticated } = useAuth();
   const { success, error, info } = useToast();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<INotification[]>([]);
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -28,7 +28,7 @@ export const useSocket = () => {
           return;
         }
 
-        const notif: Notification = {
+        const notif: INotification = {
           id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
           message: data.message,
           data: data.data || {},

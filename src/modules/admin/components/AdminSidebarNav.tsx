@@ -33,6 +33,7 @@ const navItems: IAdminNavItem[] = [
     to: AppRoutes.client.protected.admin.USERS,
     resource: ADMIN_RESOURCES.USERS,
     icon: iconsLib.userGroup,
+    superAdminOnly: true,
   },
   {
     label: ADMIN_NAV_LABELS.ROLES,

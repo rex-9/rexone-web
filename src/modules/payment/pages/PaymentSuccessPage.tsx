@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "../../../contexts/ToastContext";
 import { Button } from "../../../design/components/button/Button";
-import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { PageLayout } from "../../../design/pages";
 
 export const PaymentSuccessPage: React.FC = () => {
   const { success } = useToast();
@@ -12,7 +12,7 @@ export const PaymentSuccessPage: React.FC = () => {
   }, [success]);
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div className="text-display-xl text-center">🎉</div>
       <h1 className="text-h1 font-semibold text-center">Payment Successful!</h1>
       <p className="text-body-m text-base-content/70 text-center">
@@ -23,6 +23,6 @@ export const PaymentSuccessPage: React.FC = () => {
           Go to Dashboard
         </Button>
       </Link>
-    </LayoutPage>
+    </PageLayout>
   );
 };

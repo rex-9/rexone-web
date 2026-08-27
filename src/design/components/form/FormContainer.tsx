@@ -1,14 +1,14 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface FormContainerProps {
+export interface IFormContainerProps {
   title?: string;
   children: React.ReactNode;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   className?: string;
 }
 
-export const FormContainer: React.FC<FormContainerProps> = ({
+export const FormContainer: React.FC<IFormContainerProps> = ({
   title,
   children,
   onSubmit,

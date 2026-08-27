@@ -138,7 +138,7 @@ export const AuthDialog: React.FC = () => {
                 ? signInCooldown.targetTimeMs
                 : 0
             }
-            onCooldownStart={(targetTimeMs) =>
+            onCooldownStart={(targetTimeMs: number) =>
               setSignInCooldown({ email, targetTimeMs })
             }
             onCooldownClear={() => setSignInCooldown(null)}

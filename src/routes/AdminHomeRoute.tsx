@@ -6,14 +6,19 @@ import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
 import type { AdminResource } from "../modules/admin/roles";
 import { hasAdminRole } from "../modules/admin/roles";
-import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../modules/admin";
+import { ADMIN_ACTIONS, ADMIN_RESOURCES, ADMIN_ROLE_NAMES } from "../modules/admin";
 
 const adminEntryRoutes: Array<{
   action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
   resource: AdminResource;
   path: string;
+  superAdminOnly?: boolean;
 }> = [
-  { resource: ADMIN_RESOURCES.USERS, path: AppRoutes.client.protected.admin.USERS },
+  {
+    resource: ADMIN_RESOURCES.USERS,
+    path: AppRoutes.client.protected.admin.USERS,
+    superAdminOnly: true,
+  },
   {
     resource:ADMIN_RESOURCES.NOTIFICATIONS,
     path: AppRoutes.client.protected.admin.NOTIFICATIONS,
@@ -30,6 +35,8 @@ export const AdminHomeRoute: React.FC = () => {
   const { currentUser } = useAuth();
   const { can, isLoading } = usePermissions();
   const hasAdminAccess = hasAdminRole(currentUser?.role_names);
+  const isSuperAdmin =
+    currentUser?.role_names?.includes(ADMIN_ROLE_NAMES.SUPER_ADMIN) ?? false;
 
   if (isLoading) {
     return (
@@ -41,7 +48,9 @@ export const AdminHomeRoute: React.FC = () => {
 
   const entry = hasAdminAccess
     ? adminEntryRoutes.find((item) =>
-        can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
+        item.superAdminOnly
+          ? isSuperAdmin
+          : can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
       )
     : null;
 

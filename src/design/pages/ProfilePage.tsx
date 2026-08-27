@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LayoutPage } from "./LayoutPage";
+import { PageLayout } from "./PageLayout";
 import { Button } from "../";
 import UserController from "../../controllers/user.controller";
 import { useAuth } from "../../contexts";
@@ -34,10 +34,10 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div>Profile</div>
       <input type="file" onChange={handleFileChange} />
       <Button onClick={handleUploadClick}>Upload</Button>
-    </LayoutPage>
+    </PageLayout>
   );
 };

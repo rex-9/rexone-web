@@ -9,13 +9,13 @@ import React, {
   ReactNode,
 } from "react";
 
-interface LoadingContextProps {
+interface ILoadingContextProps {
   isLoading: boolean;
   isOverlayLoading: boolean;
   setLoading: (loading: boolean, options?: { overlay?: boolean }) => void;
 }
 
-const LoadingContext = createContext<LoadingContextProps | undefined>(
+const LoadingContext = createContext<ILoadingContextProps | undefined>(
   undefined
 );
 
@@ -74,7 +74,7 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-export const useLoading = (): LoadingContextProps => {
+export const useLoading = (): ILoadingContextProps => {
   const context = useContext(LoadingContext);
   if (!context) {
     throw new Error("useLoading must be used within a LoadingProvider");

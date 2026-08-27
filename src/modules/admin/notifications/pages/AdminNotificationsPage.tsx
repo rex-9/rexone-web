@@ -6,10 +6,10 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { useTranslate } from "../../../../locales";
+import UserController from "../../../../controllers/user.controller";
+import type { UserSearchResult } from "../../../../controllers/user.controller";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
-import UserController from "../../users/user.controller";
-import { IAdminUser } from "../../users/types";
 import NotificationController from "../notification.controller";
 import {
   IAdminNotificationFormValues,
@@ -52,10 +52,10 @@ const RECIPIENT_SEARCH_MIN_LENGTH = 3;
 const RECIPIENT_SEARCH_DEBOUNCE_MS = 300;
 const RECIPIENT_SEARCH_LIMIT = 20;
 
-const getUserLabel = (user: IAdminUser) =>
+const getUserLabel = (user: UserSearchResult) =>
   user.email || user.name || user.username || user.id;
 
-const matchesUserQuery = (user: IAdminUser, query: string) => {
+const matchesUserQuery = (user: UserSearchResult, query: string) => {
   const normalizedQuery = query.trim().toLowerCase();
 
   if (normalizedQuery.length < RECIPIENT_SEARCH_MIN_LENGTH) {
@@ -67,8 +67,11 @@ const matchesUserQuery = (user: IAdminUser, query: string) => {
     .some((value) => value.toLowerCase().includes(normalizedQuery));
 };
 
-const mergeUsersById = (currentUsers: IAdminUser[], nextUsers: IAdminUser[]) => {
-  const usersById = new Map<string, IAdminUser>();
+const mergeUsersById = (
+  currentUsers: UserSearchResult[],
+  nextUsers: UserSearchResult[],
+) => {
+  const usersById = new Map<string, UserSearchResult>();
 
   currentUsers.forEach((user) => usersById.set(user.id, user));
   nextUsers.forEach((user) => usersById.set(user.id, user));
@@ -84,7 +87,7 @@ export const AdminNotificationsPage: React.FC = () => {
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
-  const [users, setUsers] = useState<IAdminUser[]>([]);
+  const [users, setUsers] = useState<UserSearchResult[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
   const [values, setValues] =
@@ -92,6 +95,9 @@ export const AdminNotificationsPage: React.FC = () => {
   const [recipientQuery, setRecipientQuery] = useState("");
   const [isRecipientFocused, setIsRecipientFocused] = useState(false);
   const [isRecipientSearching, setIsRecipientSearching] = useState(false);
+  const [recipientSearchError, setRecipientSearchError] = useState("");
+  const [isRecipientSearchUnavailable, setIsRecipientSearchUnavailable] =
+    useState(false);
   const {setLoading } = useLoading();
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -125,20 +131,33 @@ export const AdminNotificationsPage: React.FC = () => {
   }, [canReadRoles, permissionsLoading, setLoading]);
 
   const searchRecipients = useCallback(async (search: string) => {
+    if (isRecipientSearchUnavailable) {
+      setRecipientSearchError(t(NOTIFICATION_LOCALES.Errors.SearchUsers));
+      return;
+    }
+
     setIsRecipientSearching(true);
 
     await UserController.getUsers(
       { search, limit: RECIPIENT_SEARCH_LIMIT },
       (nextUsers) => {
         setUsers((currentUsers) => mergeUsersById(currentUsers, nextUsers));
+        setRecipientSearchError("");
         setIsRecipientSearching(false);
       },
       (message) => {
-        setError(message);
+        const isMissingApiAction = message === "An error occurred";
+
+        setRecipientSearchError(
+          isMissingApiAction
+            ? t(NOTIFICATION_LOCALES.Errors.SearchUsers)
+            : message,
+        );
+        setIsRecipientSearchUnavailable(isMissingApiAction);
         setIsRecipientSearching(false);
       },
     );
-  }, []);
+  }, [isRecipientSearchUnavailable, t]);
 
   useEffect(() => {
     const search = recipientQuery.trim();
@@ -147,8 +166,14 @@ export const AdminNotificationsPage: React.FC = () => {
       values.audience_type !== NOTIFICATION_AUDIENCE_TYPES.USERS ||
       search.length < RECIPIENT_SEARCH_MIN_LENGTH
     ) {
-      setIsRecipientSearching(false);
-      return;
+      const timeoutId = window.setTimeout(() => {
+        if (!isRecipientSearchUnavailable) {
+          setRecipientSearchError("");
+        }
+        setIsRecipientSearching(false);
+      }, 0);
+
+      return () => window.clearTimeout(timeoutId);
     }
 
     const timeoutId = window.setTimeout(() => {
@@ -156,8 +181,12 @@ export const AdminNotificationsPage: React.FC = () => {
     }, RECIPIENT_SEARCH_DEBOUNCE_MS);
 
     return () => window.clearTimeout(timeoutId);
-  }, [recipientQuery, searchRecipients, values.audience_type]);
-
+  }, [
+    isRecipientSearchUnavailable,
+    recipientQuery,
+    searchRecipients,
+    values.audience_type,
+  ]);
   const sortedRoles = useMemo(
     () =>
       [...roles].sort((left, right) => left.name.localeCompare(right.name)),
@@ -538,6 +567,16 @@ export const AdminNotificationsPage: React.FC = () => {
 
                         {isRecipientFocused &&
                           !isRecipientSearching &&
+                          recipientSearchError &&
+                          recipientQuery.trim().length >= RECIPIENT_SEARCH_MIN_LENGTH && (
+                            <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 rounded-md border border-error/30 bg-base-100 px-10 py-8 text-body-s text-error shadow-lg">
+                              {recipientSearchError}
+                            </div>
+                          )}
+
+                        {isRecipientFocused &&
+                          !isRecipientSearching &&
+                          !recipientSearchError &&
                           recipientSuggestions.length > 0 && (
                             <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
                               {recipientSuggestions.map((user) => (
@@ -625,7 +664,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
                 submitLabel={t(NOTIFICATION_LOCALES.Actions.Send)}
                 onCancel={() => {
-                  navigate(AppRoutes.client.protected.admin.USERS);
+                  navigate(AppRoutes.client.protected.admin.HOME);
                 }}
               />
             </FormContainer>

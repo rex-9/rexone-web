@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useMemo, useState, React
 import { translate } from "../locales";
 import { Toast, ToastType } from "../design/components/overlay/Toast";
 
-interface ToastContextType {
+interface IToastContextType {
   showToast: (type: ToastType, message: string, title?: string) => void;
   success: (message: string, title?: string) => void;
   error: (message: string, title?: string) => void;
@@ -10,7 +10,7 @@ interface ToastContextType {
   warning: (message: string, title?: string) => void;
 }
 
-const ToastContext = createContext<ToastContextType | undefined>(undefined);
+const ToastContext = createContext<IToastContextType | undefined>(undefined);
 
 export const ToastProvider: React.FC<{ children: ReactNode }> = ({
   children,

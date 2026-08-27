@@ -1,11 +1,11 @@
 import React from "react";
-import { LayoutPage } from "./LayoutPage";
+import { PageLayout } from "./PageLayout";
 import { AnapanaPage } from "../../modules/anapana/pages";
 import { LandingPage } from ".";
 
 export const RootPage: React.FC = () => {
   return (
-    <LayoutPage>
+    <PageLayout>
       {(() => {
         const subdomain = window.location.hostname.split(".")[0];
         switch (subdomain) {
@@ -15,6 +15,6 @@ export const RootPage: React.FC = () => {
             return <LandingPage />;
         }
       })()}
-    </LayoutPage>
+    </PageLayout>
   );
 };
