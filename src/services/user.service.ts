@@ -1,5 +1,11 @@
 import AppRoutes from "../AppRoutes";
-import { IApiEnvelope, IApiResponse, IUser } from "../models";
+import {
+  IApiEnvelope,
+  IApiResponse,
+  IUser,
+  IAssetUploadResponse,
+  IAssetUploadOptions,
+} from "../models";
 import { api } from "../services";
 
 class UserService {
@@ -27,11 +33,20 @@ class UserService {
 
   async uploadImage(
     file: File,
-  ): Promise<IApiResponse<IApiEnvelope<{ url: string }>>> {
+    options?: IAssetUploadOptions,
+  ): Promise<IApiResponse<IApiEnvelope<IAssetUploadResponse>>> {
     const formData = new FormData();
     formData.append("file", file);
+    if (options?.type) formData.append("type", options.type);
+    if (options?.resource_model)
+      formData.append("resource_model", options.resource_model);
+    if (options?.resource_id)
+      formData.append("resource_id", options.resource_id);
+    if (options?.duration_secs !== undefined)
+      formData.append("duration_secs", String(options.duration_secs));
+    if (options?.folder) formData.append("folder", options.folder);
 
-    const response = await api.post<{ url: string }>(
+    const response = await api.post<IAssetUploadResponse>(
       AppRoutes.server.protected.UPLOAD_ASSET,
       formData,
       {

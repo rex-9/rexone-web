@@ -1,5 +1,11 @@
 import { UserService } from "../services";
-import { IApiEnvelope, IApiResponse, IUser } from "../models";
+import {
+  IApiEnvelope,
+  IApiResponse,
+  IUser,
+  IAssetUploadResponse,
+  IAssetUploadOptions,
+} from "../models";
 
 class UserController {
   async peekUser(
@@ -34,14 +40,13 @@ class UserController {
     }
   }
 
-  async uploadImage(file: File): Promise<void> {
-    try {
-      const response: IApiResponse<IApiEnvelope<{ url: string }>> =
-        await UserService.uploadImage(file);
-      console.log("Image uploaded:", response.data?.data.url);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
+  async uploadImage(
+    file: File,
+    options?: IAssetUploadOptions,
+  ): Promise<IAssetUploadResponse | null> {
+    const response: IApiResponse<IApiEnvelope<IAssetUploadResponse>> =
+      await UserService.uploadImage(file, options);
+    return response.data?.data || null;
   }
 }
 

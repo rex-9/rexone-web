@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { LayoutPage } from "./LayoutPage";
 import { Button } from "../";
 import UserController from "../../controllers/user.controller";
+import { useAuth } from "../../contexts";
 
 export const ProfilePage: React.FC = () => {
+  const { currentUser, setCurrentUser } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,8 +16,18 @@ export const ProfilePage: React.FC = () => {
 
   const handleUploadClick = async () => {
     if (selectedFile) {
-      await UserController.uploadImage(selectedFile);
-      // Optionally, handle the response or update the state
+      const result = await UserController.uploadImage(selectedFile, {
+        type: "avatar",
+        resource_model: "user",
+        resource_id: currentUser?.id,
+      });
+
+      if (result?.asset?.url && currentUser) {
+        setCurrentUser({
+          ...currentUser,
+          profile_pic_url: result.asset.url,
+        });
+      }
     } else {
       console.error("No file selected");
     }
