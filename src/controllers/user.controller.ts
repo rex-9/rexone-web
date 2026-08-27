@@ -1,5 +1,11 @@
 import { UserService } from "../services";
-import { IApiEnvelope, IApiResponse, IUser } from "../models";
+import {
+  IApiEnvelope,
+  IApiResponse,
+  IUser,
+  IAssetUploadResponse,
+  IAssetUploadOptions,
+} from "../models";
 import { AppLocales, translate } from "../locales";
 
 class UserController {
@@ -47,15 +53,13 @@ class UserController {
     setCurrentUser(user);
   }
 
-  async uploadImage(file: File): Promise<void> {
-    const response: IApiResponse<IApiEnvelope<{ url: string }>> =
-      await UserService.uploadImage(file);
-
-    if (response.error) {
-      console.error("Error uploading image:", response.error);
-      return;
-    }
-
+  async uploadImage(
+    file: File,
+    options?: IAssetUploadOptions,
+  ): Promise<IAssetUploadResponse | null> {
+    const response: IApiResponse<IApiEnvelope<IAssetUploadResponse>> =
+      await UserService.uploadImage(file, options);
+    return response.data?.data || null;
   }
 }
 

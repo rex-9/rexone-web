@@ -9,8 +9,8 @@ export interface IUser {
   name: string;
   email: string;
   provider: string;
-  bio: string;
-  profile_pic_url: string;
+  bio?: string;
+  profile_pic_url?: string;
   role_ids?: string[];
   role_names?: AdminRoleName[];
   permissions?: IUserPermissionMap;
