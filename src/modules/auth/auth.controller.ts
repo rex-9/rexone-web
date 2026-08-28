@@ -5,12 +5,7 @@ import AppRoutes from "../../AppRoutes";
 import { IUser } from "../../models";
 import { apiHandler } from "../../services";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
-
-const AUTH_ERRORS = {
-  UNAUTHORIZED: "Unauthorized",
-  SIGNATURE_EXPIRED: "Signature has expired",
-  NO_VERIFICATION_KEY: "No verification key available",
-} as const;
+import { AUTH_ERRORS } from "./constants";
 
 class AuthController {
   // Sign in with token from URL (email confirmation)

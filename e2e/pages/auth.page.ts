@@ -1,6 +1,6 @@
 import { type Locator, type Page } from "@playwright/test";
 import AppRoutes from "../../src/AppRoutes";
-import { DialogParams, DialogAuthSteps } from "../../src/constants";
+import { DialogParams, DialogAuthSteps } from "../../src/modules/auth/constants";
 
 export class AuthPage {
   readonly page: Page;

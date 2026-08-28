@@ -17,6 +17,3 @@ export interface IGoogleSignInCompleteResult {
   token?: string;
   errorMessage?: string;
 }
-
-// Re-export from constants (source of truth) so existing `import { DialogAuthSteps } from ".."` still works.
-export { DialogAuthSteps, type TAuthStep } from "../../constants";

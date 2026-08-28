@@ -4,6 +4,7 @@ import { parseFromList } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import { IApiPagination } from "../../models";
+import { AI_DEFAULTS, AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
 
 class AiController {
   private currentRoomId: string | null = null;
@@ -23,7 +24,10 @@ class AiController {
 
       if (
         event.type !== "notification" ||
-        !["ai_response_ready", "ai_response_failed"].includes(eventType) ||
+        ![
+          AI_SOCKET_EVENTS.RESPONSE_READY,
+          AI_SOCKET_EVENTS.RESPONSE_FAILED,
+        ].includes(eventType as any) ||
         roomId !== this.currentRoomId
       ) {
         return;
@@ -97,7 +101,11 @@ class AiController {
         const messages = parseFromList<IMessage>(data);
         const rId = messages[0]?.room_id ?? roomId ?? "";
         const processing = messages.some((m) =>
-          ["queued", "processing", "retrying"].includes(m.metadata?.status ?? ""),
+          [
+            AI_MESSAGE_STATUS.QUEUED,
+            AI_MESSAGE_STATUS.PROCESSING,
+            AI_MESSAGE_STATUS.RETRYING,
+          ].includes((m.metadata?.status ?? "") as any),
         );
         this.currentRoomId = rId || null;
         onSuccess(messages, rId, processing, meta?.pagination);
@@ -119,8 +127,8 @@ class AiController {
       const response = await AiService.chat({
         message,
         room_id: roomId || this.currentRoomId || undefined,
-        temperature: 0.7,
-        max_tokens: 2000,
+        temperature: AI_DEFAULTS.TEMPERATURE,
+        max_tokens: AI_DEFAULTS.MAX_TOKENS,
       });
 
       const { status, data } = response.data || {};

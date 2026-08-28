@@ -1,3 +1,5 @@
+// src/modules/auth/constants.ts
+
 export const DialogParams = {
   DIALOG: "dialog",
   STEP: "step",
@@ -15,3 +17,14 @@ export const DialogAuthSteps = {
 } as const;
 
 export type TAuthStep = (typeof DialogAuthSteps)[keyof typeof DialogAuthSteps];
+
+export const AUTH_ERRORS = {
+  UNAUTHORIZED: "Unauthorized",
+  SIGNATURE_EXPIRED: "Signature has expired",
+  NO_VERIFICATION_KEY: "No verification key available",
+} as const;
+
+export const AUTH_PROVIDERS = {
+  EMAIL: "email",
+  GOOGLE: "google",
+} as const;

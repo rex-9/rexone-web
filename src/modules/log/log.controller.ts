@@ -2,7 +2,8 @@
 import AppConfig from "../../AppConfig";
 import { AtomService } from "../../services";
 import LogService from "./log.service";
-import { ILogPayload, BROWSER_NAMES, OS_NAMES } from "./types";
+import { ILogPayload } from "./types";
+import { BROWSER_NAMES, OS_NAMES } from "./constants";
 
 class LogController {
   /**
