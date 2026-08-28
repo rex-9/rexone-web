@@ -54,7 +54,7 @@
 ### 4.2 Strict Colocation of Constants
 - **Application-wide Shared Constants** live in `src/constants/`:
   - `src/constants/storageKeys.ts` — Storage keys (`StorageKeys`).
-  - `src/constants/platform.ts` — Platform identifiers (`Platform.WEB`, `Platform.MOBILE`).
+  - `src/constants/platform.ts` — Platform identifiers (`Platform.WEB`, `Platform.ANDROID`, `Platform.IOS`).
   - `src/constants/index.ts` — Shared barrel export.
 - **Module-Specific Constants** MUST live inside their respective module:
   - `src/modules/auth/constants.ts` — `DialogParams`, `DialogAuthSteps`, `TAuthStep`, `AUTH_ERRORS`, `AUTH_PROVIDERS`.

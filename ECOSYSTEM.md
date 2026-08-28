@@ -106,7 +106,7 @@ Heavy or external provider operations sit behind clean service interfaces and ex
 
 ### 🛡️ Active Platform Session Control
 
-`ApplicationController` inspects the `X-Platform` header (`web` or `mobile`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous web and mobile logins for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
+`ApplicationController` inspects the `X-Platform` header (`web`, `android`, or `ios`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous logins across up to 3 concurrent active sessions (1 Web, 1 Android, 1 iOS) for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
 
 ---
 
@@ -207,8 +207,8 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 - **Standard Request Headers**:
   ```http
   Authorization: Bearer <JWT_TOKEN>
-  X-Platform: web | mobile
-  X-Locale: en | my
+  X-Platform: web | android | ios
+  X-Locale: en | my | es
   Accept-Language: en | my
   Content-Type: application/json
   ```

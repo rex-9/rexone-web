@@ -2,8 +2,9 @@
 
 export const Platform = {
   WEB: "web",
-  MOBILE: "mobile",
-  ALL: ["web", "mobile"] as const,
+  ANDROID: "android",
+  IOS: "ios",
+  ALL: ["web", "android", "ios"] as const,
 } as const;
 
 export type TPlatform = (typeof Platform.ALL)[number];
