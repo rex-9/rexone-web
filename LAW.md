@@ -153,3 +153,13 @@ Transport Layer (src/services/api.service.ts)
   - `pages/` — Feature-specific routes and views.
   - `index.ts` — Clean barrel exporting public interface.
 - Code outside `src/modules/` is strictly application-wide shared infrastructure (`src/design/`, `src/services/`, `src/constants/`, `src/contexts/`, `src/models/`, `src/routes/`, `src/locales/`, `src/helpers/`, `src/hooks/`, `src/atoms.ts`).
+
+---
+
+## 📚 11. Documentation Synchronization Law
+
+- **Rule**: After EVERY feature creation, modification, or bugfix:
+  - **`README.md`** MUST be updated with newly added screens, user workflows, feature capabilities, or configuration variables.
+  - **`ECOSYSTEM.md`** MUST be updated if changes affect cross-platform feature parity, shared contracts, WebSocket events, or communication protocols between Web, Mobile, and Core.
+  - **`LAW.md`** represents the non-negotiable constitutional framework; it should ONLY be modified when establishing, refining, or expanding fundamental architectural laws and engineering standards.
+
