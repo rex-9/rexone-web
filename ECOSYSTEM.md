@@ -121,6 +121,20 @@ Inspired by our smart auth philosophy, the feedback system removes bureaucratic 
 - **Automated Context & Telemetry Capture**: The client SDKs automatically attach active route/screen name, platform, browser, OS, viewport dimensions, and app version.
 - **Server-Side Smart Classification**: The backend automatically classifies the submission into `bug`, `feature_request`, `improvement`, or `general`, and calculates urgency/priority (`low`, `normal`, `high`, `urgent`) for streamlined admin triage.
 
+### 🔐 RBAC Architecture & Administrative Hierarchy
+The ecosystem employs a clean, unified Role-Based Access Control (RBAC) model across backend and frontend clients:
+
+1. **`super_admin` (Full Authority)**:
+   - Complete system-wide access to all resources, endpoints, and IAM management.
+   - Web client renders **ALL** navigation items in the admin sidebar.
+2. **`admin` (Standard Administrator)**:
+   - Full operational access across domain resources (`feedbacks`, `payments`, `ai`, `assets`, `logs`, `notifications`).
+   - **Strict Restriction**: Restricted from managing `users` and `iam`. The Web admin sidebar dynamically hides User Management and IAM navigation items.
+3. **Partial Admin (`*_admin` Suffix Naming Law)**:
+   - For scoped roles (e.g. `feedback_admin`, `payment_admin`, `ai_admin`), developers MUST name the role with the `_admin` suffix.
+   - Partial admins possess the base `user` role plus their specific `*_admin` role.
+   - **Client-Side Sidebar Visibility Law**: The admin sidebar dynamically renders **ONLY** the specific navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role (e.g. a user with `feedback_admin` only sees the Feedback admin item).
+
 ---
 
 # 2. `rexone-web` (The React Client)

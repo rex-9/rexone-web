@@ -110,12 +110,22 @@ Transport Layer (src/services/api.service.ts)
 ---
 
 ## 🔐 6. RBAC & Client-Side Authorization Law
+The client-side RBAC system strictly synchronizes with the backend's three-tier administrative hierarchy:
 
-- `currentUser.permissions` are grouped by resource (`{ users: ["read", "create", ...], products: [...] }`).
-- Client UI and routes enforce permissions via `usePermissions()` hook or permission guards:
-  - `super_admin`: Full access across all administration areas.
-  - `admin`: Full access EXCEPT `users` and `iam` (roles/permissions management).
-  - Custom roles: Access strictly granted based on action permissions matching `create`, `read`, `update`, `delete`.
+### 6.1 Three-Tier Administrative Hierarchy
+1. **`super_admin` (Full System Authority)**:
+   - Full access to all administration features, routes, user management, and IAM governance.
+   - Admin sidebar renders **ALL** administrative navigation items.
+2. **`admin` (Standard Administrator)**:
+   - Full operational access across domain resources (`feedbacks`, `payments`, `ai`, `assets`, `logs`, `notifications`).
+   - **Strict Restriction**: Restricted from `users` and `iam`. Admin sidebar hides User Management and IAM navigation items.
+3. **Partial Admin (`*_admin` Suffix Naming Law)**:
+   - Users who possess the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`, `payment_admin`, `ai_admin`).
+   - **Sidebar Visibility Law**: Partial admins **ONLY see the specific admin sidebar navigation items corresponding to the `read_<resource>` permissions under their `*_admin` role** (e.g. a user with `feedback_admin` role only sees the Feedbacks admin nav item).
+
+### 6.2 Permission Evaluation & UI Guards
+- `currentUser.permissions` are grouped by resource (`{ users: ["read", "create", ...], feedbacks: ["read", "update"], ... }`).
+- Client UI, protected routes, and side navigation bars enforce permissions via `usePermissions()` hook or permission guards.
 - Zero hardcoded bypasses in UI logic.
 
 ---

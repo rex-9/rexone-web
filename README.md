@@ -136,6 +136,13 @@ Public flows include sign-in, sign-up, email confirmation, forgotten passcodes, 
 
 Authentication is presented as a URL-addressable dialog flow. This allows redirects from email links and session expiry to land on the correct step while keeping passcodes in memory rather than browser history.
 
+### IAM & RBAC Administrative Hierarchy
+
+The client enforces a synchronized three-tier administrative hierarchy:
+- **`super_admin`**: Complete authority across all features; renders all admin sidebar navigation items.
+- **`admin`**: Full authority over domain operations (`feedbacks`, `payments`, `ai`, `assets`, `logs`), strictly excluded from `users` and `iam`. The admin sidebar automatically hides User Management and IAM navigation items.
+- **Partial Admins (`*_admin` naming convention)**: Users holding the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`). The admin sidebar dynamically renders **only** the navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role.
+
 ### Design system
 
 The design layer provides reusable:
