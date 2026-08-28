@@ -87,6 +87,7 @@ export const AdminNotificationsPage: React.FC = () => {
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
+  const canReadUsers = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.USERS);
   const [users, setUsers] = useState<IUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
@@ -131,6 +132,12 @@ export const AdminNotificationsPage: React.FC = () => {
   }, [canReadRoles, permissionsLoading, setLoading]);
 
   const searchRecipients = useCallback(async (search: string) => {
+    if (!canReadUsers) {
+      setRecipientSearchError(t(NOTIFICATION_LOCALES.Errors.SearchUsers));
+      setIsRecipientSearching(false);
+      return;
+    }
+
     if (isRecipientSearchUnavailable) {
       setRecipientSearchError(t(NOTIFICATION_LOCALES.Errors.SearchUsers));
       return;
@@ -157,7 +164,7 @@ export const AdminNotificationsPage: React.FC = () => {
         setIsRecipientSearching(false);
       },
     );
-  }, [isRecipientSearchUnavailable, t]);
+  }, [canReadUsers, isRecipientSearchUnavailable, t]);
 
   useEffect(() => {
     const search = recipientQuery.trim();

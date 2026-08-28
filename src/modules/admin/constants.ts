@@ -48,7 +48,12 @@ export interface IAdminPageMeta {
   hasRecycleBin?: boolean;
 }
 
-export const ADMIN_NAV_SECTION_LABEL = "Manage";
+export const ADMIN_NAV_SECTION_LABELS = {
+  ACCESS: "Access",
+  CHAT: "Chat",
+  COMMERCE: "Commerce",
+  COMMUNICATION: "Communication",
+} as const;
 
 export const ADMIN_NAV_LABELS = {
   CHAT_MESSAGES: "Chat Messages",
@@ -78,4 +83,8 @@ export const ADMIN_COMMON_LABELS = {
   RESTORE: "Restore",
   SYSTEM: "System",
   UNASSIGNED: "Unassigned",
+} as const;
+
+export const ADMIN_COMMON_PAGINATION_LABELS = {
+  POFF: "off",
 } as const;

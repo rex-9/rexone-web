@@ -72,7 +72,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
         <AdminSidebarNav onNavigate={closeSidebar} />
 
         <div className="border-t border-base-300 p-16">
-          <div className="rounded-md bg-base-200 p-12">
+          <div className="rounded-md bg-base-200 p-12 py-4">
             <div className="text-body-s font-medium text-base-content">
               Signed in as
             </div>
@@ -82,8 +82,8 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           </div>
           <Button
             type="button"
-            variant="tertiary"
-            className="mt-10 h-[40px] w-full justify-start gap-10 px-12 text-base-content"
+            variant="secondary"
+            className="mt-4 h-[40px] w-full justify-start gap-10 px-12 text-base-content bg-base"
             onClick={() => navigate(AppRoutes.client.protected.SIGN_OUT)}
           >
             <iconsLib.logout className="h-[18px] w-[18px]" />

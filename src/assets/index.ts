@@ -40,6 +40,7 @@ import {
   UserGroupIcon,
   ArchiveBoxIcon,
   ChatBubbleBottomCenterTextIcon,
+  ChevronDownIcon,
 }from "@heroicons/react/24/outline";
 
 // Videos
@@ -114,4 +115,5 @@ export const iconsLib = {
   archiveBox : ArchiveBoxIcon,
   feedback: ChatBubbleBottomCenterTextIcon,
   chat: ChatBubbleLeftRightIcon,
+  chevronDown: ChevronDownIcon,
 } as const;

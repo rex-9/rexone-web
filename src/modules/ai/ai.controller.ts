@@ -7,6 +7,17 @@ import { IApiPagination } from "../../models";
 import { AppLocales, translate } from "../../locales";
 import { AI_DEFAULTS, AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
 
+const AI_RESPONSE_EVENT_TYPES: readonly string[] = [
+  AI_SOCKET_EVENTS.RESPONSE_READY,
+  AI_SOCKET_EVENTS.RESPONSE_FAILED,
+];
+
+const AI_PROCESSING_MESSAGE_STATUSES: readonly string[] = [
+  AI_MESSAGE_STATUS.QUEUED,
+  AI_MESSAGE_STATUS.PROCESSING,
+  AI_MESSAGE_STATUS.RETRYING,
+];
+
 class AiController {
   private currentRoomId: string | null = null;
 
@@ -25,10 +36,7 @@ class AiController {
 
       if (
         event.type !== "notification" ||
-        ![
-          AI_SOCKET_EVENTS.RESPONSE_READY,
-          AI_SOCKET_EVENTS.RESPONSE_FAILED,
-        ].includes(eventType as any) ||
+        !AI_RESPONSE_EVENT_TYPES.includes(eventType) ||
         roomId !== this.currentRoomId
       ) {
         return;
@@ -93,11 +101,7 @@ class AiController {
       const { records: messages, pagination } = parsePagyList(response);
       const rId = messages[0]?.room_id ?? roomId ?? "";
       const processing = messages.some((m) =>
-        [
-          AI_MESSAGE_STATUS.QUEUED,
-          AI_MESSAGE_STATUS.PROCESSING,
-          AI_MESSAGE_STATUS.RETRYING,
-        ].includes((m.metadata?.status ?? "") as any),
+        AI_PROCESSING_MESSAGE_STATUSES.includes(m.metadata?.status ?? ""),
       );
       this.currentRoomId = rId || null;
       onSuccess(messages, rId, processing, pagination);

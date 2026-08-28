@@ -1,4 +1,5 @@
 import type { ADMIN_ROLE_NAMES } from "./constants";
+import { ADMIN_COMMON_PAGINATION_LABELS } from '../constants';
 
 export type AdminAction = string;
 
@@ -23,6 +24,11 @@ export interface IAdminPermission {
   created_at?: Date;
   updated_at?: Date;
 }
+export interface IAdminPermissionListParams {
+  page?: number;
+  limit?: number| typeof ADMIN_COMMON_PAGINATION_LABELS.POFF;
+}
+
 
 export interface IAdminRole {
   id: string;
