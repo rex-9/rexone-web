@@ -22,7 +22,7 @@ class UserService {
     params?: IAdminUserListParams,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
     return api.get<IJsonApiResource<IAdminUser>[]>(
-      AppRoutes.server.protected.admin.USERS,
+      AppRoutes.server.protected.USERS,
       params
         ? { page: params.page, limit: params.limit, search: params.search }
         : undefined,

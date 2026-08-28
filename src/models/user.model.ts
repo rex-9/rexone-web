@@ -4,7 +4,7 @@ import type {
 } from "../modules/admin/roles/types";
 
 export interface IUser {
-  id?: string;
+  id: string;
   username: string;
   name: string;
   email: string;

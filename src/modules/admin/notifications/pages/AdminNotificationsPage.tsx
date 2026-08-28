@@ -6,8 +6,8 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { useTranslate } from "../../../../locales";
-import UserController from "../../../../controllers/user.controller";
-import type { UserSearchResult } from "../../../../controllers/user.controller";
+import { IUser } from "../../../../models";
+import UserController from "../../users/user.controller";
 import RoleController from "../../roles/role.controller";
 import { IAdminRole } from "../../roles/types";
 import NotificationController from "../notification.controller";
@@ -52,10 +52,10 @@ const RECIPIENT_SEARCH_MIN_LENGTH = 3;
 const RECIPIENT_SEARCH_DEBOUNCE_MS = 300;
 const RECIPIENT_SEARCH_LIMIT = 20;
 
-const getUserLabel = (user: UserSearchResult) =>
+const getUserLabel = (user: IUser) =>
   user.email || user.name || user.username || user.id;
 
-const matchesUserQuery = (user: UserSearchResult, query: string) => {
+const matchesUserQuery = (user: IUser, query: string) => {
   const normalizedQuery = query.trim().toLowerCase();
 
   if (normalizedQuery.length < RECIPIENT_SEARCH_MIN_LENGTH) {
@@ -68,10 +68,10 @@ const matchesUserQuery = (user: UserSearchResult, query: string) => {
 };
 
 const mergeUsersById = (
-  currentUsers: UserSearchResult[],
-  nextUsers: UserSearchResult[],
+  currentUsers: IUser[],
+  nextUsers: IUser[],
 ) => {
-  const usersById = new Map<string, UserSearchResult>();
+  const usersById = new Map<string, IUser>();
 
   currentUsers.forEach((user) => usersById.set(user.id, user));
   nextUsers.forEach((user) => usersById.set(user.id, user));
@@ -87,7 +87,7 @@ export const AdminNotificationsPage: React.FC = () => {
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
-  const [users, setUsers] = useState<UserSearchResult[]>([]);
+  const [users, setUsers] = useState<IUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
   const [values, setValues] =

@@ -2,7 +2,6 @@ import AppRoutes from "../AppRoutes";
 import {
   IApiEnvelope,
   IApiResponse,
-  IJsonApiResource,
   IUser,
   IAssetUploadResponse,
   IAssetUploadOptions,
@@ -10,15 +9,6 @@ import {
 import { api } from "./api.service";
 
 class UserService {
-  async getUsers(params?: { search?: string; limit?: number; page?: number }): Promise<
-    IApiResponse<IApiEnvelope<IJsonApiResource<IUser>[]>>
-  > {
-    return api.get<IJsonApiResource<IUser>[]>(
-      AppRoutes.server.protected.USERS,
-      params,
-    );
-  }
-
   async peekUser(email: string): Promise<
     IApiResponse<
       IApiEnvelope<{
