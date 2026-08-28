@@ -22,6 +22,8 @@ import {
   LanguageIcon,
   UserIcon,
   HomeIcon,
+  ChatBubbleBottomCenterTextIcon,
+  ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/solid";
 
 // Videos
@@ -77,4 +79,6 @@ export const iconsLib = {
   language: LanguageIcon,
   user: UserIcon,
   home: HomeIcon,
+  feedback: ChatBubbleBottomCenterTextIcon,
+  chat: ChatBubbleLeftRightIcon,
 } as const;

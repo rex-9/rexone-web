@@ -120,5 +120,18 @@
   "timer_minutes": "minutos",
   "timer_hours": "horas",
   "welcome_donations": "Si esto te ayuda a encontrar tu paz interior, puedes apoyar su mantenimiento y desarrollo futuro con algo de amorosa bondad acumulando algunos méritos!",
-  "timer_start_message": "¡Comencemos el entrenamiento de la atención plena!"
+  "timer_start_message": "¡Comencemos el entrenamiento de la atención plena!",
+
+  "feedback": {
+    "title": "Comparte tus comentarios",
+    "rating_label": "¿Cómo fue tu experiencia? (1 - 10)",
+    "worst": "1 - Necesita mejorar",
+    "best": "10 - Excelente",
+    "content_label": "¿Qué tienes en mente?",
+    "placeholder": "Cuéntanos cualquier cosa: errores, sugerencias o ideas. ¡Lo clasificamos automáticamente!",
+    "submit": "Enviar comentarios",
+    "success": "¡Gracias por tus comentarios!",
+    "error_empty": "Por favor ingresa tus comentarios.",
+    "error_submit": "Error al enviar comentarios. Inténtalo de nuevo."
+  }
 }

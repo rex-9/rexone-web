@@ -8,12 +8,17 @@
 
 ## 🏛️ 1. Design System & Component Law
 
-### 1.1 Zero Components Outside `src/design/`
+### 1.1 Zero Components Outside `src/design/` & Mandatory Component Reuse
 - **Rule**: NEVER create custom UI components, buttons, inputs, modals, or base presentation widgets outside `src/design/`.
 - All reusable UI atoms, molecules, and organisms live exclusively in:
   - `src/design/elements/` — Design tokens (colors, typography, spacing, radius, shadows, motion).
-  - `src/design/components/` — Semantic UI components (`Button`, `Dropdown`, `TextInput`, `PasscodeInput`, `Toggle`, `Dialog`, `Toast`, `Image`, `Video`, `NavBar`, `ProfileAvatar`, etc.).
+  - `src/design/components/` — Semantic UI components:
+    - Form elements: `FormContainer`, `TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`.
+    - Buttons: `Button`, `GoogleButton`, `SignOutButton`.
+    - Overlays: `Dialog`, `ConfirmDialog`, `LoadingOverlay`, `Toast`.
+    - Common & Media: `NavBar`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`, `Video`.
   - `src/design/pages/` — Shared layout shells, base pages (`LayoutPage`, `HomePage`, `ProfilePage`, `NotFoundPage`).
+- **Rule**: NEVER use raw HTML `<textarea>`, raw `<button>`, raw `<form>`, or ad-hoc containers in module dialogs or pages. Always re-use `FormContainer`, `TextArea`, `TextInput`, `Button`, and `Dialog`. If a design element is missing, build it cleanly in `src/design/components/` first.
 
 ### 1.2 Automated Theming via DaisyUI & Tailwind Tokens
 - Design tokens (colors, fonts, spacings, radius) are injected directly into Tailwind CSS and DaisyUI configuration.
@@ -26,8 +31,14 @@
 
 ---
 
-## 🖼️ 2. Distributed Centralized Assets Law
+## 🖼️ 2. Centralized Assets & Icons Law (`src/assets/`)
 
+### 2.1 Clean Centralized Asset Registry
+- **Rule**: ALL static assets (images, icons, SVGs, videos, audio/sounds) MUST be registered and exported through `src/assets/index.ts` (`images`, `icons`, `videos`, `sounds`, `iconsLib`).
+- **Rule**: ZERO hardcoded inline SVGs (`<svg>...</svg>`) in pages or components. Always register the icon in `iconsLib` in `src/assets/index.ts` and use it cleanly.
+- **Rule**: ZERO direct/scattered raw file imports (`.svg`, `.png`, `.jpg`, `.mp4`, `.mp3`) across components. All imports go through `src/assets/`.
+
+### 2.2 Distributed Centralized Dynamic Assets
 - **Rule**: NEVER store raw media URL strings directly on domain entities or state models.
 - ALL media (avatars, attachments, covers, cards, audio, video, docs) is managed through the backend's distributed centralized `assets` system (`type`, `storage_key`, `resource_model`, `resource_id`).
 - When uploading assets (such as user avatars):

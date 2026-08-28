@@ -3,7 +3,7 @@ import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
 export interface FormContainerProps {
-  title: string;
+  title?: string;
   children: React.ReactNode;
   onSubmit: (e: React.FormEvent) => void;
   className?: string;
@@ -21,11 +21,11 @@ export const FormContainer: React.FC<FormContainerProps> = ({
     <form
       onSubmit={onSubmit}
       className={cn(
-        "w-96 flex flex-col justify-center items-center bg-base-200 p-6 rounded shadow-md",
+        "flex flex-col bg-base-100 p-4 rounded",
         className,
       )}
     >
-      <h2 className="text-2xl mb-4">{t(title)}</h2>
+      {title && <h2 className="text-2xl mb-4">{t(title)}</h2>}
       {children}
     </form>
   );
