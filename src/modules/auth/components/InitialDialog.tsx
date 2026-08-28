@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
-import { UserController } from "../../../controllers";
 import {
   Button,
   GoogleButton,
@@ -14,6 +13,7 @@ import {
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
+import { UserController } from "../../user";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface InitialDialogProps {

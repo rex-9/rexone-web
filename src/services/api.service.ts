@@ -1,7 +1,7 @@
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 import AppConfig from "../AppConfig";
 import AppRoutes from "../AppRoutes";
-import { DialogParams } from "../constants";
+import { Platform } from "../constants";
 import { useLoading } from "../contexts/LoadingContext";
 import { useEffect } from "react";
 import { useAuth } from "../contexts";
@@ -12,9 +12,9 @@ import {
   IApiResponse,
   IJsonApiResource,
 } from "../models";
-import { DialogAuthSteps } from "../modules/auth";
+import { DialogAuthSteps, DialogParams } from "../modules/auth";
 
-const PLATFORM_HEADER_VALUE = "web";
+const PLATFORM_HEADER_VALUE = Platform.WEB;
 
 // Create an axios instance
 const axiosInstance = axios.create({

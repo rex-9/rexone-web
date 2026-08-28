@@ -1,12 +1,12 @@
-import { UserService } from "../services";
+import { UserService } from "../../services";
 import {
   IApiEnvelope,
   IApiResponse,
   IUser,
   IAssetUploadResponse,
   IAssetUploadOptions,
-} from "../models";
-import { AppLocales, translate } from "../locales";
+} from "../../models";
+import { AppLocales, translate } from "../../locales";
 
 class UserController {
   async peekUser(

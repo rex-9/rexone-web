@@ -12,6 +12,7 @@ export * from "./roles";
 export * from "./users";
 export * from "./components";
 export * from "./helpers/admin.helper";
+export * from "./constants";
 
 export const Admin = {
   ChatController,
@@ -25,4 +26,3 @@ export const Admin = {
   UserController,
   UserService,
 };
-export * from "./constants";

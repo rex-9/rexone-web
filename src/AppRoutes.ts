@@ -1,4 +1,4 @@
-import { DialogParams } from './constants';
+import { DialogParams } from "./modules/auth/constants";
 
 class AppRoutes {
   private static readonly API_VERSION = '/v1';

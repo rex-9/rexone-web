@@ -1,3 +1,5 @@
+// src/modules/admin/constants.ts
+
 export const ADMIN_PAGE_SIZE = 20;
 
 export const ADMIN_ACTIONS = {
@@ -13,15 +15,13 @@ export const ADMIN_ACTIONS = {
 export type TAdminActionsType =
   (typeof ADMIN_ACTIONS)[keyof typeof ADMIN_ACTIONS];
 
-
-
 export const ADMIN_RESOURCES = {
-  MESSAGES: "messages",
-  NOTIFICATIONS: "notifications",
-  PRODUCTS: "products",
-  ROLES: "roles",
-  ROOMS: "rooms",
   USERS: "users",
+  ROLES: "roles",
+  PRODUCTS: "products",
+  NOTIFICATIONS: "notifications",
+  ROOMS: "rooms",
+  MESSAGES: "messages",
 } as const;
 
 export type TAdminResourceName =
@@ -66,11 +66,16 @@ export const ADMIN_TABLE_HEADERS = {
 } as const;
 
 export const ADMIN_COMMON_LABELS = {
+  ACTIVE: "Active",
   CANCEL: "Cancel",
+  CUSTOM: "Custom",
   DELETE: "Delete",
   DISCARD: "Discard",
   EDIT: "Edit",
+  INACTIVE: "Inactive",
   NOT_AVAILABLE: "Not available",
+  OPENRECYCLEBIN: "Open recycle bin",
   RESTORE: "Restore",
-  OPENRECYCLEBIN: "Open recycle bin"
+  SYSTEM: "System",
+  UNASSIGNED: "Unassigned",
 } as const;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PageLayout } from "./PageLayout";
 import { Button } from "../";
-import UserController from "../../controllers/user.controller";
+import UserController from "../../modules/user/user.controller";
 import { useAuth } from "../../contexts";
 
 export const ProfilePage: React.FC = () => {

@@ -8,7 +8,10 @@ A unified, production-grade architectural blueprint spanning **Rexone Core** (Ba
 
 Across all three repositories, the architecture adheres to one uncompromising doctrine:
 
+> [!IMPORTANT]
 > **"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."**
+>
+> 📜 **Constitutional Law**: For strict repository-specific engineering constraints and architectural rules, see **[LAW.md](LAW.md)**. All developers and agents must adhere to these rules without exception.
 
 The Rexone platform provides a unified, battle-tested foundation where **any modern digital product** can be rapidly developed on top of ready-made capabilities: Identity & IAM, Commerce & Subscriptions, Background Queues, Asset Management, Real-Time WebSockets, Queued AI, Push Notifications, Product Analytics, Client Telemetry, In-App Upgrades, and Multi-Language Localization.
 
@@ -103,7 +106,7 @@ Heavy or external provider operations sit behind clean service interfaces and ex
 
 ### 🛡️ Active Platform Session Control
 
-`ApplicationController` inspects the `X-Platform` header (`web` or `mobile`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous web and mobile logins for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
+`ApplicationController` inspects the `X-Platform` header (`web`, `android`, or `ios`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous logins across up to 3 concurrent active sessions (1 Web, 1 Android, 1 iOS) for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
 
 ---
 
@@ -204,8 +207,8 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 - **Standard Request Headers**:
   ```http
   Authorization: Bearer <JWT_TOKEN>
-  X-Platform: web | mobile
-  X-Locale: en | my
+  X-Platform: web | android | ios
+  X-Locale: en | my | es
   Accept-Language: en | my
   Content-Type: application/json
   ```
