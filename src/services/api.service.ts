@@ -276,3 +276,5 @@ export const parsePagyList = <T extends object>(
     pagination: envelope?.meta?.pagination ?? null,
   };
 };
+
+export const parsePaginatedResponse = parsePagyList;

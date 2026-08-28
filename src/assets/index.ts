@@ -39,6 +39,7 @@ import {
   KeyIcon,
   UserGroupIcon,
   ArchiveBoxIcon,
+  ChatBubbleBottomCenterTextIcon,
 }from "@heroicons/react/24/outline";
 
 // Videos
@@ -110,5 +111,7 @@ export const iconsLib = {
   inboxStack:InboxStackIcon,
   key:KeyIcon,
   userGroup:UserGroupIcon,
-  archiveBox : ArchiveBoxIcon
+  archiveBox : ArchiveBoxIcon,
+  feedback: ChatBubbleBottomCenterTextIcon,
+  chat: ChatBubbleLeftRightIcon,
 } as const;

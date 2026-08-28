@@ -1,7 +1,8 @@
 /**
  * Rexone Design System - TextArea Molecule
  *
- * Auto-expanding textarea with same visual language as input fields
+ * Auto-expanding textarea with same visual language as input fields.
+ * Supports Ctrl+Enter and Cmd+Enter to submit forms or focus next inputs.
  */
 
 import React, { useId, useRef, useEffect } from "react";
@@ -15,6 +16,7 @@ export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAre
   autoExpand?: boolean;
   maxLength?: number;
   showCounter?: boolean;
+  onCtrlEnter?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
 export const TextArea: React.FC<ITextAreaProps> = ({
@@ -25,11 +27,13 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   autoExpand = true,
   maxLength,
   showCounter = false,
+  onCtrlEnter,
   className,
   id,
   value,
   disabled,
   rows = 3,
+  onKeyDown,
   ...props
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -45,6 +49,36 @@ export const TextArea: React.FC<ITextAreaProps> = ({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [value, autoExpand]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      e.preventDefault();
+      if (onCtrlEnter) {
+        onCtrlEnter(e);
+        return;
+      }
+
+      // Default behavior: find enclosing form and advance to next input or submit
+      const form = e.currentTarget.form;
+      if (form) {
+        const formElements = Array.from(
+          form.querySelectorAll<HTMLElement>(
+            "input:not([disabled]):not([type=hidden]), textarea:not([disabled]), select:not([disabled]), button[type=submit]:not([disabled])",
+          ),
+        );
+        const currentIndex = formElements.indexOf(e.currentTarget);
+        const nextElement = formElements[currentIndex + 1];
+
+        if (nextElement && nextElement.tagName !== "BUTTON") {
+          nextElement.focus();
+        } else {
+          form.requestSubmit();
+        }
+      }
+    }
+
+    onKeyDown?.(e);
+  };
 
   return (
     <div className={cn("flex flex-col gap-1", fullWidth && "w-full")}>
@@ -65,6 +99,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
         maxLength={maxLength}
         disabled={disabled}
         rows={rows}
+        onKeyDown={handleKeyDown}
         className={cn(
           "w-full rounded-md border px-3 py-2 text-base bg-base-100 text-base-content",
           "placeholder:text-base-content/40",
@@ -106,3 +141,5 @@ export const TextArea: React.FC<ITextAreaProps> = ({
     </div>
   );
 };
+
+export default TextArea;

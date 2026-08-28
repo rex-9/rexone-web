@@ -2,6 +2,7 @@ export {
   api,
   apiHandler,
   getApiError,
+  parsePaginatedResponse,
   useAxiosInterceptor,
 } from "./api.service";
 export { default as UserService } from "./user.service";

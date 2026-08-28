@@ -96,8 +96,11 @@ export const AiPage: React.FC = () => {
     setIsSubmitting(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (
+      (e.key === "Enter" && !e.shiftKey) ||
+      ((e.ctrlKey || e.metaKey) && e.key === "Enter")
+    ) {
       e.preventDefault();
       handleSend();
     }

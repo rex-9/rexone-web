@@ -77,6 +77,9 @@ class AppRoutes {
       // Password
       FORGOT_PASSWORD: '/password/forgot', // POST
       RESET_PASSWORD: '/password/reset', // PUT
+
+      // Feedback
+      FEEDBACK: AppRoutes.api("/feedbacks"), // POST
     },
 
     protected: {
@@ -124,6 +127,9 @@ class AppRoutes {
       AI_TRANSLATE: AppRoutes.api('/ai/translate'), // POST
       AI_ANALYZE: AppRoutes.api('/ai/analyze'), // POST
 
+      // Feedback
+      FEEDBACKS: AppRoutes.api("/feedbacks"), // GET
+
       // API for Client Admin Dashboard
       admin: {
         USERS: AppRoutes.adminApi('/users'), // GET, POST
@@ -149,7 +155,8 @@ class AppRoutes {
         CHAT_ROOM_DETAIL: AppRoutes.adminApi('/chat/rooms/:id'), // GET, PATCH, DELETE
         CHAT_MESSAGES: AppRoutes.adminApi('/chat/messages'), // GET
         CHAT_MESSAGE_DETAIL: AppRoutes.adminApi('/chat/messages/:id'), // GET, PATCH, DELETE
-        },
+        FEEDBACKS: AppRoutes.adminApi("/feedbacks"),
+      },
     },
   };
 
