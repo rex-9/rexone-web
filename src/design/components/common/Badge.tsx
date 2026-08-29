@@ -37,6 +37,14 @@ export const Badge: React.FC<BadgeProps> = ({
       "bg-primary/10 text-primary border border-primary/30",
     [BadgeVariants.SECONDARY]:
       "bg-secondary/10 text-secondary border border-secondary/30",
+    [BadgeVariants.SUCCESS]:
+      "bg-success/15 text-success border border-success/30 font-medium",
+    [BadgeVariants.WARNING]:
+      "bg-warning/15 text-warning border border-warning/30 font-medium",
+    [BadgeVariants.ERROR]:
+      "bg-error/15 text-error border border-error/30 font-medium",
+    [BadgeVariants.INFO]:
+      "bg-info/15 text-info border border-info/30 font-medium",
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {

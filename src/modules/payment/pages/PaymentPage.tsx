@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 import { useToast } from "../../../contexts/ToastContext";
-import { Button } from "../../../design/components/button/Button";
+import { Button, Badge } from "../../../design/components";
 import { ConfirmDialog } from "../../../design/components/overlay";
 import { LayoutPage } from "../../../design/pages";
+import { ButtonVariants, BadgeVariants, ComponentSizes } from "../../../design/constants";
 import { IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
 
@@ -123,14 +124,16 @@ export const PaymentPage: React.FC = () => {
 
       return (
         <div className="space-y-3">
-          <div className="badge badge-success gap-2 text-sm py-3">
-            ✅ Active Subscription
+          <div className="flex items-center gap-2">
+            <Badge variant={BadgeVariants.SUCCESS} size={ComponentSizes.MD}>
+              ✅ Active Subscription
+            </Badge>
           </div>
-          <p className="text-xs text-gray-500">Next billing: {activeUntil}</p>
+          <p className="text-xs text-base-content/60">Next billing: {activeUntil}</p>
           <Button
-            variant="secondary"
+            variant={ButtonVariants.SECONDARY}
             fullWidth
-            size="sm"
+            size={ComponentSizes.SM}
             onClick={() => setCancelTargetId(activeSub.id)}
           >
             Cancel Subscription
@@ -147,13 +150,15 @@ export const PaymentPage: React.FC = () => {
 
       return (
         <div className="space-y-3">
-          <div className="badge badge-warning gap-2 text-sm py-3">
-            ⏳ Canceled (active until {activeUntil})
+          <div className="flex items-center gap-2">
+            <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
+              ⏳ Canceled (active until {activeUntil})
+            </Badge>
           </div>
           <Button
-            variant="secondary"
+            variant={ButtonVariants.SECONDARY}
             fullWidth
-            size="sm"
+            size={ComponentSizes.SM}
             onClick={() => handleResume(canceledSub.id)}
           >
             Resume Subscription
@@ -166,12 +171,15 @@ export const PaymentPage: React.FC = () => {
     if (fullyCanceledSub) {
       return (
         <div className="space-y-3">
-          <div className="badge badge-error gap-2 text-sm py-3">
-            ❌ Subscription Ended
+          <div className="flex items-center gap-2">
+            <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
+              ❌ Subscription Ended
+            </Badge>
           </div>
           <Button
-            variant="primary"
+            variant={ButtonVariants.PRIMARY}
             fullWidth
+            size={ComponentSizes.MD}
             onClick={() => handleCheckout(product.id)}
           >
             Subscribe Again
@@ -185,13 +193,14 @@ export const PaymentPage: React.FC = () => {
       return (
         <div className="space-y-3">
           <Button
-            variant="primary"
+            variant={ButtonVariants.PRIMARY}
             fullWidth
+            size={ComponentSizes.MD}
             onClick={() => handleCheckout(product.id)}
           >
             Buy Again
           </Button>
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-base-content/60 text-center">
             Purchased {purchaseCount} time{purchaseCount > 1 ? "s" : ""}
           </p>
         </div>
@@ -201,8 +210,9 @@ export const PaymentPage: React.FC = () => {
     // Available for purchase
     return (
       <Button
-        variant="primary"
+        variant={ButtonVariants.PRIMARY}
         fullWidth
+        size={ComponentSizes.MD}
         onClick={() => handleCheckout(product.id)}
       >
         {product.recurring ? "Subscribe Now" : "Buy Now"}
@@ -212,37 +222,39 @@ export const PaymentPage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="text-center space-y-8 mb-16">
-        <h1 className="text-h1 font-semibold text-center">Choose Your Plan</h1>
-        <p className="text-body-m text-base-content/70 text-center">
+      <div className="text-center space-y-2 mb-8">
+        <h1 className="text-3xl font-bold font-primary text-base-content">Choose Your Plan</h1>
+        <p className="text-body-m text-base-content/70">
           Select the option that works best for you
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-24">
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto w-full">
         {products.map((product) => (
           <div
             key={product.id}
-            className="card bg-base-100 shadow-s rounded-m border border-base-200"
+            className="bg-base-100/70 border border-base-300 rounded-2xl p-6 shadow-xl backdrop-blur-md flex flex-col justify-between hover:border-primary/40 transition-colors"
           >
-            <div className="card-body p-24">
-              <h3 className="card-title text-h3 font-semibold">
+            <div>
+              <h3 className="text-xl font-bold font-primary text-base-content">
                 {product.name}
               </h3>
-              <p className="text-body-s text-base-content/70">
+              <p className="text-body-s text-base-content/70 mt-1">
                 {product.description}
               </p>
 
-              <div className="mt-16">
-                <span className="text-h2 font-semibold">{product.price}</span>
-                <span className="text-body-s text-base-content/60 ml-4">
+              <div className="mt-4 mb-6">
+                <span className="text-3xl font-extrabold text-base-content">{product.price}</span>
+                <span className="text-body-s text-base-content/60 ml-2">
                   {product.recurring
                     ? `/${product.period_label}`
                     : " (one-time)"}
                 </span>
               </div>
+            </div>
 
-              <div className="divider my-16"></div>
+            <div>
+              <div className="border-t border-base-300 my-4" />
               {renderProductActions(product)}
             </div>
           </div>

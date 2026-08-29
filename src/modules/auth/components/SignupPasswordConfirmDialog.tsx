@@ -153,19 +153,19 @@ export const SignupPasswordConfirmDialog: React.FC<
       }
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {isResetFlow
           ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetDescription)
           : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpDescription)}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
               ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetPrompt)
               : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpPrompt)}
           </p>
-          <p className="text-body-s text-base-content opacity-70 mt-4">
+          <p className="text-body-s text-base-content opacity-70 mt-1">
             {t(AppLocales.Auth.SignUpPasscodeConfirm.Instruction)}
           </p>
         </div>

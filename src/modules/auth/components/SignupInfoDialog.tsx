@@ -78,10 +78,10 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       title={t(AppLocales.Auth.SignUpInfo.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.SignUpInfo.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-16">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {t(AppLocales.Auth.SignUpInfo.Prompt)}

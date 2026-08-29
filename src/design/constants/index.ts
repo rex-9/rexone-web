@@ -50,6 +50,10 @@ export const BadgeVariants = {
   NEON: "neon",
   PRIMARY: "primary",
   SECONDARY: "secondary",
+  SUCCESS: "success",
+  WARNING: "warning",
+  ERROR: "error",
+  INFO: "info",
 } as const;
 
 export type BadgeVariant = (typeof BadgeVariants)[keyof typeof BadgeVariants];

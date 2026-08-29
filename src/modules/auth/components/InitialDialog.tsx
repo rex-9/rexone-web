@@ -183,10 +183,10 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
       title={t(AppLocales.Auth.Initial.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.Initial.Description)}
       </p>
-      <div className="space-y-16">
+      <div className="space-y-4">
         <GoogleButton
           onClick={() => handleGoogleSignIn()}
           isLoading={isLoading}
@@ -217,12 +217,12 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             <div className="w-full border-t border-base-300" />
           </div>
           <div className="relative flex justify-center text-body-s">
-            <span className="px-16 bg-base-100 text-base-content opacity-60">
+            <span className="px-3 bg-base-100 text-base-content opacity-60">
               {t(AppLocales.Auth.Initial.Or)}
             </span>
           </div>
         </div>
-        <form onSubmit={handleEmailSubmit} className="space-y-16">
+        <form onSubmit={handleEmailSubmit} className="space-y-4">
           <TextInput
             id="email"
             type="email"

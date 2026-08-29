@@ -10,7 +10,7 @@ export const HomePage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="w-full max-w-sm space-y-16">
+      <div className="w-full max-w-sm space-y-4">
         <Button
           variant={ButtonVariants.SECONDARY}
           fullWidth

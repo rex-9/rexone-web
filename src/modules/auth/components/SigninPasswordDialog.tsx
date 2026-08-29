@@ -160,10 +160,10 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
       title={t(AppLocales.Auth.SignInPasscode.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.SignInPasscode.Description)}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
+      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {t(AppLocales.Auth.SignInPasscode.Prompt)}{" "}

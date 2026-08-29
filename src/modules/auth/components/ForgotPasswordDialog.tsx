@@ -64,10 +64,10 @@ export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
       title={t(AppLocales.Auth.ForgotPasscode.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.ForgotPasscode.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-16">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <TextInput
           id="forgot-email"
           type="email"

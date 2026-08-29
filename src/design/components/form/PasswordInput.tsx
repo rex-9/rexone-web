@@ -137,7 +137,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
               aria-label={`${label} digit ${index + 1}`}
               className={`
                 w-[42px] sm:w-[46px] h-[50px] sm:h-[55px]
-                rounded-m border-2 text-center
+                rounded-lg border-2 text-center
                 text-body-l font-semibold font-primary tracking-[0.08em]
                 transition-all duration-200 ease-out
                 focus:outline-none focus:ring-2 focus:ring-primary
@@ -165,7 +165,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
       {displayText && (
         <span
           className={`
-            text-caption mt-6
+            text-caption mt-4
             ${hasError ? "text-error" : "text-base-content opacity-60"}
           `}
         >
@@ -175,4 +175,3 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
     </div>
   );
 };
-

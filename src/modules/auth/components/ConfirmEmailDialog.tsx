@@ -95,17 +95,17 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
       title={t(AppLocales.Auth.ConfirmEmail.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.ConfirmEmail.Description)}
       </p>
-      <div className="space-y-16">
+      <div className="space-y-4">
         <form
           ref={formRef}
           onSubmit={(e) => {
             e.preventDefault();
             handleVerify();
           }}
-          className="space-y-16"
+          className="space-y-4"
         >
           <PasswordInput
             idPrefix="confirm-email-code"
