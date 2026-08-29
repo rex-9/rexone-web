@@ -2,7 +2,7 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface RatingSliderProps {
+export interface IRatingSliderProps {
   value: number;
   onChange: (value: number) => void;
   min?: number;
@@ -20,7 +20,7 @@ const getSentiment = (rating: number): { emoji: string; text: string } => {
   return { emoji: "🤩", text: "Exceptional!" };
 };
 
-export const RatingSlider: React.FC<RatingSliderProps> = ({
+export const RatingSlider: React.FC<IRatingSliderProps> = ({
   value,
   onChange,
   min = 1,

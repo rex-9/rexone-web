@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface DropdownProps {
+export interface IDropdownProps {
   options: Array<{ value: string; label: string }>;
   value: string;
   onValueChange: (value: string) => void;
@@ -14,7 +14,7 @@ export interface DropdownProps {
   disabled?: boolean;
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
+export const Dropdown: React.FC<IDropdownProps> = ({
   options,
   value,
   onValueChange,

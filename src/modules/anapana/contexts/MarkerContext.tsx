@@ -3,14 +3,14 @@ import React, { createContext, useContext } from "react";
 import { IMarker } from "../../../models";
 import atoms from "../../../atoms";
 
-interface MarkerContextType {
+interface IMarkerContextType {
   markers: IMarker[];
   addMarker: (marker: IMarker) => void;
   removeMarker: (index: number) => void;
   cleanMarkers: () => void;
 }
 
-const MarkerContext = createContext<MarkerContextType | undefined>(undefined);
+const MarkerContext = createContext<IMarkerContextType | undefined>(undefined);
 
 export const MarkerProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,

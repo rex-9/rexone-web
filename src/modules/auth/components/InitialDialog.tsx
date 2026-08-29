@@ -9,6 +9,7 @@ import {
   GoogleButton,
   TextInput,
   Dialog,
+  FormContainer,
 } from "../../../design/components";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -16,14 +17,14 @@ import { AuthController } from "..";
 import { UserController } from "../../user";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface InitialDialogProps {
+interface IInitialDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
   onClose: () => void;
 }
 
-export const InitialDialog: React.FC<InitialDialogProps> = ({
+export const InitialDialog: React.FC<IInitialDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -222,7 +223,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             </span>
           </div>
         </div>
-        <form onSubmit={handleEmailSubmit} className="space-y-4">
+        <FormContainer onSubmit={handleEmailSubmit} className="space-y-4">
           <TextInput
             id="email"
             type="email"
@@ -246,7 +247,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
               ? t(AppLocales.Auth.Initial.Checking)
               : t(AppLocales.Auth.Shared.Continue)}
           </Button>
-        </form>
+        </FormContainer>
         {displayMessage && (
           <p className="text-caption text-warning text-center">
             {displayMessage}

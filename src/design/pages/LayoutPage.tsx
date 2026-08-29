@@ -3,11 +3,11 @@ import { NavBar } from "../components";
 import { useAxiosInterceptor } from "../../services";
 import { useSocket } from "../../hooks/useSocket";
 
-interface PageLayoutProps {
+interface IPageLayoutProps {
   children: React.ReactNode;
 }
 
-export const LayoutPage: React.FC<PageLayoutProps> = ({ children }) => {
+export const LayoutPage: React.FC<IPageLayoutProps> = ({ children }) => {
   useAxiosInterceptor();
   useSocket();
 

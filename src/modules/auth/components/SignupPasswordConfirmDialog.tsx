@@ -7,6 +7,7 @@ import {
   Dialog,
   PasswordInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { useAuth, useToast } from "../../../contexts";
@@ -15,7 +16,7 @@ import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SignupPasswordConfirmDialogProps {
+interface ISignupPasswordConfirmDialogProps {
   email: string;
   password?: string;
   confirmPassword?: string;
@@ -26,7 +27,7 @@ interface SignupPasswordConfirmDialogProps {
 }
 
 export const SignupPasswordConfirmDialog: React.FC<
-  SignupPasswordConfirmDialogProps
+  ISignupPasswordConfirmDialogProps
 > = ({
   email,
   password = "",
@@ -158,7 +159,11 @@ export const SignupPasswordConfirmDialog: React.FC<
           ? t(AppLocales.Auth.SignUpPasscodeConfirm.ResetDescription)
           : t(AppLocales.Auth.SignUpPasscodeConfirm.SignUpDescription)}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+      <FormContainer
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
@@ -198,7 +203,7 @@ export const SignupPasswordConfirmDialog: React.FC<
             onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
           />
         </div>
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

@@ -42,12 +42,6 @@ export class SignUpPasswordPage {
     }
     await inputs.first().click();
     await this.page.keyboard.type(password, { delay: 60 });
-    if (
-      (await this.continueButton.isVisible()) &&
-      (await this.continueButton.isEnabled())
-    ) {
-      await this.continueButton.click().catch(() => {});
-    }
   }
 
   async submit() {

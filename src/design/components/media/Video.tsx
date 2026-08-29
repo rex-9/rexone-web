@@ -1,7 +1,7 @@
 // src/components/Media/Video.tsx
 import React from "react";
 
-interface VideoProps {
+export interface IVideoProps {
   asset: { src: string; alt: string; title?: string };
   controls?: boolean;
   autoplay?: boolean;
@@ -10,7 +10,7 @@ interface VideoProps {
   className?: string;
 }
 
-export const Video: React.FC<VideoProps> = ({
+export const Video: React.FC<IVideoProps> = ({
   asset,
   controls = true,
   autoplay = false,

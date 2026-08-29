@@ -13,8 +13,8 @@ import {
   NotFoundPage,
   HomePage,
   RootPage,
-  ProfilePage,
 } from "../design/pages";
+import { UserPage } from "../modules/user";
 import { AnapanaPage } from "../modules/anapana/pages";
 import {
   AuthDialog,
@@ -44,7 +44,10 @@ const router = createBrowserRouter(
     >
       <Route path={AppRoutes.client.public.ROOT}>
         <Route index element={<RootPage />} />
-        <Route path="anapana" element={<AnapanaPage />} />
+        <Route
+          path={AppRoutes.client.public.ANAPANA}
+          element={<AnapanaPage />}
+        />
 
         {/* Public Routes */}
         <Route element={<PublicRoute />}>
@@ -78,7 +81,7 @@ const router = createBrowserRouter(
           />
           <Route
             path={AppRoutes.client.protected.PROFILE}
-            element={<ProfilePage />}
+            element={<UserPage />}
           />
           <Route
             path={AppRoutes.client.protected.SIGN_OUT}

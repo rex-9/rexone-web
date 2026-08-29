@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface ToggleProps extends Omit<
+export interface IToggleProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   "onChange"
 > {
@@ -23,7 +23,7 @@ export function Toggle({
   disabled,
   className,
   ...props
-}: ToggleProps) {
+}: IToggleProps) {
   const sizes = {
     sm: {
       track: "w-12 h-5",

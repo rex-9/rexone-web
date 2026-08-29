@@ -8,7 +8,7 @@ import { cn } from "../../utils";
 
 export type ToastType = "success" | "info" | "warning" | "error";
 
-export interface ToastProps {
+export interface IToastProps {
   message: string;
   type?: ToastType;
   duration?: number;
@@ -17,7 +17,7 @@ export interface ToastProps {
   title?: string;
 }
 
-export const Toast: React.FC<ToastProps> = ({
+export const Toast: React.FC<IToastProps> = ({
   message,
   type = "success",
   duration = 5000,

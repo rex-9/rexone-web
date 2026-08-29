@@ -9,8 +9,9 @@ import {
   ComponentSizes,
 } from "../../constants";
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement | HTMLAnchorElement> {
+export interface IBadgeProps extends React.HTMLAttributes<
+  HTMLSpanElement | HTMLAnchorElement
+> {
   variant?: BadgeVariant;
   size?: ComponentSize;
   href?: string;
@@ -18,7 +19,7 @@ export interface BadgeProps
   rel?: string;
 }
 
-export const Badge: React.FC<BadgeProps> = ({
+export const Badge: React.FC<IBadgeProps> = ({
   variant = BadgeVariants.DEFAULT,
   size = ComponentSizes.MD,
   href,
@@ -48,11 +49,11 @@ export const Badge: React.FC<BadgeProps> = ({
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {
-    [ComponentSizes.XS]: "px-2 py-0.5 text-[11px] rounded-[4px]",
-    [ComponentSizes.SM]: "px-2.5 py-1 text-[12px] rounded-[5px]",
-    [ComponentSizes.MD]: "px-3 py-1.5 text-[14px] rounded-[6px]",
-    [ComponentSizes.LG]: "px-4 py-2 text-[15px] rounded-[8px]",
-    [ComponentSizes.XL]: "px-5 py-2.5 text-[16px] rounded-[10px]",
+    [ComponentSizes.XS]: "px-2 py-0.5 text-xs rounded-sm",
+    [ComponentSizes.SM]: "px-2.5 py-1 text-sm rounded",
+    [ComponentSizes.MD]: "px-3 py-1.5 text-base rounded-md",
+    [ComponentSizes.LG]: "px-4 py-2 text-lg rounded-lg",
+    [ComponentSizes.XL]: "px-5 py-2.5 text-xl rounded-xl",
   };
 
   const Component = href ? "a" : "span";

@@ -1,13 +1,13 @@
 // src/components/Media/Image.tsx
 import React from "react";
 
-interface ImageProps {
+export interface IImageProps {
   asset: { src: string; alt: string; title?: string };
   className?: string;
   onError?: () => void;
 }
 
-export const Image: React.FC<ImageProps> = ({ asset, className, onError }) => {
+export const Image: React.FC<IImageProps> = ({ asset, className, onError }) => {
   return (
     <img
       src={asset.src}

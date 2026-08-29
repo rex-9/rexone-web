@@ -7,13 +7,14 @@ import {
   Dialog,
   TextInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { useToast } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface ForgotPasswordDialogProps {
+interface IForgotPasswordDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
@@ -21,7 +22,7 @@ interface ForgotPasswordDialogProps {
   onBack: () => void;
 }
 
-export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
+export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -67,7 +68,7 @@ export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
       <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.ForgotPasscode.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <FormContainer onSubmit={handleSubmit} className="space-y-4">
         <TextInput
           id="forgot-email"
           type="email"
@@ -106,7 +107,7 @@ export const ForgotPasswordDialog: React.FC<ForgotPasswordDialogProps> = ({
             }
           />
         </div>
-      </form>
+      </FormContainer>
       {message && (
         <p className="text-caption text-success text-center">{message}</p>
       )}

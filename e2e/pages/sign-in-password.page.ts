@@ -36,13 +36,6 @@ export class SignInPasswordPage {
     const firstInput = this.inputs.first();
     await firstInput.click();
     await this.page.keyboard.type(password, { delay: 60 });
-    // If submit button is not auto-triggered, click it
-    if (
-      (await this.submitButton.isVisible()) &&
-      (await this.submitButton.isEnabled())
-    ) {
-      await this.submitButton.click().catch(() => {});
-    }
   }
 
   async submit() {

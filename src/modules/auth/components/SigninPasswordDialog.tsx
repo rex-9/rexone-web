@@ -8,6 +8,7 @@ import {
   Dialog,
   PasswordInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
@@ -15,7 +16,7 @@ import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SigninPasswordDialogProps {
+interface ISigninPasswordDialogProps {
   email: string;
   password?: string;
   setPassword?: (value: string) => void;
@@ -24,7 +25,7 @@ interface SigninPasswordDialogProps {
   onBack: () => void;
 }
 
-export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
+export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
   email,
   password = "",
   setPassword = () => {},
@@ -163,7 +164,11 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
       <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.SignInPasscode.Description)}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+      <FormContainer
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {t(AppLocales.Auth.SignInPasscode.Prompt)}{" "}
@@ -208,7 +213,7 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
             className="text-body-s"
           />
         </div>
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

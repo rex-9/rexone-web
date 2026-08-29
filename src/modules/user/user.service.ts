@@ -1,12 +1,14 @@
-import AppRoutes from "../AppRoutes";
+// src/modules/user/user.service.ts
+
+import AppRoutes from "../../AppRoutes";
 import {
   IApiEnvelope,
   IApiResponse,
   IUser,
   IAssetUploadResponse,
   IAssetUploadOptions,
-} from "../models";
-import { api } from "../services";
+} from "../../models";
+import { api } from "../../services";
 
 class UserService {
   async peekUser(email: string): Promise<

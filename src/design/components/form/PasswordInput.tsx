@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect } from "react";
 
-export interface PasswordInputProps {
+export interface IPasswordInputProps {
   idPrefix: string;
   value: string;
   onChange: (value: string) => void;
@@ -14,7 +14,7 @@ export interface PasswordInputProps {
   autoFocus?: boolean;
 }
 
-export const PasswordInput: React.FC<PasswordInputProps> = ({
+export const PasswordInput: React.FC<IPasswordInputProps> = ({
   idPrefix,
   value,
   onChange,
@@ -115,7 +115,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
         {label}
       </label>
 
-      <div className="flex items-center justify-center gap-[8px]">
+      <div className="flex items-center justify-center gap-2">
         {digits.map((digit, index) => (
           <React.Fragment key={`${idPrefix}-${index}`}>
             <input
@@ -136,9 +136,9 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
               disabled={disabled}
               aria-label={`${label} digit ${index + 1}`}
               className={`
-                w-[42px] sm:w-[46px] h-[50px] sm:h-[55px]
+                w-11 sm:w-12 h-12 sm:h-14
                 rounded-lg border-2 text-center
-                text-body-l font-semibold font-primary tracking-[0.08em]
+                text-body-l font-semibold font-primary tracking-wider
                 transition-all duration-200 ease-out
                 focus:outline-none focus:ring-2 focus:ring-primary
                 ${
@@ -154,7 +154,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
               `}
             />
             {index === 2 && (
-              <span className="text-body-l font-semibold text-base-content opacity-70 px-[4px]">
+              <span className="text-body-l font-semibold text-base-content opacity-70 px-1">
                 -
               </span>
             )}

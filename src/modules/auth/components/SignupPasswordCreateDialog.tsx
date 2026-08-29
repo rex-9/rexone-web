@@ -7,11 +7,12 @@ import {
   Dialog,
   PasswordInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
 import { DialogAuthSteps, TAuthStep } from "..";
 
-interface SignupPasswordCreateDialogProps {
+interface ISignupPasswordCreateDialogProps {
   email: string;
   password?: string;
   setPassword?: (value: string) => void;
@@ -21,7 +22,7 @@ interface SignupPasswordCreateDialogProps {
 }
 
 export const SignupPasswordCreateDialog: React.FC<
-  SignupPasswordCreateDialogProps
+  ISignupPasswordCreateDialogProps
 > = ({
   email,
   password = "",
@@ -83,7 +84,11 @@ export const SignupPasswordCreateDialog: React.FC<
       <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {subtitle}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
+      <FormContainer
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
@@ -121,7 +126,7 @@ export const SignupPasswordCreateDialog: React.FC<
             onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
           />
         </div>
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

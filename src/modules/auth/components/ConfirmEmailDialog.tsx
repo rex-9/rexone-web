@@ -7,6 +7,7 @@ import {
   Dialog,
   PasswordInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { useCountdown } from "../../../hooks";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -15,7 +16,7 @@ import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface ConfirmEmailDialogProps {
+interface IConfirmEmailDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
@@ -23,7 +24,7 @@ interface ConfirmEmailDialogProps {
   onBack: () => void;
 }
 
-export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
+export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -99,7 +100,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
         {t(AppLocales.Auth.ConfirmEmail.Description)}
       </p>
       <div className="space-y-4">
-        <form
+        <FormContainer
           ref={formRef}
           onSubmit={(e) => {
             e.preventDefault();
@@ -131,7 +132,7 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
               ? t(AppLocales.Auth.ConfirmEmail.Verifying)
               : t(AppLocales.Auth.ConfirmEmail.VerifyEmail)}
           </Button>
-        </form>
+        </FormContainer>
 
         <div className="text-center">
           <p className="text-body-m text-base-content font-semibold">

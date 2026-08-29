@@ -122,7 +122,7 @@ export const AiPage: React.FC = () => {
 
   return (
     <LayoutPage>
-      <div className="flex flex-col h-[calc(100vh-180px)] max-w-3xl mx-auto w-full bg-base-100/60 border border-base-300 rounded-2xl shadow-xl backdrop-blur-md overflow-hidden">
+      <div className="flex flex-col h-[calc(100dvh-11rem)] max-w-3xl mx-auto w-full bg-base-100/60 border border-base-300 rounded-2xl shadow-xl backdrop-blur-md overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-base-300 bg-base-100/80">
           <div className="w-20" />
@@ -155,7 +155,7 @@ export const AiPage: React.FC = () => {
                 className={`flex ${isUser ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] sm:max-w-[75%] px-4 py-3 ${
+                  className={`max-w-md sm:max-w-xl px-4 py-3 ${
                     isUser
                       ? "bg-primary text-white rounded-2xl rounded-tr-xs shadow-neon"
                       : "bg-base-200 border border-base-300 text-base-content rounded-2xl rounded-tl-xs shadow-sm"
@@ -187,7 +187,7 @@ export const AiPage: React.FC = () => {
 
           {isProcessing && (
             <div className="flex justify-start">
-              <div className="max-w-[85%] sm:max-w-[75%] px-4 py-3 rounded-2xl rounded-tl-xs bg-base-200 border border-base-300 shadow-sm flex items-center gap-3">
+              <div className="max-w-md sm:max-w-xl px-4 py-3 rounded-2xl rounded-tl-xs bg-base-200 border border-base-300 shadow-sm flex items-center gap-3">
                 <span className="text-body-m font-medium text-base-content">AI is thinking</span>
                 <span className="loading loading-dots loading-xs text-primary" />
               </div>

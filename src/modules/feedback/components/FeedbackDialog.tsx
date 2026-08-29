@@ -12,12 +12,12 @@ import { useToast } from "../../../contexts";
 import FeedbackController from "../feedback.controller";
 import { FEEDBACK_RATINGS } from "../constants";
 
-export interface FeedbackDialogProps {
+export interface IFeedbackDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const FeedbackDialog: React.FC<FeedbackDialogProps> = ({
+export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
   isOpen,
   onClose,
 }) => {

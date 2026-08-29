@@ -1,4 +1,4 @@
-import { UserService } from "../../services";
+import { UserService } from ".";
 import {
   IApiEnvelope,
   IApiResponse,

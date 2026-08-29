@@ -1,13 +1,13 @@
 // src/design/components/auth/SignupInfoDialog.tsx
 
 import React, { useState } from "react";
-import { Button, Dialog, TextInput } from "../../../design/components";
+import { Button, Dialog, TextInput, FormContainer } from "../../../design/components";
 import { useToast } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface SignupInfoDialogProps {
+interface ISignupInfoDialogProps {
   email: string;
   password: string;
   fullNameParam: string;
@@ -18,7 +18,7 @@ interface SignupInfoDialogProps {
   onBack: () => void;
 }
 
-export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
+export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
   email,
   password,
   fullNameParam,
@@ -81,7 +81,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
       <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.SignUpInfo.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <FormContainer onSubmit={handleSubmit} className="space-y-4">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {t(AppLocales.Auth.SignUpInfo.Prompt)}
@@ -126,7 +126,7 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
         {error && (
           <p className="text-caption text-error text-center">{error}</p>
         )}
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

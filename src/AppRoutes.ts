@@ -18,6 +18,7 @@ class AppRoutes {
       CONFIRM_EMAIL: "/email/confirm",
       FORGOT_PASSWORD: "/password/forgot",
       RESET_PASSWORD: "/password/reset",
+      ANAPANA: "/anapana",
       ROOT: "/",
     },
 

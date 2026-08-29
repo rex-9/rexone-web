@@ -200,10 +200,40 @@ export const LANDING_DATA = {
 
   testimonials: [
     {
-      name: "Alan Luqman",
-      link: "https://www.linkedin.com/in/alan-luqman/",
+      name: "Virag Kormoczy",
+      link: "https://www.linkedin.com/in/virag-kormoczy/",
       recommendation:
-        "I highly recommend #Htet as a software developer. He is smart and friendly while working and always smile, it's my pleasure to give my recommendation to this gentleman.",
+        "I met Rex through a coffee chat and I learned that he is a very dedicated person when it comes to programming. I gave him a lot of advice about the overall Microverse journey and so far he is accomplishing many things. He listens and takes directions well, and he's a good communicator. I totally recommend him, he is a great person to work with.",
+    },
+    {
+      name: "Abdullah Khan",
+      link: "https://www.linkedin.com/in/abdullah-asghar-khan/",
+      recommendation:
+        "I had the pleasure of working with Htet on several projects and I can confidently say that he is an excellent software developer with exceptional technical skills. His ability to understand complex software systems and develop elegant solutions is truly remarkable. Htet has extensive experience in full-stack web development, particularly with React JS and Node JS. Working with Htet was a pleasure, as he is a great team player who is always willing to share his expertise with others. He is a natural leader who is able to inspire and motivate his team to achieve their goals. Htet is a quick learner who is always looking to improve his skills, and his dedication to his craft is evident in the quality of his work. Htet's professionalism and work ethic are truly commendable. He is a person of integrity, and his commitment to delivering quality work on time and within budget is outstanding. He has a keen eye for detail, and his ability to think outside the box allows him to come up with innovative solutions to complex problems. Overall, I would highly recommend Htet Naing to any organization looking for a talented, experienced, and dedicated software developer who can deliver quality results in a timely and efficient manner. His technical skills, leadership abilities, and professionalism make him an ideal candidate for any software development team.",
+    },
+    {
+      name: "Aleksandra Ujvari",
+      link: "https://www.linkedin.com/in/aleksandraujvari/",
+      recommendation:
+        "He is a fantastic software developer, and his detail-oriented approach made him a pleasure to work with. We pair-programmed extensively together while enrolled in a software development program, and at that time his work ethic blew me away. Htet views writing clean, accessible code as a calling, and he's great at identifying areas where we can improve UI. He's also super friendly; by the time our project was done, I felt like we'd known each other for years. I can't recommend him enough!",
+    },
+    {
+      name: "Chrispaix Kaze",
+      link: "https://www.linkedin.com/in/chrispaixk/",
+      recommendation:
+        "A fast learner, dedicated, and goal-oriented is Htet Naing, I had the chance to work with him where I could observe his ease in understanding problems and his ease in solving them as a developer. Naing is also a friendly and pleasant person to live with. Any team will be lucky to have Him as a member!",
+    },
+    {
+      name: "Asim Khan",
+      link: "https://www.linkedin.com/in/asim-khan/",
+      recommendation:
+        "Htet Naing is a very hard working and a brilliant coder. His ability to quickly analyze and solve data structures and algorithms are amazing. He has good knowledge on HTML, JavaScript, React and Redux. I have learned a lot while collaborating with him @ Microverse.",
+    },
+    {
+      name: "Alphayo Wakarindi",
+      link: "https://www.linkedin.com/in/alphayo-wakarindi/",
+      recommendation:
+        "Htet is on my top list of the developers that I would love to work with again. When collaborating with him on one of our projects at Microverse, he was always on time, open to new ideas, and researched extensively on our tasks before we met hence challenging me to strive to be a better developer every day, patient when I was slow to grasp a concept and last but not least, he’s so funny. Working with him was not only productive but fun as well. I liked working with him that we ended up constantly reaching out to each other on various programming topics and life in general even after we finished our collaboration project.",
     },
     {
       name: "Dorian Urem",
@@ -212,16 +242,22 @@ export const LANDING_DATA = {
         "Htet is a fast learner and works very hard. He was often one of the quickest to finish assignments since he put in the extra hours when he could. He also has a good sense for figuring out problems which I saw when we were working on DSA together. Htet is very friendly and positive and it was always a joy working with him.",
     },
     {
-      name: "Virag Kormoczy",
-      link: "https://www.linkedin.com/in/virag-kormoczy/",
+      name: "Alan Luqman",
+      link: "https://www.linkedin.com/in/alan-luqman/",
       recommendation:
-        "I met Rex through a coffee chat and I learned that he is a very dedicated person when it comes to programming. I gave him a lot of advice about the overall Microverse journey and so far he is accomplishing many things. He listens and takes directions well, and he's a good communicator. I totally recommend him, he is a great person to work with.",
+        "I highly recommend #Htet as a software developer. He is smart and friendly while working and always smile, it's my pleasure to give my recommendation to this gentleman.",
     },
     {
-      name: "Asim Khan",
-      link: "https://www.linkedin.com/in/asim-khan/",
+      name: "Said Laasri",
+      link: "https://www.linkedin.com/in/said-laasri/",
       recommendation:
-        "Htet Naing is a very hard working and a brilliant coder. His ability to quickly analyze and solve data structures and algorithms are amazing. He has good knowledge on HTML, JavaScript, React and Redux. I have learned a lot while collaborating with him @ Microverse.",
+        "Rex is exactly the sort of software developer any company would love. I met them while struggling with a tough data structures problem, and within a few minutes, they'd managed to explain a concept I'd been struggling with for days. They have a great way of simplifying complex problems into bite-sized pieces, and as a junior developer, that was really valuable for me. They're also just a fun person to chat with! If you need to get a job done simply and efficiently, Ryan's definitely the person for you.",
+    },
+    {
+      name: "Nicholas Emmanuel",
+      link: "https://www.linkedin.com/in/techieemma/",
+      recommendation:
+        "Htet Naing is the sort of developer any company would love to have, I met him while undergoing internship at Microverse and will automatically connected. While I was struggling with some data structure and algorithm I reached out to him and he explained his thought process to me and he made it look easy. He has a way of making complex problem look easy and most importantly he is a fun person to be. So as a junior developer it means a lot to me and I value our relationship. If you need to get your job done simply and efficient effortlessly. Htet Naing is definitely the person for you.",
     },
   ] as ITestimonialItem[],
 };

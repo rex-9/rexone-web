@@ -1,3 +1,5 @@
-export { Button } from "./Button.tsx";
-export { GoogleButton } from "./GoogleButton.tsx";
-export { SignOutButton } from "./SignOutButton.tsx";
+// src/design/components/button/index.ts
+
+export { Button } from "./Button";
+export { GoogleButton } from "./GoogleButton";
+export { SignOutButton } from "./SignOutButton";

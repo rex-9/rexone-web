@@ -14,7 +14,7 @@ import {
 } from "@headlessui/react";
 import { cn } from "../../utils";
 
-export interface DialogProps {
+export interface IDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onBack?: () => void;
@@ -24,7 +24,7 @@ export interface DialogProps {
   className?: string;
 }
 
-export const Dialog: React.FC<DialogProps> = ({
+export const Dialog: React.FC<IDialogProps> = ({
   isOpen,
   onClose,
   onBack,
@@ -74,8 +74,8 @@ export const Dialog: React.FC<DialogProps> = ({
               <DialogPanel
                 className={cn(
                   "relative z-10 bg-base-100 border border-base-300 rounded-2xl p-6 shadow-xl",
-                  "w-full max-w-[440px]",
-                  "max-h-[90vh] overflow-y-auto font-primary",
+                  "w-full max-w-md",
+                  "max-h-[90dvh] overflow-y-auto font-primary",
                   className,
                 )}
               >
