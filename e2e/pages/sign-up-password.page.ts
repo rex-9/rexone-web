@@ -18,7 +18,7 @@ export class SignUpPasswordPage {
     });
     this.createInputs = page.locator('input[id^="create-password-"]');
     this.confirmInputs = page.locator('input[id^="confirm-password-"]');
-    this.continueButton = page.locator('button[type="submit"]');
+    this.continueButton = page.locator('[role="dialog"] button[type="submit"]');
   }
 
   async waitForCreate() {

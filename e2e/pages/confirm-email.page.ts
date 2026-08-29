@@ -11,7 +11,7 @@ export class ConfirmEmailPage {
     this.page = page;
     this.heading = page.getByRole("heading", { name: /^Verify Your Email$/i });
     this.inputs = page.locator('input[inputmode="numeric"]');
-    this.submitButton = page.locator('button[type="submit"]');
+    this.submitButton = page.locator('[role="dialog"] button[type="submit"]');
     this.resendLink = page.getByText(/Did not receive the code\? Resend|Resend code in/i);
   }
 

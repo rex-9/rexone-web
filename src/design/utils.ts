@@ -8,7 +8,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { colors, spacing, radius, shadows, font } from "./elements";
+import { colors, radius, shadows, font } from "./elements";
 
 // ============================================================
 // CLASS NAME UTILITIES
@@ -44,18 +44,6 @@ export function getSemanticColor(
   color: "success" | "warning" | "error" | "info",
 ): string {
   return colors.semantic[color];
-}
-
-// ============================================================
-// SPACING UTILITIES
-// ============================================================
-
-/**
- * Get a spacing value
- * @example getSpacing(16) => '16px'
- */
-export function getSpacing(value: keyof typeof spacing): string {
-  return spacing[value];
 }
 
 // ============================================================

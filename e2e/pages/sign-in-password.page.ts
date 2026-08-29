@@ -13,7 +13,7 @@ export class SignInPasswordPage {
       name: /^Enter your passcode$/i,
     });
     this.inputs = page.locator('input[id^="signin-password-"]');
-    this.submitButton = page.locator('button[type="submit"]');
+    this.submitButton = page.locator('[role="dialog"] button[type="submit"]');
     this.forgotPasswordLink = page.getByText(/Forgot (your )?passcode\?/i);
   }
 

@@ -11,21 +11,21 @@
 ### 1.1 Zero Components Outside `src/design/` & Mandatory Component Reuse
 - **Rule**: NEVER create custom UI components, buttons, inputs, modals, or base presentation widgets outside `src/design/`.
 - All reusable UI atoms, molecules, and organisms live exclusively in:
-  - `src/design/elements/` — Design tokens (colors, typography, spacing, radius, shadows, motion).
+  - `src/design/elements/` — Design tokens (colors, font, radius, shadows, keyframes, animations) configured into Tailwind & DaisyUI.
   - `src/design/components/` — Semantic UI components:
     - Form elements: `FormContainer`, `TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`.
     - Buttons: `Button`, `GoogleButton`, `SignOutButton`.
     - Overlays: `Dialog`, `ConfirmDialog`, `LoadingOverlay`, `Toast`.
-    - Common & Media: `NavBar`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`, `Video`.
+    - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`, `Video`.
   - `src/design/pages/` — Shared layout shells, base pages (`LayoutPage`, `HomePage`, `ProfilePage`, `NotFoundPage`).
 - **Rule**: NEVER use raw HTML `<textarea>`, raw `<button>`, raw `<form>`, or ad-hoc containers in module dialogs or pages. Always re-use `FormContainer`, `TextArea`, `TextInput`, `Button`, and `Dialog`. If a design element is missing, build it cleanly in `src/design/components/` first.
 
-### 1.2 Automated Theming via DaisyUI & Tailwind Tokens
-- Design tokens (colors, fonts, spacings, radius) are injected directly into Tailwind CSS and DaisyUI configuration.
-- **Rule**: NEVER hardcode hex codes (`#ffffff`, `#1a1a1a`), rgb values, or arbitrary pixel widths in components.
-- Use standard semantic Tailwind and DaisyUI utility classes:
+### 1.2 Automated Theming & Pure Tailwind Spacing
+- **Pure Tailwind Spacing Scale**: The project strictly adheres to the standard Tailwind CSS spacing scale (`p-2` = 8px, `p-3` = 12px, `p-4` = 16px, `p-6` = 24px, `gap-3`, `space-y-4`). Custom pixel spacing overrides are forbidden.
+- **Rule**: NEVER import directly from `src/design/elements/` for inline styling in components. Always style with standard Tailwind utility classes and DaisyUI semantic tokens:
   - Backgrounds: `bg-base-100`, `bg-base-200`, `bg-base-300`, `bg-primary`, `bg-secondary`
   - Text: `text-primary`, `text-secondary`, `text-neutral`, `text-base-content`
+  - Shadows: `shadow-sm`, `shadow-md`, `shadow-xl`, `shadow-neon`, `shadow-neon-lg`
   - Components: `btn`, `btn-primary`, `btn-outline`, `card`, `dropdown`, `modal`
 - Both **Light (Day)** and **Dark (Night)** themes apply automatically through semantic theme classes.
 

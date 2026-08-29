@@ -12,7 +12,7 @@ export class SignUpInfoPage {
     this.heading = page.getByRole("heading", { name: /^Complete Profile$/i });
     this.nameInput = page.getByPlaceholder("John Doe");
     this.usernameInput = page.getByPlaceholder("john_doe");
-    this.submitButton = page.getByRole("button", { name: /^Create Account$/i });
+    this.submitButton = page.locator('[role="dialog"] button[type="submit"]');
   }
 
   async waitForVisible() {
