@@ -3,6 +3,7 @@
 import React from "react";
 import { Dialog } from "./Dialog";
 import { Button } from "../button";
+import { ButtonVariants, ButtonTypes } from "../../constants";
 
 export interface ConfirmDialogProps {
   isOpen: boolean;
@@ -38,16 +39,18 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
       footer={
         <div className="flex justify-end gap-12">
           <Button
-            type="button"
-            variant="tertiary"
+            type={ButtonTypes.BUTTON}
+            variant={ButtonVariants.TERTIARY}
             onClick={onClose}
             disabled={isLoading}
           >
             {cancelLabel}
           </Button>
           <Button
-            type="button"
-            variant={isDestructive ? "primary" : "secondary"}
+            type={ButtonTypes.BUTTON}
+            variant={
+              isDestructive ? ButtonVariants.PRIMARY : ButtonVariants.SECONDARY
+            }
             className={
               isDestructive
                 ? "!bg-error !text-white hover:!bg-error/90"

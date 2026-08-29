@@ -3,6 +3,7 @@
 import { FC } from "react";
 import { useAtom } from "jotai";
 import { Button } from "../button";
+import { ButtonVariants } from "../../constants";
 import atoms from "../../../atoms";
 import { iconsLib } from "../../../assets";
 
@@ -18,7 +19,7 @@ export const ThemeToggle: FC = () => {
 
   return (
     <Button
-      variant="tertiary"
+      variant={ButtonVariants.TERTIARY}
       onClick={toggleTheme}
       className="w-10 h-10 p-0 flex items-center justify-center rounded-full hover:bg-base-200 transition-colors"
     >

@@ -1,5 +1,5 @@
 // tailwind.config.js
-import { colors, typography, spacing, radius, shadows, motion } from './src/design/elements';
+import { colors, font, radius, shadows, keyframes, animations } from './src/design/elements';
 import daisyui from 'daisyui';
 import plugin from 'tailwindcss/plugin';
 
@@ -15,11 +15,17 @@ export default {
       addBase({
         ':root, [data-theme="day"]': {
           '--color-primary': colors.primary,
-          '--color-primary-content': '#FFFFFF',
+          '--color-primary-rgb': '255, 94, 98',
+          '--color-primary-light': colors.primaryLight,
+          '--color-primary-dark': colors.primaryDark,
+          '--color-glow-white': colors.glowWhite,
+          '--color-glow-outer': colors.glowOuter,
+          '--color-glow-outer-rgb': '107, 20, 38',
+          '--color-primary-content': colors.night.textPrimary,
           '--color-secondary': colors.secondary,
-          '--color-secondary-content': '#FFFFFF',
+          '--color-secondary-content': colors.night.textPrimary,
           '--color-accent': colors.accent,
-          '--color-accent-content': '#FFFFFF',
+          '--color-accent-content': colors.night.textPrimary,
           '--color-base-100': colors.day.background,
           '--color-base-200': colors.day.surface,
           '--color-base-300': colors.day.card,
@@ -33,11 +39,17 @@ export default {
         },
         '[data-theme="night"]': {
           '--color-primary': colors.primary,
-          '--color-primary-content': '#FFFFFF',
+          '--color-primary-rgb': '255, 94, 98',
+          '--color-primary-light': colors.primaryLight,
+          '--color-primary-dark': colors.primaryDark,
+          '--color-glow-white': colors.glowWhite,
+          '--color-glow-outer': colors.glowOuter,
+          '--color-glow-outer-rgb': '107, 20, 38',
+          '--color-primary-content': colors.night.textPrimary,
           '--color-secondary': colors.secondary,
-          '--color-secondary-content': '#FFFFFF',
+          '--color-secondary-content': colors.night.textPrimary,
           '--color-accent': colors.accent,
-          '--color-accent-content': '#FFFFFF',
+          '--color-accent-content': colors.night.textPrimary,
           '--color-base-100': colors.night.background,
           '--color-base-200': colors.night.surface,
           '--color-base-300': colors.night.card,
@@ -55,33 +67,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: colors.primary,
+        primary: {
+          DEFAULT: colors.primary,
+          light: colors.primaryLight,
+          dark: colors.primaryDark,
+        },
         secondary: colors.secondary,
         accent: colors.accent,
-        glass: colors.glass,
+        glow: {
+          white: colors.glowWhite,
+          outer: colors.glowOuter,
+        },
+        glass: {
+          nav: colors.glass.nav,
+          card: colors.glass.card,
+          'card-hover': colors.glass.cardHover,
+          form: colors.glass.form,
+          project: colors.glass.project,
+          'project-hover': colors.glass.projectHover,
+          border: colors.glass.border,
+          'border-hover': colors.glass.borderHover,
+          tag: colors.glass.tag,
+          'tag-bg': colors.glass.tagBg,
+          'tag-bg-hover': colors.glass.tagBgHover,
+        },
       },
-      fontFamily: typography.fontFamily,
-      fontWeight: typography.fontWeight,
-      fontSize: typography.fontSize,
-      spacing: spacing,
+      fontFamily: font.fontFamily,
+      fontWeight: font.fontWeight,
+      fontSize: font.fontSize,
       borderRadius: radius,
       boxShadow: shadows,
-      keyframes: {
-        fadeRise: {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        glowPulse: {
-          '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
-          '50%': { opacity: '1', transform: 'scale(1.05)' },
-        },
-      },
-      animation: {
-        'fade-rise': `fadeRise ${motion.duration.normal}ms ${motion.easing.easeOut}`,
-        'glow-pulse': `glowPulse ${motion.duration.slower}ms ease-in-out infinite`,
-        'fade-in': `fadeRise ${motion.duration.fast}ms ${motion.easing.easeIn}`,
-        'slide-up': `fadeRise ${motion.duration.slow}ms ${motion.easing.easeOut}`,
-      },
+      keyframes: keyframes,
+      animation: animations,
     },
   },
   daisyui: {

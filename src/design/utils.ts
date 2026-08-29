@@ -8,7 +8,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { colors, spacing, radius, shadows, typography } from "./elements";
+import { colors, spacing, radius, shadows, font } from "./elements";
 
 // ============================================================
 // CLASS NAME UTILITIES
@@ -30,7 +30,9 @@ export function cn(...inputs: ClassValue[]) {
  * Get brand color value
  * @example getBrandColor('primary') => '#FF5E62'
  */
-export function getBrandColor(brand: "primary" | "secondary" | "accent"): string {
+export function getBrandColor(
+  brand: "primary" | "secondary" | "accent",
+): string {
   return colors[brand];
 }
 
@@ -86,10 +88,10 @@ export function getShadow(value: keyof typeof shadows): string {
 
 /**
  * Get typography styles for a specific size
- * @example getTypography('h1') => { fontSize: '32px', lineHeight: '40px', fontWeight: 600 }
+ * @example getFont('h1') => { fontSize: '32px', lineHeight: '40px', fontWeight: 600 }
  */
-export function getTypography(size: keyof typeof typography.fontSize) {
-  return typography.fontSize[size];
+export function getFont(size: keyof typeof font.fontSize) {
+  return font.fontSize[size];
 }
 
 // ============================================================

@@ -1,4 +1,5 @@
 import { SignOutButton, Button } from "../components";
+import { ButtonVariants } from "../constants";
 import { LayoutPage } from "./LayoutPage";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
@@ -11,7 +12,7 @@ export const HomePage: React.FC = () => {
     <LayoutPage>
       <div className="w-full max-w-sm space-y-16">
         <Button
-          variant="secondary"
+          variant={ButtonVariants.SECONDARY}
           fullWidth
           onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
         >
@@ -19,7 +20,7 @@ export const HomePage: React.FC = () => {
         </Button>
 
         <Button
-          variant="secondary"
+          variant={ButtonVariants.SECONDARY}
           fullWidth
           onClick={() => navigate(AppRoutes.client.protected.AI)}
         >

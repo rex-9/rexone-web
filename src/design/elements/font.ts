@@ -1,4 +1,4 @@
-// src/design/elements/typography.ts
+// src/design/elements/font.ts
 
 /**
  * Rexone Design System - Typography Tokens
@@ -7,12 +7,11 @@
  * Display: Cormorant Garamond
  */
 
-export const typography = {
+export const font = {
   fontFamily: {
-    primary:
-      'Inter, -apple-system, BlinkMacSystemFont, "SF Pro", Helvetica, Arial, sans-serif', // 👈 1. Change Body / UI font
-    display: '"Cormorant Garamond", "Playfair Display", Georgia, serif', // 👈 2. Change Headings / Display font here
-    handwritten: '"Satisfy", "Caveat", cursive',
+    primary: '"Quicksand", sans-serif',
+    display: '"Clip", cursive, sans-serif',
+    handwritten: '"Storytime", cursive',
   },
 
   fontWeight: {

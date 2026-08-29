@@ -6,12 +6,15 @@
 
 import React from "react";
 import { cn } from "../../utils";
+import { InputVariant, InputVariants } from "../../constants";
 
-export interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface TextInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
+  variant?: InputVariant;
 }
 
 export const TextInput: React.FC<TextInputProps> = ({
@@ -19,6 +22,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   helperText,
   error,
   fullWidth = true,
+  variant = InputVariants.DEFAULT,
   className,
   id,
   disabled,
@@ -27,13 +31,17 @@ export const TextInput: React.FC<TextInputProps> = ({
   const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
   const hasError = !!error;
   const displayText = error || helperText;
+  const isGlass = variant === InputVariants.GLASS;
 
   return (
     <div className={cn("flex flex-col", fullWidth && "w-full")}>
       {label && (
         <label
           htmlFor={inputId}
-          className="text-body-s font-medium text-base-content mb-4"
+          className={cn(
+            "text-body-s font-medium mb-4",
+            isGlass ? "text-glow-white" : "text-base-content",
+          )}
         >
           {label}
         </label>
@@ -44,15 +52,19 @@ export const TextInput: React.FC<TextInputProps> = ({
         id={inputId}
         disabled={disabled}
         className={cn(
-          "px-16 py-12 rounded-m border-2 text-body-m",
-          "bg-base-100 text-base-content",
-          "placeholder:text-base-content placeholder:opacity-40",
-          "transition-all duration-200 ease-out",
-          "focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary",
-          hasError
-            ? "border-error focus:ring-error focus:border-error"
-            : "border-base-300",
-          disabled && "opacity-50 cursor-not-allowed bg-base-200",
+          "transition-all duration-200 ease-out focus:outline-none",
+          isGlass
+            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-[15px] font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
+            : "px-4 py-3 rounded-md border-2 bg-base-100 text-base-content placeholder:text-base-content placeholder:opacity-40 focus:ring-2 focus:ring-primary focus:border-primary",
+          hasError &&
+            (isGlass
+              ? "border-b-error focus:border-b-error"
+              : "border-error focus:ring-error focus:border-error"),
+          !hasError && !isGlass && "border-base-300",
+          disabled &&
+            (isGlass
+              ? "opacity-50 cursor-not-allowed"
+              : "opacity-50 cursor-not-allowed bg-base-200"),
           className,
         )}
       />

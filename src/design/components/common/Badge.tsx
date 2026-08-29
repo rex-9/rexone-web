@@ -1,0 +1,66 @@
+// src/design/components/common/Badge.tsx
+
+import React from "react";
+import { cn } from "../../utils";
+import {
+  BadgeVariant,
+  BadgeVariants,
+  ComponentSize,
+  ComponentSizes,
+} from "../../constants";
+
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLSpanElement | HTMLAnchorElement> {
+  variant?: BadgeVariant;
+  size?: ComponentSize;
+  href?: string;
+  target?: string;
+  rel?: string;
+}
+
+export const Badge: React.FC<BadgeProps> = ({
+  variant = BadgeVariants.DEFAULT,
+  size = ComponentSizes.MD,
+  href,
+  target = href ? "_blank" : undefined,
+  rel = href ? "noopener noreferrer" : undefined,
+  className,
+  children,
+  ...props
+}) => {
+  const variants: Record<BadgeVariant, string> = {
+    [BadgeVariants.DEFAULT]:
+      "bg-base-200 text-base-content border border-border",
+    [BadgeVariants.NEON]:
+      "border border-glass-tag bg-glass-tag-bg text-white font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-white hover:shadow-neon",
+    [BadgeVariants.PRIMARY]:
+      "bg-primary/10 text-primary border border-primary/30",
+    [BadgeVariants.SECONDARY]:
+      "bg-secondary/10 text-secondary border border-secondary/30",
+  };
+
+  const sizes: Partial<Record<ComponentSize, string>> = {
+    [ComponentSizes.XS]: "px-2 py-0.5 text-[11px] rounded-[4px]",
+    [ComponentSizes.SM]: "px-2.5 py-1 text-[12px] rounded-[5px]",
+    [ComponentSizes.MD]: "px-3 py-1.5 text-[14px] rounded-[6px]",
+    [ComponentSizes.LG]: "px-4 py-2 text-[15px] rounded-[8px]",
+    [ComponentSizes.XL]: "px-5 py-2.5 text-[16px] rounded-[10px]",
+  };
+
+  const Component = href ? "a" : "span";
+
+  return (
+    <Component
+      {...(href ? { href, target, rel } : {})}
+      {...(props as any)}
+      className={cn(
+        "inline-flex items-center justify-center select-none",
+        variants[variant],
+        sizes[size] || sizes[ComponentSizes.MD],
+        className,
+      )}
+    >
+      {children}
+    </Component>
+  );
+};

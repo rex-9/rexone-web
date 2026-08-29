@@ -1,10 +1,27 @@
 // src/design/elements/colors.ts
 
 export const colors = {
-  // Brand (Unified across Light & Dark themes)
+  // Brand (Rex9 Neon Sunset Coral Palette)
   primary: "#FF5E62",
+  primaryLight: "#FF8A8D",
+  primaryDark: "#E8334A",
   secondary: "#FF7556",
   accent: "#FF2A4B",
+
+  // Neon Glow Colors
+  glowWhite: "#FFF2F4",
+  glowOuter: "#6B1426",
+
+  // Shadow color tokens
+  shadows: {
+    blackXs: "rgba(0, 0, 0, 0.08)",
+    blackSm: "rgba(0, 0, 0, 0.08)",
+    blackMd: "rgba(0, 0, 0, 0.10)",
+    glow: "rgba(255, 94, 98, 0.4)",
+    glassCard: "rgba(255, 94, 98, 0.35)",
+    glassHover: "rgba(255, 94, 98, 0.45)",
+    textDark: "rgba(0, 0, 0, 0.9)",
+  },
 
   // Semantic (Unified across Light & Dark themes)
   semantic: {
@@ -26,23 +43,45 @@ export const colors = {
     textMuted: "#9CA3AF",
   },
 
-  // Night Theme (Dark Mode - Rex9 Aesthetic)
+  // Night Theme (Dark Mode - Rich Rex9 Aesthetic with clear brick visibility)
   night: {
-    background: "#080808",
-    surface: "#12060A",
-    card: "#16080E",
-    border: "#2A1018",
-    divider: "#1F0B13",
+    background: "#160b11",
+    surface: "#1f1018",
+    card: "#26131e",
+    border: "#3d1b28",
+    divider: "#2c111c",
     textPrimary: "#FFFFFF",
     textSecondary: "#E2D4D8",
-    textMuted: "#8E7E84",
+    textMuted: "#A39298",
   },
 
-  // Glassmorphism Tokens
+  // Rex9 Glassmorphism Tokens
   glass: {
-    nav: "rgba(18, 6, 10, 0.80)",
-    card: "rgba(22, 8, 14, 0.60)",
+    nav: "rgba(22, 7, 13, 0.75)",
+    card: "rgba(35, 12, 20, 0.38)",
+    cardHover: "rgba(50, 16, 28, 0.55)",
+    form: "rgba(28, 8, 16, 0.65)",
+    project: "rgba(18, 6, 12, 0.55)",
+    projectHover: "rgba(22, 7, 15, 0.75)",
     border: "rgba(255, 94, 98, 0.22)",
+    borderHover: "rgba(255, 94, 98, 0.55)",
+    tag: "rgba(255, 94, 98, 0.65)",
+    tagBg: "rgba(255, 94, 98, 0.08)",
+    tagBgHover: "rgba(255, 94, 98, 0.28)",
+  },
+
+  // Centralized Glow & Text Shadow Effects
+  effects: {
+    heroSign:
+      "0 0 0.6rem var(--color-glow-white), 0 0 1.5rem var(--color-primary), -0.2rem 0.1rem 1rem var(--color-primary), 0.2rem 0.1rem 1rem var(--color-primary), 0 -0.5rem 2rem var(--color-primary-dark), 0 0.5rem 3rem var(--color-primary-dark)",
+    headingGlow:
+      "0 0 0.6rem var(--color-glow-white), 0 0 1.5rem var(--color-primary), -0.2rem 0.1rem 1rem var(--color-primary), 0.2rem 0.1rem 1rem var(--color-primary), 0 -0.5rem 2rem var(--color-primary-dark), 0 0.5rem 3rem var(--color-primary-dark)",
+    cardHeading:
+      "0 0 6px var(--color-glow-white), 0 0 12px var(--color-primary), 0 0 18px var(--color-primary-dark)",
+    navActive:
+      "0 0 6px var(--color-glow-white), 0 0 12px var(--color-primary), 0 0 16px var(--color-primary-dark), 0 0 22px var(--color-glow-outer)",
+    flickerFull:
+      "-1px -1px 0px var(--color-glow-white), 1px 1px 0px var(--color-glow-white), 0 0 10px var(--color-glow-white), 0 0 20px var(--color-primary), 0 0 30px var(--color-primary), 0 0 40px var(--color-primary), 0 0 50px var(--color-primary-dark), 0 0 70px var(--color-primary-dark), 0 0 80px var(--color-glow-outer), 0 0 100px var(--color-glow-outer)",
   },
 } as const;
 
