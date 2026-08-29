@@ -11,6 +11,7 @@ import {
 import { useCountdown } from "../../../hooks";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -47,30 +48,33 @@ export const ConfirmEmailDialog: React.FC<ConfirmEmailDialogProps> = ({
     setIsLoading(true);
     setError("");
     setMessage("");
-    await AuthController.confirmEmailWithCode(
-      email,
-      otp,
-      setError,
-      (msg) => {
-        setMessage(msg);
-        success(t(AppLocales.Auth.ConfirmEmail.Verified));
-      },
-      signin,
-      navigate,
-    );
+
+    const result = await AuthController.confirmEmailWithCode(email, otp);
     setIsLoading(false);
+
+    if (result.success && result.token && result.user) {
+      setMessage(result.message || "");
+      success(t(AppLocales.Auth.ConfirmEmail.Verified));
+      signin(result.token, result.user);
+      navigate(AppRoutes.client.protected.HOME);
+    } else {
+      setError(result.error || "Failed to confirm email code.");
+    }
   };
 
   const handleResend = async () => {
     if (isCooldown) return;
-    await AuthController.sendConfirmationEmail(
-      email,
-      setError,
-      setMessage,
-      () => cooldown.start(30),
-    );
-    if (!error) {
+    setError("");
+    setMessage("");
+
+    const result = await AuthController.sendConfirmationEmail(email);
+
+    if (result.success) {
+      setMessage(result.message || "");
+      cooldown.start(30);
       info(t(AppLocales.Auth.ConfirmEmail.Resent));
+    } else {
+      setError(result.error || "Failed to send confirmation email.");
     }
   };
 

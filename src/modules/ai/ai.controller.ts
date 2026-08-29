@@ -40,171 +40,194 @@ class AiController {
     return () => SocketService.removeListener(handleAiMessage);
   }
 
-  async getRooms(
-    onSuccess: (rooms: IRoom[], pagination?: IApiPagination | null) => void,
-    onError: (error: string) => void,
-    params?: { page?: number; limit?: number },
-  ): Promise<void> {
-    try {
-      const response = await AiService.getRooms(params);
-      const { status, data, meta } = response.data || {};
+  async getRooms(params?: { page?: number; limit?: number }): Promise<{
+    success: boolean;
+    rooms: IRoom[];
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await AiService.getRooms(params);
+    const { status, data, meta } = response.data || {};
 
-      if (status?.success && data?.rooms) {
-        onSuccess(data.rooms, meta?.pagination);
-      } else {
-        onError(status?.error || "Failed to load rooms");
-      }
-    } catch {
-      onError("An error occurred. Please try again.");
+    if (status?.success && data?.rooms) {
+      return {
+        success: true,
+        rooms: data.rooms,
+        pagination: meta?.pagination,
+      };
     }
+
+    return {
+      success: false,
+      rooms: [],
+      pagination: null,
+      error: status?.error || response.error || "Failed to load rooms",
+    };
   }
 
-  async createRoom(
-    title: string,
-    onSuccess: (room: IRoom) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await AiService.createRoom(title);
-      const { status, data } = response.data || {};
+  async createRoom(title: string): Promise<{
+    success: boolean;
+    room?: IRoom;
+    error?: string;
+  }> {
+    const response = await AiService.createRoom(title);
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.room) {
-        this.currentRoomId = data.room.id;
-        onSuccess(data.room);
-      } else {
-        onError(status?.error || "Failed to create room");
-      }
-    } catch {
-      onError("An error occurred. Please try again.");
+    if (status?.success && data?.room) {
+      this.currentRoomId = data.room.id;
+      return {
+        success: true,
+        room: data.room,
+      };
     }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to create room",
+    };
   }
 
   async loadHistory(
     roomId: string | null = null,
-    onSuccess: (
-      messages: IMessage[],
-      roomId: string,
-      processing: boolean,
-      pagination?: IApiPagination | null,
-    ) => void,
-    onError: (error: string) => void,
     params?: { page?: number; limit?: number },
-  ): Promise<void> {
-    try {
-      const response = await AiService.getHistory(
-        roomId || this.currentRoomId || undefined,
-        params,
-      );
-      const { status, data, meta } = response.data || {};
+  ): Promise<{
+    success: boolean;
+    messages: IMessage[];
+    roomId: string;
+    processing: boolean;
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await AiService.getHistory(
+      roomId || this.currentRoomId || undefined,
+      params,
+    );
+    const { status, data, meta } = response.data || {};
 
-      if (status?.success && data) {
-        const messages = parseFromList<IMessage>(data);
-        const rId = messages[0]?.room_id ?? roomId ?? "";
-        const processing = messages.some((m) =>
-          [
-            AI_MESSAGE_STATUS.QUEUED,
-            AI_MESSAGE_STATUS.PROCESSING,
-            AI_MESSAGE_STATUS.RETRYING,
-          ].includes((m.metadata?.status ?? "") as any),
-        );
-        this.currentRoomId = rId || null;
-        onSuccess(messages, rId, processing, meta?.pagination);
-      } else {
-        onError(status?.error || "Failed to load history");
-      }
-    } catch {
-      onError("An error occurred. Please try again.");
+    if (status?.success && data) {
+      const messages = parseFromList<IMessage>(data);
+      const rId = messages[0]?.room_id ?? roomId ?? "";
+      const processing = messages.some((m) =>
+        [
+          AI_MESSAGE_STATUS.QUEUED,
+          AI_MESSAGE_STATUS.PROCESSING,
+          AI_MESSAGE_STATUS.RETRYING,
+        ].includes((m.metadata?.status ?? "") as any),
+      );
+      this.currentRoomId = rId || null;
+      return {
+        success: true,
+        messages,
+        roomId: rId,
+        processing,
+        pagination: meta?.pagination,
+      };
     }
+
+    return {
+      success: false,
+      messages: [],
+      roomId: roomId || this.currentRoomId || "",
+      processing: false,
+      pagination: null,
+      error: status?.error || response.error || "Failed to load history",
+    };
   }
 
   async chat(
     message: string,
     roomId: string | null = null,
-    onSuccess: (message: IMessage, roomId: string) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await AiService.chat({
-        message,
-        room_id: roomId || this.currentRoomId || undefined,
-        temperature: AI_DEFAULTS.TEMPERATURE,
-        max_tokens: AI_DEFAULTS.MAX_TOKENS,
-      });
+  ): Promise<{
+    success: boolean;
+    message?: IMessage;
+    roomId?: string;
+    error?: string;
+  }> {
+    const response = await AiService.chat({
+      message,
+      room_id: roomId || this.currentRoomId || undefined,
+      temperature: AI_DEFAULTS.TEMPERATURE,
+      max_tokens: AI_DEFAULTS.MAX_TOKENS,
+    });
 
-      const { status, data } = response.data || {};
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.message) {
-        this.currentRoomId = data.room_id;
-        onSuccess(data.message, data.room_id);
-      } else {
-        onError(status?.error || "Failed to get AI response");
-      }
-    } catch {
-      onError("An error occurred. Please try again.");
+    if (status?.success && data?.message) {
+      this.currentRoomId = data.room_id;
+      return {
+        success: true,
+        message: data.message,
+        roomId: data.room_id,
+      };
     }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to get AI response",
+    };
   }
 
-  async clearHistory(
-    roomId: string | null = null,
-    onSuccess?: () => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await AiService.clearHistory(
-        roomId || this.currentRoomId || undefined,
-      );
-      const { status } = response.data || {};
+  async clearHistory(roomId: string | null = null): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await AiService.clearHistory(
+      roomId || this.currentRoomId || undefined,
+    );
+    const { status } = response.data || {};
 
-      if (status?.success) {
-        onSuccess?.();
-      } else {
-        onError?.(status?.error || "Failed to clear history");
-      }
-    } catch {
-      onError?.("An error occurred. Please try again.");
+    if (status?.success) {
+      return { success: true };
     }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to clear history",
+    };
   }
 
   async renameRoom(
     roomId: string,
     title: string,
-    onSuccess: (title: string) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await AiService.renameRoom(roomId, title);
-      const { status, data } = response.data || {};
+  ): Promise<{
+    success: boolean;
+    title?: string;
+    error?: string;
+  }> {
+    const response = await AiService.renameRoom(roomId, title);
+    const { status, data } = response.data || {};
 
-      if (status?.success && data?.title) {
-        onSuccess(data.title);
-      } else {
-        onError(status?.error || "Failed to rename room");
-      }
-    } catch {
-      onError("An error occurred. Please try again.");
+    if (status?.success && data?.title) {
+      return {
+        success: true,
+        title: data.title,
+      };
     }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to rename room",
+    };
   }
 
-  async deleteRoom(
-    roomId: string,
-    onSuccess: () => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await AiService.deleteRoom(roomId);
-      const { status } = response.data || {};
+  async deleteRoom(roomId: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await AiService.deleteRoom(roomId);
+    const { status } = response.data || {};
 
-      if (status?.success) {
-        if (this.currentRoomId === roomId) {
-          this.currentRoomId = null;
-        }
-        onSuccess();
-      } else {
-        onError(status?.error || "Failed to delete room");
+    if (status?.success) {
+      if (this.currentRoomId === roomId) {
+        this.currentRoomId = null;
       }
-    } catch {
-      onError("An error occurred. Please try again.");
+      return { success: true };
     }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to delete room",
+    };
   }
 }
 

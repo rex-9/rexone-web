@@ -10,6 +10,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -37,7 +38,6 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
   const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
-  const [, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number>(3);
   const [hasFailureHistory, setHasFailureHistory] = useState(false);
@@ -53,13 +53,11 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
     const result = await AuthController.signInWithEmailOrUsername(
       email,
       password,
-      setError,
-      setMessage,
-      signin,
-      navigate,
     );
+    setIsLoading(false);
 
-    if (result.success) {
+    if (result.success && result.token && result.user) {
+      signin(result.token, result.user);
       success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
       cooldown.clear();
       setRemainingAttempts(3);
@@ -67,6 +65,7 @@ export const SigninPasswordDialog: React.FC<SigninPasswordDialogProps> = ({
       setPassword("");
       setError("");
       onClose();
+      navigate(AppRoutes.client.protected.HOME);
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });

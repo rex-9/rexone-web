@@ -98,12 +98,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
 
         case "exists_unconfirmed":
           // Existing unconfirmed user - send new OTP and go to confirm
-          await AuthController.sendConfirmationEmail(
-            localEmail,
-            (err) => setEmailError(err),
-            () => {},
-            () => {},
-          );
+          await AuthController.sendConfirmationEmail(localEmail);
 
           navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, {
             email: localEmail,

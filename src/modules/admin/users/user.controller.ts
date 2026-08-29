@@ -3,27 +3,30 @@ import { IApiPagination, IUser } from "../../../models";
 import { parseFromList } from "../../../services/api.service";
 
 class UserController {
-  async getUsers(
-    params?: { page?: number; limit?: number },
-    onSuccess?: (users: IUser[], pagination?: IApiPagination) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-    try {
-      const response = await Admin.UserService.getUsers(params);
-      const { status, data, meta } = response.data || {};
+  async getUsers(params?: { page?: number; limit?: number }): Promise<{
+    success: boolean;
+    users: IUser[];
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await Admin.UserService.getUsers(params);
+    const { status, data, meta } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(status?.error || "Failed to load users");
-        return;
-      }
-
+    if (status?.success && data) {
       const users = parseFromList<IUser>(data);
-
-      onSuccess?.(users, meta?.pagination);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-      onError?.("An error occurred while loading users.");
+      return {
+        success: true,
+        users,
+        pagination: meta?.pagination ?? null,
+      };
     }
+
+    return {
+      success: false,
+      users: [],
+      pagination: null,
+      error: status?.error || response.error || "Failed to load users",
+    };
   }
 }
 

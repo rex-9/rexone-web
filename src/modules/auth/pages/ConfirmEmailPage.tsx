@@ -23,20 +23,18 @@ export const ConfirmEmailPage: React.FC = () => {
 
     // Handle auth_token from email confirmation link
     if (authToken) {
-      AuthController.signInWithToken(
-        authToken,
-        () => {},
-        (token, user) => {
-          signin(token, user);
+      (async () => {
+        const result = await AuthController.signInWithToken(authToken);
+        if (result.success && result.token && result.user) {
+          signin(result.token, result.user);
           success(t(AppLocales.Auth.ConfirmEmail.LinkConfirmed));
           navigate(AppRoutes.client.protected.HOME, { replace: true });
-        },
-        (errorMsg) => {
-          console.error("error", `Confirmation failed: ${errorMsg}`);
+        } else {
+          console.error("error", `Confirmation failed: ${result.error}`);
           const url = AppRoutes.client.public.SIGN_IN;
           navigate(url, { replace: true });
-        },
-      );
+        }
+      })();
       return;
     }
 

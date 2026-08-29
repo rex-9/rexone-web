@@ -21,26 +21,10 @@ export const AiPage: React.FC = () => {
   };
 
   const loadHistory = useCallback(async () => {
-    await AiController.loadHistory(
-      null, // null for current room
-      (historyMessages, _roomId, processing) => {
-        if (historyMessages.length === 0) {
-          setMessages([
-            {
-              id: "welcome",
-              role: "assistant",
-              content:
-                "Hello! I'm your AI assistant. How can I help you today?",
-              created_at: new Date().toISOString(),
-            },
-          ]);
-        } else {
-          setMessages(historyMessages);
-        }
-        setIsProcessing(processing);
-      },
-      (err) => {
-        console.error("Failed to load history:", err);
+    const result = await AiController.loadHistory(null);
+
+    if (result.success) {
+      if (result.messages.length === 0) {
         setMessages([
           {
             id: "welcome",
@@ -49,9 +33,22 @@ export const AiPage: React.FC = () => {
             created_at: new Date().toISOString(),
           },
         ]);
-        setIsProcessing(false);
-      },
-    );
+      } else {
+        setMessages(result.messages);
+      }
+      setIsProcessing(result.processing);
+    } else {
+      console.error("Failed to load history:", result.error);
+      setMessages([
+        {
+          id: "welcome",
+          role: "assistant",
+          content: "Hello! I'm your AI assistant. How can I help you today?",
+          created_at: new Date().toISOString(),
+        },
+      ]);
+      setIsProcessing(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -76,22 +73,19 @@ export const AiPage: React.FC = () => {
     setInput("");
     setIsSubmitting(true);
 
-    await AiController.chat(
-      content,
-      null, // roomId (auto-detected)
-      (queuedMessage, _roomId) => {
-        setMessages((prev) => [
-          ...prev.filter((message) => message.id !== "welcome"),
-          queuedMessage,
-        ]);
-        setIsProcessing(true);
-        success("Message sent. AI is thinking while you continue browsing.");
-      },
-      (err) => {
-        setInput(content);
-        error(err || "Failed to get AI response");
-      },
-    );
+    const result = await AiController.chat(content, null);
+
+    if (result.success && result.message) {
+      setMessages((prev) => [
+        ...prev.filter((message) => message.id !== "welcome"),
+        result.message!,
+      ]);
+      setIsProcessing(true);
+      success("Message sent. AI is thinking while you continue browsing.");
+    } else {
+      setInput(content);
+      error(result.error || "Failed to get AI response");
+    }
 
     setIsSubmitting(false);
   };
@@ -108,21 +102,21 @@ export const AiPage: React.FC = () => {
 
   const handleClearHistory = async () => {
     setIsClearDialogOpen(false);
-    await AiController.clearHistory(
-      null,
-      () => {
-        success("Chat history cleared");
-        setMessages([
-          {
-            id: "welcome",
-            role: "assistant",
-            content: "Hello! I'm your AI assistant. How can I help you today?",
-            created_at: new Date().toISOString(),
-          },
-        ]);
-      },
-      (err) => error(err),
-    );
+    const result = await AiController.clearHistory(null);
+
+    if (result.success) {
+      success("Chat history cleared");
+      setMessages([
+        {
+          id: "welcome",
+          role: "assistant",
+          content: "Hello! I'm your AI assistant. How can I help you today?",
+          created_at: new Date().toISOString(),
+        },
+      ]);
+    } else {
+      error(result.error || "Failed to clear history");
+    }
   };
 
   return (

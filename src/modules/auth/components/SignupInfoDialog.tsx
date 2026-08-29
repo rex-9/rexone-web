@@ -51,20 +51,23 @@ export const SignupInfoDialog: React.FC<SignupInfoDialogProps> = ({
     }
 
     setIsLoading(true);
-    await AuthController.signUpWithEmail(
+    setError("");
+
+    const result = await AuthController.signUpWithEmail(
       username,
       fullName,
       email,
       password,
       password, // password confirmation is same as password
-      setError,
-      () => {
-        // After signup, navigate to verify email step
-        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
-        success(t(AppLocales.Auth.SignUpInfo.VerificationSent));
-      },
     );
     setIsLoading(false);
+
+    if (result.success) {
+      navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
+      success(t(AppLocales.Auth.SignUpInfo.VerificationSent));
+    } else {
+      setError(result.error || "Failed to sign up.");
+    }
   };
 
   return (

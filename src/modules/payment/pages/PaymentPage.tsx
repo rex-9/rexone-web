@@ -43,31 +43,43 @@ export const PaymentPage: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
-  const handleCheckout = (productId: string) => {
-    PaymentController.createCheckout(
-      productId,
-      (url) => {
-        success("Redirecting to checkout...");
-        window.location.href = url;
-      },
-      (err) => error(err),
-    );
+  const handleCheckout = async (productId: string) => {
+    setLoading(true);
+    const result = await PaymentController.createCheckout(productId);
+    setLoading(false);
+
+    if (result.success && result.checkoutUrl) {
+      success("Redirecting to checkout...");
+      window.location.href = result.checkoutUrl;
+    } else {
+      error(result.error || "Failed to create checkout session");
+    }
   };
 
-  const handleCancel = (subscriptionId: string) => {
-    PaymentController.cancelSubscription(
-      subscriptionId,
-      () => fetchData(),
-      (err) => error(err),
-    );
+  const handleCancel = async (subscriptionId: string) => {
+    setLoading(true);
+    const result = await PaymentController.cancelSubscription(subscriptionId);
+    setLoading(false);
+
+    if (result.success) {
+      success(result.message || "Subscription canceled successfully");
+      await fetchData();
+    } else {
+      error(result.error || "Failed to cancel subscription");
+    }
   };
 
-  const handleResume = (subscriptionId: string) => {
-    PaymentController.resumeSubscription(
-      subscriptionId,
-      () => fetchData(),
-      (err) => error(err),
-    );
+  const handleResume = async (subscriptionId: string) => {
+    setLoading(true);
+    const result = await PaymentController.resumeSubscription(subscriptionId);
+    setLoading(false);
+
+    if (result.success) {
+      success(result.message || "Subscription resumed successfully");
+      await fetchData();
+    } else {
+      error(result.error || "Failed to resume subscription");
+    }
   };
 
   const getPurchaseCount = (productId: string) => {

@@ -203,36 +203,6 @@ export const useAxiosInterceptor = () => {
   }, [setLoading, token, signout]);
 };
 
-export const apiHandler = async <T>(
-  operation: string,
-  apiFunction: () => Promise<IApiResponse<IApiEnvelope<T>>>,
-  setError: (message: string) => void,
-  onSuccess: (response: IApiEnvelope<T>) => void,
-  onFailure?: () => void,
-): Promise<void> => {
-  try {
-    const response = await apiFunction();
-    const envelope = response.data;
-
-    if (envelope?.status?.success) {
-      setError("");
-      onSuccess(envelope);
-    } else {
-      setError(
-        envelope?.status?.error ??
-          envelope?.status?.message ??
-          `An error occurred when ${operation}.`,
-      );
-
-      onFailure?.();
-    }
-  } catch (error) {
-    setError(`An error occurred when ${operation}. error: ${error}`);
-
-    onFailure?.();
-  }
-};
-
 // Helper to extract attributes from JSONAPI response
 export const parseFromList = <T>(
   items: IJsonApiResource<T>[] | null | undefined,

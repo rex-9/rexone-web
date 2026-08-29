@@ -28,16 +28,9 @@ class UserController {
     return confirmed ? "exists_confirmed" : "exists_unconfirmed";
   }
 
-  async getCurrentUser(
-    setCurrentUser: (user: IUser | null) => void,
-  ): Promise<void> {
-    try {
-      const response = await UserService.getCurrentUser();
-      const user = response.data?.data?.user;
-      setCurrentUser(user || null);
-    } catch (error) {
-      console.error("Error fetching current user:", error);
-    }
+  async getCurrentUser(): Promise<IUser | null> {
+    const response = await UserService.getCurrentUser();
+    return response.data?.data?.user || null;
   }
 
   async uploadImage(
