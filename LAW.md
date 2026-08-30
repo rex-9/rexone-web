@@ -77,35 +77,69 @@
 
 ---
 
-## 🌐 5. Architecture & Layering Law
+## 🌐 5. Architecture & Layering Law (Strict MVCS Pattern)
 
-### 5.1 Strict 4-Tier Separation of Concerns
+### 5.1 Server-Business Logic Authority vs. Client-Business Logic
+- **Server-Business Logic in Core**: All primary application business logic (or **server-business logic**)—including authorization rules, access lifecycles, pricing, rate limits, payment transactions, AI pipelines, and database integrity—is handled exclusively in `rexone-core`.
+- **Zero Server-Business Logic Duplication**: The web client MUST NEVER duplicate, re-implement, or re-calculate server-business logic. This prevents writing duplicate business rules across Web and Mobile.
+- **Client-Business Logic Focus**: The web client strictly limits its logic to **client-business logic** (frontend state management, user interaction orchestration, local form validations, UI state transitions, and responsive presentation).
+
+### 5.2 Strict 4-Tier MVCS Separation of Concerns
 ```
-View Layer (Pages / Components)
-       ↓  (Triggers actions, consumes state)
-Controller Layer (src/modules/*/controllers)
-       ↓  (Orchestrates flow, loading, error handling)
-Service Layer (src/modules/*/services)
-       ↓  (Formats payload & calls API)
+Model Layer (src/models/ & src/modules/*/types.ts)
+       │  (Typed interfaces, request/response models, state schemas)
+View Layer (src/design/pages/ or src/modules/*/components/ & pages/)
+       ↓  (Triggers actions, manages local form input states, consumes reactive atoms/hooks)
+Controller Layer (src/modules/*/controllers/*.controller.ts)
+       ↓  (Orchestrates backend-facing client-business logic, coordinates services, returns typed results)
+Service Layer (src/services/ & src/modules/*/services/*.service.ts)
+       ↓  (Formats request payloads, calls ApiService, returns IApiResponse)
 Transport Layer (src/services/api.service.ts)
+       ↓  (Global Axios instance, JWT/Platform/Locale headers, centralized 401 interceptor)
 ```
 
-- **Views (Pages/Components)**:
-  - PURE presentation and user interaction.
-  - Zero direct API calls (`axios`, `fetch`).
-  - Zero direct business logic calculations.
-  - Only consume reactive state (Jotai atoms, Contexts) and invoke Controller methods.
+- **Views (Pages / Components / Dialogs)**:
+  - **PURE presentation and user interaction**.
+  - **Zero direct API calls** (`axios`, `fetch`, direct `*.service.ts` calls). All external operations MUST route through a Controller.
+  - **Zero server-business logic calculations** or raw network envelope unwrapping.
+  - **Owns local UI state** (form input state, field-level validation errors, local UI loading flags, dialog transitions, toast notifications).
+  - Only consumes reactive state (Jotai atoms, React Contexts, custom Hooks) and invokes Controller methods.
+
 - **Controllers (`*.controller.ts`)**:
-  - Coordinate business workflows, manage validation, set loading/error messages.
-  - Call Services for remote operations.
-  - Update reactive state upon success or failure.
+  - **Coordinate backend-facing client-business logic**, data transformations, and service orchestration.
+  - **Lean Controller Logic Law**: Controller logic must remain lean and minimal — focused strictly on data typing, request formatting, JSON restructuring, and response parsing. Server-business logic stays in Core.
+  - **Zero UI Logic or UI Callbacks Law**: Controllers MUST NOT accept UI callbacks (`setError`, `setSuccess`, `setLoading`, `navigate`, `toast`, `onSuccess`, `onError`).
+  - **Pure Strongly-Typed Async Return Values**: Every controller method MUST return a clean, strongly-typed result object (e.g. `Promise<{ success: boolean; data?: T; error?: string }>` or `Promise<{ success: boolean; token?: string; user?: IUser; error?: string }>`).
+  - The calling View / Hook inspects the returned result and is solely responsible for UI transitions, setting local error messages, or navigating routes.
+  - Call Services for remote HTTP / WebSocket operations.
+  - Update shared reactive state (Jotai atoms) upon success or failure where global state sync is required.
+
 - **Services (`*.service.ts`)**:
-  - Exclusively handle remote HTTP/WebSocket calls via `api` (`ApiService`).
-  - Strongly typed with `IApiResponse<IApiEnvelope<T>>`.
-  - Zero UI state or component references.
+  - **Exclusively handle remote HTTP/WebSocket transport** via `api` (`ApiService`).
+  - **Shared Services (`src/services/`)**: Application-wide infrastructure services used by any controller or hook (`api.service.ts`, `socket.service.ts`, `atom.service.ts`).
+  - **Module Services (`src/modules/<name>/services/`)**: Feature-specific API clients (`auth.service.ts`, `ai.service.ts`, `payment.service.ts`, `feedback.service.ts`). When necessary, module services can be imported and utilized by other domain controllers.
+  - Strongly typed with `Promise<IApiResponse<IApiEnvelope<T>>>`.
+  - Zero UI state, zero DOM access, zero component references.
+
 - **Transport (`api.service.ts`)**:
   - Global axios instance with automatic JWT header injection (`Authorization: Bearer <token>`), platform header (`X-Platform: web`), and locale header (`X-Locale`).
   - Centralized 401 token expiration / session revocation interceptor.
+
+### 5.3 Two-Way Client-Business Logic Architecture
+The web client strictly bifurcates its **client-business logic** based on its connection to the backend:
+
+1. **Backend-Facing Client-Business Logic (`Controller` + `Service`)**:
+   - Any client logic involving API endpoints, server state, persistence, network serialization, or remote orchestration MUST flow through `<feature>.controller.ts` and `<feature>.service.ts`.
+   - Handled inside `<feature>.controller.ts`.
+   - Stays lean: data typing, JSON payload restructuring, API envelope parsing, and error mapping.
+
+2. **Non-Backend / UI-Only Client-Business Logic (`Custom Hooks`)**:
+   - Any client-business logic that is purely clientside (local calculations, timer countdowns, scroll physics, keyboard shortcuts, DOM measurements, animation timings, audio player playback state) MUST be handled by **Custom React Hooks** (`src/hooks/use*.ts` or `src/modules/*/hooks/use*.ts`).
+   - Does NOT require a controller or service.
+
+3. **Complex Client-Business Logic Involving UI State Orchestration**:
+   - If a client workflow is large, stateful, or deeply intertwined with UI reactivity (e.g. multi-step auth wizard flow, real-time WebSocket chat streaming with message queueing), a **Custom Hook** MUST be used to bridge the View and Controller.
+   - The Hook manages the reactive UI state and calls the Controller for backend operations, keeping the Controller lean and the View declarative.
 
 ---
 
