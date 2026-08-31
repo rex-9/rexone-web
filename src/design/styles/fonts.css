@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@font-face {
+  font-family: 'Clip';
+  src: url('./src/assets/fonts/Clip.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Storytime";
+  src: url('./src/assets/fonts/Storytime.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

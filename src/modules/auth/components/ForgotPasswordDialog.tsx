@@ -115,4 +115,3 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
     </Dialog>
   );
 };
-

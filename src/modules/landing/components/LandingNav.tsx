@@ -1,6 +1,6 @@
 // src/modules/landing/components/LandingNav.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { iconsLib } from "../../../assets";
 import { useAuth } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
@@ -20,11 +20,7 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(activeSection);
-
-  useEffect(() => {
-    setCurrentSection(activeSection);
-  }, [activeSection]);
+  const currentSection = activeSection;
 
   const navItems = [
     { label: "Greetings", href: "#Greetings" },
@@ -39,7 +35,6 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
     href: string,
   ) => {
     e.preventDefault();
-    setCurrentSection(href);
     setIsMobileMenuOpen(false);
     if (onSectionClick) {
       onSectionClick(href);
@@ -101,7 +96,7 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
             variant={ButtonVariants.PRIMARY}
             size={ComponentSizes.SM}
             onClick={handleEnterClick}
-            className="!py-1.5 !px-4 text-xs font-primary"
+            className="!py-1 !px-4 text-xs font-primary"
           >
             Enter
           </Button>

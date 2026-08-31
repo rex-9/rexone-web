@@ -1,5 +1,6 @@
 import { PaymentService } from ".";
-import { parsePaginatedResponse } from "../../services/api.service";
+import { AppLocales, translate } from "../../locales";
+import { getApiError, parsePagyList } from "../../services/api.service";
 import { IProduct, ISubscription, ITransaction } from "./types";
 import { IApiPagination } from "../../models";
 
@@ -15,8 +16,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } =
-        parsePaginatedResponse<IProduct>(response);
+      const { records, pagination } = parsePagyList<IProduct>(response);
       return { success: true, products: records, pagination };
     }
 
@@ -24,7 +24,10 @@ class PaymentController {
       success: false,
       products: [],
       pagination: null,
-      error: status?.error || response.error || "Failed to fetch products",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.LoadProducts),
+      ),
     };
   }
 
@@ -39,8 +42,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } =
-        parsePaginatedResponse<ISubscription>(response);
+      const { records, pagination } = parsePagyList<ISubscription>(response);
       return { success: true, subscriptions: records, pagination };
     }
 
@@ -48,7 +50,10 @@ class PaymentController {
       success: false,
       subscriptions: [],
       pagination: null,
-      error: status?.error || response.error || "Failed to fetch subscriptions",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.LoadSubscriptions),
+      ),
     };
   }
 
@@ -71,7 +76,10 @@ class PaymentController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to cancel subscription",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.CancelSubscription),
+      ),
     };
   }
 
@@ -94,7 +102,10 @@ class PaymentController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to resume subscription",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.ResumeSubscription),
+      ),
     };
   }
 
@@ -109,8 +120,7 @@ class PaymentController {
     const { status } = response.data || {};
 
     if (status?.success) {
-      const { records, pagination } =
-        parsePaginatedResponse<ITransaction>(response);
+      const { records, pagination } = parsePagyList<ITransaction>(response);
       return { success: true, transactions: records, pagination };
     }
 
@@ -118,7 +128,10 @@ class PaymentController {
       success: false,
       transactions: [],
       pagination: null,
-      error: status?.error || response.error || "Failed to fetch transactions",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.LoadTransactions),
+      ),
     };
   }
 
@@ -140,7 +153,10 @@ class PaymentController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to create checkout session",
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.CreateCheckout),
+      ),
     };
   }
 }

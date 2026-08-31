@@ -1,7 +1,12 @@
 // src/controllers/auth.controller.ts
 
-import { AuthService } from ".";
-import { IUser } from "../../models";
+import AuthService, {
+  type IGoogleSignInCompleteData,
+  type IGoogleSignInStartData,
+} from "./auth.service";
+import { AppLocales, translate } from "../../locales";
+import { IApiResponseStatus, IUser } from "../../models";
+import { getApiError } from "../../services";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 import { AUTH_ERRORS } from "./constants";
 
@@ -36,6 +41,7 @@ class AuthController {
     password: string,
   ): Promise<{
     success: boolean;
+    errorMessage?: string;
     token?: string;
     user?: IUser;
     remainingAttempts?: number;
@@ -55,7 +61,9 @@ class AuthController {
       return {
         success: false,
         otpSent: true,
-        message: status.message || "Verification code sent.",
+        message:
+          status.message ||
+          translate(AppLocales.Auth.Shared.VerificationCodeSent),
       };
     }
 
@@ -72,7 +80,10 @@ class AuthController {
     // Failed attempt
     return {
       success: false,
-      error: status?.error || response.error || "Incorrect passcode.",
+      error: getApiError(
+        response,
+        translate(AppLocales.Auth.Shared.SignInFailed),
+      ),
       remainingAttempts: data?.remaining_attempts,
       cooldownRemaining: data?.cooldown_remaining,
     };
@@ -80,8 +91,8 @@ class AuthController {
 
   // Shared response handler
   private _handleAuthResponse(
-    status: Record<string, any> | undefined,
-    data: Record<string, any> | undefined,
+    status: IApiResponseStatus | undefined,
+    data: IGoogleSignInStartData | IGoogleSignInCompleteData | undefined,
     passwordRequired: boolean,
     challengeToken?: string,
   ) {
@@ -91,7 +102,7 @@ class AuthController {
           return {
             success: false,
             statusCode: status.code,
-            errorMessage: "Google verification requires passcode setup.",
+            errorMessage: translate(AppLocales.Auth.Shared.GooglePasscodeRequired),
           };
         }
         return {
@@ -115,7 +126,8 @@ class AuthController {
     return {
       success: false,
       statusCode: status?.code || 401,
-      errorMessage: status?.error || "Google authentication failed.",
+      errorMessage:
+        status?.error || translate(AppLocales.Auth.Shared.GoogleAuthenticationFailed),
     };
   }
 
@@ -153,7 +165,7 @@ class AuthController {
       errorMessage:
         result.errorMessage ||
         status?.error ||
-        "Failed to complete Google sign in.",
+        translate(AppLocales.Auth.Shared.GoogleSignInCompleteFailed),
       user: result.user,
       token: result.token,
     };
@@ -303,7 +315,7 @@ class AuthController {
   async signOut(): Promise<boolean> {
     const response = await AuthService.signOut();
     const { status } = response.data || {};
-    const statusError = status?.error;
+    const statusError = status?.error || response.error;
     const isAlreadySignedOut =
       statusError === AUTH_ERRORS.UNAUTHORIZED ||
       statusError === AUTH_ERRORS.SIGNATURE_EXPIRED ||

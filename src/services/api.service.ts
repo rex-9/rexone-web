@@ -23,6 +23,18 @@ const axiosInstance = axios.create({
   withCredentials: true, // Include credentials in requests
 });
 
+const getRequestToken = (config?: AxiosRequestConfig): string | null => {
+  const headers = AxiosHeaders.from(config?.headers as AxiosHeaders | undefined);
+  const authorization = headers.get("Authorization");
+  const value = Array.isArray(authorization)
+    ? authorization[0]
+    : authorization;
+
+  return typeof value === "string" && value.startsWith("Bearer ")
+    ? value.slice("Bearer ".length)
+    : null;
+};
+
 // Utility function to handle errors
 const handleError = <T = unknown>(
   error: unknown,
@@ -72,6 +84,15 @@ const apiRequest = async <T>(
     return handleError(error);
   }
 };
+
+export const getApiError = <T>(
+  response: IApiResponse<IApiEnvelope<T>>,
+  fallback: string,
+): string =>
+  response.data?.status?.error ||
+  response.data?.status?.message ||
+  response.error ||
+  fallback;
 
 // Utility functions for each HTTP method
 export const api = {
@@ -172,8 +193,10 @@ export const useAxiosInterceptor = () => {
       (error) => {
         console.log("interceptor response error ===>", error);
 
-        // Handle ANY 401 with auth header (token expired OR session replaced)
-        if (error?.response?.status === 401 && token) {
+        const requestToken = getRequestToken(error?.config);
+        const isActiveRequest = !requestToken || !token || requestToken === token;
+
+        if (error?.response?.status === 401 && token && isActiveRequest) {
           signout();
 
           if (typeof window !== "undefined") {
@@ -203,19 +226,22 @@ export const useAxiosInterceptor = () => {
   }, [setLoading, token, signout]);
 };
 
-// Helper to extract attributes from JSONAPI response
-export const parseFromList = <T>(
-  items: IJsonApiResource<T>[] | null | undefined,
-): (T & { id: string })[] => {
-  if (!Array.isArray(items)) return [];
+export const parseRecord = <T extends object>(
+  record: IJsonApiResource<T> | T,
+): T & { id: string } => {
+  if (
+    "attributes" in record &&
+    "type" in record &&
+    typeof record.attributes === "object" &&
+    record.attributes !== null
+  ) {
+    return { ...record.attributes, id: record.id };
+  }
 
-  return items.map((item) => ({
-    ...item.attributes,
-    id: item.id,
-  }));
+  return record as T & { id: string };
 };
 
-export const parsePaginatedResponse = <T>(
+export const parsePagyList = <T extends object>(
   response: IApiResponse<IApiEnvelope<IJsonApiResource<T>[]>>,
 ): {
   records: (T & { id: string })[];
@@ -224,7 +250,11 @@ export const parsePaginatedResponse = <T>(
   const envelope = response.data;
 
   return {
-    records: parseFromList(envelope?.data),
+    records: Array.isArray(envelope?.data)
+      ? envelope.data.map((record) => parseRecord<T>(record))
+      : [],
     pagination: envelope?.meta?.pagination ?? null,
   };
 };
+
+export const parsePaginatedResponse = parsePagyList;

@@ -7,7 +7,13 @@ export const ADMIN_ACTIONS = {
   DELETE: "delete",
   READ: "read",
   UPDATE: "update",
+  DISCARD: "discard",
+  EDIT: "edit",
+  RESTORE: "restore",
 } as const;
+
+export type TAdminActionsType =
+  (typeof ADMIN_ACTIONS)[keyof typeof ADMIN_ACTIONS];
 
 export const ADMIN_RESOURCES = {
   USERS: "users",
@@ -21,10 +27,47 @@ export const ADMIN_RESOURCES = {
 export type TAdminResourceName =
   (typeof ADMIN_RESOURCES)[keyof typeof ADMIN_RESOURCES];
 
-export const ADMIN_ROLE_NAMES = {
-  ADMIN: "admin",
-  SUPER_ADMIN: "super_admin",
-  USER: "user",
+export const ADMIN_PERMISSION_ACTION_ORDER: string[] = [
+  ADMIN_ACTIONS.READ,
+  ADMIN_ACTIONS.CREATE,
+  ADMIN_ACTIONS.UPDATE,
+  ADMIN_ACTIONS.DELETE,
+];
+
+export const ADMIN_PERMISSION_FALLBACKS = {
+  NULL_RESOURCE: "null",
+  UNASSIGNED_RESOURCE: "unassigned",
+} as const;
+
+export interface IAdminPageMeta {
+  title: string;
+  description?: string;
+  actionLabel?: string;
+  actionTo?: string;
+  actionResource?: TAdminResourceName;
+  hasRecycleBin?: boolean;
+}
+
+export const ADMIN_NAV_SECTION_LABELS = {
+  IAM: "IAM",
+  CHAT: "Chat",
+  COMMERCE: "Commerce",
+  COMMUNICATION: "Communication",
+} as const;
+
+export const ADMIN_NAV_LABELS = {
+  CHAT_MESSAGES: "Chat Messages",
+  CHAT_ROOMS: "Chat Rooms",
+  NOTIFICATIONS: "Notifications",
+  PRODUCTS: "Products",
+  ROLES: "Roles",
+  USERS: "Users",
+} as const;
+
+export const ADMIN_TABLE_HEADERS = {
+  ACTIONS: "",
+  CREATED: "Created",
+  STATUS: "Status",
 } as const;
 
 export const ADMIN_COMMON_LABELS = {
@@ -32,9 +75,16 @@ export const ADMIN_COMMON_LABELS = {
   CANCEL: "Cancel",
   CUSTOM: "Custom",
   DELETE: "Delete",
+  DISCARD: "Discard",
   EDIT: "Edit",
   INACTIVE: "Inactive",
   NOT_AVAILABLE: "Not available",
+  OPENRECYCLEBIN: "Open recycle bin",
+  RESTORE: "Restore",
   SYSTEM: "System",
   UNASSIGNED: "Unassigned",
+} as const;
+
+export const ADMIN_COMMON_PAGINATION_LABELS = {
+  POFF: "off",
 } as const;

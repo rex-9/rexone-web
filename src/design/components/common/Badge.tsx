@@ -49,27 +49,31 @@ export const Badge: React.FC<IBadgeProps> = ({
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {
-    [ComponentSizes.XS]: "px-2 py-0.5 text-xs rounded-sm",
-    [ComponentSizes.SM]: "px-2.5 py-1 text-sm rounded",
-    [ComponentSizes.MD]: "px-3 py-1.5 text-base rounded-md",
+    [ComponentSizes.XS]: "px-2 py-1 text-xs rounded-sm",
+    [ComponentSizes.SM]: "px-2 py-1 text-sm rounded",
+    [ComponentSizes.MD]: "px-3 py-1 text-base rounded-md",
     [ComponentSizes.LG]: "px-4 py-2 text-lg rounded-lg",
-    [ComponentSizes.XL]: "px-5 py-2.5 text-xl rounded-xl",
+    [ComponentSizes.XL]: "px-5 py-2 text-xl rounded-xl",
   };
 
-  const Component = href ? "a" : "span";
+  const badgeClassName = cn(
+    "inline-flex items-center justify-center select-none",
+    variants[variant],
+    sizes[size] || sizes[ComponentSizes.MD],
+    className,
+  );
+
+  if (href) {
+    return (
+      <a href={href} target={target} rel={rel} {...props} className={badgeClassName}>
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <Component
-      {...(href ? { href, target, rel } : {})}
-      {...(props as any)}
-      className={cn(
-        "inline-flex items-center justify-center select-none",
-        variants[variant],
-        sizes[size] || sizes[ComponentSizes.MD],
-        className,
-      )}
-    >
+    <span {...props} className={badgeClassName}>
       {children}
-    </Component>
+    </span>
   );
 };

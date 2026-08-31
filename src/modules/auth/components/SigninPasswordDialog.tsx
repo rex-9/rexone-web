@@ -23,6 +23,9 @@ interface ISigninPasswordDialogProps {
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   onClose: () => void;
   onBack: () => void;
+  cooldownTargetTimeMs: number;
+  onCooldownStart: (targetTimeMs: number) => void;
+  onCooldownClear: () => void;
 }
 
 export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
@@ -32,6 +35,9 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
   navigateToStep,
   onClose,
   onBack,
+  cooldownTargetTimeMs,
+  onCooldownStart,
+  onCooldownClear,
 }) => {
   const { signin } = useAuth();
   const t = useTranslate();
@@ -45,17 +51,20 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
 
   // Countdown for cooldown period
   const cooldown = useCountdown(0);
+  const { startAt: startCooldownAt } = cooldown;
+
+  useEffect(() => {
+    if (cooldownTargetTimeMs > Date.now()) {
+      startCooldownAt(cooldownTargetTimeMs);
+    }
+  }, [cooldownTargetTimeMs, startCooldownAt]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (password.length !== 6 || cooldown.isActive) return;
 
     setIsLoading(true);
-    const result = await AuthController.signInWithEmailOrUsername(
-      email,
-      password,
-    );
-    setIsLoading(false);
+    const result = await AuthController.signInWithEmailOrUsername(email, password);
 
     if (result.success && result.token && result.user) {
       signin(result.token, result.user);
@@ -72,7 +81,9 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
     } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
       // Cooldown active - start countdown
-      cooldown.start(result.cooldownRemaining);
+      const targetTimeMs = Date.now() + result.cooldownRemaining * 1000;
+      cooldown.startAt(targetTimeMs);
+      onCooldownStart(targetTimeMs);
       setRemainingAttempts(0);
       setHasFailureHistory(true);
       setPassword("");
@@ -81,12 +92,8 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
           seconds: result.cooldownRemaining,
         }),
       );
-    } else {
-      // Failed attempt - update remaining attempts
-      const attemptsLeft =
-        result.remainingAttempts !== undefined
-          ? result.remainingAttempts
-          : Math.max(0, remainingAttempts - 1);
+    } else if (result.remainingAttempts !== undefined) {
+      const attemptsLeft = result.remainingAttempts;
       setRemainingAttempts(attemptsLeft);
       setHasFailureHistory(true);
       setPassword("");
@@ -100,7 +107,15 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
       } else {
         setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
       }
+    } else {
+      setPassword("");
+      setError(
+        result.error ||
+          result.errorMessage ||
+          t(AppLocales.Auth.Shared.SignInFailed),
+      );
     }
+
     setIsLoading(false);
   };
 
@@ -111,9 +126,10 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
       setRemainingAttempts(3);
       setError("");
       setPassword("");
+      onCooldownClear();
     }
     prevIsActiveRef.current = cooldown.isActive;
-  }, [cooldown.isActive, setPassword]);
+  }, [cooldown.isActive, onCooldownClear, setPassword]);
 
   const triggerSubmit = () => {
     if (formRef.current) {
@@ -139,6 +155,12 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
 
   const isSubmitDisabled =
     isLoading || cooldown.isActive || password.length !== 6;
+
+  const displayedError = cooldown.isActive
+    ? t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
+        seconds: cooldown.secondsLeft,
+      })
+    : error;
 
   // Button text with countdown
   const getButtonText = (): string => {
@@ -185,7 +207,7 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
           }}
           onComplete={triggerSubmit}
           label=""
-          error={error}
+          error={displayedError}
           disabled={isLoading || cooldown.isActive}
           helperText={getHelperText()}
         />

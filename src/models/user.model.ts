@@ -1,4 +1,7 @@
-// src/models/user.model.ts
+import type {
+  AdminRoleName,
+  IUserPermissionMap,
+} from "../modules/admin/roles/types";
 
 export interface IUser {
   id: string;
@@ -10,7 +13,9 @@ export interface IUser {
   profile_pic_url?: string;
   role?: string;
   roles?: string[];
-  permissions?: Record<string, string[]> | string[];
+  role_ids?: string[];
+  role_names?: AdminRoleName[];
+  permissions?: IUserPermissionMap | string[];
   is_admin?: boolean;
   is_super_admin?: boolean;
   created_at: Date | string;

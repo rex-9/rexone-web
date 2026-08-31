@@ -4,7 +4,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps } from "..";
-import { LayoutPage } from "../../../design/pages";
+import { PageLayout } from "../../../design/pages";
 
 export const SignInPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,8 +16,8 @@ export const SignInPage: React.FC = () => {
   }, [navigate]);
 
   return (
-    <LayoutPage>
+    <PageLayout>
       <div />
-    </LayoutPage>
+    </PageLayout>
   );
 };

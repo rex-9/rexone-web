@@ -6,17 +6,27 @@ import {
   IAssetUploadResponse,
   IAssetUploadOptions,
 } from "../../models";
+import { AppLocales, translate } from "../../locales";
 
 class UserController {
   async peekUser(
     email: string,
-  ): Promise<"exists_confirmed" | "exists_unconfirmed" | "not_exists"> {
+  ): Promise<
+    "exists_confirmed" | "exists_unconfirmed" | "not_exists" | "discarded"
+  > {
     const response = await UserService.peekUser(email);
+    const { status } = response.data || {};
+    if (
+      status?.code === 403 &&
+      response.data?.status?.error ===
+        translate(AppLocales.Auth.Initial.AccountDiscarded)
+    ) {
+      return "discarded";
+    }
 
     if (response.error || !response.data?.data) {
       console.error("Error peeking user:", response.error);
-
-      throw new Error("Failed to check user.");
+      throw new Error(translate(response.error || AppLocales.Auth.Initial.UserCheckFailed));
     }
 
     const { user_exists, confirmed } = response.data.data;

@@ -1,215 +1,204 @@
-import React, { useEffect, useState } from "react";
-import { useMarker } from "../contexts/MarkerContext";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAtom } from "jotai";
-import "react-clock/dist/Clock.css";
 import Clock from "react-clock";
+import "react-clock/dist/Clock.css";
 import atoms from "../../../atoms";
 import { sounds } from "../../../assets";
+import { useMarker } from "../contexts/MarkerContext";
+
+const formatTime = (date: Date): string =>
+  `${date.getHours().toString().padStart(2, "0")}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+
+const generateMarkerTimes = (
+  startTime: string,
+  endTime: string,
+  interval: number,
+  now: Date,
+): string[] => {
+  const [startHours, startMinutes] = startTime.split(":").map(Number);
+  const [endHours, endMinutes] = endTime.split(":").map(Number);
+  const startTotalMinutes = startHours * 60 + startMinutes;
+  const endTotalMinutes = endHours * 60 + endMinutes;
+  const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+  const times: string[] = [];
+
+  for (
+    let time = startTotalMinutes + interval;
+    time <= endTotalMinutes;
+    time += interval
+  ) {
+    if (time > currentTotalMinutes) {
+      const hours = Math.floor(time / 60);
+      const minutes = time % 60;
+      times.push(
+        `${hours.toString().padStart(2, "0")}:${minutes
+          .toString()
+          .padStart(2, "0")}`,
+      );
+    }
+  }
+
+  return times;
+};
+
+const calculateMarkerPosition = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  const totalMinutes = hours * 60 + minutes;
+  const angle = (totalMinutes / 60) * 360;
+  const radius = 144;
+
+  return {
+    x: radius + radius * Math.cos((angle - 90) * (Math.PI / 180)),
+    y: radius + radius * Math.sin((angle - 90) * (Math.PI / 180)),
+  };
+};
 
 export const AnalogClock: React.FC = () => {
-  const [value, setValue] = useState(new Date());
+  const [value, setValue] = useState(() => new Date());
   const { markers } = useMarker();
   const [startTime] = useAtom(atoms.startTimeAtom);
   const [endTime] = useAtom(atoms.endTimeAtom);
-  const [audioAllowed, setAudioAllowed] = useState(false);
-  const [markerTimes, setMarkerTimes] = useState<string[]>([]);
-  const [endReached, setEndReached] = useState(false);
-  const [wakeLock, setWakeLock] = useState<WakeLockSentinel | null>(null);
+  const audioAllowedRef = useRef(false);
+  const playedMarkerTimesRef = useRef(new Set<string>());
+  const endReachedRef = useRef(false);
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
 
-  useEffect(() => {
-    const handleUserInteraction = () => {
-      setAudioAllowed(true);
-      document.removeEventListener("click", handleUserInteraction);
-    };
-
-    document.addEventListener("click", handleUserInteraction);
-
-    const interval = setInterval(() => setValue(new Date()), 1000);
-    return () => {
-      clearInterval(interval);
-      document.removeEventListener("click", handleUserInteraction);
-    };
+  const playSound = useCallback(() => {
+    if (audioAllowedRef.current) {
+      void new Audio(sounds.note.src).play();
+    }
   }, []);
 
-  useEffect(() => {
-    if (!markers.length) {
-      return;
-    }
+  const playEndSound = useCallback(() => {
+    playSound();
+    window.setTimeout(() => {
+      playSound();
+      window.setTimeout(playSound, 1000);
+    }, 1000);
+  }, [playSound]);
+
+  const markerTimes = useMemo(() => {
+    if (!markers.length) return [];
+
     const intervalMinutes =
       markers[0].unit === "hours"
         ? markers[0].interval * 60
         : markers[0].interval;
-    let markerTimes = generateMarkerTimes(startTime, endTime, intervalMinutes);
-    setMarkerTimes(markerTimes);
-    setEndReached(false);
-  }, [markers, startTime, endTime]);
+
+    return generateMarkerTimes(startTime, endTime, intervalMinutes, value);
+  }, [endTime, markers, startTime, value]);
 
   useEffect(() => {
-    if (!markers.length) {
-      return;
-    }
-    if (endReached) return;
-
-    const currentTime = `${value.getHours().toString().padStart(2, "0")}:${value
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
-    console.log(
-      "marker time ===>",
-      markerTimes,
-      " | ",
-      "current time ===>",
-      currentTime,
-    );
-    if (markerTimes.includes(currentTime)) {
-      playSound();
-      setMarkerTimes(markerTimes.filter((time) => time !== currentTime)); // Remove the played time
-    } else if (currentTime === endTime) {
-      playEndSound();
-      setEndReached(true);
-    }
-  }, [value, markers, startTime, endTime, markerTimes, endReached]);
-
-  useEffect(() => {
-    const requestWakeLock = async () => {
-      try {
-        const wakeLockSentinel = await navigator.wakeLock.request("screen");
-        setWakeLock(wakeLockSentinel);
-        wakeLockSentinel.addEventListener("release", () => {
-          console.log("Wake Lock was released");
-        });
-        console.log("Wake Lock is active");
-      } catch (err) {
-        if (err instanceof Error) {
-          console.error(`${err.name}, ${err.message}`);
-        } else {
-          console.error(err);
-        }
-      }
+    const enableAudio = () => {
+      audioAllowedRef.current = true;
+      document.removeEventListener("click", enableAudio);
     };
+    const intervalId = window.setInterval(() => setValue(new Date()), 1000);
 
-    requestWakeLock();
-
-    const wakeLockInterval = setInterval(
-      () => {
-        requestWakeLock();
-      },
-      5 * 60 * 1000,
-    ); // 5 minutes
+    document.addEventListener("click", enableAudio);
 
     return () => {
-      clearInterval(wakeLockInterval);
-      if (wakeLock) {
-        wakeLock.release();
+      window.clearInterval(intervalId);
+      document.removeEventListener("click", enableAudio);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!markers.length) return;
+
+    const currentTime = formatTime(value);
+    if (
+      markerTimes.includes(currentTime) &&
+      !playedMarkerTimesRef.current.has(currentTime)
+    ) {
+      playedMarkerTimesRef.current.add(currentTime);
+      playSound();
+      return;
+    }
+
+    if (currentTime === endTime && !endReachedRef.current) {
+      endReachedRef.current = true;
+      playEndSound();
+    }
+  }, [endTime, markerTimes, markers.length, playEndSound, playSound, value]);
+
+  useEffect(() => {
+    playedMarkerTimesRef.current.clear();
+    endReachedRef.current = false;
+  }, [endTime, markers, startTime]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const requestWakeLock = async () => {
+      try {
+        const sentinel = await navigator.wakeLock.request("screen");
+        if (isMounted) {
+          wakeLockRef.current = sentinel;
+        } else {
+          await sentinel.release();
+        }
+      } catch (error) {
+        console.error("Wake Lock request failed", error);
       }
     };
-  }, [wakeLock]);
 
-  const playSound = () => {
-    if (audioAllowed) {
-      const audio = new Audio(sounds.note.src);
-      audio.play();
-    }
-  };
+    void requestWakeLock();
+    const intervalId = window.setInterval(() => void requestWakeLock(), 300000);
 
-  const playEndSound = () => {
-    playSound();
-    setTimeout(() => {
-      playSound();
-      setTimeout(() => {
-        playSound();
-      }, 1000);
-    }, 1000);
-  };
-
-  const calculateMarkerPosition = (time: string) => {
-    const [hours, minutes] = time.split(":").map(Number);
-    const totalMinutes = hours * 60 + minutes;
-    const angle = (totalMinutes / 60) * 360; // 720 minutes in 12 hours
-    const radius = 144; // Half of the clock size (72 * 2)
-    const x = radius + radius * Math.cos((angle - 90) * (Math.PI / 180));
-    const y = radius + radius * Math.sin((angle - 90) * (Math.PI / 180));
-    return { x, y };
-  };
-
-  const generateMarkerTimes = (
-    startTime: string,
-    endTime: string,
-    interval: number,
-  ) => {
-    const [startHours, startMinutes] = startTime.split(":").map(Number);
-    const [endHours, endMinutes] = endTime.split(":").map(Number);
-    const startTotalMinutes = startHours * 60 + startMinutes;
-    const endTotalMinutes = endHours * 60 + endMinutes;
-    const currentTotalMinutes = value.getHours() * 60 + value.getMinutes();
-
-    const times = [];
-    for (
-      let time = startTotalMinutes + interval;
-      time <= endTotalMinutes;
-      time += interval
-    ) {
-      if (time > currentTotalMinutes) {
-        const hours = Math.floor(time / 60);
-        const minutes = Math.floor(time % 60);
-        times.push(
-          `${hours.toString().padStart(2, "0")}:${minutes
-            .toString()
-            .padStart(2, "0")}`,
-        );
-      }
-    }
-    return times;
-  };
+    return () => {
+      isMounted = false;
+      window.clearInterval(intervalId);
+      void wakeLockRef.current?.release();
+      wakeLockRef.current = null;
+    };
+  }, []);
 
   return (
-    <div className="relative w-72 h-72">
-      <Clock size={288} value={value} className="bg-white rounded-full" />
-      <div className="absolute inset-0 border-2 border-base-content rounded-full">
-        {/* Render clock face */}
-        {markers.map((marker, index) => {
-          return (
-            <React.Fragment key={index}>
-              {/* Render start time marker */}
-              <div
-                key={`start-${index}`}
-                className="absolute w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor: "pink", // or any color you want for the start marker
-                  left: `${calculateMarkerPosition(startTime).x}px`,
-                  top: `${calculateMarkerPosition(startTime).y}px`,
-                  transform: "translate(-75%, -75%)",
-                }}
-              />
-              {markerTimes.map((time, idx) => {
-                const { x, y } = calculateMarkerPosition(time);
-                return (
-                  <div
-                    key={`${index}-${idx}`}
-                    className="absolute w-2 h-2 rounded-full"
-                    style={{
-                      backgroundColor: marker.color,
-                      left: `${x}px`,
-                      top: `${y}px`,
-                      transform: "translate(-75%, -75%)",
-                    }}
-                  />
-                );
-              })}
-              {/* Render end time marker */}
-              <div
-                key={`end-${index}`}
-                className="absolute w-2 h-2 rounded-full"
-                style={{
-                  backgroundColor: "red", // or any color you want for the end marker
-                  left: `${calculateMarkerPosition(endTime).x}px`,
-                  top: `${calculateMarkerPosition(endTime).y}px`,
-                  transform: "translate(-75%, -75%)",
-                }}
-              />
-            </React.Fragment>
-          );
-        })}
+    <div className="relative h-72 w-72">
+      <Clock size={288} value={value} className="rounded-full bg-white" />
+      <div className="absolute inset-0 rounded-full border-2 border-base-content">
+        {markers.map((marker, index) => (
+          <React.Fragment key={`${marker.color}-${index}`}>
+            <div
+              className="absolute h-2 w-2 rounded-full"
+              style={{
+                backgroundColor: "pink",
+                left: `${calculateMarkerPosition(startTime).x}px`,
+                top: `${calculateMarkerPosition(startTime).y}px`,
+                transform: "translate(-75%, -75%)",
+              }}
+            />
+            {markerTimes.map((time) => {
+              const { x, y } = calculateMarkerPosition(time);
+
+              return (
+                <div
+                  key={`${marker.color}-${time}`}
+                  className="absolute h-2 w-2 rounded-full"
+                  style={{
+                    backgroundColor: marker.color,
+                    left: `${x}px`,
+                    top: `${y}px`,
+                    transform: "translate(-75%, -75%)",
+                  }}
+                />
+              );
+            })}
+            <div
+              className="absolute h-2 w-2 rounded-full"
+              style={{
+                backgroundColor: "red",
+                left: `${calculateMarkerPosition(endTime).x}px`,
+                top: `${calculateMarkerPosition(endTime).y}px`,
+                transform: "translate(-75%, -75%)",
+              }}
+            />
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutPage } from "./LayoutPage";
+import { PageLayout } from "./PageLayout";
 import { AnapanaPage } from "../../modules/anapana/pages";
 import { LandingPage } from "../../modules/landing/pages";
 
@@ -8,9 +8,9 @@ export const RootPage: React.FC = () => {
   switch (subdomain) {
     case "anapana":
       return (
-        <LayoutPage>
+        <PageLayout>
           <AnapanaPage />
-        </LayoutPage>
+        </PageLayout>
       );
     default:
       return <LandingPage />;

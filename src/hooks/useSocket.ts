@@ -24,9 +24,13 @@ export const useSocket = () => {
 
     const handleNotification = (data: ISocketMessage) => {
       if (data.type === "notification") {
+        if (!data.message) {
+          return;
+        }
+
         const notif: INotification = {
           id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-          message: data.message || "Notification",
+          message: data.message,
           data: data.data || {},
           created_at: data.created_at || new Date().toISOString(),
         };

@@ -44,19 +44,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     return !isTokenExpired(token);
   }, [token]);
 
+  const signout = useCallback(() => {
+    setToken(null);
+    setCurrentUser(null);
+    setGoogleChallengeToken(null);
+  }, [setToken, setCurrentUser, setGoogleChallengeToken]);
+
   // Update loading when token changes
   useEffect(() => {
     if (token !== undefined) {
       setLoading(false);
     }
-  }, [token]);
+  }, [setLoading, token]);
 
   useEffect(() => {
-    if (token && isTokenExpired(token)) {
+    if (!token || !isTokenExpired(token)) return;
+
+    const timeoutId = window.setTimeout(() => {
       console.log("🔐 Token expired, signing out...");
       signout();
-    }
-  }, [token]);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [signout, token]);
 
   // Also check expiry periodically (every 1 hour)
   useEffect(() => {
@@ -70,7 +80,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }, 3600000);
 
     return () => clearInterval(interval);
-  }, [token]);
+  }, [signout, token]);
 
   const signin = useCallback(
     (token: string, user: IUser) => {
@@ -80,12 +90,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     },
     [setToken, setCurrentUser, setGoogleChallengeToken],
   );
-
-  const signout = useCallback(() => {
-    setToken(null);
-    setCurrentUser(null);
-    setGoogleChallengeToken(null);
-  }, [setToken, setCurrentUser, setGoogleChallengeToken]);
 
   const value = useMemo(
     () => ({
@@ -102,6 +106,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       isAuthenticated,
       token,
       currentUser,
+      setCurrentUser,
       signin,
       signout,
       googleChallengeToken,

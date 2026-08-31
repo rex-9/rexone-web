@@ -2,13 +2,13 @@ import React from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 
 export const LoadingOverlay: React.FC = () => {
-  const { isLoading } = useLoading();
+  const { isLoading, isOverlayLoading } = useLoading();
 
-  if (!isLoading) return null;
+  if (!isLoading || !isOverlayLoading) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="text-white text-lg">Loading...</div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <span className="loading loading-spinner loading-lg text-primary" />
     </div>
   );
 };

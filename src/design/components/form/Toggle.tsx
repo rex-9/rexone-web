@@ -61,7 +61,7 @@ export function Toggle({
     >
       <span
         className={cn(
-          "absolute left-0.5 rounded-full bg-base-100 shadow-sm transition-transform duration-200",
+          "absolute left-1 rounded-full bg-base-100 shadow-sm transition-transform duration-200",
           sizes[size].thumb,
           checked ? sizes[size].on : "translate-x-0",
         )}

@@ -57,7 +57,7 @@ export const Toast: React.FC<IToastProps> = ({
     <div className="toast toast-top toast-center z-50 animate-fade-in">
       <div className={cn("alert shadow-lg max-w-md", typeClasses[type])}>
         <div className="flex items-start gap-3 w-full">
-          <span className="text-2xl mt-0.5">{icon || defaultIcons[type]}</span>
+          <span className="text-2xl mt-1">{icon || defaultIcons[type]}</span>
           <div className="flex-1 min-w-0">
             {title && (
               <p className={cn("text-sm font-semibold", typeColors[type])}>

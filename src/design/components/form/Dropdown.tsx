@@ -3,16 +3,28 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface IDropdownProps {
+interface IDropdownBaseProps {
   options: Array<{ value: string; label: string }>;
-  value: string;
-  onValueChange: (value: string) => void;
   label?: string;
   error?: string;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
 }
+
+type TSingleDropdownProps = IDropdownBaseProps & {
+  value: string;
+  onValueChange: (value: string) => void;
+  multiple?: false;
+};
+
+type TMultiDropdownProps = IDropdownBaseProps & {
+  value: string[];
+  onValueChange: (value: string[]) => void;
+  multiple: true;
+};
+
+export type IDropdownProps = TSingleDropdownProps | TMultiDropdownProps;
 
 export const Dropdown: React.FC<IDropdownProps> = ({
   options,
@@ -23,16 +35,24 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   placeholder = "Select an option",
   className,
   disabled,
+  multiple = false,
   ...props
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onValueChange(event.target.value);
+    if (multiple) {
+      (onValueChange as (value: string[]) => void)(
+        Array.from(event.target.selectedOptions, (option) => option.value),
+      );
+      return;
+    }
+
+    (onValueChange as (value: string) => void)(event.target.value);
   };
 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-body-s font-medium text-base-content/70 mb-1.5">
+        <label className="block text-body-s font-medium text-base-content/70 mb-1">
           {label}
         </label>
       )}
@@ -41,8 +61,9 @@ export const Dropdown: React.FC<IDropdownProps> = ({
         value={value}
         onChange={handleChange}
         disabled={disabled}
+        multiple={multiple}
         className={cn(
-          "w-full px-4 py-2.5 text-body-m rounded-md",
+          "w-full px-4 py-2 text-body-m rounded-md",
           "bg-base-100 text-base-content",
           "border border-base-300",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",

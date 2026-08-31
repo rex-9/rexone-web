@@ -30,11 +30,6 @@ export const useCountdown = (defaultSeconds = 0): IUseCountdownResult => {
     return () => window.clearInterval(intervalId);
   }, [isActive]);
 
-  useEffect(() => {
-    if (!targetTimeMs || targetTimeMs > nowMs) return;
-    setTargetTimeMs(0);
-  }, [targetTimeMs, nowMs]);
-
   const start = useCallback(
     (seconds = defaultSeconds) => {
       const normalizedSeconds = Math.max(0, Math.ceil(seconds));

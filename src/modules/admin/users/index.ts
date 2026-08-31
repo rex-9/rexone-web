@@ -1,8 +1,9 @@
-// admin/index.ts
 import UserController from "./user.controller";
 import UserService from "./user.service";
 
-export const Admin = {
-  UserController,
-  UserService,
-};
+export * from "./types";
+export * from "./constants";
+export * from "./pages";
+export type { AdminUserResponse } from "./user.service";
+
+export { UserController, UserService };

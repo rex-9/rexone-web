@@ -4,7 +4,7 @@
  * Standard text input with label, helper text, and error states
  */
 
-import React from "react";
+import React, { useId } from "react";
 import { cn } from "../../utils";
 import { InputVariant, InputVariants } from "../../constants";
 
@@ -28,7 +28,8 @@ export const TextInput: React.FC<ITextInputProps> = ({
   disabled,
   ...props
 }) => {
-  const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const inputId = id || generatedId;
   const hasError = !!error;
   const displayText = error || helperText;
   const isGlass = variant === InputVariants.GLASS;
@@ -39,7 +40,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
         <label
           htmlFor={inputId}
           className={cn(
-            "text-body-s font-medium mb-4",
+            "text-body-s font-medium mb-1",
             isGlass ? "text-glow-white" : "text-base-content",
           )}
         >
@@ -72,7 +73,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
       {displayText && (
         <span
           className={cn(
-            "text-caption mt-4",
+            "text-caption mt-1",
             hasError ? "text-error" : "text-base-content opacity-60",
           )}
         >

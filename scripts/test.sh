@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Rexone Web — E2E Test Runner (Playwright)
+# Rexone Web — Test Runner (Vitest Unit + Playwright E2E)
 #
 # Usage:
 #   ./scripts/test.sh [flow|file] [options]
@@ -108,8 +108,16 @@ if [ -z "$TARGET" ]; then
   TARGET="e2e/specs/auth/"
 fi
 
+echo ""
 echo "===================================================="
-echo " Running Web E2E Tests"
+echo " Running Unit Tests (Vitest)"
+echo "===================================================="
+
+npx vitest run
+
+echo ""
+echo "===================================================="
+echo " Running E2E Tests (Playwright)"
 echo " Target: $TARGET"
 if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
   echo " Flags:  ${EXTRA_ARGS[*]}"

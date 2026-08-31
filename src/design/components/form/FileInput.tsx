@@ -48,7 +48,7 @@ export const FileInput: React.FC<IFileInputProps> = ({
   };
 
   return (
-    <div className={cn("flex flex-col gap-1.5", fullWidth && "w-full", className)}>
+    <div className={cn("flex flex-col gap-1", fullWidth && "w-full", className)}>
       {label && (
         <span className="text-body-s font-medium text-base-content">
           {label}

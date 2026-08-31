@@ -1,7 +1,7 @@
 // src/modules/user/pages/UserPage.tsx
 
 import React, { useState } from "react";
-import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { PageLayout } from "../../../design/pages/PageLayout";
 import { Button, ProfileAvatar } from "../../../design";
 import { FileInput } from "../../../design/components/form";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
@@ -40,7 +40,7 @@ export const UserPage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
+    <PageLayout enableAppServices>
       <div className="max-w-2xl mx-auto py-8 px-4 space-y-6">
         {/* Header card */}
         <div className="bg-base-100/70 border border-base-300 rounded-2xl p-6 shadow-xl backdrop-blur-md">
@@ -58,7 +58,7 @@ export const UserPage: React.FC = () => {
                 {currentUser?.email}
               </p>
               {currentUser?.username && (
-                <p className="text-body-s text-primary font-medium mt-0.5">
+                <p className="text-body-s text-primary font-medium mt-1">
                   @{currentUser.username}
                 </p>
               )}
@@ -95,6 +95,6 @@ export const UserPage: React.FC = () => {
           </div>
         </div>
       </div>
-    </LayoutPage>
+    </PageLayout>
   );
 };

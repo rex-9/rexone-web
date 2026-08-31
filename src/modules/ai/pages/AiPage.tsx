@@ -1,9 +1,8 @@
-// src/modules/ai/pages/AiPage.tsx
+// src/design/pages/AiPage.tsx
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { PageLayout } from "../../../design/pages";
 import { Button, TextArea, ConfirmDialog } from "../../../design/components";
-import { ButtonVariants, ComponentSizes } from "../../../design/constants";
 import { useToast } from "../../../contexts/ToastContext";
 import AiController from "../ai.controller";
 import { IMessage } from "..";
@@ -57,7 +56,11 @@ export const AiPage: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    loadHistory();
+    const timeoutId = window.setTimeout(() => {
+      void loadHistory();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [loadHistory]);
 
   useEffect(() => {
@@ -121,22 +124,22 @@ export const AiPage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
-      <div className="flex flex-col h-[calc(100dvh-11rem)] max-w-3xl mx-auto w-full bg-base-100/60 border border-base-300 rounded-2xl shadow-xl backdrop-blur-md overflow-hidden">
+    <PageLayout>
+      <div className="flex flex-col h-[calc(100vh-12rem)] max-w-3xl mx-auto w-full">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-base-300 bg-base-100/80">
-          <div className="w-20" />
+        <div className="flex items-center justify-between py-4 border-b border-base-200">
+          <div className="w-24" />
           <div className="text-center flex-1">
-            <h1 className="text-xl font-bold font-primary text-base-content">🤖 AI Assistant</h1>
-            <p className="text-xs text-base-content/60">
+            <h1 className="text-h2 font-semibold">🤖 AI Assistant</h1>
+            <p className="text-body-s text-base-content/70">
               Powered by DeepSeek AI
             </p>
           </div>
-          <div className="w-20 flex justify-end">
+          <div className="w-24 flex justify-end">
             {messages.length > 1 && (
               <Button
-                variant={ButtonVariants.TERTIARY}
-                size={ComponentSizes.SM}
+                variant="tertiary"
+                size="sm"
                 onClick={() => setIsClearDialogOpen(true)}
               >
                 Clear
@@ -146,50 +149,41 @@ export const AiPage: React.FC = () => {
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-          {messages.map((message) => {
-            const isUser = message.role === "user";
-            return (
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${
+                message.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
               <div
-                key={message.id}
-                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                className={`max-w-[80%] rounded-md p-3 ${
+                  message.role === "user"
+                    ? "bg-primary text-primary-content"
+                    : "bg-base-200"
+                }`}
               >
-                <div
-                  className={`max-w-md sm:max-w-xl px-4 py-3 ${
-                    isUser
-                      ? "bg-primary text-white rounded-2xl rounded-tr-xs shadow-neon"
-                      : "bg-base-200 border border-base-300 text-base-content rounded-2xl rounded-tl-xs shadow-sm"
-                  }`}
-                >
-                  <p className="text-body-m whitespace-pre-wrap leading-relaxed">
-                    {message.content}
-                  </p>
-                  <span
-                    className={`text-caption mt-1.5 block ${
-                      isUser ? "text-white/80 text-right" : "text-base-content/50"
-                    }`}
-                  >
-                    {new Date(message.created_at).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    })}
+                <p className="text-body-m whitespace-pre-wrap">
+                  {message.content}
+                </p>
+                <span className="text-caption opacity-50 mt-1 block">
+                  {new Date(message.created_at).toLocaleTimeString()}
+                </span>
+                {message.metadata?.status === "failed" && (
+                  <span className="text-caption text-error mt-1 block">
+                    AI could not complete this message. You can try again.
                   </span>
-                  {message.metadata?.status === "failed" && (
-                    <span className="text-caption text-error mt-1 block">
-                      AI could not complete this message. You can try again.
-                    </span>
-                  )}
-                </div>
+                )}
               </div>
-            );
-          })}
+            </div>
+          ))}
 
           {isProcessing && (
             <div className="flex justify-start">
-              <div className="max-w-md sm:max-w-xl px-4 py-3 rounded-2xl rounded-tl-xs bg-base-200 border border-base-300 shadow-sm flex items-center gap-3">
-                <span className="text-body-m font-medium text-base-content">AI is thinking</span>
-                <span className="loading loading-dots loading-xs text-primary" />
+              <div className="max-w-[80%] rounded-md p-3 bg-base-200">
+                <p className="text-body-m">AI is thinking…</p>
+                <span className="loading loading-dots loading-sm mt-1" />
               </div>
             </div>
           )}
@@ -198,8 +192,8 @@ export const AiPage: React.FC = () => {
         </div>
 
         {/* Input */}
-        <div className="border-t border-base-300 p-4 bg-base-100/90">
-          <div className="flex gap-3 items-end">
+        <div className="border-t border-base-200 p-4">
+          <div className="flex gap-2">
             <TextArea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -207,18 +201,17 @@ export const AiPage: React.FC = () => {
               placeholder={
                 isProcessing ? "AI is thinking…" : "Type your message..."
               }
-              rows={2}
-              className="flex-1 resize-none"
+              rows={3}
+              className="flex-1"
               disabled={isSubmitting || isProcessing}
               showCounter
               maxLength={2000}
             />
             <Button
-              variant={ButtonVariants.PRIMARY}
-              size={ComponentSizes.MD}
+              variant="primary"
               onClick={handleSend}
               disabled={isSubmitting || isProcessing || !input.trim()}
-              className="shrink-0 mb-1"
+              className="self-end"
             >
               {isSubmitting ? "Sending…" : "Send"}
             </Button>
@@ -241,6 +234,6 @@ export const AiPage: React.FC = () => {
         cancelLabel="Cancel"
         isDestructive={true}
       />
-    </LayoutPage>
+    </PageLayout>
   );
 };

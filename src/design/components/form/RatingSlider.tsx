@@ -39,7 +39,7 @@ export const RatingSlider: React.FC<IRatingSliderProps> = ({
             {label}
           </span>
         )}
-        <div className="badge badge-primary badge-outline gap-1.5 py-3 px-3 font-medium text-xs">
+        <div className="badge badge-primary badge-outline gap-1 py-3 px-3 font-medium text-xs">
           <span>{sentiment.emoji}</span>
           <span className="font-bold">
             {value} / {max}

@@ -71,6 +71,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                    | [Real-time delivery](#real-time-delivery)              |
 | Localization  | English, Spanish, and Burmese resources with organized typed keys                     | [Localization](#localization)                          |
 | Observability | React boundary, global browser capture, structured context, and Core API delivery     | [Client observability](#client-observability)          |
+| Admin         | User, role, permission, product, chat, and notification management with RBAC guards   | [Administration](#administration)                      |
 | Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model       | [End-to-End Testing](#end-to-end-testing-playwright)   |
 | Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview      | [Quality toolchain](#quality-toolchain)                |
 | Delivery      | Vite production output and a Docker-based development environment                     | [Delivery](#delivery)                                  |
@@ -139,11 +140,26 @@ Authentication is presented as a URL-addressable dialog flow. This allows redire
 ### IAM & RBAC Administrative Hierarchy
 
 The client enforces a synchronized three-tier administrative hierarchy:
+
 - **`super_admin`**: Complete authority across all features; renders all admin sidebar navigation items.
 - **`admin`**: Full authority over domain operations (`feedbacks`, `payments`, `ai`, `assets`, `logs`), strictly excluded from `users` and `iam`. The admin sidebar automatically hides User Management and IAM navigation items.
 - **Partial Admins (`*_admin` naming convention)**: Users holding the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`). Any role with `admin` in the name is treated as an admin role.
   - **Permission Provenance**: Permissions granted to admin roles grant access to both client (`/v1/*`) and admin (`/v1/admin/*`) endpoints. Permissions in non-admin roles (such as `user`) only grant access to `/v1/*`.
   - **Sidebar Visibility**: The admin sidebar dynamically renders **only** the navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role.
+
+### Administration
+
+The client admin panel architecture provides a protected workspace for managing the application under `src/modules/admin/`. It includes:
+
+- **Architecture**: Sidebar navigation, permission-based visibility, and strict route guards (`AdminRootRoute`, `AdminHomeRoute`).
+- **Client-Side RBAC**: The `usePermissions` hook evaluates the current user's role and permission matrix to determine access and UI state dynamically.
+- **Admin Modules**:
+  - **Users**: User management, reserved for super admins.
+  - **Roles**: Role and permission management with an interactive permission matrix.
+  - **Products**: Product and pricing management synchronized with Stripe.
+  - **Chat**: Moderation tools for chat rooms and messages.
+  - **Notifications**: Broadcast notification dispatch targeting audiences by roles, users, or all.
+- **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
 
@@ -365,22 +381,29 @@ Only variables prefixed with `VITE_` are exposed to browser code. Never place pr
 
 ## Client route surface
 
-| Access    | Route              | Purpose                                 |
-| --------- | ------------------ | --------------------------------------- |
-| Public    | `/`                | Root experience                         |
-| Public    | `/signin`          | Open the authentication dialog          |
-| Public    | `/signup`          | Enter the account creation flow         |
-| Public    | `/email/confirm`   | Handle confirmation links or code entry |
-| Public    | `/password/forgot` | Request account recovery                |
-| Public    | `/password/reset`  | Complete password reset links           |
-| Public    | `/anapana`         | Anapana interval reminder               |
-| Protected | `/home`            | Authenticated home                      |
-| Protected | `/profile`         | Current-user profile                    |
-| Protected | `/payment`         | Products and checkout                   |
-| Protected | `/payment/success` | Checkout success return                 |
-| Protected | `/payment/cancel`  | Checkout cancellation return            |
-| Protected | `/ai`              | AI workspace                            |
-| Protected | `/signout`         | Sign out and provider cleanup           |
+| Access    | Route                  | Purpose                                 |
+| --------- | ---------------------- | --------------------------------------- |
+| Public    | `/`                    | Root experience                         |
+| Public    | `/signin`              | Open the authentication dialog          |
+| Public    | `/signup`              | Enter the account creation flow         |
+| Public    | `/email/confirm`       | Handle confirmation links or code entry |
+| Public    | `/password/forgot`     | Request account recovery                |
+| Public    | `/password/reset`      | Complete password reset links           |
+| Public    | `/anapana`             | Anapana interval reminder               |
+| Protected | `/home`                | Authenticated home                      |
+| Protected | `/profile`             | Current-user profile                    |
+| Protected | `/payment`             | Products and checkout                   |
+| Protected | `/payment/success`     | Checkout success return                 |
+| Protected | `/payment/cancel`      | Checkout cancellation return            |
+| Protected | `/ai`                  | AI workspace                            |
+| Protected | `/signout`             | Sign out and provider cleanup           |
+| Protected | `/admin`               | Admin panel entry with smart redirect   |
+| Protected | `/admin/users`         | User management (super admin only)      |
+| Protected | `/admin/roles`         | Role and permission management          |
+| Protected | `/admin/products`      | Product and pricing management          |
+| Protected | `/admin/chat/rooms`    | Chat room moderation                    |
+| Protected | `/admin/chat/messages` | Chat message moderation                 |
+| Protected | `/admin/notifications` | Broadcast notification dispatch         |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 

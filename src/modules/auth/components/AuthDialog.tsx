@@ -37,6 +37,10 @@ export const AuthDialog: React.FC = () => {
   // Store passwords in memory, NOT in URL
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [signInCooldown, setSignInCooldown] = useState<{
+    email: string;
+    targetTimeMs: number;
+  } | null>(null);
 
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
@@ -128,6 +132,15 @@ export const AuthDialog: React.FC = () => {
             navigateToStep={navigateToStep}
             onClose={handleClose}
             onBack={handleBack}
+            cooldownTargetTimeMs={
+              signInCooldown?.email === email
+                ? signInCooldown.targetTimeMs
+                : 0
+            }
+            onCooldownStart={(targetTimeMs: number) =>
+              setSignInCooldown({ email, targetTimeMs })
+            }
+            onCooldownClear={() => setSignInCooldown(null)}
           />
         );
       case DialogAuthSteps.SIGNUP_PASSWORD_CREATE:

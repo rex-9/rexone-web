@@ -1,10 +1,22 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { parseFromList } from "../../services/api.service";
+import { getApiError, parsePagyList } from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import { IApiPagination } from "../../models";
+import { AppLocales, translate } from "../../locales";
 import { AI_DEFAULTS, AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
+
+const AI_RESPONSE_EVENT_TYPES: readonly string[] = [
+  AI_SOCKET_EVENTS.RESPONSE_READY,
+  AI_SOCKET_EVENTS.RESPONSE_FAILED,
+];
+
+const AI_PROCESSING_MESSAGE_STATUSES: readonly string[] = [
+  AI_MESSAGE_STATUS.QUEUED,
+  AI_MESSAGE_STATUS.PROCESSING,
+  AI_MESSAGE_STATUS.RETRYING,
+];
 
 class AiController {
   private currentRoomId: string | null = null;
@@ -24,10 +36,7 @@ class AiController {
 
       if (
         event.type !== "notification" ||
-        ![
-          AI_SOCKET_EVENTS.RESPONSE_READY,
-          AI_SOCKET_EVENTS.RESPONSE_FAILED,
-        ].includes(eventType as any) ||
+        !AI_RESPONSE_EVENT_TYPES.includes(eventType) ||
         roomId !== this.currentRoomId
       ) {
         return;
@@ -61,7 +70,7 @@ class AiController {
       success: false,
       rooms: [],
       pagination: null,
-      error: status?.error || response.error || "Failed to load rooms",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.LoadRooms)),
     };
   }
 
@@ -83,7 +92,7 @@ class AiController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to create room",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.CreateRoom)),
     };
   }
 
@@ -105,14 +114,10 @@ class AiController {
     const { status, data, meta } = response.data || {};
 
     if (status?.success && data) {
-      const messages = parseFromList<IMessage>(data);
+      const { records: messages } = parsePagyList(response);
       const rId = messages[0]?.room_id ?? roomId ?? "";
       const processing = messages.some((m) =>
-        [
-          AI_MESSAGE_STATUS.QUEUED,
-          AI_MESSAGE_STATUS.PROCESSING,
-          AI_MESSAGE_STATUS.RETRYING,
-        ].includes((m.metadata?.status ?? "") as any),
+        AI_PROCESSING_MESSAGE_STATUSES.includes(m.metadata?.status ?? ""),
       );
       this.currentRoomId = rId || null;
       return {
@@ -130,7 +135,7 @@ class AiController {
       roomId: roomId || this.currentRoomId || "",
       processing: false,
       pagination: null,
-      error: status?.error || response.error || "Failed to load history",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.LoadHistory)),
     };
   }
 
@@ -163,7 +168,7 @@ class AiController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to get AI response",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)),
     };
   }
 
@@ -182,7 +187,7 @@ class AiController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to clear history",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)),
     };
   }
 
@@ -206,7 +211,7 @@ class AiController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to rename room",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.RenameRoom)),
     };
   }
 
@@ -226,7 +231,7 @@ class AiController {
 
     return {
       success: false,
-      error: status?.error || response.error || "Failed to delete room",
+      error: getApiError(response, translate(AppLocales.Ai.Errors.DeleteRoom)),
     };
   }
 }

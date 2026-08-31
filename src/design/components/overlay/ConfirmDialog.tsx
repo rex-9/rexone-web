@@ -37,7 +37,7 @@ export const ConfirmDialog: React.FC<IConfirmDialogProps> = ({
       title={title}
       className={className}
       footer={
-        <div className="flex justify-end gap-12">
+        <div className="flex justify-end gap-2">
           <Button
             type={ButtonTypes.BUTTON}
             variant={ButtonVariants.TERTIARY}
@@ -64,7 +64,7 @@ export const ConfirmDialog: React.FC<IConfirmDialogProps> = ({
         </div>
       }
     >
-      <p className="text-body-m text-base-content/80 py-8">{message}</p>
+      <p className="text-body-m text-base-content/80 py-3">{message}</p>
     </Dialog>
   );
 };

@@ -1,6 +1,6 @@
 // src/design/components/auth/InitialDialog.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth, useToast } from "../../../contexts";
@@ -44,7 +44,10 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
 
   // Read session message from URL params
   const message = searchParams.get("message");
-  const [displayMessage, setDisplayMessage] = useState(message || "");
+  const [dismissedMessage, setDismissedMessage] = useState<string | null>(
+    null,
+  );
+  const displayMessage = dismissedMessage === message ? "" : message || "";
 
   // Clear message param when dialog closes or user interacts
   const clearMessageParam = () => {
@@ -53,21 +56,13 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
     window.history.replaceState({}, "", url.toString());
   };
 
-  // Set display message when URL param changes
-  useEffect(() => {
-    if (message) {
-      setDisplayMessage(message);
-      // Optionally clear the param after showing (so it doesn't persist on reload)
-      // We'll clear on close or on user action.
-    }
-  }, [message]);
-
   // Clear message when user starts typing or interacts
   const handleEmailChange = (value: string) => {
     setLocalEmail(value);
+    setEmailError("");
     updateUrl({ email: value });
     if (displayMessage) {
-      setDisplayMessage("");
+      setDismissedMessage(message);
       clearMessageParam();
     }
   };
@@ -112,9 +107,13 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
             email: localEmail,
           });
           break;
+
+        case "discarded":
+          setEmailError(t(AppLocales.Auth.Initial.AccountDiscarded));
+          break;
       }
     } catch (err: unknown) {
-      console.error("Failed to check user:", err);
+      console.log("Failed to check user:", err);
       setError(
         err instanceof Error
           ? err.message
