@@ -56,20 +56,24 @@ export const Badge: React.FC<IBadgeProps> = ({
     [ComponentSizes.XL]: "px-5 py-2.5 text-xl rounded-xl",
   };
 
-  const Component = href ? "a" : "span";
+  const badgeClassName = cn(
+    "inline-flex items-center justify-center select-none",
+    variants[variant],
+    sizes[size] || sizes[ComponentSizes.MD],
+    className,
+  );
+
+  if (href) {
+    return (
+      <a href={href} target={target} rel={rel} {...props} className={badgeClassName}>
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <Component
-      {...(href ? { href, target, rel } : {})}
-      {...(props as any)}
-      className={cn(
-        "inline-flex items-center justify-center select-none",
-        variants[variant],
-        sizes[size] || sizes[ComponentSizes.MD],
-        className,
-      )}
-    >
+    <span {...props} className={badgeClassName}>
       {children}
-    </Component>
+    </span>
   );
 };

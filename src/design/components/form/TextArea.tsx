@@ -5,7 +5,7 @@
  * Supports Ctrl+Enter and Cmd+Enter to submit forms or focus next inputs.
  */
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useId } from "react";
 import { cn } from "../../utils";
 import { InputVariant, InputVariants } from "../../constants";
 
@@ -41,7 +41,8 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   ...props
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const inputId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
+  const generatedId = useId();
+  const inputId = id || generatedId;
   const hasError = !!error;
   const displayText = error || helperText;
   const currentLength = typeof value === "string" ? value.length : 0;

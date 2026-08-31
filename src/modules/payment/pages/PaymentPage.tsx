@@ -41,7 +41,11 @@ export const PaymentPage: React.FC = () => {
   }, [setLoading]);
 
   useEffect(() => {
-    fetchData();
+    const timeoutId = window.setTimeout(() => {
+      void fetchData();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [fetchData]);
 
   const handleCheckout = async (productId: string) => {
@@ -51,7 +55,7 @@ export const PaymentPage: React.FC = () => {
 
     if (result.success && result.checkoutUrl) {
       success("Redirecting to checkout...");
-      window.location.href = result.checkoutUrl;
+      window.location.assign(result.checkoutUrl);
     } else {
       error(result.error || "Failed to create checkout session");
     }

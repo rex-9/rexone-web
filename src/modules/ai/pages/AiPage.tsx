@@ -56,7 +56,11 @@ export const AiPage: React.FC = () => {
   }, [messages]);
 
   useEffect(() => {
-    loadHistory();
+    const timeoutId = window.setTimeout(() => {
+      void loadHistory();
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [loadHistory]);
 
   useEffect(() => {

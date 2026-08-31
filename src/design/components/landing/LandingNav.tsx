@@ -1,6 +1,6 @@
 // src/design/components/landing/LandingNav.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { iconsLib } from "../../../assets";
 import { useAuth } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
@@ -21,11 +21,7 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentSection, setCurrentSection] = useState(activeSection);
-
-  useEffect(() => {
-    setCurrentSection(activeSection);
-  }, [activeSection]);
+  const currentSection = activeSection;
 
   const navItems = [
     { label: "Greetings", href: "#Greetings" },
@@ -40,7 +36,6 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
     href: string,
   ) => {
     e.preventDefault();
-    setCurrentSection(href);
     setIsMobileMenuOpen(false);
     if (onSectionClick) {
       onSectionClick(href);
