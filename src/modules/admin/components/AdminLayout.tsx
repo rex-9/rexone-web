@@ -29,7 +29,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
     pageMeta?.hasRecycleBin && pageMeta.actionResource
       ? {
           label: ADMIN_COMMON_LABELS.OPENRECYCLEBIN,
-          onClick: () => navigate(`${location.pathname}/recycle-bin`),
+          onClick: () => navigate(`${location.pathname}/bin`),
           resource: pageMeta.actionResource,
         }
       : undefined;
