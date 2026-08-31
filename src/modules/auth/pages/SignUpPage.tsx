@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
-import { PageLayout } from "../../../design/pages";
 
 export const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,9 +12,7 @@ export const SignUpPage: React.FC = () => {
     });
   }, [navigate]);
 
-  return (
-    <PageLayout>
-      <div />
-    </PageLayout>
-  );
+  return <div />;
 };
+
+export default SignUpPage;

@@ -41,6 +41,7 @@ class AppRoutes {
       // Client Admin Dashboard
       admin: {
         HOME: AppRoutes.admin("/"),
+        ANALYTICS: AppRoutes.admin("/analytics"),
         USERS: AppRoutes.admin("/users"),
         USERS_RECYCLE_BIN: AppRoutes.admin("/users/bin"),
         USER_CREATE: AppRoutes.admin("/users/create"),
@@ -158,6 +159,7 @@ class AppRoutes {
         CHAT_MESSAGES: AppRoutes.adminApi("/chat/messages"), // GET
         CHAT_MESSAGE_DETAIL: AppRoutes.adminApi("/chat/messages/:id"), // GET, PATCH, DELETE
         FEEDBACKS: AppRoutes.adminApi("/feedbacks"),
+        ANALYTICS_OVERVIEW: AppRoutes.adminApi("/analytics/overview"), // GET
       },
     },
   };

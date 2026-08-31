@@ -7,7 +7,6 @@ import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
 import { Button } from "../../../design/components/button";
 import { HeadNavbarBrand } from "../../../design/components/common";
-import { PageLayout } from "../../../design/pages";
 import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../constants";
 import { getAdminPageMeta } from "../helpers/admin.helper";
 import { AdminHeaderActionButton } from "./AdminHeaderActionButton";
@@ -53,6 +52,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
     >
       <div className="flex h-16 items-center border-b border-base-300 px-6">
         <HeadNavbarBrand
+          isAdmin
           className={`min-w-0 flex-1 ${isSidebarOpen ? "flex" : "hidden"} lg:flex`}
         />
         <Button
@@ -96,11 +96,10 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
     </aside>
   );
 
+  const hasHeaderActions = Boolean(canPerformPageAction || recycleAction);
+
   return (
-    <PageLayout
-      className="overflow-x-hidden bg-base-200 text-base-content"
-      isAdmin
-    >
+    <>
       {sidebar}
 
       {isSidebarOpen && (
@@ -115,41 +114,47 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
       <div className="min-h-screen min-w-0 pl-16 pt-16 lg:pl-72">
         <main className="min-w-0 px-4 pb-10 pt-6 md:px-6">
           <section className="mx-auto w-full max-w-7xl">
-            <div className="mb-6 flex min-h-10 flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
-              <div>
-                <div className="text-body-s font-semibold uppercase text-secondary">
-                  Admin {"-"}{" "}
-                  <span className="mt-1 font-display font-semibold text-base-content">
-                    {pageMeta?.title ?? ""}
-                  </span>
-                </div>
+            {hasHeaderActions && (
+              <div className="mb-6 flex min-h-10 flex-col justify-center gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <div className="text-body-s font-semibold uppercase text-secondary">
+                    Admin {"-"}{" "}
+                    <span className="mt-1 font-display font-semibold text-base-content">
+                      {pageMeta?.title ?? ""}
+                    </span>
+                  </div>
 
-                {pageMeta?.description && (
-                  <span className="mt-1 max-w-2xl text-body-m text-base-content opacity-70">
-                    {pageMeta.description}
-                  </span>
+                  {pageMeta?.description && (
+                    <span className="mt-1 max-w-2xl text-body-m text-base-content opacity-70">
+                      {pageMeta.description}
+                    </span>
+                  )}
+                </div>
+                {canPerformPageAction && (
+                  <AdminHeaderActionButton
+                    label={pageMeta.actionLabel ?? ""}
+                    onClick={() =>
+                      navigate(
+                        pageMeta.actionTo ??
+                          AppRoutes.client.protected.admin.USERS,
+                      )
+                    }
+                    recycle={recycleAction}
+                  />
                 )}
               </div>
-              {canPerformPageAction && (
-                <AdminHeaderActionButton
-                  label={pageMeta.actionLabel ?? ""}
-                  onClick={() =>
-                    navigate(
-                      pageMeta.actionTo ??
-                        AppRoutes.client.protected.admin.USERS,
-                    )
-                  }
-                  recycle={recycleAction}
-                />
-              )}
-            </div>
+            )}
 
-            <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-6">
-              {children}
-            </div>
+            {hasHeaderActions ? (
+              <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-6">
+                {children}
+              </div>
+            ) : (
+              children
+            )}
           </section>
         </main>
       </div>
-    </PageLayout>
+    </>
   );
 };

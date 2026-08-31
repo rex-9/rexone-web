@@ -55,6 +55,10 @@ import {
   ChatBubbleBottomCenterTextIcon,
   ChevronDownIcon,
   DocumentTextIcon,
+  BanknotesIcon,
+  ChartBarIcon,
+  ShieldCheckIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -157,4 +161,8 @@ export const iconsLib = {
   close: XMarkIcon,
   chevronDown: ChevronDownIcon,
   document: DocumentTextIcon,
+  banknotes: BanknotesIcon,
+  chartBar: ChartBarIcon,
+  shieldCheck: ShieldCheckIcon,
+  clock: ClockIcon,
 } as const;

@@ -15,6 +15,7 @@ const ADMIN_ROLE_RESOURCE_PREFIXES: Record<AdminResource, readonly string[]> = {
   [ADMIN_RESOURCES.NOTIFICATIONS]: ["notification", "notifications"],
   [ADMIN_RESOURCES.ROOMS]: ["chat", "room", "rooms"],
   [ADMIN_RESOURCES.MESSAGES]: ["chat", "message", "messages"],
+  [ADMIN_RESOURCES.ANALYTICS]: ["analytics"],
 };
 
 interface IUsePermissionsResult {

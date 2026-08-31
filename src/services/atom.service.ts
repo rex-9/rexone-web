@@ -14,6 +14,10 @@ class AtomService {
    * Invalid JSON entries are automatically removed.
    */
   private loadAtomsFromStorage(): void {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
+      return;
+    }
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (!key) continue;
@@ -30,6 +34,10 @@ class AtomService {
    * If invalid, removes the entry and logs a warning.
    */
   private safeParse(key: string): unknown | undefined {
+    if (typeof window === "undefined" || typeof localStorage === "undefined") {
+      return undefined;
+    }
+
     try {
       const raw = localStorage.getItem(key);
       return raw !== null ? JSON.parse(raw) : undefined;
@@ -59,7 +67,9 @@ class AtomService {
    */
   removeAtom(key: string): void {
     if (this.atoms[key]) {
-      localStorage.removeItem(key);
+      if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+        localStorage.removeItem(key);
+      }
       delete this.atoms[key];
     }
   }

@@ -15,6 +15,10 @@ const adminEntryRoutes: Array<{
   superAdminOnly?: boolean;
 }> = [
   {
+    resource: ADMIN_RESOURCES.ANALYTICS,
+    path: AppRoutes.client.protected.admin.ANALYTICS,
+  },
+  {
     resource: ADMIN_RESOURCES.USERS,
     path: AppRoutes.client.protected.admin.USERS,
     superAdminOnly: true,

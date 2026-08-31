@@ -35,6 +35,18 @@ interface IAdminSidebarNavProps {
 
 const navSections: IAdminNavSection[] = [
   {
+    id: "overview",
+    label: ADMIN_NAV_SECTION_LABELS.OVERVIEW,
+    items: [
+      {
+        label: ADMIN_NAV_LABELS.ANALYTICS,
+        to: AppRoutes.client.protected.admin.ANALYTICS,
+        resource: ADMIN_RESOURCES.ANALYTICS,
+        icon: iconsLib.chartBar,
+      },
+    ],
+  },
+  {
     id: "access",
     label: ADMIN_NAV_SECTION_LABELS.IAM,
     items: [

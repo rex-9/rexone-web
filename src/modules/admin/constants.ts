@@ -22,6 +22,7 @@ export const ADMIN_RESOURCES = {
   NOTIFICATIONS: "notifications",
   ROOMS: "rooms",
   MESSAGES: "messages",
+  ANALYTICS: "analytics",
 } as const;
 
 export type TAdminResourceName =
@@ -49,6 +50,7 @@ export interface IAdminPageMeta {
 }
 
 export const ADMIN_NAV_SECTION_LABELS = {
+  OVERVIEW: "Overview",
   IAM: "IAM",
   CHAT: "Chat",
   COMMERCE: "Commerce",
@@ -56,6 +58,7 @@ export const ADMIN_NAV_SECTION_LABELS = {
 } as const;
 
 export const ADMIN_NAV_LABELS = {
+  ANALYTICS: "Analytics",
   CHAT_MESSAGES: "Chat Messages",
   CHAT_ROOMS: "Chat Rooms",
   NOTIFICATIONS: "Notifications",
@@ -63,6 +66,33 @@ export const ADMIN_NAV_LABELS = {
   ROLES: "Roles",
   USERS: "Users",
 } as const;
+
+export const ANALYTICS_PERIODS = {
+  TODAY: "today",
+  YESTERDAY: "yesterday",
+  SEVEN_DAYS: "7d",
+  THIRTY_DAYS: "30d",
+  THIS_MONTH: "this_month",
+  LAST_MONTH: "last_month",
+  THIS_YEAR: "this_year",
+  LAST_YEAR: "last_year",
+  CUSTOM: "custom",
+} as const;
+
+export type TAnalyticsPeriod =
+  (typeof ANALYTICS_PERIODS)[keyof typeof ANALYTICS_PERIODS];
+
+export const ANALYTICS_PERIOD_LABELS: Record<TAnalyticsPeriod, string> = {
+  [ANALYTICS_PERIODS.TODAY]: "Today",
+  [ANALYTICS_PERIODS.YESTERDAY]: "Yesterday",
+  [ANALYTICS_PERIODS.SEVEN_DAYS]: "Last 7 days",
+  [ANALYTICS_PERIODS.THIRTY_DAYS]: "Last 30 days",
+  [ANALYTICS_PERIODS.THIS_MONTH]: "This month",
+  [ANALYTICS_PERIODS.LAST_MONTH]: "Last month",
+  [ANALYTICS_PERIODS.THIS_YEAR]: "This year",
+  [ANALYTICS_PERIODS.LAST_YEAR]: "Last year",
+  [ANALYTICS_PERIODS.CUSTOM]: "Custom Range",
+};
 
 export const ADMIN_TABLE_HEADERS = {
   ACTIONS: "",

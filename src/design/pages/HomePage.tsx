@@ -1,6 +1,6 @@
+import React from "react";
 import { SignOutButton, Button } from "../components";
 import { ButtonVariants } from "../constants";
-import { PageLayout } from "./PageLayout";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
 import { DevTestButtons } from "../../modules/log/components/DevTestButtons";
@@ -9,28 +9,28 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <PageLayout enableAppServices>
-      <div className="w-full max-w-sm space-y-4">
-        <Button
-          variant={ButtonVariants.SECONDARY}
-          fullWidth
-          onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
-        >
-          💳 View Plans & Pricing
-        </Button>
+    <div className="w-full max-w-sm space-y-4">
+      <Button
+        variant={ButtonVariants.SECONDARY}
+        fullWidth
+        onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
+      >
+        💳 View Plans & Pricing
+      </Button>
 
-        <Button
-          variant={ButtonVariants.SECONDARY}
-          fullWidth
-          onClick={() => navigate(AppRoutes.client.protected.AI)}
-        >
-          🤖 AI Assistant
-        </Button>
+      <Button
+        variant={ButtonVariants.SECONDARY}
+        fullWidth
+        onClick={() => navigate(AppRoutes.client.protected.AI)}
+      >
+        🤖 AI Assistant
+      </Button>
 
-        <DevTestButtons />
+      <DevTestButtons />
 
-        <SignOutButton />
-      </div>
-    </PageLayout>
+      <SignOutButton />
+    </div>
   );
 };
+
+export default HomePage;

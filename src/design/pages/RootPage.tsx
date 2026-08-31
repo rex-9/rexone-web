@@ -1,18 +1,17 @@
 import React from "react";
-import { PageLayout } from "./PageLayout";
-import { AnapanaPage } from "../../modules/anapana/pages";
 import { LandingPage } from "../../modules/landing/pages";
+import { AnapanaRoute } from "../../modules/anapana/pages";
 
 export const RootPage: React.FC = () => {
-  const subdomain = window.location.hostname.split(".")[0];
-  switch (subdomain) {
-    case "anapana":
-      return (
-        <PageLayout>
-          <AnapanaPage />
-        </PageLayout>
-      );
-    default:
-      return <LandingPage />;
+  const isAnapanaSubdomain =
+    typeof window !== "undefined" &&
+    window.location.hostname.split(".")[0].toLowerCase() === "anapana";
+
+  if (isAnapanaSubdomain) {
+    return <AnapanaRoute />;
   }
+
+  return <LandingPage />;
 };
+
+export default RootPage;

@@ -3,8 +3,11 @@ import { useLoading } from "../../../contexts/LoadingContext";
 import { useToast } from "../../../contexts/ToastContext";
 import { Button, Badge } from "../../../design/components";
 import { ConfirmDialog } from "../../../design/components/overlay";
-import { PageLayout } from "../../../design/pages";
-import { ButtonVariants, BadgeVariants, ComponentSizes } from "../../../design/constants";
+import {
+  ButtonVariants,
+  BadgeVariants,
+  ComponentSizes,
+} from "../../../design/constants";
 import { IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
 
@@ -133,7 +136,9 @@ export const PaymentPage: React.FC = () => {
               ✅ Active Subscription
             </Badge>
           </div>
-          <p className="text-xs text-base-content/60">Next billing: {activeUntil}</p>
+          <p className="text-xs text-base-content/60">
+            Next billing: {activeUntil}
+          </p>
           <Button
             variant={ButtonVariants.SECONDARY}
             fullWidth
@@ -225,9 +230,11 @@ export const PaymentPage: React.FC = () => {
   };
 
   return (
-    <PageLayout enableAppServices>
+    <>
       <div className="text-center space-y-2 mb-8">
-        <h1 className="text-3xl font-bold font-primary text-base-content">Choose Your Plan</h1>
+        <h1 className="text-3xl font-bold font-primary text-base-content">
+          Choose Your Plan
+        </h1>
         <p className="text-body-m text-base-content/70">
           Select the option that works best for you
         </p>
@@ -248,7 +255,9 @@ export const PaymentPage: React.FC = () => {
               </p>
 
               <div className="mt-4 mb-6">
-                <span className="text-3xl font-extrabold text-base-content">{product.price}</span>
+                <span className="text-3xl font-extrabold text-base-content">
+                  {product.price}
+                </span>
                 <span className="text-body-s text-base-content/60 ml-2">
                   {product.recurring
                     ? `/${product.period_label}`
@@ -280,6 +289,8 @@ export const PaymentPage: React.FC = () => {
         cancelLabel="Keep Subscription"
         isDestructive={true}
       />
-    </PageLayout>
+    </>
   );
 };
+
+export default PaymentPage;

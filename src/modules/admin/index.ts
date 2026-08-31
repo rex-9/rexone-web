@@ -1,3 +1,4 @@
+import { AnalyticsController, AnalyticsService } from "./analytics";
 import { ChatController, ChatService } from "./chat";
 import { NotificationController, NotificationService } from "./notifications";
 import { ProductController, ProductService } from "./products";
@@ -5,6 +6,7 @@ import { RoleController, RoleService } from "./roles";
 import UserController from "./users/user.controller";
 import UserService from "./users/user.service";
 
+export * from "./analytics";
 export * from "./chat";
 export * from "./notifications";
 export * from "./products";
@@ -15,6 +17,8 @@ export * from "./helpers/admin.helper";
 export * from "./constants";
 
 export const Admin = {
+  AnalyticsController,
+  AnalyticsService,
   ChatController,
   ChatService,
   NotificationController,
