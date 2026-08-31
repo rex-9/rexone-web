@@ -1,7 +1,7 @@
-// src/design/components/landing/TestimonialCard.tsx
+// src/modules/landing/components/TestimonialCard.tsx
 
 import React from "react";
-import { ITestimonialItem } from "../../pages/landing.data";
+import { ITestimonialItem } from "../types";
 
 export interface ITestimonialCardProps {
   testimonial: ITestimonialItem;

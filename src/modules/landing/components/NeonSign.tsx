@@ -1,4 +1,4 @@
-// src/design/components/landing/NeonSign.tsx
+// src/modules/landing/components/NeonSign.tsx
 
 import React from "react";
 

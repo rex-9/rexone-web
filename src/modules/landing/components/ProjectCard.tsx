@@ -1,9 +1,9 @@
-// src/design/components/landing/ProjectCard.tsx
+// src/modules/landing/components/ProjectCard.tsx
 
 import React from "react";
-import { IProjectItem } from "../../pages/landing.data";
-import { Badge } from "../common";
-import { BadgeVariants, ComponentSizes } from "../../constants";
+import { BadgeVariants, ComponentSizes } from "../../../constants";
+import { Badge } from "../../../design";
+import { IProjectItem } from "../types";
 
 export interface IProjectCardProps {
   project: IProjectItem;

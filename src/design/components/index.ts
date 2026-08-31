@@ -4,4 +4,3 @@ export * from "./overlay";
 export * from "./settings";
 export * from "./media";
 export * from "./common";
-export * from "./landing";

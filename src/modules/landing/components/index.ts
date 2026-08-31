@@ -1,4 +1,4 @@
-// src/design/components/landing/index.ts
+// src/modules/landing/components/index.ts
 
 export { LandingNav } from "./LandingNav";
 export { NeonSign } from "./NeonSign";

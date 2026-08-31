@@ -1,14 +1,15 @@
+// src/modules/landing/components/ContactForm.tsx
+
 import React, { useState } from "react";
-import { LANDING_DATA } from "../../pages/landing.data";
-import { Button } from "../button";
-import { FormContainer, TextInput, TextArea } from "../form";
 import {
   FormVariants,
   InputVariants,
   ButtonVariants,
   ButtonTypes,
   ComponentSizes,
-} from "../../constants";
+} from "../../../constants";
+import { Button, FormContainer, TextArea, TextInput } from "../../../design";
+import { LANDING_DATA } from "../constants";
 
 export const ContactForm: React.FC = () => {
   const [name, setName] = useState("");

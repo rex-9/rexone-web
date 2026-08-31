@@ -1,7 +1,7 @@
-// src/design/components/landing/SocialProfiles.tsx
+// src/modules/landing/components/SocialProfiles.tsx
 
 import React from "react";
-import { ISocialProfile } from "../../pages/landing.data";
+import { ISocialProfile } from "../types";
 
 export interface ISocialProfilesProps {
   profiles: ISocialProfile[];
