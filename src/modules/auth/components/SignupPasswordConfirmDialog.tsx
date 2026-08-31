@@ -63,33 +63,29 @@ export const SignupPasswordConfirmDialog: React.FC<
     // If this is a password reset flow
     if (resetPasswordToken) {
       setIsLoading(true);
-      try {
-        await AuthController.resetPassword(
-          resetPasswordToken,
-          password,
-          confirmPassword,
-          setError,
-          () => {
-            // Navigate to sign in (initial dialog) on success
-            success(t(AppLocales.Auth.SignUpPasscodeConfirm.ResetSuccess));
-            onClose();
-            navigate(
-              AppRoutes.buildDialogUrl(DialogAuthSteps.INITIAL, {
-                message: t(
-                  AppLocales.Auth.SignUpPasscodeConfirm.SignInWithNewPasscode,
-                ),
-              }),
-            );
-          },
+      setError("");
+
+      const result = await AuthController.resetPassword(
+        resetPasswordToken,
+        password,
+        confirmPassword,
+      );
+      setIsLoading(false);
+
+      if (result.success) {
+        success(t(AppLocales.Auth.SignUpPasscodeConfirm.ResetSuccess));
+        onClose();
+        navigate(
+          AppRoutes.buildDialogUrl(DialogAuthSteps.INITIAL, {
+            message: t(
+              AppLocales.Auth.SignUpPasscodeConfirm.SignInWithNewPasscode,
+            ),
+          }),
         );
-      } catch (err: unknown) {
+      } else {
         setError(
-          err instanceof Error
-            ? err.message
-            : t(AppLocales.Auth.SignUpPasscodeConfirm.ResetFailed),
+          result.error || t(AppLocales.Auth.SignUpPasscodeConfirm.ResetFailed),
         );
-      } finally {
-        setIsLoading(false);
       }
       return;
     }

@@ -7,6 +7,7 @@
 
 import React, { useId, useRef, useEffect } from "react";
 import { cn } from "../../utils";
+import { InputVariant, InputVariants } from "../../constants";
 
 export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -16,6 +17,7 @@ export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAre
   autoExpand?: boolean;
   maxLength?: number;
   showCounter?: boolean;
+  variant?: InputVariant;
   onCtrlEnter?: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
 }
 
@@ -27,6 +29,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   autoExpand = true,
   maxLength,
   showCounter = false,
+  variant = InputVariants.DEFAULT,
   onCtrlEnter,
   className,
   id,
@@ -42,6 +45,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   const hasError = !!error;
   const displayText = error || helperText;
   const currentLength = typeof value === "string" ? value.length : 0;
+  const isGlass = variant === InputVariants.GLASS;
 
   useEffect(() => {
     if (autoExpand && textareaRef.current) {
@@ -85,7 +89,10 @@ export const TextArea: React.FC<ITextAreaProps> = ({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-medium text-base-content"
+          className={cn(
+            "text-sm font-medium",
+            isGlass ? "text-glow-white" : "text-base-content",
+          )}
         >
           {label}
         </label>
@@ -101,14 +108,15 @@ export const TextArea: React.FC<ITextAreaProps> = ({
         rows={rows}
         onKeyDown={handleKeyDown}
         className={cn(
-          "w-full rounded-md border px-3 py-2 text-base bg-base-100 text-base-content",
-          "placeholder:text-base-content/40",
-          "transition-all duration-200 ease-out",
-          "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",
-          "disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-base-200",
+          "w-full transition-all duration-200 ease-out focus:outline-none",
+          isGlass
+            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-[15px] font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
+            : "rounded-md px-4 py-3 text-base border bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-transparent",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
+          disabled && !isGlass && "disabled:bg-base-200",
           hasError
-            ? "border-error focus:ring-error"
-            : "border-base-300 hover:border-base-400",
+            ? (isGlass ? "border-b-error focus:border-b-error" : "border-error focus:ring-error")
+            : (!isGlass && "border-base-300 hover:border-base-400"),
           className,
         )}
       />

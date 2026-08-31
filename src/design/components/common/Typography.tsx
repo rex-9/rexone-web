@@ -1,20 +1,23 @@
 import React from "react";
 import { cn } from "../../utils";
+import { TypographyVariant, TypographyVariants } from "../../constants";
 
-export interface ITypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface ITypographyProps
+  extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   className?: string;
-  variant?: "primary" | "secondary";
+  variant?: TypographyVariant | "primary" | "secondary";
 }
 
 export const Typography: React.FC<ITypographyProps> = ({
   children,
-  variant = "secondary",
+  variant = TypographyVariants.BODY_M,
   className = "text-base font-normal",
   ...props
 }) => {
   const primaryClasses = "text-primary";
   const secondaryClasses = "text-base-content";
+
   return (
     <p
       {...props}

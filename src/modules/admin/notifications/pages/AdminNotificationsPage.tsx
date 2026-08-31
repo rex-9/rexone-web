@@ -539,7 +539,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 })}
                                 onClick={() => removeUser(user.id)}
                               >
-                                <iconsLib.xmark className="h-[12px] w-[12px]" />
+                                <iconsLib.close className="h-[12px] w-[12px]" />
                               </Button>
                             </span>
                           ))}

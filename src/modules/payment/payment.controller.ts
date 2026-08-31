@@ -8,8 +8,8 @@ class PaymentController {
   // ===== PRODUCTS =====
   async getProducts(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
-    products?: IProduct[];
-    pagination?: IApiPagination | null;
+    products: IProduct[];
+    pagination: IApiPagination | null;
     error?: string;
   }> {
     const response = await PaymentService.getProducts(params);
@@ -19,17 +19,23 @@ class PaymentController {
       const { records, pagination } = parsePagyList<IProduct>(response);
       return { success: true, products: records, pagination };
     }
+
     return {
       success: false,
-      error: getApiError(response, translate(AppLocales.Payment.Errors.LoadProducts)),
+      products: [],
+      pagination: null,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.LoadProducts),
+      ),
     };
   }
 
   // ===== SUBSCRIPTIONS =====
   async getSubscriptions(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
-    subscriptions?: ISubscription[];
-    pagination?: IApiPagination | null;
+    subscriptions: ISubscription[];
+    pagination: IApiPagination | null;
     error?: string;
   }> {
     const response = await PaymentService.getSubscriptions(params);
@@ -39,8 +45,11 @@ class PaymentController {
       const { records, pagination } = parsePagyList<ISubscription>(response);
       return { success: true, subscriptions: records, pagination };
     }
+
     return {
       success: false,
+      subscriptions: [],
+      pagination: null,
       error: getApiError(
         response,
         translate(AppLocales.Payment.Errors.LoadSubscriptions),
@@ -48,51 +57,63 @@ class PaymentController {
     };
   }
 
-  async cancelSubscription(
-    subscriptionId: string,
-    onSuccess: (data: ISubscription) => void,
-    onError: (message: string) => void,
-  ): Promise<void> {
+  async cancelSubscription(subscriptionId: string): Promise<{
+    success: boolean;
+    subscription?: ISubscription;
+    message?: string;
+    error?: string;
+  }> {
     const response = await PaymentService.cancelSubscription(subscriptionId);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      onSuccess(data);
-    } else {
-      onError(
-        getApiError(
-          response,
-          translate(AppLocales.Payment.Errors.CancelSubscription),
-        ),
-      );
+      return {
+        success: true,
+        subscription: data,
+        message: status.message || "Subscription canceled successfully",
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.CancelSubscription),
+      ),
+    };
   }
 
-  async resumeSubscription(
-    subscriptionId: string,
-    onSuccess: (data: ISubscription) => void,
-    onError: (message: string) => void,
-  ): Promise<void> {
+  async resumeSubscription(subscriptionId: string): Promise<{
+    success: boolean;
+    subscription?: ISubscription;
+    message?: string;
+    error?: string;
+  }> {
     const response = await PaymentService.resumeSubscription(subscriptionId);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      onSuccess(data);
-    } else {
-      onError(
-        getApiError(
-          response,
-          translate(AppLocales.Payment.Errors.ResumeSubscription),
-        ),
-      );
+      return {
+        success: true,
+        subscription: data,
+        message: status.message || "Subscription resumed successfully",
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.ResumeSubscription),
+      ),
+    };
   }
 
   // ===== TRANSACTIONS =====
   async getTransactions(params?: { page?: number; limit?: number }): Promise<{
     success: boolean;
-    transactions?: ITransaction[];
-    pagination?: IApiPagination | null;
+    transactions: ITransaction[];
+    pagination: IApiPagination | null;
     error?: string;
   }> {
     const response = await PaymentService.getTransactions(params);
@@ -102,8 +123,11 @@ class PaymentController {
       const { records, pagination } = parsePagyList<ITransaction>(response);
       return { success: true, transactions: records, pagination };
     }
+
     return {
       success: false,
+      transactions: [],
+      pagination: null,
       error: getApiError(
         response,
         translate(AppLocales.Payment.Errors.LoadTransactions),
@@ -112,24 +136,28 @@ class PaymentController {
   }
 
   // ===== CHECKOUT =====
-  async createCheckout(
-    productId: string,
-    onSuccess: (url: string) => void,
-    onError: (message: string) => void,
-  ): Promise<void> {
+  async createCheckout(productId: string): Promise<{
+    success: boolean;
+    checkoutUrl?: string;
+    error?: string;
+  }> {
     const response = await PaymentService.createCheckout(productId);
     const { status, data } = response.data || {};
 
     if (status?.success && data?.checkout_url) {
-      onSuccess(data.checkout_url);
-    } else {
-      onError(
-        getApiError(
-          response,
-          translate(AppLocales.Payment.Errors.CreateCheckout),
-        ),
-      );
+      return {
+        success: true,
+        checkoutUrl: data.checkout_url,
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.Errors.CreateCheckout),
+      ),
+    };
   }
 }
 

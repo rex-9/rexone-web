@@ -125,7 +125,7 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
                     }
                   >
                     {isResourceSelected ? (
-                      <iconsLib.xmark className="h-[14px] w-[14px]" />
+                      <iconsLib.close className="h-[14px] w-[14px]" />
                     ) : (
                       <iconsLib.checkr className="h-[14px] w-[14px]" />
                     )}

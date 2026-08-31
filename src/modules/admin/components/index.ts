@@ -10,7 +10,7 @@ export type { IAdminPermissionMatrixItem } from "./AdminPermissionMatrix";
 export { AdminTable } from "./AdminTable";
 export type { IAdminTableColumn } from "./AdminTable";
 export { Button, GoogleButton, SignOutButton } from "../../../design/components/button";
-export type { ButtonProps } from "../../../design/components/button/Button";
+export type { IButtonProps } from "../../../design/components/button/Button";
 export {
   Dropdown,
   FormActionRow,

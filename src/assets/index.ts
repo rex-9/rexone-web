@@ -4,12 +4,25 @@
 // IMPORT ASSETS
 // ============================================================
 
-// Images
+// Images & Design Textures
 import banner from "./images/banner.png";
+import darkBrickWall from "./design/dark-brick-wall.png";
+import spotCursor from "./design/spot48.png";
 
-// Icons (Asset files like SVG)
+// Social / UI SVGs
+import angellistSvg from "./design/angellist.svg";
+import facebookSvg from "./design/facebook.svg";
+import githubSvg from "./design/github.svg";
+import linkedinSvg from "./design/linkedin.svg";
+import mediumSvg from "./design/medium.svg";
+import twitterSvg from "./design/twitter.svg";
 import instagramIcon from "./icons/instagram.svg";
 import googleIcon from "./icons/google.svg";
+
+// Projects Images (RexOne Repos Only)
+import rexoneCoreImg from "./images/rexone-core.jpg";
+import rexoneWebImg from "./images/rexone-web.jpg";
+import rexoneMobileImg from "./images/rexone-mobile.jpg";
 
 // Icons (Library components - Heroicons, Lucide, etc.)
 import {
@@ -41,7 +54,8 @@ import {
   ArchiveBoxIcon,
   ChatBubbleBottomCenterTextIcon,
   ChevronDownIcon,
-}from "@heroicons/react/24/outline";
+  DocumentTextIcon,
+} from "@heroicons/react/24/outline";
 
 // Videos
 import sampleVideo from "./videos/sample.mp4";
@@ -55,6 +69,26 @@ import noteSound from "./sounds/note.mp3";
 
 export const images = {
   banner: { src: banner, alt: "Banner image", title: "Rexone Banner" },
+  darkBrickWall: {
+    src: darkBrickWall,
+    alt: "Dark Brick Wall",
+    title: "Dark Brick Wall Texture",
+  },
+  spotCursor: { src: spotCursor, alt: "Spot Cursor", title: "Laser Cursor" },
+} as const;
+
+// ============================================================
+// PROJECT ASSETS (RexOne Ecosystem Only)
+// ============================================================
+
+export const projectImages = {
+  rexoneCore: { src: rexoneCoreImg, alt: "RexOne Core", title: "RexOne Core" },
+  rexoneWeb: { src: rexoneWebImg, alt: "RexOne Web", title: "RexOne Web" },
+  rexoneMobile: {
+    src: rexoneMobileImg,
+    alt: "RexOne Mobile",
+    title: "RexOne Mobile",
+  },
 } as const;
 
 // ============================================================
@@ -64,6 +98,12 @@ export const images = {
 export const icons = {
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
   google: { src: googleIcon, alt: "Google icon", title: "Google" },
+  github: { src: githubSvg, alt: "GitHub", title: "GitHub" },
+  linkedin: { src: linkedinSvg, alt: "LinkedIn", title: "LinkedIn" },
+  angellist: { src: angellistSvg, alt: "AngelList", title: "AngelList" },
+  medium: { src: mediumSvg, alt: "Medium", title: "Medium" },
+  twitter: { src: twitterSvg, alt: "Twitter / X", title: "Twitter / X" },
+  facebook: { src: facebookSvg, alt: "Facebook", title: "Facebook" },
 } as const;
 
 // ============================================================
@@ -97,23 +137,24 @@ export const iconsLib = {
   user: UserIcon,
   home: HomeIcon,
   arrowPath: ArrowPathIcon,
-  minusCircle:MinusCircleIcon,
-  pencilSquare:PencilSquareIcon,
-  trash:TrashIcon,
-  plus:PlusIcon,
-  bar3: Bars3Icon,
+  minusCircle: MinusCircleIcon,
+  pencilSquare: PencilSquareIcon,
+  trash: TrashIcon,
+  plus: PlusIcon,
   bell: BellIcon,
   logout: ArrowRightStartOnRectangleIcon,
-  checkr : CheckIcon,
-  xmark : XMarkIcon,
-  bellAlert :  BellAlertIcon,
-  chatBubbleLeftRight:ChatBubbleLeftRightIcon,
-  cube:CubeIcon,
-  inboxStack:InboxStackIcon,
-  key:KeyIcon,
-  userGroup:UserGroupIcon,
-  archiveBox : ArchiveBoxIcon,
+  checkr: CheckIcon,
+  bellAlert: BellAlertIcon,
+  chatBubbleLeftRight: ChatBubbleLeftRightIcon,
+  cube: CubeIcon,
+  inboxStack: InboxStackIcon,
+  key: KeyIcon,
+  userGroup: UserGroupIcon,
+  archiveBox: ArchiveBoxIcon,
   feedback: ChatBubbleBottomCenterTextIcon,
   chat: ChatBubbleLeftRightIcon,
+  menu: Bars3Icon,
+  close: XMarkIcon,
   chevronDown: ChevronDownIcon,
+  document: DocumentTextIcon,
 } as const;

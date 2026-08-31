@@ -4,48 +4,51 @@ import AuthService, {
   type IGoogleSignInCompleteData,
   type IGoogleSignInStartData,
 } from "./auth.service";
-import AppRoutes from "../../AppRoutes";
 import { AppLocales, translate } from "../../locales";
 import { IApiResponseStatus, IUser } from "../../models";
-import { apiHandler, getApiError } from "../../services";
+import { getApiError } from "../../services";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 import { AUTH_ERRORS } from "./constants";
 
 class AuthController {
   // Sign in with token from URL (email confirmation)
-  async signInWithToken(
-    token: string,
-    setError: (message: string) => void,
-    signin: (token: string, user: IUser) => void,
-    onSuccess?: (token: string, user: IUser) => void,
-  ): Promise<void> {
-    await apiHandler(
-      "signing in with token",
-      () => AuthService.signInWithToken(token),
-      setError,
-      (data) => {
-        signin(data.data!.token, data.data!.user);
-        if (onSuccess) {
-          onSuccess(data.data!.token, data.data!.user);
-        }
-      },
-    );
+  async signInWithToken(token: string): Promise<{
+    success: boolean;
+    token?: string;
+    user?: IUser;
+    error?: string;
+  }> {
+    const response = await AuthService.signInWithToken(token);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data?.token && data?.user) {
+      return {
+        success: true,
+        token: data.token,
+        user: data.user,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to sign in with token.",
+    };
   }
 
   // Sign in with email/username + password (WITH attempt limiter)
   async signInWithEmailOrUsername(
     signinKey: string,
     password: string,
-    setError: (message: string) => void,
-    setMessage: (message: string) => void,
-    signin: (token: string, user: IUser) => void,
-    navigate: (url: string) => void,
   ): Promise<{
     success: boolean;
     errorMessage?: string;
+    token?: string;
+    user?: IUser;
     remainingAttempts?: number;
     cooldownRemaining?: number;
     otpSent?: boolean;
+    message?: string;
+    error?: string;
   }> {
     const response = await AuthService.signInWithEmailOrUsername(
       signinKey,
@@ -55,29 +58,32 @@ class AuthController {
 
     // OTP sent (unconfirmed user)
     if (status?.code === 200 && data?.otp_sent) {
-      setMessage(
-        status.message || translate(AppLocales.Auth.Shared.VerificationCodeSent),
-      );
-      return { success: false, otpSent: true };
+      return {
+        success: false,
+        otpSent: true,
+        message:
+          status.message ||
+          translate(AppLocales.Auth.Shared.VerificationCodeSent),
+      };
     }
 
     // Successful sign in
     if (status?.success && data?.token && data?.user) {
-      setMessage(status.message);
-      signin(data.token, data.user);
-      navigate(AppRoutes.client.protected.HOME);
-      return { success: true };
+      return {
+        success: true,
+        token: data.token,
+        user: data.user,
+        message: status.message,
+      };
     }
 
-    const errorMessage = getApiError(
-      response,
-      translate(AppLocales.Auth.Shared.SignInFailed),
-    );
-    setError(errorMessage);
-
+    // Failed attempt
     return {
       success: false,
-      errorMessage,
+      error: getApiError(
+        response,
+        translate(AppLocales.Auth.Shared.SignInFailed),
+      ),
       remainingAttempts: data?.remaining_attempts,
       cooldownRemaining: data?.cooldown_remaining,
     };
@@ -172,83 +178,107 @@ class AuthController {
     email: string,
     password: string,
     passwordConfirmation: string,
-    setError: (message: string) => void,
-    navigate: (url: string) => void,
-  ): Promise<void> {
-    await apiHandler(
-      "signing up with email",
-      () =>
-        AuthService.signUpWithEmail(
-          username,
-          name,
-          email,
-          password,
-          passwordConfirmation,
-        ),
-      setError,
-      () =>
-        navigate(
-          `${AppRoutes.client.public.CONFIRM_EMAIL}?signin_key=${email}`,
-        ),
+  ): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AuthService.signUpWithEmail(
+      username,
+      name,
+      email,
+      password,
+      passwordConfirmation,
     );
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to sign up.",
+    };
   }
 
   // Send confirmation email
-  async sendConfirmationEmail(
-    emailOrUsername: string,
-    setError: (message: string) => void,
-    setMessage: (message: string) => void,
-    startCountdown: () => void,
-  ): Promise<void> {
-    await apiHandler(
-      "sending confirmation email",
-      () => AuthService.sendConfirmationEmail(emailOrUsername),
-      setError,
-      (data) => {
-        setMessage(data.status.message);
-        startCountdown();
-      },
-    );
+  async sendConfirmationEmail(emailOrUsername: string): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AuthService.sendConfirmationEmail(emailOrUsername);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to send confirmation email.",
+    };
   }
 
   // Confirm email with code
   async confirmEmailWithCode(
     emailOrUsername: string,
     confirmationCode: string,
-    setError: (message: string) => void,
-    setMessage: (message: string) => void,
-    signin: (token: string, user: IUser) => void,
-    navigate: (url: string) => void,
-  ): Promise<void> {
-    await apiHandler(
-      "confirming email with code",
-      () => AuthService.confirmEmailWithCode(emailOrUsername, confirmationCode),
-      setError,
-      (data) => {
-        setMessage(data.status.message);
-        signin(data.data!.token, data.data!.user);
-        navigate(AppRoutes.client.protected.HOME);
-      },
-      () => setMessage(""),
+  ): Promise<{
+    success: boolean;
+    token?: string;
+    user?: IUser;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AuthService.confirmEmailWithCode(
+      emailOrUsername,
+      confirmationCode,
     );
+    const { status, data } = response.data || {};
+
+    if (status?.success && data?.token && data?.user) {
+      return {
+        success: true,
+        token: data.token,
+        user: data.user,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to confirm email code.",
+    };
   }
 
   // Forgot password
-  async sendForgotPasswordMail(
-    email: string,
-    setError: (message: string) => void,
-    setMessage: (message: string) => void,
-    startCountdown: () => void,
-  ): Promise<void> {
-    await apiHandler(
-      "sending forgot password email",
-      () => AuthService.sendForgotPasswordMail(email),
-      setError,
-      (data) => {
-        setMessage(data.status.message);
-        startCountdown();
-      },
-    );
+  async sendForgotPasswordMail(email: string): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AuthService.sendForgotPasswordMail(email);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to send password reset email.",
+    };
   }
 
   // Reset password
@@ -256,21 +286,33 @@ class AuthController {
     token: string,
     password: string,
     passwordConfirmation: string,
-    setError: (message: string) => void,
-    onSuccess?: () => void,
-  ): Promise<void> {
-    await apiHandler(
-      "resetting password",
-      () => AuthService.resetPassword(token, password, passwordConfirmation),
-      setError,
-      () => {
-        if (onSuccess) onSuccess();
-      },
+  ): Promise<{
+    success: boolean;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AuthService.resetPassword(
+      token,
+      password,
+      passwordConfirmation,
     );
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: status?.error || response.error || "Failed to reset password.",
+    };
   }
 
   // Sign out
-  async signOut(): Promise<void> {
+  async signOut(): Promise<boolean> {
     const response = await AuthService.signOut();
     const { status } = response.data || {};
     const statusError = status?.error || response.error;
@@ -279,11 +321,7 @@ class AuthController {
       statusError === AUTH_ERRORS.SIGNATURE_EXPIRED ||
       statusError === AUTH_ERRORS.NO_VERIFICATION_KEY;
 
-    if (status?.success || isAlreadySignedOut) {
-      console.log("user signed out from server successfully.");
-    } else {
-      console.log("server signout failed.");
-    }
+    return Boolean(status?.success || isAlreadySignedOut);
   }
 }
 

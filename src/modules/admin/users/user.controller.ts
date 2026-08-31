@@ -36,6 +36,36 @@ class UserController {
       onSuccess?.(records, pagination ?? undefined);
   }
 
+  // async getUsers(params?: { page?: number; limit?: number }): Promise<{
+  //   success: boolean;
+  //   users: IUser[];
+  //   pagination?: IApiPagination | null;
+  //   error?: string;
+  // }> {
+  //   const response = await Admin.UserService.getUsers(params);
+  // const { records, pagination } = parsePagyList(response);
+  //   const { status, data, meta } = response.data || {};
+
+  //   if (status?.success && data) {
+  //     const users = parseFromList<IUser>(data);
+  //     return {
+  //       success: true,
+  //       users,
+  //       pagination: meta?.pagination ?? null,
+  //     };
+  //   }
+
+  //   return {
+  //     success: false,
+  //     users: [],
+  //     pagination: null,
+  //     error: getApiError(
+          //   response,
+          //   translate(AppLocales.Admin.Users.Errors.LoadListFailed),
+          // ),
+  //   };
+  // }
+
   async getUser(
     id: string,
     onSuccess?: (user: IAdminUser) => void,

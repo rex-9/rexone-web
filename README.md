@@ -141,7 +141,9 @@ Authentication is presented as a URL-addressable dialog flow. This allows redire
 The client enforces a synchronized three-tier administrative hierarchy:
 - **`super_admin`**: Complete authority across all features; renders all admin sidebar navigation items.
 - **`admin`**: Full authority over domain operations (`feedbacks`, `payments`, `ai`, `assets`, `logs`), strictly excluded from `users` and `iam`. The admin sidebar automatically hides User Management and IAM navigation items.
-- **Partial Admins (`*_admin` naming convention)**: Users holding the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`). The admin sidebar dynamically renders **only** the navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role.
+- **Partial Admins (`*_admin` naming convention)**: Users holding the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`). Any role with `admin` in the name is treated as an admin role.
+  - **Permission Provenance**: Permissions granted to admin roles grant access to both client (`/v1/*`) and admin (`/v1/admin/*`) endpoints. Permissions in non-admin roles (such as `user`) only grant access to `/v1/*`.
+  - **Sidebar Visibility**: The admin sidebar dynamically renders **only** the navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role.
 
 ### Design system
 

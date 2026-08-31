@@ -49,73 +49,105 @@ class AiController {
     return () => SocketService.removeListener(handleAiMessage);
   }
 
-  async getRooms(
-    onSuccess: (rooms: IRoom[], pagination?: IApiPagination | null) => void,
-    onError: (error: string) => void,
-    params?: { page?: number; limit?: number },
-  ): Promise<void> {
+  async getRooms(params?: { page?: number; limit?: number }): Promise<{
+    success: boolean;
+    rooms: IRoom[];
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
     const response = await AiService.getRooms(params);
     const { status, data, meta } = response.data || {};
 
     if (status?.success && data?.rooms) {
-      onSuccess(data.rooms, meta?.pagination);
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.LoadRooms)));
+      return {
+        success: true,
+        rooms: data.rooms,
+        pagination: meta?.pagination,
+      };
     }
+
+    return {
+      success: false,
+      rooms: [],
+      pagination: null,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.LoadRooms)),
+    };
   }
 
-  async createRoom(
-    title: string,
-    onSuccess: (room: IRoom) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
+  async createRoom(title: string): Promise<{
+    success: boolean;
+    room?: IRoom;
+    error?: string;
+  }> {
     const response = await AiService.createRoom(title);
     const { status, data } = response.data || {};
 
     if (status?.success && data?.room) {
       this.currentRoomId = data.room.id;
-      onSuccess(data.room);
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.CreateRoom)));
+      return {
+        success: true,
+        room: data.room,
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.CreateRoom)),
+    };
   }
 
   async loadHistory(
     roomId: string | null = null,
-    onSuccess: (
-      messages: IMessage[],
-      roomId: string,
-      processing: boolean,
-      pagination?: IApiPagination | null,
-    ) => void,
-    onError: (error: string) => void,
     params?: { page?: number; limit?: number },
-  ): Promise<void> {
+  ): Promise<{
+    success: boolean;
+    messages: IMessage[];
+    roomId: string;
+    processing: boolean;
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
     const response = await AiService.getHistory(
       roomId || this.currentRoomId || undefined,
       params,
     );
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
     if (status?.success && data) {
-      const { records: messages, pagination } = parsePagyList(response);
+      const { records: messages } = parsePagyList(response);
       const rId = messages[0]?.room_id ?? roomId ?? "";
       const processing = messages.some((m) =>
         AI_PROCESSING_MESSAGE_STATUSES.includes(m.metadata?.status ?? ""),
       );
       this.currentRoomId = rId || null;
-      onSuccess(messages, rId, processing, pagination);
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.LoadHistory)));
+      return {
+        success: true,
+        messages,
+        roomId: rId,
+        processing,
+        pagination: meta?.pagination,
+      };
     }
+
+    return {
+      success: false,
+      messages: [],
+      roomId: roomId || this.currentRoomId || "",
+      processing: false,
+      pagination: null,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.LoadHistory)),
+    };
   }
 
   async chat(
     message: string,
     roomId: string | null = null,
-    onSuccess: (message: IMessage, roomId: string) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
+  ): Promise<{
+    success: boolean;
+    message?: IMessage;
+    roomId?: string;
+    error?: string;
+  }> {
     const response = await AiService.chat({
       message,
       room_id: roomId || this.currentRoomId || undefined,
@@ -127,50 +159,66 @@ class AiController {
 
     if (status?.success && data?.message) {
       this.currentRoomId = data.room_id;
-      onSuccess(data.message, data.room_id);
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)));
+      return {
+        success: true,
+        message: data.message,
+        roomId: data.room_id,
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)),
+    };
   }
 
-  async clearHistory(
-    roomId: string | null = null,
-    onSuccess?: () => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  async clearHistory(roomId: string | null = null): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
     const response = await AiService.clearHistory(
       roomId || this.currentRoomId || undefined,
     );
     const { status } = response.data || {};
 
     if (status?.success) {
-      onSuccess?.();
-    } else {
-      onError?.(getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)));
+      return { success: true };
     }
+
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)),
+    };
   }
 
   async renameRoom(
     roomId: string,
     title: string,
-    onSuccess: (title: string) => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
+  ): Promise<{
+    success: boolean;
+    title?: string;
+    error?: string;
+  }> {
     const response = await AiService.renameRoom(roomId, title);
     const { status, data } = response.data || {};
 
     if (status?.success && data?.title) {
-      onSuccess(data.title);
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.RenameRoom)));
+      return {
+        success: true,
+        title: data.title,
+      };
     }
+
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.RenameRoom)),
+    };
   }
 
-  async deleteRoom(
-    roomId: string,
-    onSuccess: () => void,
-    onError: (error: string) => void,
-  ): Promise<void> {
+  async deleteRoom(roomId: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
     const response = await AiService.deleteRoom(roomId);
     const { status } = response.data || {};
 
@@ -178,10 +226,13 @@ class AiController {
       if (this.currentRoomId === roomId) {
         this.currentRoomId = null;
       }
-      onSuccess();
-    } else {
-      onError(getApiError(response, translate(AppLocales.Ai.Errors.DeleteRoom)));
+      return { success: true };
     }
+
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Ai.Errors.DeleteRoom)),
+    };
   }
 }
 

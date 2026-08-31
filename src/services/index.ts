@@ -1,6 +1,5 @@
 export {
   api,
-  apiHandler,
   getApiError,
   parsePaginatedResponse,
   useAxiosInterceptor,

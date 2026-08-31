@@ -1,9 +1,9 @@
 import React from "react";
 import type { AdminAction, AdminResource } from "../roles";
-import { Button, ButtonProps } from "../../../design/components/button/Button";
+import { Button, IButtonProps } from "../../../design/components/button/Button";
 import { usePermissions } from "../../../hooks";
 
-interface IAdminActionButtonProps extends ButtonProps {
+interface IAdminActionButtonProps extends IButtonProps {
   action: AdminAction;
   resource: AdminResource;
 }

@@ -2,7 +2,7 @@ import React from "react";
 
 import type { AdminAction, AdminResource } from "../roles";
 import { iconsLib } from "../../../assets";
-import { ButtonProps } from "../../../design/components/button/Button";
+import { IButtonProps } from "../../../design/components/button/Button";
 import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
@@ -20,7 +20,7 @@ interface IAdminTableActionConfig {
   action: AdminAction;
   icon: React.ElementType<{ className?: string }>;
   label: string;
-  variant: ButtonProps["variant"];
+  variant: IButtonProps["variant"];
 }
 
 const ADMIN_TABLE_ACTION_CONFIG: Record<

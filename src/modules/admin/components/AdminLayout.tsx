@@ -64,7 +64,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
             isSidebarOpen ? "Close admin navigation" : "Open admin navigation"
           }
         >
-          <iconsLib.bar3 className="h-[20px] w-[20px]" />
+          <iconsLib.menu className="h-[20px] w-[20px]" />
         </Button>
       </div>
 

@@ -10,6 +10,7 @@ import {
   TextLink,
 } from "../../../design/components";
 import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -43,7 +44,6 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
   const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
-  const [, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number>(3);
   const [hasFailureHistory, setHasFailureHistory] = useState(false);
@@ -63,58 +63,59 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
     if (password.length !== 6 || cooldown.isActive) return;
 
     setIsLoading(true);
-    try {
-      const result = await AuthController.signInWithEmailOrUsername(
-        email,
-        password,
-        setError,
-        setMessage,
-        signin,
-        navigate,
+    const result = await AuthController.signInWithEmailOrUsername(email, password);
+
+    if (result.success && result.token && result.user) {
+      signin(result.token, result.user);
+      success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
+      cooldown.clear();
+      setRemainingAttempts(3);
+      setHasFailureHistory(false);
+      setPassword("");
+      setError("");
+      onClose();
+      navigate(AppRoutes.client.protected.HOME);
+    } else if (result.otpSent) {
+      info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
+      navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
+    } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
+      // Cooldown active - start countdown
+      const targetTimeMs = Date.now() + result.cooldownRemaining * 1000;
+      cooldown.startAt(targetTimeMs);
+      onCooldownStart(targetTimeMs);
+      setRemainingAttempts(0);
+      setHasFailureHistory(true);
+      setPassword("");
+      setError(
+        t(AppLocales.Auth.SignInPasscode.TooManyAttempts, {
+          seconds: result.cooldownRemaining,
+        }),
       );
+    } else if (result.remainingAttempts !== undefined) {
+      const attemptsLeft = result.remainingAttempts;
+      setRemainingAttempts(attemptsLeft);
+      setHasFailureHistory(true);
+      setPassword("");
 
-      if (result.success) {
-        success(t(AppLocales.Auth.SignInPasscode.SignInSuccess));
-        cooldown.clear();
-        onCooldownClear();
-        setRemainingAttempts(3);
-        setHasFailureHistory(false);
-        setPassword("");
-        setError("");
-        onClose();
-      } else if (result.otpSent) {
-        info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
-        navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });
-      } else if (result.cooldownRemaining && result.cooldownRemaining > 0) {
-        const targetTimeMs = Date.now() + result.cooldownRemaining * 1000;
-        cooldown.startAt(targetTimeMs);
-        onCooldownStart(targetTimeMs);
-        setRemainingAttempts(0);
-        setHasFailureHistory(true);
-        setPassword("");
-        setError("");
-      } else if (result.remainingAttempts !== undefined) {
-        const attemptsLeft = result.remainingAttempts;
-        setRemainingAttempts(attemptsLeft);
-        setHasFailureHistory(true);
-        setPassword("");
-
-        if (attemptsLeft > 0) {
-          setError(
-            t(AppLocales.Auth.SignInPasscode.IncorrectPasscode, {
-              attempts: attemptsLeft,
-            }),
-          );
-        } else {
-          setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
-        }
+      if (attemptsLeft > 0) {
+        setError(
+          t(AppLocales.Auth.SignInPasscode.IncorrectPasscode, {
+            attempts: attemptsLeft,
+          }),
+        );
       } else {
-        setPassword("");
-        setError(result.errorMessage || "Unable to sign in. Please try again.");
+        setError(t(AppLocales.Auth.SignInPasscode.NoAttempts));
       }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setPassword("");
+      setError(
+        result.error ||
+          result.errorMessage ||
+          t(AppLocales.Auth.Shared.SignInFailed),
+      );
     }
+
+    setIsLoading(false);
   };
 
   // Reset attempts when cooldown expires

@@ -38,17 +38,9 @@ class UserController {
     return confirmed ? "exists_confirmed" : "exists_unconfirmed";
   }
 
-  async getCurrentUser(
-    setCurrentUser: (user: IUser | null) => void,
-  ): Promise<void> {
+  async getCurrentUser(): Promise<IUser | null> {
     const response = await UserService.getCurrentUser();
-    const user = response.data?.data?.user;
-
-    if (response.error || !user) {
-      return;
-    }
-    //setting current user in the state
-    setCurrentUser(user);
+    return response.data?.data?.user || null;
   }
 
   async uploadImage(

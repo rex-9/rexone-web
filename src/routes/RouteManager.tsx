@@ -58,17 +58,17 @@ import { useSocket } from "../hooks";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-      <Route
-        element={
-          <>
-            <AuthDialog />
-            <Outlet />
-          </>
-        }
-      >
-        <Route path={AppRoutes.client.public.ROOT}>
-          <Route index element={<RootPage />} />
-          <Route path="anapana" element={<AnapanaPage />} />
+    <Route
+      element={
+        <>
+          <AuthDialog />
+          <Outlet />
+        </>
+      }
+    >
+      <Route path={AppRoutes.client.public.ROOT}>
+        <Route index element={<RootPage />} />
+        <Route path="anapana" element={<AnapanaPage />} />
 
           {/* Public Routes */}
           <Route element={<PublicRoute />}>
@@ -218,7 +218,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.ROOMS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.ROOMS}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.CHAT_ROOMS}
@@ -226,7 +231,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.ROOMS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.UPDATE}
+                  resource={ADMIN_RESOURCES.ROOMS}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.CHAT_ROOM_EDIT}
@@ -234,7 +244,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.MESSAGES} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.MESSAGES}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.CHAT_MESSAGES}
@@ -242,7 +257,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.MESSAGES} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.UPDATE}
+                  resource={ADMIN_RESOURCES.MESSAGES}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT}
@@ -251,7 +271,10 @@ const router = createBrowserRouter(
             </Route>
             <Route
               element={
-                <AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.NOTIFICATIONS} />
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.NOTIFICATIONS}
+                />
               }
             >
               <Route
@@ -260,7 +283,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.READ} resource={ADMIN_RESOURCES.PRODUCTS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.READ}
+                  resource={ADMIN_RESOURCES.PRODUCTS}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.PRODUCTS}
@@ -272,7 +300,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.CREATE} resource={ADMIN_RESOURCES.PRODUCTS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.CREATE}
+                  resource={ADMIN_RESOURCES.PRODUCTS}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.PRODUCT_CREATE}
@@ -280,7 +313,12 @@ const router = createBrowserRouter(
               />
             </Route>
             <Route
-              element={<AdminRootRoute action={ADMIN_ACTIONS.UPDATE} resource={ADMIN_RESOURCES.PRODUCTS} />}
+              element={
+                <AdminRootRoute
+                  action={ADMIN_ACTIONS.UPDATE}
+                  resource={ADMIN_RESOURCES.PRODUCTS}
+                />
+              }
             >
               <Route
                 path={AppRoutes.client.protected.admin.PRODUCT_EDIT}
@@ -292,13 +330,12 @@ const router = createBrowserRouter(
           {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Route>
-      </Route>,
+    </Route>,
   ),
 );
 
 export const RouteManager = () => {
   useAxiosInterceptor();
   useSocket();
-
   return <RouterProvider router={router} />;
 };

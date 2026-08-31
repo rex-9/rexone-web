@@ -8,6 +8,9 @@
 // Export all elements
 export * from "./elements";
 
+// Export all constants & component tokens
+export * from "./constants";
+
 // Export all components
 export * from "./components";
 

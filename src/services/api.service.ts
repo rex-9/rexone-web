@@ -226,26 +226,6 @@ export const useAxiosInterceptor = () => {
   }, [setLoading, token, signout]);
 };
 
-export const apiHandler = async <T>(
-  operation: string,
-  apiFunction: () => Promise<IApiResponse<IApiEnvelope<T>>>,
-  setError: (message: string) => void,
-  onSuccess: (response: IApiEnvelope<T>) => void,
-  onFailure?: () => void,
-): Promise<void> => {
-  const response = await apiFunction();
-  const envelope = response.data;
-
-  if (envelope?.status?.success) {
-    setError("");
-    onSuccess(envelope);
-  } else {
-    setError(getApiError(response, `An error occurred when ${operation}.`));
-
-    onFailure?.();
-  }
-};
-
 export const parseRecord = <T extends object>(
   record: IJsonApiResource<T> | T,
 ): T & { id: string } => {

@@ -41,18 +41,18 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    try {
-      await AuthController.sendForgotPasswordMail(
-        localEmail,
-        setError,
-        setMessage,
-        () => {
-          cooldown.start(60);
-          success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
-        },
-      );
-    } finally {
-      setIsLoading(false);
+    setError("");
+    setMessage("");
+
+    const result = await AuthController.sendForgotPasswordMail(localEmail);
+    setIsLoading(false);
+
+    if (result.success) {
+      setMessage(result.message || "");
+      cooldown.start(60);
+      success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
+    } else {
+      setError(result.error || "Failed to send password reset email.");
     }
   };
 
