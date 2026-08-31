@@ -90,9 +90,9 @@ Model Layer (src/models/ & src/modules/*/types.ts)
        │  (Typed interfaces, request/response models, state schemas)
 View Layer (src/design/pages/ or src/modules/*/components/ & pages/)
        ↓  (Triggers actions, manages local form input states, consumes reactive atoms/hooks)
-Controller Layer (src/modules/*/controllers/*.controller.ts)
+Controller Layer (src/modules/*/*.controller.ts)
        ↓  (Orchestrates backend-facing client-business logic, coordinates services, returns typed results)
-Service Layer (src/services/ & src/modules/*/services/*.service.ts)
+Service Layer (src/services/ & src/modules/*/*.service.ts)
        ↓  (Formats request payloads, calls ApiService, returns IApiResponse)
 Transport Layer (src/services/api.service.ts)
        ↓  (Global Axios instance, JWT/Platform/Locale headers, centralized 401 interceptor)
@@ -117,7 +117,7 @@ Transport Layer (src/services/api.service.ts)
 - **Services (`*.service.ts`)**:
   - **Exclusively handle remote HTTP/WebSocket transport** via `api` (`ApiService`).
   - **Shared Services (`src/services/`)**: Application-wide infrastructure services used by any controller or hook (`api.service.ts`, `socket.service.ts`, `atom.service.ts`).
-  - **Module Services (`src/modules/<name>/services/`)**: Feature-specific API clients (`auth.service.ts`, `ai.service.ts`, `payment.service.ts`, `feedback.service.ts`). When necessary, module services can be imported and utilized by other domain controllers.
+  - **Module Services (`src/modules/<name>/<name>.service.ts`)**: Feature-specific API clients (`auth.service.ts`, `ai.service.ts`, `payment.service.ts`, `feedback.service.ts`). Placed at module root unless a domain expands to require multiple service files. When necessary, module services can be imported and utilized by other domain controllers.
   - Strongly typed with `Promise<IApiResponse<IApiEnvelope<T>>>`.
   - Zero UI state, zero DOM access, zero component references.
 
@@ -200,13 +200,18 @@ The client-side RBAC system strictly synchronizes with the backend's three-tier 
 ## 🧱 10. Module Boundary Law
 
 - **Rule**: Everything belonging to a feature domain MUST live inside `src/modules/<feature_name>/`:
-  - `constants.ts` — Feature-specific constants & enums.
-  - `types.ts` — TypeScript interfaces, requests, responses.
-  - `<feature>.controller.ts` — Business controller(s).
-  - `<feature>.service.ts` — Backend API service(s).
-  - `components/` — Feature-specific UI components.
-  - `pages/` — Feature-specific routes and views.
-  - `index.ts` — Clean barrel exporting public interface.
+  - **Folders (Multi-file Collections)**:
+    - `components/` — Feature-specific UI components, dialogs, modals, and input cards (folder because it contains multiple components).
+    - `pages/` — Feature-specific route screens and views (folder because it contains multiple pages/views).
+  - **Flat Single Files (Directly under module root)**:
+    - `<feature>.controller.ts` — Single domain controller orchestrating client-business logic.
+    - `<feature>.service.ts` — Single API communication service.
+    - `constants.ts` — Single domain constants & enums file.
+    - `types.ts` — Single TypeScript interfaces, request/response models file.
+    - `index.ts` — Clean barrel exporting public module interface.
+  - **Multi-Service / Multi-Controller Exception**:
+    - Do NOT create `controllers/` or `services/` folders when there is only one controller or service file.
+    - If a large module expands in complexity and requires multiple separate services (e.g. `src/modules/admin/users/user.service.ts` and `src/modules/admin/iam/iam.service.ts`), dedicated subfolders may be created. Otherwise, keep them flat at the module root.
 - Code outside `src/modules/` is strictly application-wide shared infrastructure (`src/design/`, `src/services/`, `src/constants/`, `src/contexts/`, `src/models/`, `src/routes/`, `src/locales/`, `src/helpers/`, `src/hooks/`, `src/atoms.ts`).
 
 ---
