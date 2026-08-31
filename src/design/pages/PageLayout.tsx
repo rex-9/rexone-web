@@ -1,10 +1,13 @@
 import React from "react";
 import { HeadNavbar } from "../components";
 import { cn } from "../utils";
+import { useAxiosInterceptor } from "../../services";
+import { useSocket } from "../../hooks/useSocket";
 
 export interface IPageLayoutProps {
   children: React.ReactNode;
   className?: string;
+  enableAppServices?: boolean;
   headerActions?: React.ReactNode;
   headerLeading?: React.ReactNode;
   headNavbar?: React.ReactNode;
@@ -16,6 +19,7 @@ export interface IPageLayoutProps {
 export const PageLayout: React.FC<IPageLayoutProps> = ({
   children,
   className,
+  enableAppServices = false,
   headerActions,
   headerLeading,
   headNavbar,
@@ -34,6 +38,7 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
         className,
       )}
     >
+      {enableAppServices ? <PageLayoutServices /> : null}
       {showHeadNavbar
         ? headNavbar ?? (
             <HeadNavbar
@@ -48,4 +53,11 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
       {shouldCenter ? <div /> : null}
     </div>
   );
+};
+
+const PageLayoutServices: React.FC = () => {
+  useAxiosInterceptor();
+  useSocket();
+
+  return null;
 };

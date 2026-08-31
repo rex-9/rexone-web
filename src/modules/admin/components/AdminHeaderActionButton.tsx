@@ -18,7 +18,7 @@ interface IAdminHeaderActionButtonProps {
 export const AdminHeaderActionButton: React.FC<
   IAdminHeaderActionButtonProps
 > = ({ label, onClick, recycle }) => (
-  <div className="flex shrink-0 items-center gap-32 self-start md:self-auto">
+  <div className="flex shrink-0 items-center gap-10 self-start md:self-auto">
     
     {recycle && (
       <AdminActionButton

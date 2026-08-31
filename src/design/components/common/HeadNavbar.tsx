@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 
-import { iconsLib } from "../../../assets";
-import { Button } from "../button";
-import { LanguageDropdown } from "../settings/LanguageDropdown";
-import { ThemeToggle } from "../settings/ThemeToggle";
-import { cn } from "../../utils";
-import ProfileAvatar from "./ProfileAvatar";
+import { iconsLib } from '../../../assets';
+import { Button } from '../button';
+import { LanguageDropdown } from '../settings/LanguageDropdown';
+import { ThemeToggle } from '../settings/ThemeToggle';
+import { cn } from '../../utils';
+import ProfileAvatar from './ProfileAvatar';
 
 export interface HeadNavbarProps {
   children?: React.ReactNode;
@@ -23,7 +23,7 @@ interface IHeadNavbarBrandProps {
 export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
   className,
 }) => (
-  <div className={cn("min-w-0 items-center gap-12", className)}>
+  <div className={cn('min-w-0 items-center gap-12', className)}>
     <div className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900">
       R
     </div>
@@ -47,16 +47,14 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
 }) => (
   <header
     className={cn(
-      "fixed left-0 right-0 top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-300 bg-base-100 px-16 md:px-24",
+      'fixed left-0 right-0 top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-300 bg-base-100 px-10 md:px-6',
       className,
     )}
   >
     {children ?? (
       <>
-        <div className="flex min-w-0 items-center gap-12">
-          {leading}
-        </div>
-        <div className="flex items-center gap-8">
+        <div className="flex min-w-0 items-center gap-12">{leading}</div>
+        <div className="flex items-center gap-2">
           {showNotifications && (
             <Button
               type="button"

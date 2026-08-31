@@ -136,8 +136,8 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   };
 
   return (
-    <nav className="flex-1 overflow-y-auto px-16 py-20">
-      <div className="space-y-8">
+    <nav className="flex-1 overflow-y-auto px-4 py-8">
+      <div className="space-y-4">
         {enabledItems.map((section) => {
           const isCollapsed = collapsedSections[section.id] ?? false;
 
@@ -148,7 +148,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                 aria-expanded={!isCollapsed}
                 aria-controls={`admin-nav-section-${section.id}`}
                 onClick={() => toggleSection(section.id)}
-                className="mb-[10px] flex h-[28px] w-full items-center justify-between rounded-md px-8 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100"
+                className="mb-[10px] flex h-[28px] w-full items-center justify-between rounded-md px-4 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100"
               >
                 <span>{section.label}</span>
                 <iconsLib.chevronDown
@@ -178,7 +178,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                           onClick={onNavigate}
                           className={({ isActive }) =>
                             cn(
-                              "flex h-[44px] items-center gap-12 rounded-md px-12 text-body-m font-medium transition-colors",
+                              "flex h-[44px] items-center gap-4 rounded-md px-4 text-body-m font-medium transition-colors",
                               isActive
                                 ? "bg-primary text-navy-900 shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",

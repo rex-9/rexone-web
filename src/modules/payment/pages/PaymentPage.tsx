@@ -3,7 +3,7 @@ import { useLoading } from "../../../contexts/LoadingContext";
 import { useToast } from "../../../contexts/ToastContext";
 import { Button, Badge } from "../../../design/components";
 import { ConfirmDialog } from "../../../design/components/overlay";
-import { LayoutPage } from "../../../design/pages";
+import { PageLayout } from "../../../design/pages";
 import { ButtonVariants, BadgeVariants, ComponentSizes } from "../../../design/constants";
 import { IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
@@ -225,7 +225,7 @@ export const PaymentPage: React.FC = () => {
   };
 
   return (
-    <LayoutPage>
+    <PageLayout enableAppServices>
       <div className="text-center space-y-2 mb-8">
         <h1 className="text-3xl font-bold font-primary text-base-content">Choose Your Plan</h1>
         <p className="text-body-m text-base-content/70">
@@ -280,6 +280,6 @@ export const PaymentPage: React.FC = () => {
         cancelLabel="Keep Subscription"
         isDestructive={true}
       />
-    </LayoutPage>
+    </PageLayout>
   );
 };

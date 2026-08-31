@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "../../../contexts/ToastContext";
 import { Button } from "../../../design/components/button/Button";
 import { ButtonVariants } from "../../../design/constants";
-import { LayoutPage } from "../../../design/pages/LayoutPage";
+import { PageLayout } from "../../../design/pages/PageLayout";
 import AppRoutes from "../../../AppRoutes";
 
 export const PaymentSuccessPage: React.FC = () => {
@@ -14,7 +14,7 @@ export const PaymentSuccessPage: React.FC = () => {
   }, [success]);
 
   return (
-    <LayoutPage>
+    <PageLayout enableAppServices>
       <div className="max-w-md mx-auto w-full bg-base-100/70 border border-base-300 rounded-2xl p-8 shadow-xl backdrop-blur-md text-center space-y-4">
         <div className="text-5xl">🎉</div>
         <h1 className="text-2xl font-bold font-primary text-base-content">Payment Successful!</h1>
@@ -29,6 +29,6 @@ export const PaymentSuccessPage: React.FC = () => {
           </Link>
         </div>
       </div>
-    </LayoutPage>
+    </PageLayout>
   );
 };
