@@ -9,3 +9,4 @@ export type { FormActionRowProps } from "./FormActionRow";
 export { Radio } from "./Radio";
 export type { RadioProps } from "./Radio";
 export { RatingSlider } from "./RatingSlider";
+export { FileInput } from "./FileInput";

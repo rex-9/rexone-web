@@ -34,7 +34,7 @@ export const GoogleButton: React.FC<IGoogleButtonProps> = ({
         className,
       )}
     >
-      <Image asset={icons.google} className="w-8" />
+      <Image asset={icons.google} className="w-6 h-6 object-contain" />
       <span>{isLoading ? "Signing in..." : children}</span>
     </button>
   );

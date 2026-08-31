@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-interface IUseCountdownResult {
+export interface IUseCountdownResult {
   secondsLeft: number;
   isActive: boolean;
   targetTimeMs: number;

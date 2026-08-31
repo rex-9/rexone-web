@@ -61,7 +61,7 @@ export const Dialog: React.FC<IDialogProps> = ({
         </TransitionChild>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-16">
+          <div className="flex min-h-full items-center justify-center p-4">
             <TransitionChild
               as={Fragment}
               enter="ease-out duration-200"
@@ -73,22 +73,23 @@ export const Dialog: React.FC<IDialogProps> = ({
             >
               <DialogPanel
                 className={cn(
-                  "relative z-10 bg-base-100 rounded-lg p-24 shadow-m",
-                  "w-full max-w-[448px]",
-                  "max-h-[90vh] overflow-y-auto",
+                  "relative z-10 bg-base-100 border border-base-300 rounded-2xl p-6 shadow-xl",
+                  "w-full max-w-md",
+                  "max-h-[90dvh] overflow-y-auto font-primary",
                   className,
                 )}
               >
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-4">
                   {/* Back Button (left side) */}
                   {onBack && (
                     <button
                       type="button"
                       onClick={onBack}
-                      className="p-8 rounded-m hover:bg-base-200 transition-colors"
+                      className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors -ml-1"
+                      aria-label="Back"
                     >
                       <svg
-                        className="w-20 h-20 text-base-content"
+                        className="w-5 h-5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -105,7 +106,7 @@ export const Dialog: React.FC<IDialogProps> = ({
 
                   {/* Title (center, optional) */}
                   {title && (
-                    <HeadlessDialog.Title className="text-h3 font-display font-semibold text-base-content flex-1 text-center">
+                    <HeadlessDialog.Title className="text-xl font-bold font-primary text-base-content flex-1 text-center">
                       {title}
                     </HeadlessDialog.Title>
                   )}
@@ -117,10 +118,11 @@ export const Dialog: React.FC<IDialogProps> = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="p-8 rounded-m hover:bg-base-200 transition-colors ml-auto"
+                    className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors ml-auto -mr-1"
+                    aria-label="Close"
                   >
                     <svg
-                      className="w-20 h-20 text-base-content"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -140,7 +142,7 @@ export const Dialog: React.FC<IDialogProps> = ({
 
                 {/* Footer */}
                 {footer && (
-                  <div className="flex justify-end gap-12 pt-16 border-t border-base-300">
+                  <div className="flex justify-end gap-3 pt-4 mt-4 border-t border-base-300">
                     {footer}
                   </div>
                 )}

@@ -1,12 +1,14 @@
-import AppRoutes from "../AppRoutes";
+// src/modules/user/user.service.ts
+
+import AppRoutes from "../../AppRoutes";
 import {
   IApiEnvelope,
   IApiResponse,
   IUser,
   IAssetUploadResponse,
   IAssetUploadOptions,
-} from "../models";
-import { api } from "./api.service";
+} from "../../models";
+import { api } from "../../services";
 
 class UserService {
   async peekUser(email: string): Promise<
@@ -26,7 +28,7 @@ class UserService {
   async getCurrentUser(): Promise<
     IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>
   > {
-    return api.get<{ user: IUser; token: string }>(
+    return await api.get<{ user: IUser; token: string }>(
       AppRoutes.server.protected.CURRENT_USER,
     );
   }
@@ -46,7 +48,7 @@ class UserService {
       formData.append("duration_secs", String(options.duration_secs));
     if (options?.folder) formData.append("folder", options.folder);
 
-    return api.post<IAssetUploadResponse>(
+    const response = await api.post<IAssetUploadResponse>(
       AppRoutes.server.protected.UPLOAD_ASSET,
       formData,
       {
@@ -55,6 +57,7 @@ class UserService {
         },
       },
     );
+    return response;
   }
 }
 

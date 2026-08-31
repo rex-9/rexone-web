@@ -7,6 +7,7 @@ import {
   Dialog,
   PasswordInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { AppLocales, useTranslate } from "../../../locales";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -80,17 +81,21 @@ export const SignupPasswordCreateDialog: React.FC<
       }
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {subtitle}
       </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-16">
+      <FormContainer
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {isResetFlow
               ? t(AppLocales.Auth.SignUpPasscodeCreate.ResetPrompt)
               : t(AppLocales.Auth.SignUpPasscodeCreate.SignUpPrompt, { email })}
           </p>
-          <p className="text-body-s text-base-content opacity-70 mt-4">
+          <p className="text-body-s text-base-content opacity-70 mt-1">
             {t(AppLocales.Auth.SignUpPasscodeCreate.Instruction)}
           </p>
         </div>
@@ -121,7 +126,7 @@ export const SignupPasswordCreateDialog: React.FC<
             onClick={() => navigateToStep(DialogAuthSteps.INITIAL)}
           />
         </div>
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

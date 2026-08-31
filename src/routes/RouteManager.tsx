@@ -14,9 +14,9 @@ import { PublicRoute } from "./PublicRoute";
 import {
   HomePage,
   NotFoundPage,
-  ProfilePage,
   RootPage,
 } from "../design/pages";
+import { UserPage } from "../modules/user";
 import { AnapanaPage } from "../modules/anapana/pages";
 import {
   AuthDialog,
@@ -68,42 +68,42 @@ const router = createBrowserRouter(
     >
       <Route path={AppRoutes.client.public.ROOT}>
         <Route index element={<RootPage />} />
-        <Route path="anapana" element={<AnapanaPage />} />
+        <Route
+          path={AppRoutes.client.public.ANAPANA}
+          element={<AnapanaPage />}
+        />
 
-          {/* Public Routes */}
-          <Route element={<PublicRoute />}>
-            <Route
-              path={AppRoutes.client.public.SIGN_IN}
-              element={<SignInPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.SIGN_UP}
-              element={<SignUpPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.CONFIRM_EMAIL}
-              element={<ConfirmEmailPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.FORGOT_PASSWORD}
-              element={<ForgotPasswordPage />}
-            />
-            <Route
-              path={AppRoutes.client.public.RESET_PASSWORD}
-              element={<ResetPasswordPage />}
-            />
-          </Route>
+        {/* Public Routes */}
+        <Route element={<PublicRoute />}>
+          <Route
+            path={AppRoutes.client.public.SIGN_IN}
+            element={<SignInPage />}
+          />
+          <Route
+            path={AppRoutes.client.public.SIGN_UP}
+            element={<SignUpPage />}
+          />
+          <Route
+            path={AppRoutes.client.public.CONFIRM_EMAIL}
+            element={<ConfirmEmailPage />}
+          />
+          <Route
+            path={AppRoutes.client.public.FORGOT_PASSWORD}
+            element={<ForgotPasswordPage />}
+          />
+          <Route
+            path={AppRoutes.client.public.RESET_PASSWORD}
+            element={<ResetPasswordPage />}
+          />
+        </Route>
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path={AppRoutes.client.protected.HOME}
-              element={<HomePage />}
-            />
-            <Route
-              path={AppRoutes.client.protected.PROFILE}
-              element={<ProfilePage />}
-            />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path={AppRoutes.client.protected.HOME} element={<HomePage />} />
+          <Route
+            path={AppRoutes.client.protected.PROFILE}
+            element={<UserPage />}
+          />
             <Route
               path={AppRoutes.client.protected.SIGN_OUT}
               element={<SignOutPage />}
@@ -325,11 +325,11 @@ const router = createBrowserRouter(
                 element={<AdminProductEditPage />}
               />
             </Route>
-          </Route>
-
-          {/* 404 */}
-          <Route path="*" element={<NotFoundPage />} />
         </Route>
+
+        {/* 404 */}
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Route>,
   ),
 );

@@ -58,22 +58,29 @@ const getAdminRoleResourceScope = (
 export const usePermissions = (): IUsePermissionsResult => {
   const { currentUser, isAuthenticated } = useAuth();
   const isLoading = isAuthenticated && !currentUser;
+  const roleNames = currentUser?.role_names ?? currentUser?.roles;
 
   const isSuperAdmin = useMemo(
-    () => currentUser?.role_names?.includes("super_admin") ?? false,
-    [currentUser?.role_names],
+    () =>
+      Boolean(
+        currentUser?.is_super_admin || roleNames?.includes("super_admin"),
+      ),
+    [currentUser?.is_super_admin, roleNames],
   );
 
   const permissions = useMemo<IPermission[]>(
     () => {
-      const scopedResources = getAdminRoleResourceScope(currentUser?.role_names);
+      const scopedResources = getAdminRoleResourceScope(roleNames);
+      const permissionMap = !Array.isArray(currentUser?.permissions)
+        ? currentUser?.permissions ?? {}
+        : {};
 
-      return Object.entries(currentUser?.permissions ?? {}).flatMap(
+      return Object.entries(permissionMap).flatMap(
         ([resource, actions]) => {
           const adminResource = resource as AdminResource;
 
           if (scopedResources.has(adminResource)) {
-            return (actions ?? []).map((action) => ({
+            return (actions ?? []).map((action: AdminAction) => ({
               action,
               resource: adminResource,
             }));
@@ -95,7 +102,7 @@ export const usePermissions = (): IUsePermissionsResult => {
         },
       );
     },
-    [currentUser?.permissions, currentUser?.role_names],
+    [currentUser?.permissions, roleNames],
   );
 
   const permissionKeys = useMemo(

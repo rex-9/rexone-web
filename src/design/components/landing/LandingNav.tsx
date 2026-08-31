@@ -7,18 +7,14 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps } from "../../../modules/auth";
 import { Button } from "../button";
-import { colors } from "../../elements";
-
 import { ButtonVariants, ComponentSizes } from "../../constants";
 
-interface LandingNavProps {
+export interface ILandingNavProps {
   activeSection?: string;
   onSectionClick?: (sectionId: string) => void;
 }
 
-const activeShadow = colors.effects.navActive;
-
-export const LandingNav: React.FC<LandingNavProps> = ({
+export const LandingNav: React.FC<ILandingNavProps> = ({
   activeSection = "#Greetings",
   onSectionClick,
 }) => {
@@ -67,9 +63,9 @@ export const LandingNav: React.FC<LandingNavProps> = ({
 
   return (
     <header className="sticky top-0 z-50 w-full bg-glass-nav backdrop-blur-xl border-b border-glass-border transition-all duration-300">
-      <div className="max-w-[1200px] mx-auto h-[70px] px-5 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto h-16 sm:h-20 px-5 flex items-center justify-between">
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center justify-between w-full font-display text-[21px] tracking-wider text-white">
+        <nav className="hidden md:flex items-center justify-between w-full font-display text-xl tracking-wider text-white">
           <div className="flex items-center space-x-7">
             {navItems.map((item) => {
               const isActive = currentSection === item.href;
@@ -78,10 +74,9 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  style={isActive ? { textShadow: activeShadow } : undefined}
                   className={`transition-all duration-300 ${
                     isActive
-                      ? "text-white font-bold"
+                      ? "text-white font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
                       : "text-white/65 hover:text-white hover:[text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_16px_var(--color-primary-dark),0_0_22px_var(--color-glow-outer)]"
                   }`}
                 >
@@ -94,9 +89,8 @@ export const LandingNav: React.FC<LandingNavProps> = ({
           {/* Enter Button in Desktop Nav */}
           <Button
             variant={ButtonVariants.PRIMARY}
-            size={ComponentSizes.SM}
+            size={ComponentSizes.LG}
             onClick={handleEnterClick}
-            className="!py-2 !px-6 text-sm"
           >
             Enter
           </Button>
@@ -131,7 +125,7 @@ export const LandingNav: React.FC<LandingNavProps> = ({
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-glass-nav backdrop-blur-2xl border-b border-glass-border-hover py-4 px-6">
-          <div className="flex flex-col space-y-4 text-center font-display text-[22px]">
+          <div className="flex flex-col space-y-4 text-center font-display text-xl">
             {navItems.map((item) => {
               const isActive = currentSection === item.href;
               return (
@@ -139,10 +133,9 @@ export const LandingNav: React.FC<LandingNavProps> = ({
                   key={item.href}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  style={isActive ? { textShadow: activeShadow } : undefined}
                   className={`py-2 transition-all duration-300 ${
                     isActive
-                      ? "text-white font-bold"
+                      ? "text-white font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
                       : "text-white/70 hover:text-white"
                   }`}
                 >

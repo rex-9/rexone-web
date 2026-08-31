@@ -1,6 +1,6 @@
 import { SignOutButton, Button } from "../components";
 import { ButtonVariants } from "../constants";
-import { PageLayout } from "./PageLayout";
+import { LayoutPage } from "./LayoutPage";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../AppRoutes";
 import { DevTestButtons } from "../../modules/log/components/DevTestButtons";
@@ -9,8 +9,8 @@ export const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <PageLayout>
-      <div className="w-full max-w-sm space-y-16">
+    <LayoutPage>
+      <div className="w-full max-w-sm space-y-4">
         <Button
           variant={ButtonVariants.SECONDARY}
           fullWidth
@@ -31,6 +31,6 @@ export const HomePage: React.FC = () => {
 
         <SignOutButton />
       </div>
-    </PageLayout>
+    </LayoutPage>
   );
 };

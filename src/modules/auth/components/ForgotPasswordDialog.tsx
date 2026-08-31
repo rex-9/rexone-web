@@ -7,6 +7,7 @@ import {
   Dialog,
   TextInput,
   TextLink,
+  FormContainer,
 } from "../../../design/components";
 import { useToast } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -64,10 +65,10 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
       title={t(AppLocales.Auth.ForgotPasscode.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.ForgotPasscode.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-16">
+      <FormContainer onSubmit={handleSubmit} className="space-y-4">
         <TextInput
           id="forgot-email"
           type="email"
@@ -106,7 +107,7 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
             }
           />
         </div>
-      </form>
+      </FormContainer>
       {message && (
         <p className="text-caption text-success text-center">{message}</p>
       )}

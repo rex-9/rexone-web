@@ -11,9 +11,13 @@ export interface IUser {
   provider: string;
   bio?: string;
   profile_pic_url?: string;
+  role?: string;
+  roles?: string[];
   role_ids?: string[];
   role_names?: AdminRoleName[];
-  permissions?: IUserPermissionMap;
-  created_at: Date;
-  updated_at: Date;
+  permissions?: IUserPermissionMap | string[];
+  is_admin?: boolean;
+  is_super_admin?: boolean;
+  created_at: Date | string;
+  updated_at: Date | string;
 }

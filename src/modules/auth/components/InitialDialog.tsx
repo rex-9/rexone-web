@@ -9,6 +9,7 @@ import {
   GoogleButton,
   TextInput,
   Dialog,
+  FormContainer,
 } from "../../../design/components";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
@@ -16,14 +17,14 @@ import { AuthController } from "..";
 import { UserController } from "../../user";
 import { AppLocales, useTranslate } from "../../../locales";
 
-interface InitialDialogProps {
+interface IInitialDialogProps {
   email: string;
   navigateToStep: (step: TAuthStep, extra?: Record<string, string>) => void;
   updateUrl: (params: Record<string, string | null>) => void;
   onClose: () => void;
 }
 
-export const InitialDialog: React.FC<InitialDialogProps> = ({
+export const InitialDialog: React.FC<IInitialDialogProps> = ({
   email,
   navigateToStep,
   updateUrl,
@@ -182,10 +183,10 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
       title={t(AppLocales.Auth.Initial.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.Initial.Description)}
       </p>
-      <div className="space-y-16">
+      <div className="space-y-4">
         <GoogleButton
           onClick={() => handleGoogleSignIn()}
           isLoading={isLoading}
@@ -216,12 +217,12 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
             <div className="w-full border-t border-base-300" />
           </div>
           <div className="relative flex justify-center text-body-s">
-            <span className="px-16 bg-base-100 text-base-content opacity-60">
+            <span className="px-3 bg-base-100 text-base-content opacity-60">
               {t(AppLocales.Auth.Initial.Or)}
             </span>
           </div>
         </div>
-        <form onSubmit={handleEmailSubmit} className="space-y-16">
+        <FormContainer onSubmit={handleEmailSubmit} className="space-y-4">
           <TextInput
             id="email"
             type="email"
@@ -245,7 +246,7 @@ export const InitialDialog: React.FC<InitialDialogProps> = ({
               ? t(AppLocales.Auth.Initial.Checking)
               : t(AppLocales.Auth.Shared.Continue)}
           </Button>
-        </form>
+        </FormContainer>
         {displayMessage && (
           <p className="text-caption text-warning text-center">
             {displayMessage}

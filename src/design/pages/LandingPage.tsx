@@ -13,10 +13,7 @@ import {
 } from "../components/landing";
 import { Button } from "../components/button";
 import { ButtonVariants, ComponentSizes } from "../constants";
-import { colors } from "../elements";
 import { images, iconsLib } from "../../assets";
-
-const headingShadow = colors.effects.headingGlow;
 
 export const LandingPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState("#Greetings");
@@ -104,14 +101,13 @@ export const LandingPage: React.FC = () => {
         onSectionClick={handleScrollToSection}
       />
 
-      <main className="max-w-[1300px] mx-auto px-4 sm:px-6 md:px-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         {/* 2. Hero Sign ("rex9") */}
         <NeonSign id="Greetings" />
 
         {/* 3. Catchphrase & Social Profiles */}
         <section
-          style={{ textShadow: headingShadow }}
-          className="text-center max-w-[960px] mx-auto my-8 space-y-3 text-[16px] sm:text-[18px] md:text-[19px] text-white leading-[1.85] font-display font-normal tracking-wide"
+          className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
         >
           <p>Champion, welcome! 🌟</p>
           <p>
@@ -141,7 +137,7 @@ export const LandingPage: React.FC = () => {
             type="button"
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
-            className="group flex items-center justify-center w-[40px] h-[40px] rounded-full border border-primary text-primary hover:text-white hover:border-primary-light hover:shadow-neon transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
+            className="group flex items-center justify-center w-10 h-10 rounded-full border border-primary text-primary hover:text-white hover:border-primary-light hover:shadow-neon transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
           >
             <iconsLib.chevronDown className="w-5 h-5" />
           </button>
@@ -151,8 +147,7 @@ export const LandingPage: React.FC = () => {
         <section id="Skills" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
             <h2
-              style={{ textShadow: headingShadow }}
-              className="font-display text-[36px] sm:text-[44px] md:text-[50px] font-normal tracking-wide text-glow-white"
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
             >
               Skills
             </h2>
@@ -173,8 +168,7 @@ export const LandingPage: React.FC = () => {
         <section id="Projects" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
             <h2
-              style={{ textShadow: headingShadow }}
-              className="font-display text-[36px] sm:text-[44px] md:text-[50px] font-normal tracking-wide text-glow-white"
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
             >
               My Recent Works
             </h2>
@@ -191,8 +185,7 @@ export const LandingPage: React.FC = () => {
         <section id="Testimonials" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
             <h2
-              style={{ textShadow: headingShadow }}
-              className="font-display text-[36px] sm:text-[44px] md:text-[50px] font-normal tracking-wide text-glow-white"
+              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
             >
               Testimonials
             </h2>
@@ -211,8 +204,7 @@ export const LandingPage: React.FC = () => {
             {/* Left Contact Text & Resume Button */}
             <div className="w-full lg:w-1/2 text-center lg:text-left space-y-6">
               <div
-                style={{ textShadow: headingShadow }}
-                className="font-display text-[24px] sm:text-[30px] md:text-[34px] leading-relaxed font-normal text-glow-white"
+                className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed font-normal text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
               >
                 I'm always interested in hearing about new projects,
                 <br className="hidden sm:inline" /> so if you'd like to chat,
@@ -228,7 +220,7 @@ export const LandingPage: React.FC = () => {
                   <Button
                     variant={ButtonVariants.NEON}
                     size={ComponentSizes.LG}
-                    className="!py-3 !px-7 !text-[18px] tracking-[1px] font-bold"
+                    className="!py-3 !px-7 !text-lg tracking-wide font-bold"
                   >
                     View / Download my Resume 📄
                   </Button>
@@ -243,12 +235,12 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Divider matching Rex9 */}
-          <div className="w-[85%] max-w-[1100px] h-[1px] mx-auto my-9 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(255,94,98,0.3)]" />
+          <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(255,94,98,0.3)]" />
 
           {/* Footer Social Profiles */}
           <footer className="text-center">
             <SocialProfiles profiles={LANDING_DATA.profiles} />
-            <p className="text-[13px] text-white/50 font-medium">
+            <p className="text-xs text-white/50 font-medium">
               © {new Date().getFullYear()} Rex9. Engineered with Soul & Clarity.
             </p>
           </footer>

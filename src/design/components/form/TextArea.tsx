@@ -5,11 +5,12 @@
  * Supports Ctrl+Enter and Cmd+Enter to submit forms or focus next inputs.
  */
 
-import React, { useId, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { cn } from "../../utils";
 import { InputVariant, InputVariants } from "../../constants";
 
-export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface ITextAreaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   helperText?: string;
   error?: string;
@@ -40,8 +41,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   ...props
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const generatedId = useId();
-  const inputId = id || generatedId;
+  const inputId = id || `textarea-${Math.random().toString(36).substr(2, 9)}`;
   const hasError = !!error;
   const displayText = error || helperText;
   const currentLength = typeof value === "string" ? value.length : 0;
@@ -110,7 +110,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
         className={cn(
           "w-full transition-all duration-200 ease-out focus:outline-none",
           isGlass
-            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-[15px] font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
+            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
             : "rounded-md px-4 py-3 text-base border bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-transparent",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           disabled && !isGlass && "disabled:bg-base-200",

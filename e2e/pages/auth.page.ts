@@ -11,8 +11,8 @@ export class AuthPage {
   constructor(page: Page) {
     this.page = page;
     this.emailInput = page.getByPlaceholder("your@email.com");
-    this.continueButton = page.getByRole("button", { name: /^Continue$/i });
-    this.googleButton = page.getByRole("button", { name: /Continue with Google/i });
+    this.continueButton = page.locator('[role="dialog"] button[type="submit"]');
+    this.googleButton = page.locator('[role="dialog"]').getByRole("button", { name: /Continue with Google/i });
   }
 
   async goto() {

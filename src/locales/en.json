@@ -1,7 +1,92 @@
 {
-  "home": "Home",
-  "go_back": "Go Back",
-  "submit": "Submit",
+  "common": {
+    "home": "Home",
+    "go_back": "Go Back",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "error": "Error",
+    "success": "Success",
+    "not_found": "Page Not Found",
+    "not_found_desc": "The page you are looking for does not exist."
+  },
+
+  "user": {
+    "profile": "User Profile",
+    "change_avatar": "Change Avatar",
+    "avatar_hint": "Upload a new profile picture (PNG, JPG, WebP supported)",
+    "select_image": "Choose Image",
+    "upload_avatar": "Upload Avatar",
+    "account_info": "Account Information",
+    "roles": "Roles",
+    "permissions": "Permissions"
+  },
+
+  "feedback": {
+    "title": "Share Your Feedback",
+    "description": "We value your thoughts and ideas to help improve Rexone.",
+    "rate_experience": "Rate your experience (1 - 10)",
+    "tell_us_more": "What's on your mind?",
+    "placeholder": "Tell us anything — bugs, suggestions, questions, or ideas. We triage automatically!",
+    "submit": "Send Feedback",
+    "submitting": "Submitting...",
+    "success_message": "Thank you for your feedback!",
+    "rating_label": "How was your experience? (1 - 10)",
+    "worst": "1 - Needs Work",
+    "best": "10 - Excellent",
+    "content_label": "What's on your mind?",
+    "success": "Thank you for your feedback!",
+    "error_empty": "Please enter your feedback.",
+    "error_submit": "Failed to submit feedback. Please try again."
+  },
+
+  "ai": {
+    "title": "AI Assistant",
+    "rooms": "Chat Rooms",
+    "new_chat": "New Conversation",
+    "type_message": "Type your message...",
+    "send": "Send",
+    "processing": "AI is thinking...",
+    "clear_history": "Clear History",
+    "errors": {
+      "unexpected": "An error occurred. Please try again.",
+      "load_rooms": "Failed to load rooms",
+      "create_room": "Failed to create room",
+      "load_history": "Failed to load history",
+      "get_response": "Failed to get AI response",
+      "clear_history": "Failed to clear history",
+      "rename_room": "Failed to rename room",
+      "delete_room": "Failed to delete room"
+    }
+  },
+
+  "payment": {
+    "title": "Billing & Subscriptions",
+    "subscriptions": "Subscriptions",
+    "transactions": "Transactions",
+    "upgrade_plan": "Upgrade Plan",
+    "active": "Active",
+    "canceled": "Canceled",
+    "cancel_subscription": "Cancel Subscription",
+    "resume_subscription": "Resume Subscription",
+    "subscribe_now": "Subscribe Now",
+    "success_title": "Payment Successful!",
+    "success_desc": "Your payment has been processed and your features are active.",
+    "cancel_title": "Payment Canceled",
+    "cancel_desc": "Your payment was canceled. No charges were made.",
+    "errors": {
+      "unexpected": "An error occurred. Please try again.",
+      "load_products": "Failed to fetch products",
+      "load_subscriptions": "Failed to fetch subscriptions",
+      "cancel_subscription": "Failed to cancel subscription",
+      "resume_subscription": "Failed to resume subscription",
+      "load_transactions": "Failed to fetch transactions",
+      "create_checkout": "Failed to create checkout session"
+    }
+  },
 
   "auth": {
     "sign_out": "Sign Out",
@@ -68,76 +153,74 @@
       "links": { "forgot_passcode": "Forgot your passcode?" }
     },
     "signup_passcode_create": {
-      "title": { "reset": "Reset Passcode", "signup": "Create Passcode" },
+      "title": {
+        "reset": "Reset Passcode",
+        "signup": "Create Passcode"
+      },
       "description": {
-        "reset": "Create a new passcode for your account.",
-        "signup": "Choose a 6-digit passcode you'll remember."
+        "reset": "Set a new 6-digit passcode for your account.",
+        "signup": "Choose a 6-digit passcode to secure your account."
       },
       "prompt": {
         "reset": "Create a new passcode",
-        "signup": "Create a passcode for {{email}}"
+        "signup": "Create passcode for {{email}}"
       },
-      "instruction": "You will use this 6-digit passcode to sign in",
+      "instruction": "This will be used to quickly sign in to your account.",
       "field": {
-        "label": "Create Passcode",
-        "helper": "Choose a 6-digit number you will remember"
+        "label": "6-Digit Passcode",
+        "helper": "Enter 6 numbers"
       }
     },
     "signup_passcode_confirm": {
-      "validation": {
-        "passcode_length": "Passcode must be 6 digits",
-        "passcodes_mismatch": "Passcodes do not match"
-      },
-      "errors": {
-        "reset_failed": "Failed to reset passcode.",
-        "google_signin_failed": "Failed to complete sign in"
-      },
-      "feedback": {
-        "reset_success": "Passcode reset successfully!",
-        "signin_with_new_passcode": "Sign in with your new passcode.",
-        "google_signin_complete": "Google sign in complete"
-      },
       "title": {
         "reset": "Confirm New Passcode",
         "signup": "Confirm Passcode"
       },
       "description": {
-        "reset": "Enter the same 6 digits again to confirm your new passcode.",
-        "signup": "Enter the same 6 digits again to confirm."
+        "reset": "Re-enter your new passcode to confirm.",
+        "signup": "Re-enter your passcode to make sure it's correct."
       },
       "prompt": {
         "reset": "Confirm your new passcode",
-        "signup": "Confirm your passcode"
+        "signup": "Re-enter your passcode"
       },
-      "instruction": "Enter the same 6 digits again",
+      "instruction": "Make sure it matches the passcode you just entered.",
       "field": {
         "label": "Confirm Passcode",
-        "helper": "Enter the same 6 digits again"
+        "helper": "Enter the same 6 numbers again"
       },
-      "actions": {
-        "resetting": "Resetting..."
-      }
+      "validation": { "passcodes_mismatch": "Passcodes do not match. Please try again." },
+      "errors": {
+        "reset_failed": "Failed to reset passcode. Please try again.",
+        "google_signin_failed": "Failed to complete Google sign-in."
+      },
+      "feedback": {
+        "reset_success": "Passcode reset successfully!",
+        "signin_with_new_passcode": "Please sign in with your new passcode.",
+        "google_signin_complete": "Google sign-in complete!"
+      },
+      "actions": { "resetting": "Resetting passcode..." }
     },
     "signup_info": {
-      "validation": {
-        "full_name_required": "Please enter your full name",
-        "username_length": "Username must be at least 3 characters",
-        "username_format": "Username can only contain lowercase letters, numbers, and underscores"
-      },
-      "feedback": { "verification_sent": "Verification email sent. Please check your inbox." },
       "title": "Complete Profile",
-      "description": "Tell us a bit about yourself.",
-      "prompt": "Almost done! Tell us a bit about yourself",
+      "description": "Tell us a bit about yourself to finish creating your account.",
+      "prompt": "Almost there! Just a few more details.",
       "full_name": {
         "label": "Full Name",
         "placeholder": "John Doe",
-        "helper": "Your real name (visible to others)"
+        "helper": "Your real name or how you'd like to be called"
       },
       "username": {
         "label": "Username",
         "placeholder": "john_doe",
         "helper": "Unique identifier (letters, numbers, underscores only)"
       },
+      "validation": {
+        "full_name_required": "Please enter your full name (at least 2 characters).",
+        "username_length": "Username must be at least 3 characters.",
+        "username_format": "Username can only contain lowercase letters, numbers, and underscores."
+      },
+      "feedback": { "verification_sent": "Account created! Verification code sent to your email." },
       "actions": { "creating_account": "Creating account...", "create_account": "Create Account" }
     },
     "confirm_email": {
@@ -247,50 +330,20 @@
       }
     }
   },
-  "ai": {
-    "errors": {
-      "unexpected": "An error occurred. Please try again.",
-      "load_rooms": "Failed to load rooms", "create_room": "Failed to create room",
-      "load_history": "Failed to load history", "get_response": "Failed to get AI response",
-      "clear_history": "Failed to clear history", "rename_room": "Failed to rename room",
-      "delete_room": "Failed to delete room"
-    }
-  },
-  "payment": {
-    "errors": {
-      "unexpected": "An error occurred. Please try again.",
-      "load_products": "Failed to fetch products", "load_subscriptions": "Failed to fetch subscriptions",
-      "cancel_subscription": "Failed to cancel subscription", "resume_subscription": "Failed to resume subscription",
-      "load_transactions": "Failed to fetch transactions", "create_checkout": "Failed to create checkout session"
-    }
-  },
-
-  "### ANAPANA_MODULE": "### ANAPANA_MODULE",
-  "anapana_timer_title": "Anapana Interval Reminder",
-  "timer_start_time": "Start Time",
-  "timer_end_time": "End Time",
-  "timer_interval": "Interval",
-  "timer_unit": "Unit",
-  "timer_start": "Start",
-  "timer_reset": "Reset",
-  "timer_test_interval_sound": "Test Interval Sound",
-  "timer_test_ending_sound": "Test Ending Sound",
-  "timer_seconds": "Seconds",
-  "timer_minutes": "Minutes",
-  "timer_hours": "Hours",
-  "welcome_donations": "If this is helpful for you to find your inner peace, you may support its maintenance and future development with some loving kindness collecting some merits!",
-  "timer_start_message": "Let's start the training of mindfulness!",
-
-  "feedback": {
-    "title": "Share Your Feedback",
-    "rating_label": "How was your experience? (1 - 10)",
-    "worst": "1 - Needs Work",
-    "best": "10 - Excellent",
-    "content_label": "What's on your mind?",
-    "placeholder": "Tell us anything — bugs, suggestions, questions, or ideas. We triage automatically!",
-    "submit": "Send Feedback",
-    "success": "Thank you for your feedback!",
-    "error_empty": "Please enter your feedback.",
-    "error_submit": "Failed to submit feedback. Please try again."
+  "anapana": {
+    "timer_title": "Anapana Interval Reminder",
+    "timer_start_time": "Start Time",
+    "timer_end_time": "End Time",
+    "timer_interval": "Interval",
+    "timer_unit": "Unit",
+    "timer_start": "Start",
+    "timer_reset": "Reset",
+    "timer_test_interval_sound": "Test Interval Sound",
+    "timer_test_ending_sound": "Test Ending Sound",
+    "timer_seconds": "Seconds",
+    "timer_minutes": "Minutes",
+    "timer_hours": "Hours",
+    "welcome_donations": "If this is helpful for you to find your inner peace, you may support its maintenance and future development with some loving kindness collecting some merits!",
+    "timer_start_message": "Let's start the training of mindfulness!"
   }
 }

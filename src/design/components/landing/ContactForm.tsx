@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { LANDING_DATA } from "../../pages/landing.data";
 import { Button } from "../button";
 import { FormContainer, TextInput, TextArea } from "../form";
-import { colors } from "../../elements";
 import {
   FormVariants,
   InputVariants,
@@ -23,14 +22,9 @@ export const ContactForm: React.FC = () => {
       method="POST"
       target="_blank"
       rel="noopener noreferrer"
-      className="font-primary w-[440px] max-w-[92vw] space-y-4"
+      className="font-primary w-full max-w-md space-y-4"
     >
-      <h2
-        style={{
-          textShadow: colors.effects.headingGlow,
-        }}
-        className="text-center font-display text-[28px] text-glow-white mb-2"
-      >
+      <h2 className="text-center font-display text-2xl sm:text-3xl text-glow-white mb-2 [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
         Keep in Touch
       </h2>
 
@@ -77,7 +71,7 @@ export const ContactForm: React.FC = () => {
           variant={ButtonVariants.PRIMARY}
           type={ButtonTypes.SUBMIT}
           size={ComponentSizes.MD}
-          className="!px-7 !py-3 text-[15px]"
+          className="!px-6 !py-3 text-base"
         >
           Submit
         </Button>

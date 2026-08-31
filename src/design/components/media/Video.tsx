@@ -1,7 +1,7 @@
 // src/components/Media/Video.tsx
 import React from "react";
 
-interface IVideoProps {
+export interface IVideoProps {
   asset: { src: string; alt: string; title?: string };
   controls?: boolean;
   autoplay?: boolean;

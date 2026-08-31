@@ -1,7 +1,7 @@
 // src/design/components/auth/SignupInfoDialog.tsx
 
 import React, { useState } from "react";
-import { Button, Dialog, TextInput } from "../../../design/components";
+import { Button, Dialog, TextInput, FormContainer } from "../../../design/components";
 import { useToast } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
@@ -78,10 +78,10 @@ export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
       title={t(AppLocales.Auth.SignUpInfo.Title)}
       className="max-w-md"
     >
-      <p className="text-body-s text-base-content opacity-70 text-center mb-8">
+      <p className="text-body-s text-base-content opacity-70 text-center mb-4">
         {t(AppLocales.Auth.SignUpInfo.Description)}
       </p>
-      <form onSubmit={handleSubmit} className="space-y-16">
+      <FormContainer onSubmit={handleSubmit} className="space-y-4">
         <div className="text-center">
           <p className="text-body-m text-base-content">
             {t(AppLocales.Auth.SignUpInfo.Prompt)}
@@ -126,7 +126,7 @@ export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
         {error && (
           <p className="text-caption text-error text-center">{error}</p>
         )}
-      </form>
+      </FormContainer>
     </Dialog>
   );
 };

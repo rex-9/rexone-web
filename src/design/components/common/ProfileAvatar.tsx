@@ -1,48 +1,82 @@
+// src/design/components/common/ProfileAvatar.tsx
+
 import React, { useState } from "react";
 import { Image } from "../";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts";
 import AppRoutes from "../../../AppRoutes";
+import { ComponentSize, ComponentSizes } from "../../constants";
+import { cn } from "../../utils";
 
 export interface IProfileAvatarProps {
   className?: string;
+  src?: string | null;
+  alt?: string;
+  size?: ComponentSize;
+  onClick?: () => void;
 }
 
-export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({ className }) => {
+export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({
+  className,
+  src,
+  alt,
+  size = ComponentSizes.MD,
+  onClick,
+}) => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
 
-  if (!currentUser) {
-    return null;
-  }
+  const effectiveSrc = src !== undefined ? src : currentUser?.profile_pic_url;
+  const effectiveName =
+    alt || currentUser?.name || currentUser?.username || "User";
 
-  const { profile_pic_url, username } = currentUser;
+  const sizeClasses: Record<ComponentSize, string> = {
+    [ComponentSizes.XS]: "w-6 h-6 text-xs",
+    [ComponentSizes.SM]: "w-8 h-8 text-sm",
+    [ComponentSizes.MD]: "w-10 h-10 text-base",
+    [ComponentSizes.LG]: "w-16 h-16 text-2xl",
+    [ComponentSizes.XL]: "w-20 h-20 text-3xl",
+  };
 
   const getInitialLetter = (name: string) => {
-    return name.charAt(0).toUpperCase();
+    return name ? name.charAt(0).toUpperCase() : "U";
   };
+
   const handleImageError = () => {
-    if (setImageError) {
-      setImageError(true);
+    setImageError(true);
+  };
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      navigate(AppRoutes.client.protected.PROFILE);
     }
-    console.error(`Failed to load asset: ${profile_pic_url}`);
   };
 
   return (
     <div
-      className={`flex items-center justify-center ${className} cursor-pointer`}
-      onClick={() => navigate(AppRoutes.client.protected.PROFILE)}
+      className={cn(
+        "flex items-center justify-center cursor-pointer select-none",
+        className
+      )}
+      onClick={handleClick}
     >
-      {profile_pic_url && !imageError ? (
+      {effectiveSrc && !imageError ? (
         <Image
-          asset={{ src: profile_pic_url, alt: `${username}'s profile` }}
-          className="w-10 h-10 rounded-full"
+          asset={{ src: effectiveSrc, alt: `${effectiveName}'s avatar` }}
+          className={cn("rounded-full object-cover", sizeClasses[size])}
           onError={handleImageError}
         />
       ) : (
-        <div className="w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold text-primary bg-base-200 hover:bg-base-300">
-          {getInitialLetter(username)}
+        <div
+          className={cn(
+            "rounded-full flex items-center justify-center font-bold text-primary bg-base-200 hover:bg-base-300 border border-glass-border shadow-sm",
+            sizeClasses[size]
+          )}
+        >
+          {getInitialLetter(effectiveName)}
         </div>
       )}
     </div>

@@ -10,7 +10,6 @@ export const LanguageDropdown = () => {
 
   const languageOptions = [
     { value: "en", label: "🇺🇸 English" },
-    { value: "es", label: "🇪🇸 Español" },
     { value: "my", label: "🇲🇲 မြန်မာ" },
   ];
 
@@ -24,7 +23,7 @@ export const LanguageDropdown = () => {
       options={languageOptions}
       value={locale}
       onValueChange={handleLanguageChange}
-      className="min-w-[140px]"
+      className="min-w-36"
     />
   );
 };

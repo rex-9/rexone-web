@@ -10,7 +10,7 @@ export class ForgotPasswordPage {
     this.page = page;
     this.heading = page.getByRole("heading", { name: /^Reset Passcode$/i });
     this.emailInput = page.locator('input[id="forgot-email"]');
-    this.submitButton = page.locator('button[type="submit"]');
+    this.submitButton = page.locator('[role="dialog"] button[type="submit"]');
   }
 
   async waitForVisible() {

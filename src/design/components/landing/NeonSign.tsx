@@ -1,24 +1,22 @@
 // src/design/components/landing/NeonSign.tsx
 
 import React from "react";
-import { colors } from "../../elements";
 
-interface NeonSignProps {
+export interface INeonSignProps {
   id?: string;
   className?: string;
 }
 
-export const NeonSign: React.FC<NeonSignProps> = ({
+export const NeonSign: React.FC<INeonSignProps> = ({
   id = "Greetings",
   className = "",
 }) => {
   return (
     <section
       id={id}
-      className={`flex justify-center items-center w-full max-w-[600px] min-h-[200px] mx-auto my-[50px] tracking-[6px] select-none uppercase font-display text-[80px] sm:text-[110px] md:text-[140px] leading-none text-center text-glow-white animate-hero-sign ${className}`}
+      className={`flex justify-center items-center w-full max-w-xl min-h-48 sm:min-h-56 mx-auto my-12 tracking-widest select-none uppercase font-display text-6xl sm:text-8xl md:text-9xl leading-none text-center text-glow-white animate-hero-sign [text-shadow:0_0_7px_var(--color-glow-white),0_0_10px_var(--color-glow-white),0_0_21px_var(--color-glow-white),0_0_42px_var(--color-primary),0_0_82px_var(--color-primary),0_0_92px_var(--color-primary),0_0_102px_var(--color-primary),0_0_151px_var(--color-primary)] ${className}`}
       style={{
         backgroundImage: `radial-gradient(ellipse 65% 55% at 50% 50%, rgba(107, 20, 38, 0.85), transparent 70%)`,
-        textShadow: colors.effects.heroSign,
       }}
     >
       <span className="animate-fast-flicker-char">r</span>

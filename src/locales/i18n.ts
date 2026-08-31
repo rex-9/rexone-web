@@ -1,46 +1,47 @@
+// src/locales/i18n.ts
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { getDefaultStore } from "jotai";
 import en from "./en.json";
-import es from "./es.json";
 import my from "./my.json";
-import { StorageKeys } from "../constants";
+import atoms from "../atoms";
 
-const CLIENT_LOCALES = ["en", "es", "my"] as const;
+export const CLIENT_LOCALES = ["en", "my"] as const;
+export type ClientLocale = (typeof CLIENT_LOCALES)[number];
 
-const getInitialLanguage = (): string => {
-  if (typeof window === "undefined") return "en";
-
-  try {
-    const storedLocale: unknown = JSON.parse(
-      window.localStorage.getItem(StorageKeys.LOCALE) ?? '"en"',
-    );
-
-    return typeof storedLocale === "string" &&
-      CLIENT_LOCALES.some((locale) => locale === storedLocale)
-      ? storedLocale
-      : "en";
-  } catch {
-    return "en";
-  }
-};
+const store = getDefaultStore();
+const rawLocale = store.get(atoms.localeAtom);
+const initialLanguage: ClientLocale = CLIENT_LOCALES.includes(
+  rawLocale as ClientLocale,
+)
+  ? (rawLocale as ClientLocale)
+  : "en";
 
 i18n.use(initReactI18next).init({
   resources: {
     en: {
       translation: en,
     },
-    es: {
-      translation: es,
-    },
     my: {
       translation: my,
     },
   },
-  lng: getInitialLanguage(),
+  lng: initialLanguage,
   fallbackLng: "en",
   interpolation: {
-    escapeValue: false, // React already escapes values
+    escapeValue: false,
   },
+});
+
+// Reactively synchronize i18n when Jotai localeAtom updates
+store.sub(atoms.localeAtom, () => {
+  const currentLocale = store.get(atoms.localeAtom);
+  if (
+    CLIENT_LOCALES.includes(currentLocale as ClientLocale) &&
+    i18n.language !== currentLocale
+  ) {
+    i18n.changeLanguage(currentLocale);
+  }
 });
 
 export default i18n;

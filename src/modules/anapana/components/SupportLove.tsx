@@ -11,14 +11,14 @@ export const SupportLove: React.FC = () => {
       <Button
         variant="tertiary"
         onClick={() => setShowSnackbar(!showSnackbar)}
-        className="p-8 !px-8 min-w-[40px] min-h-[40px] flex items-center justify-center"
+        className="p-8 !px-8 min-w-10 min-h-10 flex items-center justify-center"
       >
         <span className="w-5 h-5 flex items-center justify-center">
           {!showSnackbar ? <iconsLib.heart /> : <iconsLib.error />}
         </span>
       </Button>
       {showSnackbar && (
-        <div className="fixed bottom-[40%] bg-base-200 p-8 rounded-lg shadow-lg flex items-center gap-4">
+        <div className="fixed bottom-1/3 bg-base-200 p-8 rounded-lg shadow-lg flex items-center gap-4">
           <div className="w-64 flex flex-col justify-center items-center gap-4">
             <div>{t(AppLocales.Anapana.WelcomeDonations)}</div>
             <a

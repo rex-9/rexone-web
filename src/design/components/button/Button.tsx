@@ -32,11 +32,11 @@ export const Button: React.FC<IButtonProps> = ({
   const variants: Record<ButtonVariant, string> = {
     // Primary: Normal state has border with coral text -> Hover turns solid coral with bright neon box shadow (Pic 1)
     [ButtonVariants.PRIMARY]:
-      "border border-glass-border bg-glass-tag-bg text-primary font-bold tracking-wider hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg active:scale-[0.98] transition-all duration-300",
+      "border border-glass-border bg-glass-tag-bg text-primary font-bold tracking-wider hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg active:scale-95 transition-all duration-300",
 
     // Neon: Normal state has frosted glass + running animated laser borders + glowing text (Pic 2) -> Hover turns solid coral with large neon aura (Pic 3)
     [ButtonVariants.NEON]:
-      "relative overflow-hidden border border-glass-border bg-glass-card backdrop-blur-md text-glow-white font-bold tracking-wider [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark)] hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg hover:[text-shadow:0_0_8px_#fff2f4,0_0_16px_var(--color-primary)] active:scale-[0.98] transition-all duration-400",
+      "relative overflow-hidden border border-glass-border bg-glass-card backdrop-blur-md text-glow-white font-bold tracking-wider [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark)] hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg hover:[text-shadow:0_0_8px_#fff2f4,0_0_16px_var(--color-primary)] active:scale-95 transition-all duration-400",
 
     [ButtonVariants.SECONDARY]:
       "border-2 border-primary text-primary hover:bg-primary/10 active:bg-primary/20 transition-all duration-300",
@@ -71,10 +71,10 @@ export const Button: React.FC<IButtonProps> = ({
     >
       {isNeon && (
         <>
-          <span className="absolute top-0 left-[-100%] w-full h-[2px] bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
-          <span className="absolute top-[-100%] right-0 w-[2px] h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
-          <span className="absolute bottom-0 right-[-100%] w-full h-[2px] bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
-          <span className="absolute bottom-[-100%] left-0 w-[2px] h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
+          <span className="absolute top-0 -left-full w-full h-0.5 bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
+          <span className="absolute -top-full right-0 w-0.5 h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
+          <span className="absolute bottom-0 -right-full w-full h-0.5 bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
+          <span className="absolute -bottom-full left-0 w-0.5 h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
         </>
       )}
       {isLoading ? (

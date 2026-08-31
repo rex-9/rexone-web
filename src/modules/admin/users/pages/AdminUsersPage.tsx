@@ -30,7 +30,7 @@ import {
 } from "../constants";
 import { translate } from "../../../../locales";
 
-const formatDate = (value?: Date | null): string => {
+const formatDate = (value?: Date | string | null): string => {
   if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
   return new Date(value).toLocaleDateString();
 };

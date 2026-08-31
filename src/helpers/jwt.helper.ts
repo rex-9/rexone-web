@@ -30,7 +30,6 @@ export const getTokenExpiry = (token: string): number | null => {
  */
 export const isTokenExpired = (token: string): boolean => {
   const expiry = getTokenExpiry(token);
-  // console.log("expiry ===> ", new Date(expiry!).toLocaleString());
   if (!expiry) return true;
   return Date.now() > expiry;
 };

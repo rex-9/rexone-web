@@ -195,7 +195,9 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
               multiple
               options={roleOptions}
               value={selectedRoleIds}
-              onValueChange={handleRolesChange}
+              onValueChange={(roleIds) =>
+                handleRolesChange(Array.isArray(roleIds) ? roleIds : [roleIds])
+              }
               placeholder={ADMIN_USER_FORM_LABELS.ROLE_DROPDOWN_PLACEHOLDER}
             />
 

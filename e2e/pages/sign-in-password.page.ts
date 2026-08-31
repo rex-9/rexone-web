@@ -13,7 +13,7 @@ export class SignInPasswordPage {
       name: /^Enter your passcode$/i,
     });
     this.inputs = page.locator('input[id^="signin-password-"]');
-    this.submitButton = page.locator('button[type="submit"]');
+    this.submitButton = page.locator('[role="dialog"] button[type="submit"]');
     this.forgotPasswordLink = page.getByText(/Forgot (your )?passcode\?/i);
   }
 
@@ -36,13 +36,6 @@ export class SignInPasswordPage {
     const firstInput = this.inputs.first();
     await firstInput.click();
     await this.page.keyboard.type(password, { delay: 60 });
-    // If submit button is not auto-triggered, click it
-    if (
-      (await this.submitButton.isVisible()) &&
-      (await this.submitButton.isEnabled())
-    ) {
-      await this.submitButton.click().catch(() => {});
-    }
   }
 
   async submit() {

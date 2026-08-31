@@ -18,7 +18,7 @@ export class SignUpPasswordPage {
     });
     this.createInputs = page.locator('input[id^="create-password-"]');
     this.confirmInputs = page.locator('input[id^="confirm-password-"]');
-    this.continueButton = page.locator('button[type="submit"]');
+    this.continueButton = page.locator('[role="dialog"] button[type="submit"]');
   }
 
   async waitForCreate() {
@@ -42,12 +42,6 @@ export class SignUpPasswordPage {
     }
     await inputs.first().click();
     await this.page.keyboard.type(password, { delay: 60 });
-    if (
-      (await this.continueButton.isVisible()) &&
-      (await this.continueButton.isEnabled())
-    ) {
-      await this.continueButton.click().catch(() => {});
-    }
   }
 
   async submit() {

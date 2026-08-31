@@ -115,7 +115,7 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
         {label}
       </label>
 
-      <div className="flex items-center justify-center gap-[8px]">
+      <div className="flex items-center justify-center gap-2">
         {digits.map((digit, index) => (
           <React.Fragment key={`${idPrefix}-${index}`}>
             <input
@@ -136,9 +136,9 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
               disabled={disabled}
               aria-label={`${label} digit ${index + 1}`}
               className={`
-                w-[42px] sm:w-[46px] h-[50px] sm:h-[55px]
-                rounded-m border-2 text-center
-                text-body-l font-semibold font-primary tracking-[0.08em]
+                w-11 sm:w-12 h-12 sm:h-14
+                rounded-lg border-2 text-center
+                text-body-l font-semibold font-primary tracking-wider
                 transition-all duration-200 ease-out
                 focus:outline-none focus:ring-2 focus:ring-primary
                 ${
@@ -154,7 +154,7 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
               `}
             />
             {index === 2 && (
-              <span className="text-body-l font-semibold text-base-content opacity-70 px-[4px]">
+              <span className="text-body-l font-semibold text-base-content opacity-70 px-1">
                 -
               </span>
             )}
@@ -165,7 +165,7 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
       {displayText && (
         <span
           className={`
-            text-caption mt-6
+            text-caption mt-4
             ${hasError ? "text-error" : "text-base-content opacity-60"}
           `}
         >
@@ -175,4 +175,3 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
     </div>
   );
 };
-

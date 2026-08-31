@@ -3,7 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import SocketService, { ISocketMessage } from "../services/socket.service";
 
-interface INotification {
+export interface INotification {
   id: string;
   message: string;
   data: Record<string, unknown>;
