@@ -91,9 +91,9 @@ All tables use **UUID** primary keys (`gen_random_uuid()`), utilize **Discard** 
 | **Commerce**         | `Payment::Product`, `Payment::Subscription`, `Payment::Transaction`, `Payment::WebhookEvent` | Stripe synced products & prices, subscription lifecycle (`cancel_at_period_end`, resumption, periods), transactions with payment method details, durable webhook event queue with deduplication and retry state. |
 | **Entitlements**     | `Access`                                                                                     | Granted/revoked/expired access records tied to `User` and `Product`.                                                                                                                                             |
 | **AI / Chat**        | `Chat::Room`, `Chat::Message`                                                                | Conversational rooms, messages with roles (`user`, `assistant`), `ai_status` (`queued`, `processing`, `completed`, `failed`), system prompts, temperature, max tokens, metadata.                                 |
-| **Media**            | `Asset`                                                                                      | Unified media metadata (`storage_key` for Garage/S3/Cloudinary/Local, format, size_bytes, duration_secs, type, polymorphic resource model/id). |
+| **Media**            | `Asset`                                                                                      | Unified media metadata (`storage_key` for Garage/S3/Cloudinary/Local, format, size_bytes, duration_secs, type, polymorphic resource model/id).                                                                   |
 | **Telemetry**        | `Log::Client`                                                                                | Frontend error ingest (stack traces, device, OS, browser, URL, severity, occurrences, local/session storage keys, cookies, resolution status).                                                                   |
-| **Feedback**         | `Feedback`                                                                                   | Intelligent in-place feedback (1-10 rating, auto-inferred category: `bug`/`feature_request`/`improvement`/`general`, priority: `low`/`normal`/`high`/`urgent`, status, automated device/route telemetry).       |
+| **Feedback**         | `Feedback`                                                                                   | Intelligent in-place feedback (1-10 rating, auto-inferred category: `bug`/`feature_request`/`improvement`/`general`, priority: `low`/`normal`/`high`/`urgent`, status, automated device/route telemetry).        |
 
 ### ⚙️ Services & Background Jobs (Solid Queue / Waka)
 
@@ -110,18 +110,23 @@ Heavy or external provider operations sit behind clean service interfaces and ex
 `ApplicationController` inspects the `X-Platform` header (`web`, `android`, or `ios`) and validates against `CacheService.read("active_session:user:#{user_id}:#{platform}")`. This permits simultaneous logins across up to 3 concurrent active sessions (1 Web, 1 Android, 1 iOS) for the same user while invalidating duplicate sessions on the same platform type when a new sign-in occurs.
 
 ### 🌟 The Revolutionary Smart Auth System (Zero Decision Fatigue)
+
 Unlike legacy systems that force users through frustrating decision trees ("Do you want to log in or sign up?", "Select SSO vs Email", "Enter password vs request magic link"), Rexone's authentication engine eliminates decision fatigue entirely:
+
 - **Unified Single-Field Entry**: The user simply enters their email or username. The system dynamically queries the account state (`/peek`) to infer whether to proceed with registration, prompt for their 6-digit passcode, route through email verification, or apply rate-limited security cooldowns.
 - **Frictionless Google SSO & Challenge Flows**: Seamlessly links OAuth accounts and requests password setup only when necessary, smoothly converting unconfirmed dropped registrations without jarring interruptions.
 - **Tri-Platform Concurrent Isolation**: Supports 3 distinct active sessions simultaneously (Web, Android, iOS) without logging users out across devices.
 
 ### 💡 The Intelligent Frictionless Feedback System
+
 Inspired by our smart auth philosophy, the feedback system removes bureaucratic dropdowns, category selectors, and page redirects:
+
 - **In-Place Non-Intrusive Submission**: Users can share thoughts, report bugs, or give a 1-10 feeling rating from ANY page via a lightweight modal or bottom sheet without losing their place or facing page reloads.
 - **Automated Context & Telemetry Capture**: The client SDKs automatically attach active route/screen name, platform, browser, OS, viewport dimensions, and app version.
 - **Server-Side Smart Classification**: The backend automatically classifies the submission into `bug`, `feature_request`, `improvement`, or `general`, and calculates urgency/priority (`low`, `normal`, `high`, `urgent`) for streamlined admin triage.
 
 ### 🔐 RBAC Architecture & Administrative Hierarchy
+
 The ecosystem employs a clean, unified Role-Based Access Control (RBAC) model across backend and frontend clients:
 
 1. **`super_admin` (Full Authority)**:
@@ -138,6 +143,16 @@ The ecosystem employs a clean, unified Role-Based Access Control (RBAC) model ac
      - **Non-Admin Endpoints (`/v1/*`)**: Permissions in admin roles (e.g. `read_users` in `user_admin`) grant access to both `/v1/users` and `/v1/admin/users`. Permissions in non-admin roles (e.g. `read_users` in `user`) only grant access to `/v1/users`.
    - **Client-Side Sidebar Visibility Law**: The admin sidebar dynamically renders **ONLY** the specific navigation items corresponding to the `read_<resource>` permissions of their assigned `*_admin` role (e.g. a user with `feedback_admin` only sees the Feedback admin item).
    - **Single-Request IAM Introspection**: `GET /v1/users/current/iam` returns explicit `is_admin`, `is_super_admin`, `roles`, `admin_roles`, `non_admin_roles`, `permissions`, `admin_permissions`, and `non_admin_permissions` so frontend clients can immediately evaluate UI controls and sidebar items without secondary API calls.
+
+### 🛠️ Client Admin API Endpoints
+
+The `/v1/admin/` namespace provides comprehensive management capabilities protected by the RBAC hierarchy:
+
+- **User Management**: `GET/POST /v1/admin/users` (CRUD + discard/undiscard, role assignment, self-lifecycle protection, last-super-admin guard).
+- **IAM Management**: `GET/PATCH/DELETE /v1/admin/iam/roles` and `GET/POST/PATCH/DELETE /v1/admin/iam/permissions` (auto-named).
+- **Chat Moderation**: `GET/PATCH/DELETE /v1/admin/chat/rooms` and `/messages`.
+- **Product Management**: `GET/POST/PATCH/DELETE /v1/admin/payment/products` (Stripe sync, discard/undiscard).
+- **Notification Broadcasts**: `GET /v1/admin/notifications/templates` and `POST /v1/admin/notifications` (audience targeting via roles/users/all, multi-channel fanout).
 
 ---
 
@@ -167,6 +182,7 @@ Defined under `src/design/`:
 - **Commerce & Stripe**: Fetches products, triggers Checkout Session (`/v1/payment/session`), redirects to Stripe, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations.
 - **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or error event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
 - **Telemetry & Error Logging**: Unhandled client exceptions and React Error Boundary catches are posted directly to Core at `POST /v1/log/clients` with storage keys snapshot.
+- **Client Admin Panel**: Admin UI module under `src/modules/admin/` with sidebar navigation, route guards (`AdminRootRoute`, `AdminHomeRoute`), client-side RBAC evaluation (`usePermissions`), and sub-modules for Users, Roles, Products, Chat, and Notifications. Includes data tables, forms, recycle bins, and search filters.
 
 ---
 
@@ -205,29 +221,30 @@ Rexone Mobile has a strictly governed design system accessible via `lib/design/d
 
 All three pillars of the Rexone platform are fully aligned at **100% feature parity**:
 
-| Capability Area                                          | `rexone-core` |     `rexone-web`     |     `rexone_mobile`      |
-| -------------------------------------------------------- | :-----------: | :------------------: | :----------------------: |
-| **Auth: Email & 6-digit Password**                       |      ✅       |          ✅          |            ✅            |
-| **Auth: Google Sign-In & Challenge Flow**                |      ✅       |          ✅          |            ✅            |
-| **Auth: Active Single-Platform Session Enforcement**     |      ✅       |          ✅          |            ✅            |
-| **Auth: Escalating Password Retry Cooldown (Redis)**     |      ✅       |          ✅          |            ✅            |
-| **Light & Dark Theming**                                 |      N/A      |          ✅          |            ✅            |
-| **Multi-Language Localization (`en`, `es`, `my`)**       |      ✅       |          ✅          |            ✅            |
-| **HTTP `X-Locale` / `Accept-Language` Sync**             |      ✅       |          ✅          |            ✅            |
-| **Destructive Action Confirmation Prompts**              |      N/A      | ✅ (`ConfirmDialog`) | ✅ (`AppDialog.confirm`) |
-| **Error Telemetry Ingest & Storage (`/v1/log/clients`)** |      ✅       |          ✅          |            ✅            |
-| **Stripe: Product & Pricing Catalogue**                  |      ✅       |          ✅          |            ✅            |
-| **Stripe: Checkout Session Handoff**                     |      ✅       |    ✅ (Redirect)     |       ✅ (WebView)       |
-| **Stripe: Subscriptions & Cancellation/Resumption**      |      ✅       |          ✅          |            ✅            |
-| **Stripe: Transaction History**                          |      ✅       |          ✅          |            ✅            |
-| **Intelligent Frictionless Feedback System (1-10)**      |      ✅       |          ✅          |            ✅            |
-| **AI: Conversational Rooms & Message History**           |      ✅       |          ✅          |            ✅            |
-| **AI: Queued Background Execution (DeepSeek)**           |      ✅       |          ✅          |            ✅            |
-| **AI: Real-Time WebSocket Completion Alerts**            |      ✅       |          ✅          |            ✅            |
-| **Push Notifications (OneSignal)**                       |      ✅       |         N/A          |            ✅            |
-| **Product Analytics (Firebase)**                         |      N/A      |         N/A          |            ✅            |
-| **In-App Version Upgrader**                              |      N/A      |         N/A          |            ✅            |
-| **Automated Localization Parity Test Suite**             |      N/A      |         N/A          |            ✅            |
+| Capability Area                                                           | `rexone-core` |     `rexone-web`     |     `rexone_mobile`      |
+| ------------------------------------------------------------------------- | :-----------: | :------------------: | :----------------------: |
+| **Auth: Email & 6-digit Password**                                        |      ✅       |          ✅          |            ✅            |
+| **Auth: Google Sign-In & Challenge Flow**                                 |      ✅       |          ✅          |            ✅            |
+| **Auth: Active Single-Platform Session Enforcement**                      |      ✅       |          ✅          |            ✅            |
+| **Auth: Escalating Password Retry Cooldown (Redis)**                      |      ✅       |          ✅          |            ✅            |
+| **Light & Dark Theming**                                                  |      N/A      |          ✅          |            ✅            |
+| **Multi-Language Localization (`en`, `es`, `my`)**                        |      ✅       |          ✅          |            ✅            |
+| **HTTP `X-Locale` / `Accept-Language` Sync**                              |      ✅       |          ✅          |            ✅            |
+| **Destructive Action Confirmation Prompts**                               |      N/A      | ✅ (`ConfirmDialog`) | ✅ (`AppDialog.confirm`) |
+| **Error Telemetry Ingest & Storage (`/v1/log/clients`)**                  |      ✅       |          ✅          |            ✅            |
+| **Stripe: Product & Pricing Catalogue**                                   |      ✅       |          ✅          |            ✅            |
+| **Stripe: Checkout Session Handoff**                                      |      ✅       |    ✅ (Redirect)     |       ✅ (WebView)       |
+| **Stripe: Subscriptions & Cancellation/Resumption**                       |      ✅       |          ✅          |            ✅            |
+| **Stripe: Transaction History**                                           |      ✅       |          ✅          |            ✅            |
+| **Intelligent Frictionless Feedback System (1-10)**                       |      ✅       |          ✅          |            ✅            |
+| **AI: Conversational Rooms & Message History**                            |      ✅       |          ✅          |            ✅            |
+| **AI: Queued Background Execution (DeepSeek)**                            |      ✅       |          ✅          |            ✅            |
+| **AI: Real-Time WebSocket Completion Alerts**                             |      ✅       |          ✅          |            ✅            |
+| **Push Notifications (OneSignal)**                                        |      ✅       |         N/A          |            ✅            |
+| **Product Analytics (Firebase)**                                          |      N/A      |         N/A          |            ✅            |
+| **Client Admin Panel: User, IAM, Product, Chat, Notification Management** |      ✅       |          ✅          |           N/A            |
+| **In-App Version Upgrader**                                               |      N/A      |         N/A          |            ✅            |
+| **Automated Localization Parity Test Suite**                              |      N/A      |         N/A          |            ✅            |
 
 ---
 

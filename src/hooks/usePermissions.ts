@@ -25,7 +25,7 @@ interface IUsePermissionsResult {
   refresh: () => Promise<void>;
 }
 
-const getAdminRoleResourceScope = (
+export const getAdminRoleResourceScope = (
   roleNames: AdminRoleName[] | null | undefined,
 ): Set<AdminResource> => {
   const scopedResources = new Set<AdminResource>();

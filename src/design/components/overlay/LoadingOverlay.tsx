@@ -1,15 +1,10 @@
 import React from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 
-interface ILoadingOverlayProps {
-  overlay?: boolean;
-}
-
-export const LoadingOverlay: React.FC<ILoadingOverlayProps> = ({ overlay }) => {
+export const LoadingOverlay: React.FC = () => {
   const { isLoading, isOverlayLoading } = useLoading();
-  const shouldShowOverlay = overlay ?? isOverlayLoading;
 
-  if (!isLoading || !shouldShowOverlay) return null;
+  if (!isLoading || !isOverlayLoading) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
