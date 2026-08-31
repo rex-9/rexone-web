@@ -1,9 +1,8 @@
-// src/design/components/landing/SkillCard.tsx
+// src/modules/landing/components/SkillCard.tsx
 
 import React from "react";
-import { ISkillItem } from "../../pages/landing.data";
-import { Badge } from "../common";
-import { BadgeVariants, ComponentSizes } from "../../constants";
+import { ISkillItem } from "../types";
+import { Badge, BadgeVariants, ComponentSizes } from "../../../design";
 
 export interface ISkillCardProps {
   title: string;

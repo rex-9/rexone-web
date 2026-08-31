@@ -1,4 +1,4 @@
-// src/design/components/landing/LandingNav.tsx
+// src/modules/landing/components/LandingNav.tsx
 
 import React, { useState, useEffect } from "react";
 import { iconsLib } from "../../../assets";
@@ -6,8 +6,7 @@ import { useAuth } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps } from "../../../modules/auth";
-import { Button } from "../button";
-import { ButtonVariants, ComponentSizes } from "../../constants";
+import { Button, ButtonVariants, ComponentSizes } from "../../../design";
 
 export interface ILandingNavProps {
   activeSection?: string;

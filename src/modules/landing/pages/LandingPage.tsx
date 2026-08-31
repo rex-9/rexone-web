@@ -1,7 +1,7 @@
 // src/design/pages/LandingPage.tsx
 
 import React, { useEffect, useState } from "react";
-import { LANDING_DATA } from "./landing.data";
+import { LANDING_DATA } from "../constants";
 import {
   LandingNav,
   NeonSign,
@@ -10,10 +10,10 @@ import {
   ProjectCard,
   TestimonialCard,
   ContactForm,
-} from "../components/landing";
-import { Button } from "../components/button";
-import { ButtonVariants, ComponentSizes } from "../constants";
-import { images, iconsLib } from "../../assets";
+} from "../components";
+import { Button } from "../../../design/components/button";
+import { ButtonVariants, ComponentSizes } from "../../../design/constants";
+import { images, iconsLib } from "../../../assets";
 
 export const LandingPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState("#Greetings");
@@ -106,9 +106,7 @@ export const LandingPage: React.FC = () => {
         <NeonSign id="Greetings" />
 
         {/* 3. Catchphrase & Social Profiles */}
-        <section
-          className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
-        >
+        <section className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
           <p>Champion, welcome! 🌟</p>
           <p>
             I am a battle-hardened Full-Stack Architect with a mind sharpened by
@@ -146,9 +144,7 @@ export const LandingPage: React.FC = () => {
         {/* 4. Skills Section */}
         <section id="Skills" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
-            <h2
-              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
-            >
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
               Skills
             </h2>
           </div>
@@ -167,9 +163,7 @@ export const LandingPage: React.FC = () => {
         {/* 5. Projects Section */}
         <section id="Projects" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
-            <h2
-              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
-            >
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
               My Recent Works
             </h2>
           </div>
@@ -184,9 +178,7 @@ export const LandingPage: React.FC = () => {
         {/* 6. Testimonials Section */}
         <section id="Testimonials" className="py-12 scroll-mt-20">
           <div className="text-center mb-9">
-            <h2
-              className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
-            >
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
               Testimonials
             </h2>
           </div>
@@ -203,9 +195,7 @@ export const LandingPage: React.FC = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-9">
             {/* Left Contact Text & Resume Button */}
             <div className="w-full lg:w-1/2 text-center lg:text-left space-y-6">
-              <div
-                className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed font-normal text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]"
-              >
+              <div className="font-display text-xl sm:text-2xl md:text-3xl leading-relaxed font-normal text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
                 I'm always interested in hearing about new projects,
                 <br className="hidden sm:inline" /> so if you'd like to chat,
                 please kindly get in touch with me.
