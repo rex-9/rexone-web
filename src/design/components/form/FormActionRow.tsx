@@ -19,7 +19,7 @@ export const FormActionRow: React.FC<FormActionRowProps> = ({
   const isSubmitting = isLoading && !isOverlayLoading;
 
   return (
-    <div className="mt-24 flex flex-col-reverse gap-12 border-t border-base-300 pt-16 sm:flex-row sm:justify-end">
+    <div className="mt-6 flex flex-col-reverse gap-3 border-t border-base-300 pt-4 sm:flex-row sm:justify-end">
       <Button
         type="button"
         variant="tertiary"

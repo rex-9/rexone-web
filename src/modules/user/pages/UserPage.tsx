@@ -58,7 +58,7 @@ export const UserPage: React.FC = () => {
                 {currentUser?.email}
               </p>
               {currentUser?.username && (
-                <p className="text-body-s text-primary font-medium mt-0.5">
+                <p className="text-body-s text-primary font-medium mt-1">
                   @{currentUser.username}
                 </p>
               )}

@@ -18,11 +18,11 @@ export const NavBar: React.FC = () => {
             variant={ButtonVariants.TERTIARY}
             size={ComponentSizes.SM}
             onClick={() => setFeedbackOpen(true)}
-            className="hidden h-[40px] w-[40px] p-0 md:inline-flex"
+            className="hidden h-10 w-10 p-0 md:inline-flex"
             title="Send Feedback"
             aria-label="Send Feedback"
           >
-            <FeedbackIcon className="h-[20px] w-[20px]" />
+            <FeedbackIcon className="h-5 w-5" />
           </Button>
         }
       />

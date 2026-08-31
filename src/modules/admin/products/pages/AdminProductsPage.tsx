@@ -102,7 +102,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         render: (product) => (
           <div>
             <div className="font-medium text-base-content">{product.name}</div>
-            <div className="max-w-[320px] truncate text-body-s text-base-content opacity-60">
+            <div className="max-w-xs truncate text-body-s text-base-content opacity-60">
               {product.description || product.stripe_product_id}
             </div>
           </div>

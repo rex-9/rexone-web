@@ -40,7 +40,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
         <label
           htmlFor={inputId}
           className={cn(
-            "text-body-s font-medium mb-4",
+            "text-body-s font-medium mb-1",
             isGlass ? "text-glow-white" : "text-base-content",
           )}
         >
@@ -73,7 +73,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
       {displayText && (
         <span
           className={cn(
-            "text-caption mt-4",
+            "text-caption mt-1",
             hasError ? "text-error" : "text-base-content opacity-60",
           )}
         >

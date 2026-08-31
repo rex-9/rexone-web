@@ -12,6 +12,7 @@ export type { IAdminTableColumn } from "./AdminTable";
 export { Button, GoogleButton, SignOutButton } from "../../../design/components/button";
 export type { IButtonProps } from "../../../design/components/button/Button";
 export {
+  Checkbox,
   Dropdown,
   FormActionRow,
   FormContainer,
@@ -21,7 +22,11 @@ export {
   TextInput,
   Toggle,
 } from "../../../design/components/form";
-export type { FormActionRowProps, RadioProps } from "../../../design/components/form";
+export type {
+  CheckboxProps,
+  FormActionRowProps,
+  RadioProps,
+} from "../../../design/components/form";
 export {
   AlertDialog,
   ConfirmDialog,

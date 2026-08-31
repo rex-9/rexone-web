@@ -111,7 +111,7 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
 
   return (
     <div className="flex flex-col w-full">
-      <label className="text-body-s font-medium text-base-content mb-8">
+      <label className="text-body-s font-medium text-base-content mb-1">
         {label}
       </label>
 

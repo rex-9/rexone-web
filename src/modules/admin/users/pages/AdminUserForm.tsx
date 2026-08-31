@@ -6,7 +6,7 @@ import {
 } from "../types";
 import {
   AdminPermissionMatrix,
-  Dropdown,
+  Checkbox,
   FormActionRow,
   FormContainer,
   IAdminPermissionMatrixItem,
@@ -24,7 +24,6 @@ const ADMIN_USER_FORM_LABELS = {
   PASSWORD: "Password",
   RELATED_PERMISSIONS: "Related permissions",
   ROLES: "Roles",
-  ROLE_DROPDOWN_PLACEHOLDER: "Select roles",
   SAVE_CHANGES: "Save changes",
   USERNAME: "Username",
 } as const;
@@ -107,14 +106,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
     () => roles.filter((role) => selectedRoleIdSet.has(role.id)),
     [roles, selectedRoleIdSet],
   );
-  const roleOptions = useMemo(
-    () =>
-      roles.map((role) => ({
-        value: role.id,
-        label: role.name,
-      })),
-    [roles],
-  );
   const selectedRolePermissions = useMemo<IAdminPermissionMatrixItem[]>(
     () => {
       const permissionsByKey = new Map<string, IAdminPermissionMatrixItem>();
@@ -139,7 +130,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <div className="grid gap-16 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={ADMIN_USER_FORM_LABELS.USERNAME}
           value={values.username}
@@ -152,13 +143,15 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
           required
           onChange={(event) => updateValue("name", event.target.value)}
         />
-        <TextInput
-          label={ADMIN_USER_FORM_LABELS.EMAIL}
-          type="email"
-          value={values.email}
-          required
-          onChange={(event) => updateValue("email", event.target.value)}
-        />
+        <div className="md:col-span-2">
+          <TextInput
+            label={ADMIN_USER_FORM_LABELS.EMAIL}
+            type="email"
+            value={values.email}
+            required
+            onChange={(event) => updateValue("email", event.target.value)}
+          />
+        </div>
         <TextInput
           label={
             mode === ADMIN_ACTIONS.CREATE
@@ -181,28 +174,39 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
         />
 
         <div className="md:col-span-2">
-          <div className="rounded-md border border-base-300 bg-base-100 p-12">
-            <div className="mb-10 flex items-center justify-between gap-8">
+          <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
+            <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-body-m font-semibold text-base-content">
                 {ADMIN_USER_FORM_LABELS.ROLES}
               </h2>
-              <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
+              <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
                 {selectedRoleIds.length}/{roles.length}
               </span>
             </div>
 
-            <Dropdown
-              multiple
-              options={roleOptions}
-              value={selectedRoleIds}
-              onValueChange={(roleIds) =>
-                handleRolesChange(Array.isArray(roleIds) ? roleIds : [roleIds])
-              }
-              placeholder={ADMIN_USER_FORM_LABELS.ROLE_DROPDOWN_PLACEHOLDER}
-            />
+            <div className="grid gap-2 sm:grid-cols-3">
+              {roles.map((role) => {
+                const isSelected = selectedRoleIds.includes(role.id);
+                return (
+                  <Checkbox
+                    key={role.id}
+                    checked={isSelected}
+                    onChange={() => {
+                      const nextIds = isSelected
+                        ? selectedRoleIds.filter((id) => id !== role.id)
+                        : [...selectedRoleIds, role.id];
+                      handleRolesChange(nextIds);
+                    }}
+                    containerClassName="min-h-10 bg-base-200/40"
+                  >
+                    <span className="capitalize">{role.name}</span>
+                  </Checkbox>
+                );
+              })}
+            </div>
 
             {selectedRoles.length > 0 && (
-              <div className="mt-14 space-y-10 border-t border-base-300 pt-12">
+              <div className="mt-4 space-y-3 border-t border-base-300 pt-4">
                 <h3 className="text-body-s font-semibold text-base-content">
                   {ADMIN_USER_FORM_LABELS.RELATED_PERMISSIONS}
                 </h3>

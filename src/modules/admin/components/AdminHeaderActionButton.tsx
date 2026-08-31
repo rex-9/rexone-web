@@ -18,31 +18,30 @@ interface IAdminHeaderActionButtonProps {
 export const AdminHeaderActionButton: React.FC<
   IAdminHeaderActionButtonProps
 > = ({ label, onClick, recycle }) => (
-  <div className="flex shrink-0 items-center gap-10 self-start md:self-auto">
-    
+  <div className="flex shrink-0 items-center gap-2 self-start md:self-auto">
     {recycle && (
       <AdminActionButton
         action={ADMIN_ACTIONS.READ}
         resource={recycle.resource}
         size="sm"
         variant="secondary"
-        className="h-[40px] w-[40px] p-0"
+        className="h-10 w-10 p-0"
         aria-label={recycle.label}
         title={recycle.label}
         onClick={recycle.onClick}
       >
-        <iconsLib.archiveBox className="h-[18px] w-[18px]" />
+        <iconsLib.archiveBox className="h-5 w-5" />
       </AdminActionButton>
     )}
 
     <Button
       type="button"
       onClick={onClick}
-      className="h-[40px] w-[40px] p-0"
+      className="h-10 w-10 p-0"
       aria-label={label}
       title={label}
     >
-      <iconsLib.plus className="h-[18px] w-[18px]" />
+      <iconsLib.plus className="h-5 w-5" />
       <span className="sr-only">{label}</span>
     </Button>
   </div>

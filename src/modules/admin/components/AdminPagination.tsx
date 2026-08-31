@@ -14,12 +14,12 @@ export const AdminPagination: React.FC<IAdminPaginationProps> = ({
   if (!pagination) return null;
 
   return (
-    <div className="mt-16 flex flex-col gap-12 text-body-s text-base-content md:flex-row md:items-center md:justify-between">
+    <div className="mt-4 flex flex-col gap-3 text-body-s text-base-content md:flex-row md:items-center md:justify-between">
       <span className="opacity-70">
         Page {pagination.current_page} of {pagination.total_pages} -{" "}
         {pagination.total_count} total
       </span>
-      <div className="flex gap-8">
+      <div className="flex gap-2">
         <Button
           size="sm"
           variant="secondary"

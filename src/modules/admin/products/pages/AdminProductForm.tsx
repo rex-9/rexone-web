@@ -5,7 +5,7 @@ import {
   IAdminProductFormValues,
 } from "../types";
 import { ProductPriceMode } from "../productForm.utils";
-import { FormActionRow, FormContainer, Radio, TextInput } from "../../components";
+import { Checkbox, FormActionRow, FormContainer, Radio, TextInput } from "../../components";
 import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 import {
   PRODUCT_CURRENCY,
@@ -142,7 +142,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <div className="grid gap-16 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={ADMIN_PRODUCT_FORM_LABELS.PRODUCT_NAME}
           value={values.name}
@@ -150,17 +150,17 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           onChange={(event) => updateValue("name", event.target.value)}
         />
         <div className="flex flex-col">
-          <label className="mb-4 text-body-s font-medium text-base-content">
+          <label className="mb-1 text-body-s font-medium text-base-content">
             {ADMIN_PRODUCT_FORM_LABELS.PRICE_TYPE}
           </label>
-          <div className="grid gap-8 sm:grid-cols-2">
+          <div className="grid gap-2 sm:grid-cols-2">
             {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => (
               <Radio
                 key={option}
                 name="price_type"
                 checked={priceMode === option}
                 onChange={() => updatePriceMode(option)}
-                containerClassName="min-h-[52px] bg-base-100"
+                containerClassName="min-h-10 bg-base-100"
               >
                 {option === PRODUCT_TYPE.PREMIUM
                   ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
@@ -192,11 +192,11 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           }}
         />
         <div className="flex flex-col">
-          <label className="mb-4 text-body-s font-medium text-base-content">
+          <label className="mb-1 text-body-s font-medium text-base-content">
             {ADMIN_PRODUCT_FORM_LABELS.CURRENCY}
           </label>
           <select
-            className="select select-bordered h-[52px] rounded-md border-2 border-base-300 bg-base-100 px-16 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="select select-bordered h-10 w-full rounded-md border-2 border-base-300 bg-base-100 px-3 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
             value={values.currency}
             onChange={(event) => updateValue("currency", event.target.value)}
           >
@@ -204,11 +204,11 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           </select>
         </div>
         <div className="flex flex-col">
-          <label className="mb-4 text-body-s font-medium text-base-content">
+          <label className="mb-1 text-body-s font-medium text-base-content">
             {ADMIN_PRODUCT_FORM_LABELS.BILLING_CYCLE}
           </label>
           <select
-            className="select select-bordered h-[52px] rounded-md border-2 border-base-300 bg-base-100 px-16 text-body-m text-base-content disabled:cursor-not-allowed disabled:opacity-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="select select-bordered h-10 w-full rounded-md border-2 border-base-300 bg-base-100 px-3 text-body-m text-base-content disabled:cursor-not-allowed disabled:opacity-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
             value={
               isFree
                 ? PRODUCT_CYCLE.ONE_TIME
@@ -224,15 +224,13 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             <option value={PRODUCT_CYCLE.YEAR}>Yearly</option>
           </select>
         </div>
-        <label className="flex min-h-[52px] items-center gap-10 rounded-md border border-base-300 px-12 text-body-s font-medium text-base-content md:self-end">
-          <input
-            type="checkbox"
-            className="toggle toggle-sm border-base-content/40 checked:border-primary checked:bg-primary"
-            checked={values.active}
-            onChange={(event) => updateValue("active", event.target.checked)}
-          />
+        <Checkbox
+          checked={values.active}
+          onChange={(event) => updateValue("active", event.target.checked)}
+          containerClassName="min-h-10 md:self-end"
+        >
           <span>{ADMIN_PRODUCT_FORM_LABELS.ACTIVE}</span>
-        </label>
+        </Checkbox>
       </div>
 
       <FormActionRow

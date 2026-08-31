@@ -36,7 +36,7 @@ interface IAdminSidebarNavProps {
 const navSections: IAdminNavSection[] = [
   {
     id: "access",
-    label: ADMIN_NAV_SECTION_LABELS.ACCESS,
+    label: ADMIN_NAV_SECTION_LABELS.IAM,
     items: [
       {
         label: ADMIN_NAV_LABELS.USERS,
@@ -119,9 +119,9 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
             !hasAdminAccess
               ? false
               : item.superAdminOnly
-              ? isSuperAdmin
-              : isLoading ||
-                can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
+                ? isSuperAdmin
+                : isLoading ||
+                  can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
           ),
         }))
         .filter((section) => section.items.length > 0),
@@ -136,7 +136,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   };
 
   return (
-    <nav className="flex-1 overflow-y-auto px-4 py-8">
+    <nav className="flex-1 overflow-y-auto px-4 py-3">
       <div className="space-y-4">
         {enabledItems.map((section) => {
           const isCollapsed = collapsedSections[section.id] ?? false;
@@ -148,12 +148,12 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                 aria-expanded={!isCollapsed}
                 aria-controls={`admin-nav-section-${section.id}`}
                 onClick={() => toggleSection(section.id)}
-                className="mb-[10px] flex h-[28px] w-full items-center justify-between rounded-md px-4 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100"
+                className="mb-2 flex h-7 w-full items-center justify-between rounded-md px-2 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100"
               >
                 <span>{section.label}</span>
                 <iconsLib.chevronDown
                   className={cn(
-                    "h-[14px] w-[14px] transition-transform",
+                    "h-4 w-4 transition-transform",
                     isCollapsed ? "-rotate-90" : "rotate-0",
                   )}
                 />
@@ -168,7 +168,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                 )}
               >
                 <div className="min-h-0 overflow-hidden">
-                  <div className="space-y-[6px]">
+                  <div className="space-y-1">
                     {section.items.map((item) => {
                       const Icon = item.icon;
                       return (
@@ -178,14 +178,14 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                           onClick={onNavigate}
                           className={({ isActive }) =>
                             cn(
-                              "flex h-[44px] items-center gap-4 rounded-md px-4 text-body-m font-medium transition-colors",
+                              "flex h-11 items-center gap-3 rounded-md px-3 text-body-m font-medium transition-colors",
                               isActive
                                 ? "bg-primary text-navy-900 shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                             )
                           }
                         >
-                          <Icon className="h-[20px] w-[20px]" />
+                          <Icon className="h-5 w-5" />
                           <span>{item.label}</span>
                         </NavLink>
                       );

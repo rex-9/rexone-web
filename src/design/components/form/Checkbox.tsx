@@ -1,33 +1,33 @@
 import React from "react";
 import { cn } from "../../utils";
 
-export interface IRadioProps
+export interface ICheckboxProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   containerClassName?: string;
 }
 
-export type RadioProps = IRadioProps;
+export type CheckboxProps = ICheckboxProps;
 
-export const Radio: React.FC<RadioProps> = ({
+export const Checkbox: React.FC<CheckboxProps> = ({
   children,
   className,
   containerClassName,
   ...props
 }) => {
-  const radioInput = (
+  const checkboxInput = (
     <input
       {...props}
-      type="radio"
+      type="checkbox"
       className={cn(
-        "radio radio-primary radio-sm border-2 border-base-content/60 bg-base-200/60 hover:border-primary focus:border-primary checked:border-primary checked:bg-primary transition-colors disabled:opacity-60",
+        "checkbox checkbox-primary checkbox-sm border-2 border-base-content/60 bg-base-200/60 hover:border-primary focus:border-primary checked:border-primary checked:bg-primary transition-colors disabled:opacity-60",
         className,
       )}
     />
   );
 
   if (!children && !containerClassName) {
-    return radioInput;
+    return checkboxInput;
   }
 
   return (
@@ -37,8 +37,10 @@ export const Radio: React.FC<RadioProps> = ({
         containerClassName,
       )}
     >
-      {radioInput}
+      {checkboxInput}
       {children ? <span>{children}</span> : null}
     </label>
   );
 };
+
+export default Checkbox;

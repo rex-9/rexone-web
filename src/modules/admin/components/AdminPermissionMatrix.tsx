@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 
 import { Button } from "../../../design/components/button";
+import { Checkbox } from "../../../design/components/form";
 import {
-
   ADMIN_PERMISSION_ACTION_ORDER,
   ADMIN_PERMISSION_FALLBACKS,
 } from "../constants";
-import { iconsLib } from '../../../assets';
+import { iconsLib } from "../../../assets";
 
 export interface IAdminPermissionMatrixItem {
   id: string;
@@ -92,72 +92,121 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
   );
 
   return (
-      <div className="grid gap-10 lg:grid-cols-2">
-        {permissionGroups.map(([resource, resourcePermissions]) => {
-          const resourcePermissionIds = resourcePermissions.map(
-            (permission) => permission.id,
-          );
-          const selectedResourceCount = resourcePermissionIds.filter((id) =>
-            selectedPermissionSet.has(id),
-          ).length;
-          const isResourceSelected =
-            resourcePermissionIds.length > 0 &&
-            selectedResourceCount === resourcePermissionIds.length;
+    <div className="overflow-x-auto rounded-md border border-base-300 bg-base-100">
+      <table className="table w-full text-left text-body-s">
+        <thead>
+          <tr className="border-b border-base-300 bg-base-200/50 text-caption font-semibold uppercase tracking-wider text-base-content/70">
+            <th className="px-4 py-3 font-semibold">Resource</th>
+            {ADMIN_PERMISSION_ACTION_ORDER.map((action) => (
+              <th
+                key={action}
+                className="px-4 py-3 text-center font-semibold uppercase"
+              >
+                {action}
+              </th>
+            ))}
+            {showSelectAll && isSelectable && (
+              <th className="px-4 py-3 text-right font-semibold">Actions</th>
+            )}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-base-300">
+          {permissionGroups.map(([resource, resourcePermissions]) => {
+            const resourcePermissionIds = resourcePermissions.map(
+              (permission) => permission.id,
+            );
+            const selectedResourceCount = resourcePermissionIds.filter((id) =>
+              selectedPermissionSet.has(id),
+            ).length;
+            const isResourceSelected =
+              resourcePermissionIds.length > 0 &&
+              selectedResourceCount === resourcePermissionIds.length;
 
-          return (
-            <div
-              key={resource}
-              className="rounded-md border border-base-300 bg-base-100 p-10"
-            >
-              <div className="mb-8 flex items-center justify-between gap-8">
-                <h3 className="text-body-s font-semibold capitalize text-base-content">
-                  {formatLabel(resource)}
-                </h3>
-                {showSelectAll && isSelectable && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="h-[30px] gap-4 px-8 text-caption"
-                    onClick={() =>
-                      isResourceSelected
-                        ? onClearPermissions?.(resourcePermissionIds)
-                        : onSelectPermissions?.(resourcePermissionIds)
-                    }
-                  >
-                    {isResourceSelected ? (
-                      <iconsLib.close className="h-[14px] w-[14px]" />
-                    ) : (
-                      <iconsLib.checkr className="h-[14px] w-[14px]" />
-                    )}
-                   
-                  </Button>
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-6">
-                {resourcePermissions.map((permission) => {
+            const permissionByAction = new Map(
+              resourcePermissions.map((permission) => [
+                permission.action.toLowerCase(),
+                permission,
+              ]),
+            );
+
+            return (
+              <tr
+                key={resource}
+                className="transition-colors hover:bg-base-200/30"
+              >
+                <td className="px-4 py-3 font-medium capitalize text-base-content">
+                  <div className="flex items-center gap-2">
+                    <span>{formatLabel(resource)}</span>
+                    <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
+                      {selectedResourceCount}/{resourcePermissionIds.length}
+                    </span>
+                  </div>
+                </td>
+
+                {ADMIN_PERMISSION_ACTION_ORDER.map((action) => {
+                  const permission = permissionByAction.get(
+                    action.toLowerCase(),
+                  );
+                  if (!permission) {
+                    return (
+                      <td
+                        key={action}
+                        className="px-4 py-3 text-center text-base-content/40 select-none font-bold"
+                      >
+                        —
+                      </td>
+                    );
+                  }
+
                   const isChecked =
                     !isSelectable || selectedPermissionSet.has(permission.id);
 
                   return (
-                    <label
-                      key={permission.id}
-                      className="flex min-h-[34px] items-center justify-center gap-6 rounded-md bg-base-200 px-8 text-body-s font-semibold capitalize text-base-content"
-                    >
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-xs border-base-content/30 checked:border-primary checked:bg-primary"
-                        checked={isChecked}
-                        readOnly={!isSelectable}
-                        onChange={() => onTogglePermission?.(permission.id)}
-                      />
-                      <span>{permission.action}</span>
-                    </label>
+                    <td key={action} className="px-4 py-3 text-center">
+                      <div className="flex items-center justify-center">
+                        <Checkbox
+                          checked={isChecked}
+                          disabled={!isSelectable}
+                          readOnly={!isSelectable}
+                          onChange={() => onTogglePermission?.(permission.id)}
+                          aria-label={`${action} ${formatLabel(resource)}`}
+                        />
+                      </div>
+                    </td>
                   );
                 })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+
+                {showSelectAll && isSelectable && (
+                  <td className="px-4 py-3 text-right">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="h-8 gap-1 px-2 text-caption"
+                      onClick={() =>
+                        isResourceSelected
+                          ? onClearPermissions?.(resourcePermissionIds)
+                          : onSelectPermissions?.(resourcePermissionIds)
+                      }
+                    >
+                      {isResourceSelected ? (
+                        <>
+                          <iconsLib.close className="h-4 w-4" />
+                          <span>Clear</span>
+                        </>
+                      ) : (
+                        <>
+                          <iconsLib.checkr className="h-4 w-4" />
+                          <span>All</span>
+                        </>
+                      )}
+                    </Button>
+                  </td>
+                )}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 };

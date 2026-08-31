@@ -49,7 +49,7 @@ export interface IAdminPageMeta {
 }
 
 export const ADMIN_NAV_SECTION_LABELS = {
-  ACCESS: "Access",
+  IAM: "IAM",
   CHAT: "Chat",
   COMMERCE: "Commerce",
   COMMUNICATION: "Communication",

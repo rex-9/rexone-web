@@ -28,6 +28,7 @@ import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
 import {
   AlertDialog,
   AdminState,
+  Checkbox,
   FormActionRow,
   FormContainer,
   Button,
@@ -44,9 +45,6 @@ const initialValues: IAdminNotificationFormValues = {
   send_socket: true,
   send_email: false,
 };
-
-const channelCheckboxClassName =
-  "checkbox checkbox-sm border-base-content/40 checked:border-primary checked:bg-primary";
 
 const RECIPIENT_SEARCH_MIN_LENGTH = 3;
 const RECIPIENT_SEARCH_DEBOUNCE_MS = 300;
@@ -380,14 +378,14 @@ export const AdminNotificationsPage: React.FC = () => {
       ) : (
         <>
           <FormContainer onSubmit={handleSubmit}>
-              <div className="grid gap-16 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="md:col-span-2">
-                  <div className="mb-6 flex flex-wrap items-center justify-between gap-6">
+                  <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
                     <h2 className="text-body-m font-semibold text-base-content">
                       {t(NOTIFICATION_LOCALES.Labels.Event)}
                     </h2>
                   </div>
-                  <div className="flex flex-wrap gap-5">
+                  <div className="flex flex-wrap gap-2">
                     {templates.map((template) => {
                       const isSelected = values.event === template.event;
                       const categoryClass = isSelected
@@ -406,16 +404,16 @@ export const AdminNotificationsPage: React.FC = () => {
                           disabled={!template.admin_available}
                           aria-pressed={isSelected}
                           title={template.unavailable_reason || template.label}
-                          className={`inline-flex min-h-[36px] items-center gap-4 rounded-full border px-7 py-3 text-left transition ${categoryClass} disabled:cursor-not-allowed disabled:opacity-70`}
+                          className={`inline-flex min-h-9 items-center gap-1 rounded-full border px-3 py-1 text-left transition ${categoryClass} disabled:cursor-not-allowed disabled:opacity-70`}
                           onClick={() =>
                             updateValue(NOTIFICATION_FIELDS.EVENT, template.event)
                           }
                         >
-                          {isSelected && <iconsLib.checkr className="h-[13px] w-[13px] shrink-0" />}
+                          {isSelected && <iconsLib.checkr className="h-4 w-4 shrink-0" />}
                           <span className="text-caption font-semibold">
                             {template.label}
                           </span>
-                          <span className={`text-[10px] capitalize ${isSelected ? "text-primary-content/75" : "opacity-60"}`}>
+                          <span className={`text-caption capitalize ${isSelected ? "text-primary-content/75" : "opacity-60"}`}>
                             {template.category}
                           </span>
                         </Button>
@@ -425,13 +423,13 @@ export const AdminNotificationsPage: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <div className="rounded-md border border-base-300 bg-base-100 p-12">
-                    <div className="mb-10 flex items-center justify-between gap-8">
+                  <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
+                    <div className="mb-3 flex items-center justify-between gap-2">
                       <h2 className="text-body-m font-semibold text-base-content">
                         {t(NOTIFICATION_LOCALES.Labels.Audience)}
                       </h2>
-                      <div className="flex items-center gap-8">
-                        <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
                           {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                             ? selectedUserIds.length
                             : values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
@@ -441,7 +439,7 @@ export const AdminNotificationsPage: React.FC = () => {
                         <Button
                           type="button"
                           variant="secondary"
-                          className="h-[30px] w-[30px] p-0"
+                          className="h-8 w-8 p-0"
                           aria-label={
                             values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
                               ? t(NOTIFICATION_LOCALES.Actions.ClearAllUsers)
@@ -467,13 +465,13 @@ export const AdminNotificationsPage: React.FC = () => {
                               !areAllUsersSelected)
                           }
                         >
-                          <iconsLib.checkr className="h-[14px] w-[14px]" />
+                          <iconsLib.checkr className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
 
                     <div
-                      className={`mb-10 grid gap-8 ${
+                      className={`mb-3 grid gap-2 ${
                         canReadRoles ? "sm:grid-cols-3" : "sm:grid-cols-2"
                       }`}
                     >
@@ -486,7 +484,7 @@ export const AdminNotificationsPage: React.FC = () => {
                               NOTIFICATION_AUDIENCE_TYPES.USERS,
                             )
                           }
-                          containerClassName="min-h-[42px] px-10"
+                          containerClassName="min-h-10 px-3"
                         >
                           {t(NOTIFICATION_LOCALES.Labels.SelectedUsers)}
                       </Radio>
@@ -500,7 +498,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 NOTIFICATION_AUDIENCE_TYPES.ROLES,
                               )
                             }
-                            containerClassName="min-h-[42px] px-10"
+                            containerClassName="min-h-10 px-3"
                           >
                             {t(NOTIFICATION_LOCALES.Labels.SelectedRoles)}
                         </Radio>
@@ -514,7 +512,7 @@ export const AdminNotificationsPage: React.FC = () => {
                               NOTIFICATION_AUDIENCE_TYPES.ALL,
                             )
                           }
-                          containerClassName="min-h-[42px] px-10"
+                          containerClassName="min-h-10 px-3"
                         >
                           {t(NOTIFICATION_LOCALES.Labels.AllUsers)}
                       </Radio>
@@ -522,13 +520,13 @@ export const AdminNotificationsPage: React.FC = () => {
 
                     {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS && (
                       <div className="relative">
-                        <div className="flex min-h-[34px] flex-wrap items-center gap-5 rounded-md border border-base-300 bg-base-100 px-7 py-4 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+                        <div className="flex min-h-10 flex-wrap items-center gap-1 rounded-md border border-base-300 bg-base-100 px-3 py-1 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
                           {selectedUsers.map((user) => (
                             <span
                               key={user.id}
-                              className="inline-flex max-w-full items-center gap-4 rounded-md bg-base-200 px-6 py-2 text-body-s font-medium text-base-content"
+                              className="inline-flex max-w-full items-center gap-1 rounded-md bg-base-200 px-2 py-1 text-body-s font-medium text-base-content"
                             >
-                              <span className="max-w-[180px] truncate">
+                              <span className="max-w-44 truncate">
                                 {getUserLabel(user)}
                               </span>
                               <Button
@@ -539,7 +537,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 })}
                                 onClick={() => removeUser(user.id)}
                               >
-                                <iconsLib.close className="h-[12px] w-[12px]" />
+                                <iconsLib.close className="h-3 w-3" />
                               </Button>
                             </span>
                           ))}
@@ -547,7 +545,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           <input
                             type="text"
                             value={recipientQuery}
-                            className="min-w-[180px] flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
+                            className="min-w-44 flex-1 border-0 bg-transparent px-1 py-1 text-body-s text-base-content outline-none placeholder:text-base-content/40"
                             placeholder={
                               selectedUsers.length === 0
                                 ? t(NOTIFICATION_LOCALES.Labels.Recipients)
@@ -567,7 +565,7 @@ export const AdminNotificationsPage: React.FC = () => {
                         </div>
 
                         {isRecipientFocused && isRecipientSearching && (
-                          <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 rounded-md border border-base-300 bg-base-100 px-10 py-8 text-body-s text-base-content/60 shadow-lg">
+                          <div className="absolute left-0 right-0 top-full mt-1 z-10 rounded-md border border-base-300 bg-base-100 px-3 py-2 text-body-s text-base-content/60 shadow-lg">
                             Searching...
                           </div>
                         )}
@@ -576,7 +574,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           !isRecipientSearching &&
                           recipientSearchError &&
                           recipientQuery.trim().length >= RECIPIENT_SEARCH_MIN_LENGTH && (
-                            <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 rounded-md border border-error/30 bg-base-100 px-10 py-8 text-body-s text-error shadow-lg">
+                            <div className="absolute left-0 right-0 top-full mt-1 z-10 rounded-md border border-error/30 bg-base-100 px-3 py-2 text-body-s text-error shadow-lg">
                               {recipientSearchError}
                             </div>
                           )}
@@ -585,13 +583,13 @@ export const AdminNotificationsPage: React.FC = () => {
                           !isRecipientSearching &&
                           !recipientSearchError &&
                           recipientSuggestions.length > 0 && (
-                            <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
+                            <div className="absolute left-0 right-0 top-full mt-1 z-10 overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-lg">
                               {recipientSuggestions.map((user) => (
                                 <Button
                                 variant="tertiary"
                                   key={user.id}
                                   type="button"
-                                  className="flex w-full items-center justify-between gap-10 px-10 py-8 text-left text-body-s transition hover:bg-primary/10"
+                                  className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-body-s transition hover:bg-primary/10"
                                   onMouseDown={(event) => {
                                     event.preventDefault();
                                     addUser(user.id);
@@ -605,7 +603,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                       {user.username || user.id}
                                     </span>
                                   </span>
-                                  <iconsLib.checkr className="h-[14px] w-[14px] shrink-0 text-primary" />
+                                  <iconsLib.checkr className="h-4 w-4 shrink-0 text-primary" />
                                 </Button>
                               ))}
                             </div>
@@ -614,20 +612,16 @@ export const AdminNotificationsPage: React.FC = () => {
                     )}
 
                     {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES && (
-                      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         {sortedRoles.map((role) => (
-                          <label
+                          <Checkbox
                             key={role.id}
-                            className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content"
+                            checked={selectedRoleIdSet.has(role.id)}
+                            onChange={() => toggleRole(role.id)}
+                            containerClassName="min-h-10"
                           >
-                            <input
-                              type="checkbox"
-                              className={channelCheckboxClassName}
-                              checked={selectedRoleIdSet.has(role.id)}
-                              onChange={() => toggleRole(role.id)}
-                            />
                             <span className="min-w-0 truncate">{role.name}</span>
-                          </label>
+                          </Checkbox>
                         ))}
                       </div>
                     )}
@@ -635,32 +629,28 @@ export const AdminNotificationsPage: React.FC = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                  <div className="rounded-md border border-base-300 bg-base-100 p-12">
-                    <div className="mb-10 flex items-center justify-between gap-8">
+                  <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
+                    <div className="mb-3 flex items-center justify-between gap-2">
                       <h2 className="text-body-m font-semibold text-base-content">
                         {t(NOTIFICATION_LOCALES.Labels.Delivery)}
                       </h2>
-                      <span className="rounded-md bg-base-200 px-8 py-3 text-caption font-medium text-base-content opacity-70">
+                      <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
                         {selectedChannels}/{NOTIFICATION_DELIVERY_FIELDS.length}
                       </span>
                     </div>
 
-                    <div className="grid gap-8 sm:grid-cols-3">
+                    <div className="grid gap-2 sm:grid-cols-3">
                       {NOTIFICATION_DELIVERY_FIELDS.map(({ field, label }) => (
-                        <label
+                        <Checkbox
                           key={field}
-                          className="flex min-h-[42px] items-center gap-8 rounded-md border border-base-300 px-10 text-body-s font-medium text-base-content"
+                          checked={values[field]}
+                          onChange={(event) =>
+                            updateValue(field, event.target.checked)
+                          }
+                          containerClassName="min-h-10"
                         >
-                          <input
-                            type="checkbox"
-                            className={channelCheckboxClassName}
-                            checked={values[field]}
-                            onChange={(event) =>
-                              updateValue(field, event.target.checked)
-                            }
-                          />
                           <span>{t(label)}</span>
-                        </label>
+                        </Checkbox>
                       ))}
                     </div>
                   </div>

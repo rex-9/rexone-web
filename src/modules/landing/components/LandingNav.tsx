@@ -96,7 +96,7 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
             variant={ButtonVariants.PRIMARY}
             size={ComponentSizes.SM}
             onClick={handleEnterClick}
-            className="!py-1.5 !px-4 text-xs font-primary"
+            className="!py-1 !px-4 text-xs font-primary"
           >
             Enter
           </Button>

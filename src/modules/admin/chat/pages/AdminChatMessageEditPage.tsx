@@ -95,13 +95,13 @@ export const AdminChatMessageEditPage: React.FC = () => {
         <AdminState title="Unable to load chat message" message={error} />
       ) : message? (
         <FormContainer onSubmit={handleSubmit}>
-            <div className="grid gap-16">
-              <label className="flex flex-col gap-4">
+            <div className="grid gap-4">
+              <label className="flex flex-col gap-1">
                 <span className="text-body-s font-medium text-base-content">
                   Role
                 </span>
                 <select
-                  className="rounded-m border-2 border-base-300 bg-base-100 px-16 py-12 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="rounded-md border-2 border-base-300 bg-base-100 px-4 py-3 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
                   value={role}
                   onChange={(event) => setRole(event.target.value)}
                 >

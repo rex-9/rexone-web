@@ -30,27 +30,31 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   const shouldCenter = centered ?? !isAdmin;
 
   return (
-    <div
-      className={cn(
-        "min-h-screen w-full",
-        shouldCenter && "flex flex-col items-center justify-between",
-        showHeadNavbar && "pt-[72px]",
-        className,
-      )}
-    >
+    <div className={cn("min-h-screen w-full flex flex-col", className)}>
       {enableAppServices ? <PageLayoutServices /> : null}
       {showHeadNavbar
         ? headNavbar ?? (
             <HeadNavbar
               actions={headerActions}
-              className={isAdmin ? "left-[72px] lg:left-[280px]" : undefined}
+              className={isAdmin ? "left-16 lg:left-72" : undefined}
               isAdmin={isAdmin}
               leading={headerLeading}
             />
           )
         : null}
-      {children}
-      {shouldCenter ? <div /> : null}
+      {isAdmin ? (
+        children
+      ) : (
+        <main
+          className={cn(
+            "flex-1 w-full",
+            showHeadNavbar && "pt-16",
+            shouldCenter && "flex flex-col items-center justify-center px-4 py-8",
+          )}
+        >
+          {children}
+        </main>
+      )}
     </div>
   );
 };

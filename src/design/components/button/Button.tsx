@@ -47,10 +47,10 @@ export const Button: React.FC<IButtonProps> = ({
 
   const sizes: Partial<Record<ComponentSize, string>> = {
     [ComponentSizes.XS]: "px-2 py-1 text-caption",
-    [ComponentSizes.SM]: "px-3 py-1.5 text-body-s",
-    [ComponentSizes.MD]: "px-5 py-2.5 text-body-m",
-    [ComponentSizes.LG]: "px-7 py-3 text-body-l",
-    [ComponentSizes.XL]: "px-9 py-4 text-body-l font-bold",
+    [ComponentSizes.SM]: "px-3 py-1 text-body-s",
+    [ComponentSizes.MD]: "px-4 py-2 text-body-m",
+    [ComponentSizes.LG]: "px-6 py-3 text-body-l",
+    [ComponentSizes.XL]: "px-8 py-4 text-body-l font-bold",
   };
 
   return (
@@ -71,10 +71,10 @@ export const Button: React.FC<IButtonProps> = ({
     >
       {isNeon && (
         <>
-          <span className="absolute top-0 -left-full w-full h-0.5 bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
-          <span className="absolute -top-full right-0 w-0.5 h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
-          <span className="absolute bottom-0 -right-full w-full h-0.5 bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
-          <span className="absolute -bottom-full left-0 w-0.5 h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
+          <span className="absolute top-0 -left-full w-full h-px bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
+          <span className="absolute -top-full right-0 w-px h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
+          <span className="absolute bottom-0 -right-full w-full h-px bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
+          <span className="absolute -bottom-full left-0 w-px h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
         </>
       )}
       {isLoading ? (

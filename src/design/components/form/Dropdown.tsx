@@ -52,7 +52,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-body-s font-medium text-base-content/70 mb-1.5">
+        <label className="block text-body-s font-medium text-base-content/70 mb-1">
           {label}
         </label>
       )}
@@ -63,7 +63,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
         disabled={disabled}
         multiple={multiple}
         className={cn(
-          "w-full px-4 py-2.5 text-body-m rounded-md",
+          "w-full px-4 py-2 text-body-m rounded-md",
           "bg-base-100 text-base-content",
           "border border-base-300",
           "focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent",

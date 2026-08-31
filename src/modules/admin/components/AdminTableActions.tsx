@@ -24,14 +24,14 @@ interface IAdminTableActionConfig {
 }
 
 const ADMIN_TABLE_ACTION_CONFIG: Record<
- AdminAction,
+  AdminAction,
   IAdminTableActionConfig
 > = {
   [ADMIN_ACTIONS.EDIT]: {
     action: ADMIN_ACTIONS.UPDATE,
     icon: iconsLib.pencilSquare,
     label: ADMIN_COMMON_LABELS.EDIT,
-    variant: "secondary",
+    variant: "tertiary",
   },
   [ADMIN_ACTIONS.DELETE]: {
     action: ADMIN_ACTIONS.DELETE,
@@ -49,7 +49,7 @@ const ADMIN_TABLE_ACTION_CONFIG: Record<
     action: ADMIN_ACTIONS.DELETE,
     icon: iconsLib.arrowPath,
     label: ADMIN_COMMON_LABELS.RESTORE,
-    variant: "secondary",
+    variant: "tertiary",
   },
 };
 
@@ -62,7 +62,7 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
   actions,
   resource,
 }) => (
-  <div className="flex justify-end gap-8">
+  <div className="flex justify-end gap-2">
     {actions.map(({ disabled, type, onClick }) => {
       const { action, icon: Icon, label, variant } =
         ADMIN_TABLE_ACTION_CONFIG[type];
@@ -74,13 +74,13 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
           resource={resource}
           size="sm"
           variant={variant}
-          className="h-[32px] w-[32px] p-0"
+          className="h-8 w-8 p-0"
           aria-label={label}
           title={label}
           disabled={disabled}
           onClick={onClick}
         >
-          <Icon className="h-[18px] w-[18px]" />
+          <Icon className="h-4 w-4" />
         </AdminActionButton>
       );
     })}

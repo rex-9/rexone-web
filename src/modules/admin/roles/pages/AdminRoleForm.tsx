@@ -88,7 +88,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
 
   return (
     <FormContainer onSubmit={handleSubmit}>
-      <div className="grid gap-16 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={ADMIN_ROLE_FORM_LABELS.ROLE_NAME}
           value={name}
@@ -112,8 +112,8 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
         />
 
         <div className="md:col-span-2">
-          <div className="rounded-md border border-base-300 bg-base-100 p-12">
-            <div className="mb-10 flex items-center justify-between gap-8">
+          <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
+            <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-body-m font-semibold text-base-content">
                 {ADMIN_ROLE_FORM_LABELS.PERMISSIONS}
               </h2>
