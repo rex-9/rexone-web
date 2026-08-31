@@ -15,13 +15,10 @@ import {
 import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 
 const ADMIN_USER_FORM_LABELS = {
-  CONFIRM_PASSWORD: "Confirm password",
   CREATE_USER: "Create user",
   DISPLAY_NAME: "Display name",
   EMAIL: "Email",
-  NEW_PASSWORD: "New password",
   NO_PERMISSIONS: "No permissions assigned.",
-  PASSWORD: "Password",
   RELATED_PERMISSIONS: "Related permissions",
   ROLES: "Roles",
   SAVE_CHANGES: "Save changes",
@@ -40,8 +37,6 @@ const initialValues: IAdminUserFormValues = {
   username: "",
   name: "",
   email: "",
-  password: "",
-  password_confirmation: "",
   role_ids: [],
 };
 
@@ -55,8 +50,6 @@ const buildInitialValues = (
     name: user.name || "",
     email: user.email || "",
     role_ids: user.role_ids || [],
-    password: "",
-    password_confirmation: "",
   };
 };
 
@@ -88,11 +81,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
       email: values.email.trim(),
       role_ids: values.role_ids || [],
     };
-
-    if (values.password) {
-      payload.password = values.password;
-      payload.password_confirmation = values.password_confirmation;
-    }
 
     onSubmit(payload);
   };
@@ -152,26 +140,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
             onChange={(event) => updateValue("email", event.target.value)}
           />
         </div>
-        <TextInput
-          label={
-            mode === ADMIN_ACTIONS.CREATE
-              ? ADMIN_USER_FORM_LABELS.PASSWORD
-              : ADMIN_USER_FORM_LABELS.NEW_PASSWORD
-          }
-          type="password"
-          value={values.password}
-          required={mode === ADMIN_ACTIONS.CREATE}
-          onChange={(event) => updateValue("password", event.target.value)}
-        />
-        <TextInput
-          label={ADMIN_USER_FORM_LABELS.CONFIRM_PASSWORD}
-          type="password"
-          value={values.password_confirmation}
-          required={mode === ADMIN_ACTIONS.CREATE || Boolean(values.password)}
-          onChange={(event) =>
-            updateValue("password_confirmation", event.target.value)
-          }
-        />
 
         <div className="md:col-span-2">
           <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
