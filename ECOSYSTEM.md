@@ -169,7 +169,7 @@ The `/v1/admin/` namespace provides comprehensive management capabilities protec
 
 Defined under `src/design/`:
 
-- **Atoms & Tokens**: Kindness Gold (`#F8D57E`), Clarity Blue (`#9EC9FF`), Deep Navy (`#14202E`), semantic palettes, Inter / SF Pro typography scale, 8-based spacing, soft radius (`xs` to `full`).
+- **Atoms & Tokens**: Neon Sunset Coral (`#FF5E62`), Secondary Coral (`#FF7556`), Accent Crimson (`#FF2A4B`), Deep Night Canvas (`#160B11`), semantic palettes, Inter / SF Pro typography scale, 8-based spacing, soft radius (`xs` to `full`).
 - **Molecules & Overlays**:
   - Auth dialog suite (`AuthDialog`, `InitialDialog`, `SigninPasswordDialog`, `SignupPasswordCreateDialog`, `SignupPasswordConfirmDialog`, `SignupInfoDialog`, `ConfirmEmailDialog`, `ForgotPasswordDialog`).
   - Inputs (`TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`).
@@ -181,7 +181,7 @@ Defined under `src/design/`:
 
 - **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passwords are held purely in memory and never leaked into URL params or persistent storage.
 - **Commerce & Stripe**: Fetches products, triggers Checkout Session (`/v1/payment/session`), redirects to Stripe, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations.
-- **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or error event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
+- **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
 - **Telemetry & Error Logging**: Unhandled client exceptions and React Error Boundary catches are posted directly to Core at `POST /v1/log/clients` with storage keys snapshot.
 - **Client Admin Panel**: Admin UI module under `src/modules/admin/` with sidebar navigation, route guards (`AdminRootRoute`, `AdminHomeRoute`), client-side RBAC evaluation (`usePermissions`), and sub-modules for Users, Roles, Products, Chat, and Notifications. Includes data tables, forms, recycle bins, and search filters.
 
@@ -199,7 +199,7 @@ Defined under `src/design/`:
 
 Rexone Mobile has a strictly governed design system accessible via `lib/design/design.dart`:
 
-- **Elements**: `AppColors` (Kindness Gold, Clarity Blue, Deep Navy, surfaces, text), `AppTypography`, `AppSpacing`, `AppStyles`, `AppIcons`, `AppMedia`, `AppTimers`, `AppTheme` (Light/Dark mode Material 3).
+- **Elements**: `AppColors` (Neon Sunset Coral, Secondary Coral, Accent Crimson, Night/Day surfaces, text), `AppTypography`, `AppSpacing`, `AppStyles`, `AppIcons`, `AppMedia`, `AppTimers`, `AppTheme` (Light/Dark mode Material 3).
 - **Theme Extensions**: `context.colors.*` and `context.typo.*` for theme-aware reactive styling.
 - **Static Tokens**: `Design.spacing.*`, `Design.timers.*`, `Design.icons.*`, `Design.media.*`.
 - **Reusable UI Components**: `AppButton`, `AppInputField`, `AppPasswordField`, `AppLoading`, `AppSnackbar`, `AppDialog` (with `AppDialog.confirm()` for destructive actions), `AppPage`, `AppListTile`, `AppToggle`.

@@ -1,6 +1,6 @@
 import React from "react";
 import { HeadNavbar, HeadNavbarBrand } from "../components";
-import { cn } from "../utils";
+import { cn } from "../helpers";
 import { useAxiosInterceptor } from "../../services";
 import { useSocket } from "../../hooks/useSocket";
 

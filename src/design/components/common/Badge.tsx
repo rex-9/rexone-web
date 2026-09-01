@@ -1,7 +1,7 @@
 // src/design/components/common/Badge.tsx
 
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import {
   BadgeVariant,
   BadgeVariants,
@@ -65,7 +65,13 @@ export const Badge: React.FC<IBadgeProps> = ({
 
   if (href) {
     return (
-      <a href={href} target={target} rel={rel} {...props} className={badgeClassName}>
+      <a
+        href={href}
+        target={target}
+        rel={rel}
+        {...props}
+        className={badgeClassName}
+      >
         {children}
       </a>
     );

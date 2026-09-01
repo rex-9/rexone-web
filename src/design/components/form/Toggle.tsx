@@ -1,7 +1,7 @@
 // src/design/components/form/Toggle.tsx
 // TODO: UI bug
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 export interface IToggleProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,

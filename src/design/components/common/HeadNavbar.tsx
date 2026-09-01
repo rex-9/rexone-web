@@ -6,7 +6,7 @@ import { Button } from "../button";
 import { Asset } from "../media";
 import { LanguageDropdown } from "../settings/LanguageDropdown";
 import { ThemeToggle } from "../settings/ThemeToggle";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import ProfileAvatar from "./ProfileAvatar";
 
 export interface HeadNavbarProps {

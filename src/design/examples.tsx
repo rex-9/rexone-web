@@ -3,13 +3,27 @@
 /**
  * Rexone Design System - Usage Examples
  *
- * Demonstrates standard Tailwind CSS & DaisyUI class usage with Rexone design tokens.
+ * Demonstrates standard Tailwind CSS & DaisyUI class usage with Rexone design tokens
+ * and official Design System wrapper components.
  *
- * ⚠️ NEVER import tokens directly into UI components — use standard Tailwind & DaisyUI classes!
+ * ⚠️ NEVER use raw HTML `<input>`, `<button>`, `<img>`, `<video>`, `<a>`, or `<textarea>`.
+ * Always use Design System components from `src/design/components/`.
  */
 
+import React, { useState } from "react";
+import {
+  Button,
+  TextInput,
+  FormContainer,
+  Typography,
+  Badge,
+  Asset,
+} from "./components";
+import { ButtonVariants, ComponentSizes, TypographyVariants } from "./constants";
+import { icons } from "../assets";
+
 // ============================================================
-// 1. COLORS
+// 1. COLORS & THEME SURFACES
 // ============================================================
 
 export const ColorExamples = () => {
@@ -17,42 +31,40 @@ export const ColorExamples = () => {
     <div className="space-y-6">
       {/* Brand Colors */}
       <div className="space-y-2">
-        <h4 className="text-base font-semibold text-base-content">Brand Colors</h4>
+        <Typography variant={TypographyVariants.H4} className="text-base font-semibold text-base-content">
+          Brand Colors
+        </Typography>
         <div className="flex gap-4 flex-wrap">
-          <div className="bg-primary text-white px-4 py-2 rounded-md shadow-sm">
-            Primary (#FF5E62)
+          <div className="bg-primary text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+            Primary (Sunset Coral)
           </div>
-          <div className="bg-secondary text-white px-4 py-2 rounded-md shadow-sm">
-            Secondary (#FF7556)
+          <div className="bg-secondary text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+            Secondary (Coral Peach)
           </div>
-          <div className="bg-accent text-white px-4 py-2 rounded-md shadow-sm">
-            Accent (#FF2A4B)
+          <div className="bg-accent text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+            Accent (Crimson)
           </div>
         </div>
       </div>
 
       {/* Semantic Colors */}
       <div className="space-y-2">
-        <h4 className="text-base font-semibold text-base-content">Semantic Colors</h4>
+        <Typography variant={TypographyVariants.H4} className="text-base font-semibold text-base-content">
+          Semantic Colors
+        </Typography>
         <div className="flex gap-4 flex-wrap">
-          <div className="bg-success text-white px-4 py-2 rounded-md">
-            Success
-          </div>
-          <div className="bg-warning text-white px-4 py-2 rounded-md">
-            Warning
-          </div>
-          <div className="bg-error text-white px-4 py-2 rounded-md">
-            Error
-          </div>
-          <div className="bg-info text-white px-4 py-2 rounded-md">
-            Info
-          </div>
+          <Badge variant="success">Success</Badge>
+          <Badge variant="warning">Warning</Badge>
+          <Badge variant="error">Error</Badge>
+          <Badge variant="info">Info</Badge>
         </div>
       </div>
 
       {/* Theme Surfaces */}
       <div className="space-y-2">
-        <h4 className="text-base font-semibold text-base-content">Theme Base Surfaces</h4>
+        <Typography variant={TypographyVariants.H4} className="text-base font-semibold text-base-content">
+          Theme Base Surfaces
+        </Typography>
         <div className="flex gap-4 flex-wrap">
           <div className="bg-base-100 border border-base-300 px-4 py-2 rounded-md text-base-content">
             Base 100 (Canvas)
@@ -60,7 +72,7 @@ export const ColorExamples = () => {
           <div className="bg-base-200 border border-base-300 px-4 py-2 rounded-md text-base-content">
             Base 200 (Surface)
           </div>
-          <div className="bg-base-300 px-4 py-2 rounded-md text-base-content">
+          <div className="bg-base-300 border border-base-300 px-4 py-2 rounded-md text-base-content">
             Base 300 (Card)
           </div>
         </div>
@@ -75,19 +87,28 @@ export const ColorExamples = () => {
 
 export const TypographyExamples = () => {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-display-l font-display text-base-content">Display Large (40px)</h1>
-        <h2 className="text-display-m font-display text-base-content">Display Medium (32px)</h2>
-        <h3 className="text-display-s font-display text-base-content">Display Small (28px)</h3>
-        <h1 className="text-2xl font-bold font-primary text-base-content">Heading 1 (24px)</h1>
-        <h2 className="text-xl font-bold font-primary text-base-content">Heading 2 (20px)</h2>
-        <h3 className="text-lg font-semibold font-primary text-base-content">Heading 3 (18px)</h3>
-        <h4 className="text-base font-semibold font-primary text-base-content">Heading 4 (16px)</h4>
-        <p className="text-body-l text-base-content">Body Large (16px)</p>
-        <p className="text-body-m text-base-content">Body Medium (14px)</p>
-        <p className="text-body-s text-base-content/70">Body Small (12px)</p>
-      </div>
+    <div className="space-y-4">
+      <Typography variant={TypographyVariants.H1} className="text-display-l font-display text-base-content">
+        Display Large (40px)
+      </Typography>
+      <Typography variant={TypographyVariants.H1} className="text-heading-l font-bold text-base-content">
+        Heading 1 (28px)
+      </Typography>
+      <Typography variant={TypographyVariants.H2} className="text-heading-m font-bold text-base-content">
+        Heading 2 (24px)
+      </Typography>
+      <Typography variant={TypographyVariants.H3} className="text-heading-s font-semibold text-base-content">
+        Heading 3 (20px)
+      </Typography>
+      <Typography variant={TypographyVariants.BODY_L} className="text-body-l text-base-content">
+        Body Large (16px)
+      </Typography>
+      <Typography variant={TypographyVariants.BODY_M} className="text-body-m text-base-content">
+        Body Medium (14px)
+      </Typography>
+      <Typography variant={TypographyVariants.CAPTION} className="text-caption text-base-content opacity-70">
+        Caption (12px)
+      </Typography>
     </div>
   );
 };
@@ -100,22 +121,20 @@ export const SpacingExamples = () => {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h4 className="text-base font-semibold text-base-content">Standard Tailwind Spacing</h4>
+        <Typography variant={TypographyVariants.H4} className="text-base font-semibold text-base-content">
+          Standard Tailwind Spacing Scale (8px Grid)
+        </Typography>
         <div className="flex items-center gap-4 flex-wrap text-base-content">
           <div className="bg-primary w-2 h-2 rounded-xs" />
-          <span className="text-xs">w-2 (8px)</span>
+          <span className="text-caption">p-2 / w-2 (8px)</span>
           <div className="bg-primary w-3 h-3 rounded-xs" />
-          <span className="text-xs">w-3 (12px)</span>
+          <span className="text-caption">p-3 / w-3 (12px)</span>
           <div className="bg-primary w-4 h-4 rounded-xs" />
-          <span className="text-xs">w-4 (16px)</span>
+          <span className="text-caption">p-4 / w-4 (16px)</span>
           <div className="bg-primary w-6 h-6 rounded-xs" />
-          <span className="text-xs">w-6 (24px)</span>
+          <span className="text-caption">p-6 / w-6 (24px)</span>
           <div className="bg-primary w-8 h-8 rounded-xs" />
-          <span className="text-xs">w-8 (32px)</span>
-          <div className="bg-primary w-12 h-12 rounded-xs" />
-          <span className="text-xs">w-12 (48px)</span>
-          <div className="bg-primary w-16 h-16 rounded-xs" />
-          <span className="text-xs">w-16 (64px)</span>
+          <span className="text-caption">p-8 / w-8 (32px)</span>
         </div>
       </div>
     </div>
@@ -123,119 +142,70 @@ export const SpacingExamples = () => {
 };
 
 // ============================================================
-// 4. RADIUS
+// 4. RADIUS & BUTTONS
 // ============================================================
 
-export const RadiusExamples = () => {
+export const ButtonExamples = () => {
   return (
-    <div className="space-y-6">
-      <div className="flex gap-4 flex-wrap">
-        <div className="bg-primary w-16 h-16 rounded-xs flex items-center justify-center text-white text-xs">
-          xs
-        </div>
-        <div className="bg-secondary w-16 h-16 rounded-sm flex items-center justify-center text-white text-xs">
-          sm
-        </div>
-        <div className="bg-primary w-16 h-16 rounded-md flex items-center justify-center text-white text-xs">
-          md
-        </div>
-        <div className="bg-secondary w-16 h-16 rounded-lg flex items-center justify-center text-white text-xs">
-          lg
-        </div>
-        <div className="bg-primary w-16 h-16 rounded-full flex items-center justify-center text-white text-xs">
-          full
-        </div>
+    <div className="space-y-4">
+      <Typography variant={TypographyVariants.H4} className="text-base font-semibold text-base-content">
+        Buttons
+      </Typography>
+      <div className="flex gap-4 flex-wrap items-center">
+        <Button variant={ButtonVariants.PRIMARY} size={ComponentSizes.MD}>
+          Primary
+        </Button>
+        <Button variant={ButtonVariants.SECONDARY} size={ComponentSizes.MD}>
+          Secondary
+        </Button>
+        <Button variant={ButtonVariants.TERTIARY} size={ComponentSizes.MD}>
+          Tertiary
+        </Button>
+        <Button variant={ButtonVariants.PRIMARY} size={ComponentSizes.SM} isLoading>
+          Loading
+        </Button>
       </div>
     </div>
   );
 };
 
 // ============================================================
-// 5. SHADOWS & NEON GLOW
+// 5. LAWFUL FORM & CARD EXAMPLE
 // ============================================================
 
-export const ShadowExamples = () => {
+export const CompletePageExample: React.FC = () => {
+  const [email, setEmail] = useState("");
+
   return (
-    <div className="space-y-6">
-      <div className="flex gap-6 flex-wrap">
-        <div className="bg-base-200 border border-base-300 w-24 h-24 shadow-sm rounded-lg flex items-center justify-center text-xs text-base-content">
-          shadow-sm
-        </div>
-        <div className="bg-base-200 border border-base-300 w-24 h-24 shadow-md rounded-lg flex items-center justify-center text-xs text-base-content">
-          shadow-md
-        </div>
-        <div className="bg-base-200 border border-base-300 w-24 h-24 shadow-xl rounded-lg flex items-center justify-center text-xs text-base-content">
-          shadow-xl
-        </div>
-        <div className="bg-primary text-white w-24 h-24 shadow-neon rounded-lg flex items-center justify-center text-xs font-semibold">
-          shadow-neon
-        </div>
-        <div className="bg-primary text-white w-24 h-24 shadow-neon-lg rounded-lg flex items-center justify-center text-xs font-semibold">
-          shadow-neon-lg
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ============================================================
-// 6. ANIMATIONS
-// ============================================================
-
-export const AnimationExamples = () => {
-  return (
-    <div className="space-y-6">
-      <div className="flex gap-6 flex-wrap">
-        <div className="bg-primary w-24 h-24 rounded-lg animate-fade-in flex items-center justify-center text-white text-xs">
-          fade-in
-        </div>
-        <div className="bg-secondary w-24 h-24 rounded-lg animate-fade-rise flex items-center justify-center text-white text-xs">
-          fade-rise
-        </div>
-        <div className="bg-primary w-24 h-24 rounded-lg animate-slide-up flex items-center justify-center text-white text-xs">
-          slide-up
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ============================================================
-// 7. COMPLETE CARD EXAMPLE
-// ============================================================
-
-export const CompletePageExample = () => {
-  return (
-    <div className="bg-base-100 min-h-screen p-6 sm:p-8 text-base-content">
-      <div className="max-w-md mx-auto">
-        {/* Hero Section */}
-        <div className="text-center space-y-2 mb-6">
-          <h1 className="text-3xl font-extrabold font-primary text-primary">
-            ✨ Rexone ✨
-          </h1>
-          <p className="text-body-m text-base-content/80">
-            Super robust foundation to build & scale any digital product.
-          </p>
-        </div>
-
-        {/* Card */}
-        <div className="bg-base-200 border border-base-300 rounded-2xl shadow-xl p-6">
-          <h2 className="text-xl font-bold font-primary text-base-content mb-2">Get Started</h2>
-          <p className="text-body-s text-base-content/70 mb-4">
-            Enter your email to sign in or create an account.
-          </p>
+    <div className="bg-base-100 min-h-screen p-6 sm:p-8 text-base-content flex items-center justify-center">
+      <div className="max-w-md w-full">
+        <FormContainer title="✨ Rexone ✨">
+          <div className="flex justify-center my-2">
+            <Asset asset={icons.logo} className="h-12 w-12" />
+          </div>
+          <Typography variant={TypographyVariants.BODY_S} className="text-center text-base-content opacity-70 mb-4">
+            Unified foundation for modern web & mobile apps.
+          </Typography>
 
           <div className="space-y-4">
-            <input
+            <TextInput
+              label="Email Address"
               type="email"
-              placeholder="your@email.com"
-              className="w-full px-4 py-3 border border-base-300 rounded-lg bg-base-100 text-base-content placeholder:text-base-content/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-sm"
+              placeholder="name@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
-            <button className="w-full bg-primary hover:opacity-95 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 shadow-neon active:scale-[0.98]">
+
+            <Button
+              type="button"
+              variant={ButtonVariants.PRIMARY}
+              fullWidth
+              onClick={() => alert(`Submitted: ${email}`)}
+            >
               Continue
-            </button>
+            </Button>
           </div>
-        </div>
+        </FormContainer>
       </div>
     </div>
   );

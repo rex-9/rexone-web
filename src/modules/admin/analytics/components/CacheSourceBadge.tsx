@@ -1,7 +1,7 @@
 // src/modules/admin/analytics/components/CacheSourceBadge.tsx
 import React from "react";
 import { iconsLib } from "../../../../assets";
-import { cn } from "../../../../design/utils";
+import { cn } from "../../../../design/helpers";
 
 interface ICacheSourceBadgeProps {
   isFetching: boolean;

@@ -13,7 +13,7 @@ import {
   TransitionChild,
 } from "@headlessui/react";
 import { iconsLib } from "../../../assets";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 export interface IDialogProps {
   isOpen: boolean;

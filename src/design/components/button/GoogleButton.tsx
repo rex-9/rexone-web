@@ -1,7 +1,7 @@
 // src/design/components/button/GoogleButton.tsx
 
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { icons } from "../../../assets";
 import { Image } from "..";
 

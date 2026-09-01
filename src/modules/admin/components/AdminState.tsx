@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../../../design/components/button";
-import { cn } from "../../../design/utils";
+import { cn } from "../../../design/helpers";
 
 interface IAdminStateProps {
   title: string;

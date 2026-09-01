@@ -1,7 +1,7 @@
 // src/design/components/button/Button.tsx
 
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import {
   ButtonVariant,
   ButtonVariants,
@@ -9,8 +9,7 @@ import {
   ComponentSizes,
 } from "../../constants";
 
-export interface IButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ComponentSize;
   fullWidth?: boolean;

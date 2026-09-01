@@ -1,6 +1,6 @@
 // src/design/components/form/RatingSlider.tsx
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 export interface IRatingSliderProps {
   value: number;

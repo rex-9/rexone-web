@@ -6,11 +6,10 @@
  */
 
 import React, { useRef, useEffect, useId } from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { InputVariant, InputVariants } from "../../constants";
 
-export interface ITextAreaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   helperText?: string;
   error?: string;
@@ -116,8 +115,10 @@ export const TextArea: React.FC<ITextAreaProps> = ({
           "disabled:opacity-50 disabled:cursor-not-allowed",
           disabled && !isGlass && "disabled:bg-base-200",
           hasError
-            ? (isGlass ? "border-b-error focus:border-b-error" : "border-error focus:ring-error")
-            : (!isGlass && "border-base-300 hover:border-base-400"),
+            ? isGlass
+              ? "border-b-error focus:border-b-error"
+              : "border-error focus:ring-error"
+            : !isGlass && "border-base-300 hover:border-base-400",
           className,
         )}
       />

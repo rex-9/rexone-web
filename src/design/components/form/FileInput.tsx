@@ -1,7 +1,7 @@
 // src/design/components/form/FileInput.tsx
 
 import React, { useRef } from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { Button } from "../button";
 import { ButtonVariants, ComponentSizes } from "../../constants";
 
@@ -48,7 +48,9 @@ export const FileInput: React.FC<IFileInputProps> = ({
   };
 
   return (
-    <div className={cn("flex flex-col gap-1", fullWidth && "w-full", className)}>
+    <div
+      className={cn("flex flex-col gap-1", fullWidth && "w-full", className)}
+    >
       {label && (
         <span className="text-body-s font-medium text-base-content">
           {label}
@@ -81,7 +83,7 @@ export const FileInput: React.FC<IFileInputProps> = ({
         <span
           className={cn(
             "text-xs transition-colors duration-200",
-            hasError ? "text-error font-medium" : "text-base-content/60"
+            hasError ? "text-error font-medium" : "text-base-content/60",
           )}
         >
           {displayText}

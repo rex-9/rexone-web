@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslate } from "../../../locales";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
-export interface ITextLinkProps
-  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+export interface ITextLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   label?: React.ReactNode;
   children?: React.ReactNode;
   to?: string;
   href?: string;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
+  onClick?: (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+  ) => void;
   className?: string;
   external?: boolean;
 }

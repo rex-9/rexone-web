@@ -11,7 +11,7 @@ import {
   ADMIN_NAV_SECTION_LABELS,
   ADMIN_RESOURCES,
 } from "../constants";
-import { cn } from "../../../design/utils";
+import { cn } from "../../../design/helpers";
 import { iconsLib } from "../../../assets";
 
 interface IAdminNavItem {

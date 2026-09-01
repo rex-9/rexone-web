@@ -1,9 +1,8 @@
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { TypographyVariant, TypographyVariants } from "../../constants";
 
-export interface ITypographyProps
-  extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface ITypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   className?: string;
   variant?: TypographyVariant | "primary" | "secondary";

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts";
 import AppRoutes from "../../../AppRoutes";
 import { ComponentSize, ComponentSizes } from "../../constants";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 export interface IProfileAvatarProps {
   className?: string;
@@ -59,7 +59,7 @@ export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({
     <div
       className={cn(
         "flex items-center justify-center cursor-pointer select-none",
-        className
+        className,
       )}
       onClick={handleClick}
     >
@@ -73,7 +73,7 @@ export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({
         <div
           className={cn(
             "rounded-full flex items-center justify-center font-bold text-primary bg-base-200 hover:bg-base-300 border border-glass-border shadow-sm",
-            sizeClasses[size]
+            sizeClasses[size],
           )}
         >
           {getInitialLetter(effectiveName)}

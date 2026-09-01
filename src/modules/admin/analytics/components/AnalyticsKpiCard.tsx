@@ -1,6 +1,6 @@
 // src/modules/admin/analytics/components/AnalyticsKpiCard.tsx
 import React from "react";
-import { cn } from "../../../../design/utils";
+import { cn } from "../../../../design/helpers";
 
 interface IAnalyticsKpiCardProps {
   title: string;

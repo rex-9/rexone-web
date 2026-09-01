@@ -1,7 +1,7 @@
 // src/design/components/form/Dropdown.tsx
 
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 interface IDropdownBaseProps {
   options: Array<{ value: string; label: string }>;

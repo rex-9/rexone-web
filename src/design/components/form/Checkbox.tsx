@@ -1,8 +1,10 @@
 import React from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
-export interface ICheckboxProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
+export interface ICheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   children?: React.ReactNode;
   containerClassName?: string;
 }

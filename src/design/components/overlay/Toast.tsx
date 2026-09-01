@@ -5,7 +5,7 @@
 
 import React, { useEffect } from "react";
 import { iconsLib } from "../../../assets";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 
 export type ToastType = "success" | "info" | "warning" | "error";
 
@@ -41,10 +41,18 @@ export const Toast: React.FC<IToastProps> = ({
   };
 
   const defaultIcons = {
-    success: <iconsLib.check className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />,
-    info: <iconsLib.info className="h-6 w-6 text-sky-600 dark:text-sky-400 shrink-0" />,
-    warning: <iconsLib.warning className="h-6 w-6 text-amber-600 dark:text-amber-400 shrink-0" />,
-    error: <iconsLib.error className="h-6 w-6 text-rose-600 dark:text-rose-400 shrink-0" />,
+    success: (
+      <iconsLib.check className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+    ),
+    info: (
+      <iconsLib.info className="h-6 w-6 text-sky-600 dark:text-sky-400 shrink-0" />
+    ),
+    warning: (
+      <iconsLib.warning className="h-6 w-6 text-amber-600 dark:text-amber-400 shrink-0" />
+    ),
+    error: (
+      <iconsLib.error className="h-6 w-6 text-rose-600 dark:text-rose-400 shrink-0" />
+    ),
   };
 
   const typeColors = {
@@ -56,7 +64,12 @@ export const Toast: React.FC<IToastProps> = ({
 
   return (
     <div className="toast toast-top toast-center z-50 animate-fade-in">
-      <div className={cn("alert shadow-lg max-w-md border border-base-300", typeClasses[type])}>
+      <div
+        className={cn(
+          "alert shadow-lg max-w-md border border-base-300",
+          typeClasses[type],
+        )}
+      >
         <div className="flex items-start gap-3 w-full">
           <div className="mt-0.5">{icon || defaultIcons[type]}</div>
           <div className="flex-1 min-w-0">

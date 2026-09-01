@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "../../../design/utils";
+import { cn } from "../../../design/helpers";
 
 export interface IAdminTableColumn<T> {
   key: string;
@@ -53,7 +53,10 @@ export function AdminTable<T>({
           <AdminTableHead>
             <AdminTableRow>
               {columns.map((column) => (
-                <AdminTableHeaderCell key={column.key} className={column.className}>
+                <AdminTableHeaderCell
+                  key={column.key}
+                  className={column.className}
+                >
                   {column.header}
                 </AdminTableHeaderCell>
               ))}

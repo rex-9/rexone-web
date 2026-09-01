@@ -28,7 +28,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Get brand color value
- * @example getBrandColor('primary') => '#FF5E62'
+ * @example getBrandColor('primary') => '#F8D57E'
  */
 export function getBrandColor(
   brand: "primary" | "secondary" | "accent",

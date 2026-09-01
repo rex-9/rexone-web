@@ -1,10 +1,9 @@
 import React from "react";
 import { useTranslate } from "../../../locales";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { FormVariant, FormVariants } from "../../constants";
 
-export interface IFormContainerProps
-  extends React.FormHTMLAttributes<HTMLFormElement> {
+export interface IFormContainerProps extends React.FormHTMLAttributes<HTMLFormElement> {
   title?: string;
   children: React.ReactNode;
   variant?: FormVariant;

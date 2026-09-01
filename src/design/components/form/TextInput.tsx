@@ -5,11 +5,10 @@
  */
 
 import React, { useId } from "react";
-import { cn } from "../../utils";
+import { cn } from "../../helpers";
 import { InputVariant, InputVariants } from "../../constants";
 
-export interface ITextInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface ITextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   helperText?: string;
   error?: string;
