@@ -19,9 +19,14 @@
     - Form elements: `FormContainer`, `TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`.
     - Buttons: `Button`, `GoogleButton`, `SignOutButton`.
     - Overlays: `Dialog`, `ConfirmDialog`, `LoadingOverlay`, `Toast`.
-    - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`, `Video`.
-  - `src/design/pages/` — Shared layout shells, base pages (`LayoutPage`, `HomePage`, `ProfilePage`, `NotFoundPage`).
-- **Rule**: NEVER use raw HTML `<textarea>`, raw `<button>`, raw `<form>`, or ad-hoc containers in module dialogs or pages. Always re-use `FormContainer`, `TextArea`, `TextInput`, `Button`, and `Dialog`. If a design element is missing, build it cleanly in `src/design/components/` first.
+    - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`/`Asset`, `Video`/`VideoPlayer`.
+  - `src/design/pages/` — Shared layout shells, base pages (`LayoutPage`, `HomePage`, `NotFoundPage`).
+- **Rule**: NEVER use raw HTML `<img>`, raw `<video>`, raw `<a>`, raw `<textarea>`, raw `<button>`, raw `<form>`, or ad-hoc containers in module dialogs or pages. Always re-use the Design System wrappers:
+  - **Images / Icons**: Use `Asset` or `Image` (`src/design/components/media/Image.tsx`) with typed asset objects (`icons.*`, `images.*`) from `src/assets/`.
+  - **Videos**: Use `Video` or `VideoPlayer` (`src/design/components/media/Video.tsx`) with typed video assets (`videos.*`).
+  - **Links & Navigation**: Use `TextLink` (`src/design/components/common/TextLink.tsx`) for external URLs and styled link buttons, or React Router `<Link>`. Never write raw `<a href="...">` tags.
+  - **Forms & Inputs**: Re-use `FormContainer`, `TextArea`, `TextInput`, `PasswordInput`, `Button`, and `Dialog`.
+  - If a design element is missing, build it cleanly in `src/design/components/` first.
 
 ### 1.2 Automated Theming & Pure Tailwind Spacing
 
@@ -37,11 +42,12 @@
 
 ## 🖼️ 2. Centralized Assets & Icons Law (`src/assets/`)
 
-### 2.1 Clean Centralized Asset Registry
+### 2.1 Clean Centralized Asset Registry & Component Rendering
 
 - **Rule**: ALL static assets (images, icons, SVGs, videos, audio/sounds) MUST be registered and exported through `src/assets/index.ts` (`images`, `icons`, `videos`, `sounds`, `iconsLib`).
-- **Rule**: ZERO hardcoded inline SVGs (`<svg>...</svg>`) in pages or components. Always register the icon in `iconsLib` in `src/assets/index.ts` and use it cleanly.
+- **Rule**: ZERO hardcoded inline SVGs (`<svg>...</svg>`) in pages or components. Always register the icon in `iconsLib` in `src/assets/index.ts` or add a standalone `.svg` asset under `src/assets/icons/` and render via `Asset`.
 - **Rule**: ZERO direct/scattered raw file imports (`.svg`, `.png`, `.jpg`, `.mp4`, `.mp3`) across components. All imports go through `src/assets/`.
+- **Rule**: ZERO raw `<img>` or `<video>` tags. Always render assets via `Asset` (or `Image`) and `VideoPlayer` (or `Video`).
 
 ### 2.2 Distributed Centralized Dynamic Assets
 
@@ -49,7 +55,7 @@
 - ALL media (avatars, attachments, covers, cards, audio, video, docs) is managed through the backend's distributed centralized `assets` system (`type`, `storage_key`, `resource_model`, `resource_id`).
 - When uploading assets (such as user avatars):
   - Pass `{ type: "avatar", resource_model: "user", resource_id: currentUser?.id }`.
-  - Display avatars using the semantic [`ProfileAvatar`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/src/design/components/common/ProfileAvatar.tsx) or [`Image`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/src/design/components/media/Image.tsx) components.
+  - Display avatars using the semantic [`ProfileAvatar`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/src/design/components/common/ProfileAvatar.tsx) or [`Asset`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/src/design/components/media/Image.tsx) components.
 
 ---
 

@@ -12,6 +12,7 @@ import {
   Transition,
   TransitionChild,
 } from "@headlessui/react";
+import { iconsLib } from "../../../assets";
 import { cn } from "../../utils";
 
 export interface IDialogProps {
@@ -85,22 +86,10 @@ export const Dialog: React.FC<IDialogProps> = ({
                     <button
                       type="button"
                       onClick={onBack}
-                      className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors -ml-1"
+                      className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors -ml-1 flex items-center justify-center"
                       aria-label="Back"
                     >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 19l-7-7 7-7"
-                        />
-                      </svg>
+                      <iconsLib.chevronLeft className="w-5 h-5" />
                     </button>
                   )}
 
@@ -118,22 +107,10 @@ export const Dialog: React.FC<IDialogProps> = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors ml-auto -mr-1"
+                    className="p-2 rounded-lg hover:bg-base-200 text-base-content/70 hover:text-base-content transition-colors ml-auto -mr-1 flex items-center justify-center"
                     aria-label="Close"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <iconsLib.close className="w-5 h-5" />
                   </button>
                 </div>
 

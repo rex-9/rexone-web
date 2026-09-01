@@ -5,6 +5,7 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
+import { iconsLib } from "../../../../assets";
 import UserController from "../user.controller";
 import { IAdminUser } from "../types";
 import {
@@ -241,11 +242,16 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   return (
     <>
       {error ? (
-        <AdminState title="Unable to load users" message={error} />
+        <AdminState
+          icon={iconsLib.warning}
+          title="Unable to load users"
+          message={error}
+        />
       ) : (
         <>
           {users.length === 0 ? (
             <AdminState
+              icon={view === "active" ? iconsLib.userGroup : iconsLib.archiveBox}
               title={view === "active" ? "No users yet" : "Recycle bin is empty"}
               message={
                 view === "active"

@@ -1,9 +1,10 @@
 /**
  * Rexone Design System - Toast Notification
- * Uses DaisyUI alert components
+ * Uses DaisyUI alert components with consistent iconsLib icons
  */
 
 import React, { useEffect } from "react";
+import { iconsLib } from "../../../assets";
 import { cn } from "../../utils";
 
 export type ToastType = "success" | "info" | "warning" | "error";
@@ -40,53 +41,44 @@ export const Toast: React.FC<IToastProps> = ({
   };
 
   const defaultIcons = {
-    success: "🎉",
-    info: "💡",
-    warning: "⚠️",
-    error: "❌",
+    success: <iconsLib.check className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />,
+    info: <iconsLib.info className="h-6 w-6 text-sky-600 dark:text-sky-400 shrink-0" />,
+    warning: <iconsLib.warning className="h-6 w-6 text-amber-600 dark:text-amber-400 shrink-0" />,
+    error: <iconsLib.error className="h-6 w-6 text-rose-600 dark:text-rose-400 shrink-0" />,
   };
 
   const typeColors = {
-    success: "text-green-700",
-    info: "text-blue-700",
-    warning: "text-yellow-700",
-    error: "text-red-700",
+    success: "text-emerald-800 dark:text-emerald-200",
+    info: "text-sky-800 dark:text-sky-200",
+    warning: "text-amber-800 dark:text-amber-200",
+    error: "text-rose-800 dark:text-rose-200",
   };
 
   return (
     <div className="toast toast-top toast-center z-50 animate-fade-in">
-      <div className={cn("alert shadow-lg max-w-md", typeClasses[type])}>
+      <div className={cn("alert shadow-lg max-w-md border border-base-300", typeClasses[type])}>
         <div className="flex items-start gap-3 w-full">
-          <span className="text-2xl mt-1">{icon || defaultIcons[type]}</span>
+          <div className="mt-0.5">{icon || defaultIcons[type]}</div>
           <div className="flex-1 min-w-0">
             {title && (
-              <p className={cn("text-sm font-semibold", typeColors[type])}>
+              <p className={cn("text-body-s font-semibold", typeColors[type])}>
                 {title}
               </p>
             )}
-            <p className="text-sm">{message}</p>
+            <p className="text-body-s">{message}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-sm btn-square flex-shrink-0"
+            className="btn btn-ghost btn-xs btn-square flex-shrink-0 opacity-70 hover:opacity-100"
+            aria-label="Close alert"
           >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <iconsLib.close className="w-4 h-4" />
           </button>
         </div>
       </div>
     </div>
   );
 };
+
+export default Toast;

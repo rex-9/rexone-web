@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "../../../design/components";
+import { Asset, Button, TextLink } from "../../../design/components";
 import { iconsLib } from "../../../assets";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -21,17 +21,17 @@ export const SupportLove: React.FC = () => {
         <div className="fixed bottom-1/3 bg-base-200 p-8 rounded-lg shadow-lg flex items-center gap-4">
           <div className="w-64 flex flex-col justify-center items-center gap-4">
             <div>{t(AppLocales.Anapana.WelcomeDonations)}</div>
-            <a
+            <TextLink
               href="https://buymeacoffee.com/rex9"
-              target="_blank"
-              rel="noopener noreferrer"
+              external
+              className="hover:no-underline"
             >
-              <img
+              <Asset
                 className="h-12"
                 src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
                 alt="Buy Me A Coffee"
               />
-            </a>
+            </TextLink>
           </div>
         </div>
       )}

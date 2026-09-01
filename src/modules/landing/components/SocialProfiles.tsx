@@ -1,6 +1,7 @@
 // src/modules/landing/components/SocialProfiles.tsx
 
 import React from "react";
+import { Asset, TextLink } from "../../../design";
 import { ISocialProfile } from "../types";
 
 export interface ISocialProfilesProps {
@@ -23,22 +24,21 @@ export const SocialProfiles: React.FC<ISocialProfilesProps> = ({
           profile.iconSrc.includes(".png");
 
         return (
-          <a
+          <TextLink
             key={profile.platform}
             href={profile.link}
-            target="_blank"
-            rel="noopener noreferrer"
+            external
             title={profile.platform}
-            className="group inline-flex items-center justify-center p-1 transition-all duration-300 hover:-translate-y-1"
+            className="group inline-flex items-center justify-center p-1 transition-all duration-300 hover:-translate-y-1 hover:no-underline"
           >
-            <img
+            <Asset
               src={profile.iconSrc}
               alt={profile.platform}
               className={`w-7 h-7 object-contain transition-all duration-300 drop-shadow-[0_0_3px_var(--color-primary)] group-hover:drop-shadow-[0_0_8px_var(--color-primary)] ${
                 isRaster ? "rounded-md" : "filter brightness-0 invert"
               }`}
             />
-          </a>
+          </TextLink>
         );
       })}
     </div>

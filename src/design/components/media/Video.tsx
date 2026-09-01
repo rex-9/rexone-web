@@ -1,8 +1,17 @@
-// src/components/Media/Video.tsx
 import React from "react";
 
-export interface IVideoProps {
-  asset: { src: string; alt: string; title?: string };
+export interface IVideoAsset {
+  src: string;
+  alt: string;
+  title?: string;
+}
+
+export interface IVideoProps
+  extends Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "src"> {
+  asset?: IVideoAsset;
+  src?: string;
+  alt?: string;
+  title?: string;
   controls?: boolean;
   autoplay?: boolean;
   loop?: boolean;
@@ -12,12 +21,20 @@ export interface IVideoProps {
 
 export const Video: React.FC<IVideoProps> = ({
   asset,
+  src,
+  alt,
+  title,
   controls = true,
   autoplay = false,
   loop = false,
   muted = false,
   className = "",
+  ...rest
 }) => {
+  const finalSrc = asset?.src ?? src ?? "";
+  const finalAlt = alt ?? asset?.alt ?? "";
+  const finalTitle = title ?? asset?.title ?? finalAlt;
+
   return (
     <video
       className={className}
@@ -25,11 +42,16 @@ export const Video: React.FC<IVideoProps> = ({
       autoPlay={autoplay}
       loop={loop}
       muted={muted}
-      aria-label={asset.alt}
-      title={asset.title ?? asset.alt}
+      aria-label={finalAlt}
+      title={finalTitle}
+      {...rest}
     >
-      <source src={asset.src} type="video/mp4" />
+      <source src={finalSrc} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
   );
 };
+
+export const VideoPlayer = Video;
+
+export default Video;

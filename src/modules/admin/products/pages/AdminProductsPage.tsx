@@ -5,6 +5,7 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
+import { iconsLib } from "../../../../assets";
 import { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
@@ -215,12 +216,17 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
 
   return (
     <>
-      { error ? (
-        <AdminState title="Unable to load products" message={error} />
+      {error ? (
+        <AdminState
+          icon={iconsLib.warning}
+          title="Unable to load products"
+          message={error}
+        />
       ) : (
         <>
           {products.length === 0 ? (
             <AdminState
+              icon={view === "active" ? iconsLib.cube : iconsLib.archiveBox}
               title={view === "active" ? "No products yet" : "Recycle bin is empty"}
               message={
                 view === "active"

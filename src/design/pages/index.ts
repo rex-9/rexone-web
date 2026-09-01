@@ -2,7 +2,6 @@
 
 export { RootPage } from "./RootPage";
 export { HomePage } from "./HomePage";
-export { ProfilePage } from "./ProfilePage";
 export { PageLayout } from "./PageLayout";
 export type { IPageLayoutProps } from "./PageLayout";
 export { NotFoundPage } from "./NotFoundPage";

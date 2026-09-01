@@ -5,6 +5,7 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
+import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
 import { IAdminChatRoom } from "../types";
 import {
@@ -142,9 +143,17 @@ export const AdminChatRoomsPage: React.FC = () => {
   return (
     <>
       {error ? (
-        <AdminState title="Unable to load chat rooms" message={error} />
+        <AdminState
+          icon={iconsLib.warning}
+          title="Unable to load chat rooms"
+          message={error}
+        />
       ) : rooms.length === 0 ? (
-        <AdminState title="No chat rooms yet" message="Chat rooms will appear here when users start conversations." />
+        <AdminState
+          icon={iconsLib.chatBubbleLeftRight}
+          title="No chat rooms yet"
+          message="Chat rooms will appear here when users start conversations."
+        />
       ) : (
         <>
           <AdminTable columns={columns} records={rooms} getRowKey={(room) => room.id} />

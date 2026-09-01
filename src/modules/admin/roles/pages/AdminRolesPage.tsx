@@ -4,6 +4,7 @@ import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
+import { iconsLib } from "../../../../assets";
 import RoleController from "../role.controller";
 import { IAdminRole } from "../types";
 import {
@@ -156,10 +157,18 @@ export const AdminRolesPage: React.FC = () => {
 
   return (
     <>
-      { error ? (
-        <AdminState title="Unable to load roles" message={error} />
+      {error ? (
+        <AdminState
+          icon={iconsLib.warning}
+          title="Unable to load roles"
+          message={error}
+        />
       ) : roles.length === 0 ? (
-        <AdminState title="No roles yet" message="Created roles appear here." />
+        <AdminState
+          icon={iconsLib.key}
+          title="No roles yet"
+          message="Created roles appear here."
+        />
       ) : (
         <>
         <AdminTable

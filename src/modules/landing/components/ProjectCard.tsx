@@ -2,7 +2,7 @@
 
 import React from "react";
 import { BadgeVariants, ComponentSizes } from "../../../constants";
-import { Badge } from "../../../design";
+import { Asset, Badge, TextLink } from "../../../design";
 import { IProjectItem } from "../types";
 
 export interface IProjectCardProps {
@@ -13,7 +13,7 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
   return (
     <div className="group relative w-full h-96 rounded-2xl overflow-hidden border border-glass-border bg-glass-project shadow-[0_4px_20px_rgba(0,0,0,0.6)] transition-all duration-400 hover:-translate-y-1 hover:border-glass-border-hover hover:shadow-neon">
       {/* Background Image */}
-      <img
+      <Asset
         src={project.image}
         alt={project.name}
         className="w-full h-full object-cover block transition-transform duration-500 ease-out group-hover:scale-105"
@@ -53,14 +53,13 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
         {/* Action Buttons */}
         <div className="flex justify-around w-full pt-1">
           {project.source ? (
-            <a
+            <TextLink
               href={project.source}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg text-primary px-5 py-2 rounded-md transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg active:scale-95"
+              external
+              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg !text-primary px-5 py-2 rounded-md transition-all duration-300 hover:!bg-primary hover:!text-white hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
             >
               Source
-            </a>
+            </TextLink>
           ) : (
             <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-white/30 px-5 py-2 rounded-md pointer-events-none">
               Source
@@ -68,14 +67,13 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
           )}
 
           {project.live ? (
-            <a
+            <TextLink
               href={project.live}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg text-primary px-5 py-2 rounded-md transition-all duration-300 hover:bg-primary hover:text-white hover:border-primary hover:shadow-neon-lg active:scale-95"
+              external
+              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg !text-primary px-5 py-2 rounded-md transition-all duration-300 hover:!bg-primary hover:!text-white hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
             >
               Live
-            </a>
+            </TextLink>
           ) : (
             <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-white/30 px-5 py-2 rounded-md pointer-events-none">
               Live

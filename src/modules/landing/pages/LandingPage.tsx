@@ -131,14 +131,15 @@ export const LandingPage: React.FC = () => {
 
         {/* Down Arrow Button */}
         <div className="flex justify-center my-8 animate-down-bounce">
-          <button
+          <Button
             type="button"
+            variant={ButtonVariants.TERTIARY}
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
-            className="group flex items-center justify-center w-10 h-10 rounded-full border border-primary text-primary hover:text-white hover:border-primary-light hover:shadow-neon transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
+            className="!w-10 !h-10 !p-0 rounded-full border border-primary text-primary hover:!text-white hover:!border-primary-light hover:!shadow-neon transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
           >
             <iconsLib.chevronDown className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
 
         {/* 4. Skills Section */}

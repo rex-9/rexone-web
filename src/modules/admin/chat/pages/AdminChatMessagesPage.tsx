@@ -5,6 +5,7 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import { IApiPagination } from "../../../../models";
+import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
 import { IAdminChatMessage } from "../types";
 import {
@@ -143,9 +144,17 @@ export const AdminChatMessagesPage: React.FC = () => {
   return (
     <>
       {error ? (
-        <AdminState title="Unable to load chat messages" message={error} />
+        <AdminState
+          icon={iconsLib.warning}
+          title="Unable to load chat messages"
+          message={error}
+        />
       ) : messages.length === 0 ? (
-        <AdminState title="No chat messages yet" message="Chat messages will appear here when conversations have messages." />
+        <AdminState
+          icon={iconsLib.inboxStack}
+          title="No chat messages yet"
+          message="Chat messages will appear here when conversations have messages."
+        />
       ) : (
         <>
           <AdminTable columns={columns} records={messages} getRowKey={(message) => message.id} />

@@ -3,20 +3,32 @@ import { Link } from "react-router-dom";
 import { useTranslate } from "../../../locales";
 import { cn } from "../../utils";
 
-export interface ITextLinkProps {
-  label: string;
+export interface ITextLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  label?: React.ReactNode;
+  children?: React.ReactNode;
   to?: string;
-  onClick?: () => void;
+  href?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   className?: string;
+  external?: boolean;
 }
 
 export const TextLink: React.FC<ITextLinkProps> = ({
   label,
+  children,
   to,
+  href,
   onClick,
   className,
+  external,
+  target,
+  rel,
+  ...rest
 }) => {
   const t = useTranslate();
+
+  const content = children ?? (typeof label === "string" ? t(label) : label);
 
   const linkClasses = cn(
     "text-primary hover:underline hover:opacity-90 transition-opacity",
@@ -24,19 +36,38 @@ export const TextLink: React.FC<ITextLinkProps> = ({
     className,
   );
 
-  // If onClick is provided, render as button
-  if (onClick) {
+  // If onClick is provided and no to/href, render as button
+  if (onClick && !to && !href) {
     return (
       <button type="button" onClick={onClick} className={linkClasses}>
-        {t(label)}
+        {content}
       </button>
     );
   }
 
-  // Otherwise render as Link (requires 'to' prop)
+  // If external or href provided, render as <a>
+  if (href || external) {
+    const isBlank = target === "_blank" || external;
+    return (
+      <a
+        href={href || to || "#"}
+        target={isBlank ? "_blank" : target}
+        rel={isBlank ? "noopener noreferrer" : rel}
+        onClick={onClick}
+        className={linkClasses}
+        {...rest}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  // Otherwise render as React Router Link (requires 'to' prop)
   return (
-    <Link to={to || "#"} className={linkClasses}>
-      {t(label)}
+    <Link to={to || "#"} className={linkClasses} onClick={onClick}>
+      {content}
     </Link>
   );
 };
+
+export default TextLink;

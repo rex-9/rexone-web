@@ -1,7 +1,9 @@
 import React from "react";
-
-import { iconsLib } from "../../../assets";
+import { Link } from "react-router-dom";
+import AppRoutes from "../../../AppRoutes";
+import { icons, iconsLib } from "../../../assets";
 import { Button } from "../button";
+import { Asset } from "../media";
 import { LanguageDropdown } from "../settings/LanguageDropdown";
 import { ThemeToggle } from "../settings/ThemeToggle";
 import { cn } from "../../utils";
@@ -16,31 +18,56 @@ export interface HeadNavbarProps {
   showNotifications?: boolean;
 }
 
-interface IHeadNavbarBrandProps {
+export interface IHeadNavbarBrandProps {
   className?: string;
   isAdmin?: boolean;
+  to?: string;
+  showText?: boolean;
 }
 
 export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
   className,
   isAdmin = false,
-}) => (
-  <div className={cn("min-w-0 items-center gap-3", className)}>
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary text-body-l font-semibold text-navy-900">
-      R
-    </div>
-    {isAdmin && (
-      <div className="min-w-0">
-        <div className="truncate text-body-m font-semibold text-base-content">
-          Rexone
+  to,
+  showText = true,
+}) => {
+  const targetTo =
+    to ??
+    (isAdmin
+      ? AppRoutes.client.protected.admin.HOME
+      : AppRoutes.client.protected.HOME);
+
+  return (
+    <Link
+      to={targetTo}
+      className={cn(
+        "flex min-w-0 items-center gap-3 select-none no-underline transition-opacity hover:opacity-90",
+        className,
+      )}
+      aria-label="Rexone Home"
+    >
+      <Asset
+        asset={icons.logo}
+        className={cn(
+          "h-9 w-9 shrink-0 select-none transition-transform duration-300 hover:scale-105",
+          isAdmin && "drop-shadow-[0_0_10px_rgba(225,29,72,0.5)]",
+        )}
+      />
+      {showText && (
+        <div className="min-w-0">
+          <div className="truncate text-body-m font-bold tracking-wide text-base-content font-display">
+            Rexone
+          </div>
+          {isAdmin && (
+            <div className="truncate text-caption font-medium uppercase tracking-wider text-base-content/60">
+              Control Center
+            </div>
+          )}
         </div>
-        <div className="truncate text-body-s text-base-content opacity-60">
-          Control Center
-        </div>
-      </div>
-    )}
-  </div>
-);
+      )}
+    </Link>
+  );
+};
 
 export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   actions,
@@ -57,7 +84,9 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   >
     {children ?? (
       <>
-        <div className="flex min-w-0 items-center gap-3">{leading}</div>
+        <div className="flex min-w-0 items-center gap-3">
+          {leading ?? <HeadNavbarBrand />}
+        </div>
         <div className="flex items-center gap-2">
           {showNotifications && (
             <Button

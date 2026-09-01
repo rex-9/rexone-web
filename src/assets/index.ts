@@ -18,6 +18,7 @@ import mediumSvg from "./design/medium.svg";
 import twitterSvg from "./design/twitter.svg";
 import instagramIcon from "./icons/instagram.svg";
 import googleIcon from "./icons/google.svg";
+import rexoneLogoSvg from "./icons/rexone-logo.svg";
 
 // Projects Images (RexOne Repos Only)
 import rexoneCoreImg from "./images/rexone-core.jpg";
@@ -54,6 +55,21 @@ import {
   ArchiveBoxIcon,
   ChatBubbleBottomCenterTextIcon,
   ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  InformationCircleIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  EllipsisVerticalIcon,
+  ArrowUpTrayIcon,
+  ArrowDownTrayIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  EnvelopeIcon,
+  LockClosedIcon,
+  SparklesIcon,
   DocumentTextIcon,
   BanknotesIcon,
   ChartBarIcon,
@@ -100,6 +116,8 @@ export const projectImages = {
 // ============================================================
 
 export const icons = {
+  logo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
+  rexoneLogo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
   google: { src: googleIcon, alt: "Google icon", title: "Google" },
   github: { src: githubSvg, alt: "GitHub", title: "GitHub" },
@@ -160,6 +178,21 @@ export const iconsLib = {
   menu: Bars3Icon,
   close: XMarkIcon,
   chevronDown: ChevronDownIcon,
+  chevronLeft: ChevronLeftIcon,
+  chevronRight: ChevronRightIcon,
+  arrowLeft: ArrowLeftIcon,
+  arrowRight: ArrowRightIcon,
+  info: InformationCircleIcon,
+  search: MagnifyingGlassIcon,
+  filter: FunnelIcon,
+  moreVertical: EllipsisVerticalIcon,
+  upload: ArrowUpTrayIcon,
+  download: ArrowDownTrayIcon,
+  eye: EyeIcon,
+  eyeSlash: EyeSlashIcon,
+  mail: EnvelopeIcon,
+  lock: LockClosedIcon,
+  sparkles: SparklesIcon,
   document: DocumentTextIcon,
   banknotes: BanknotesIcon,
   chartBar: ChartBarIcon,
