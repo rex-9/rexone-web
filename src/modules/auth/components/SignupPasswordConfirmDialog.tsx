@@ -10,7 +10,7 @@ import {
   FormContainer,
 } from "../../../design/components";
 import { DialogAuthSteps, TAuthStep } from "..";
-import { useAuth, useToast } from "../../../contexts";
+import { useAuth, useToast, useLoading } from "../../../contexts";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
@@ -38,24 +38,27 @@ export const SignupPasswordConfirmDialog: React.FC<
   onBack,
 }) => {
   const { signin, googleChallengeToken, setGoogleChallengeToken } = useAuth();
+  const { isLoading, setLoading } = useLoading();
   const t = useTranslate();
   const navigate = useNavigate();
   const { success } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [searchParams] = useSearchParams();
 
   // Check if this is a password reset flow
   const resetPasswordToken = searchParams.get("reset_password_token");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (confirmPassword.length !== 6) {
+  const submitConfirmation = async (confirmValueToSubmit?: string) => {
+    const value =
+      typeof confirmValueToSubmit === "string"
+        ? confirmValueToSubmit
+        : confirmPassword;
+    if (value.length !== 6) {
       setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
-    if (confirmPassword !== password) {
+    if (value !== password) {
       setError(t(AppLocales.Auth.SignUpPasscodeConfirm.PasscodesMismatch));
       setConfirmPassword("");
       return;
@@ -63,19 +66,18 @@ export const SignupPasswordConfirmDialog: React.FC<
 
     // If this is a password reset flow
     if (resetPasswordToken) {
-      setIsLoading(true);
+      setLoading(true);
       setError("");
 
       const result = await AuthController.resetPassword(
         resetPasswordToken,
         password,
-        confirmPassword,
+        value,
       );
-      setIsLoading(false);
+      setLoading(false);
 
       if (result.success) {
         success(t(AppLocales.Auth.SignUpPasscodeConfirm.ResetSuccess));
-        onClose();
         navigate(
           AppRoutes.buildDialogUrl(DialogAuthSteps.INITIAL, {
             message: t(
@@ -93,7 +95,7 @@ export const SignupPasswordConfirmDialog: React.FC<
 
     // If this is a Google sign-up with challenge token
     if (googleChallengeToken) {
-      setIsLoading(true);
+      setLoading(true);
       try {
         const result = await AuthController.completeGoogleSignIn(
           password,
@@ -105,7 +107,6 @@ export const SignupPasswordConfirmDialog: React.FC<
             t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInComplete),
           );
           setGoogleChallengeToken(null);
-          onClose();
           navigate(AppRoutes.client.protected.HOME);
         } else {
           setError(
@@ -120,7 +121,7 @@ export const SignupPasswordConfirmDialog: React.FC<
             : t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInFailed),
         );
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
       return;
     }
@@ -132,11 +133,9 @@ export const SignupPasswordConfirmDialog: React.FC<
     });
   };
 
-  const triggerSubmit = () => {
-    if (formRef.current) {
-      const event = new Event("submit", { bubbles: true, cancelable: true });
-      formRef.current.dispatchEvent(event);
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await submitConfirmation();
   };
 
   // Show different title for reset password flow
@@ -181,7 +180,9 @@ export const SignupPasswordConfirmDialog: React.FC<
             setConfirmPassword(value);
             setError("");
           }}
-          onComplete={triggerSubmit}
+          onComplete={(completed) => {
+            void submitConfirmation(completed);
+          }}
           label={t(AppLocales.Auth.SignUpPasscodeConfirm.FieldLabel)}
           helperText={t(AppLocales.Auth.SignUpPasscodeConfirm.FieldHelper)}
           error={error}

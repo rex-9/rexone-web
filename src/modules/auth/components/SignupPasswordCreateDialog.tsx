@@ -39,14 +39,14 @@ export const SignupPasswordCreateDialog: React.FC<
   // Check if this is a password reset flow
   const resetPasswordToken = searchParams.get("reset_password_token");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password.length !== 6) {
+  const submitCreate = (passwordValue?: string) => {
+    const value = typeof passwordValue === "string" ? passwordValue : password;
+    if (value.length !== 6) {
       setError(t(AppLocales.Auth.Shared.PasscodeLength));
       return;
     }
 
-    const extra: Record<string, string> = { email, password };
+    const extra: Record<string, string> = { email, password: value };
 
     // Pass reset token to confirm step if present
     if (resetPasswordToken) {
@@ -56,11 +56,9 @@ export const SignupPasswordCreateDialog: React.FC<
     navigateToStep(DialogAuthSteps.SIGNUP_PASSWORD_CONFIRM, extra);
   };
 
-  const triggerSubmit = () => {
-    if (formRef.current) {
-      const event = new Event("submit", { bubbles: true, cancelable: true });
-      formRef.current.dispatchEvent(event);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitCreate();
   };
 
   // Show different subtitle for reset password flow
@@ -106,7 +104,9 @@ export const SignupPasswordCreateDialog: React.FC<
             setPassword(value);
             setError("");
           }}
-          onComplete={triggerSubmit}
+          onComplete={(completed) => {
+            submitCreate(completed);
+          }}
           label={t(AppLocales.Auth.SignUpPasscodeCreate.FieldLabel)}
           helperText={t(AppLocales.Auth.SignUpPasscodeCreate.FieldHelper)}
           error={error}

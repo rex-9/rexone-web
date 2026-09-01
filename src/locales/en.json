@@ -284,7 +284,7 @@
       "errors": {
         "load_list": "Failed to load products", "load_one": "Failed to load product",
         "create": "Failed to create product", "update": "Failed to update product",
-        "discard": "Failed to discard product"
+        "discard": "Failed to discard product", "restore": "Failed to restore product"
       }
     },
     "roles": {

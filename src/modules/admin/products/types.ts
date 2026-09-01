@@ -1,3 +1,5 @@
+// src/modules/admin/products/types.ts
+
 import { PRODUCT_CYCLE } from "./constants";
 
 export type AdminProductCycle =
@@ -5,6 +7,7 @@ export type AdminProductCycle =
 
 export interface IAdminProduct {
   id: string;
+  code: string;
   name: string;
   description?: string | null;
   price: string;
@@ -24,6 +27,7 @@ export interface IAdminProduct {
 }
 
 export interface IAdminProductFormValues {
+  code?: string;
   name: string;
   description: string;
   price_unit_amount: number;

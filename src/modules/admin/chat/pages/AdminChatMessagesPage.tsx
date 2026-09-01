@@ -1,27 +1,30 @@
+// src/modules/admin/chat/pages/AdminChatMessagesPage.tsx
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../../hooks";
-import { IApiPagination } from "../../../../models";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
-import { IAdminChatMessage } from "../types";
+import type { IAdminChatMessage } from "../types";
 import {
-  
   AdminPagination,
   AdminState,
   AdminTableActions,
   AdminTable,
   ConfirmDialog,
-  IAdminTableColumn,
+  PageHeader,
+  type IAdminTableColumn,
 } from "../../components";
 import { formatAdminDate, truncateAdminText } from "../../helpers/admin.helper";
 import {
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
+  ADMIN_COMMON_LABELS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
@@ -35,16 +38,36 @@ export const AdminChatMessagesPage: React.FC = () => {
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { setLoading } = useLoading();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1", 10);
+
+  const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [messages, setMessages] = useState<IAdminChatMessage[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
-  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] =
-    useState<IAdminChatMessage | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [discardTarget, setDiscardTarget] = useState<IAdminChatMessage | null>(null);
+
+  const updateFilters = useCallback(
+    (updates: { page?: number }) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (updates.page !== undefined) {
+            if (updates.page > 1) next.set("page", updates.page.toString());
+            else next.delete("page");
+          }
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
   const loadMessages = useCallback(async () => {
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.MESSAGES)) return;
+
     setLoading(true);
     setError("");
 
@@ -60,14 +83,10 @@ export const AdminChatMessagesPage: React.FC = () => {
         setLoading(false);
       },
     );
-  }, [page, setLoading]);
+  }, [can, page, setLoading]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      void loadMessages();
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
+    void loadMessages();
   }, [loadMessages]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
@@ -75,17 +94,25 @@ export const AdminChatMessagesPage: React.FC = () => {
       {
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ROLE,
         header: ADMIN_CHAT_TABLE_HEADERS.ROLE,
-        render: (message) => message.role,
+        render: (message) => (
+          <span className="rounded-md bg-base-200 px-2 py-0.5 font-mono text-xs font-semibold text-base-content opacity-80">
+            {message.role}
+          </span>
+        ),
       },
       {
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CONTENT,
         header: ADMIN_CHAT_TABLE_HEADERS.MESSAGE,
-        render: (message) => truncateAdminText(message.content),
-      },
-      {
-        key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ROOM,
-        header: ADMIN_CHAT_TABLE_HEADERS.ROOM_ID,
-        render: (message) => message.room_id,
+        render: (message) => (
+          <div className="max-w-md">
+            <div className="line-clamp-2 text-body-m text-base-content">
+              {truncateAdminText(message.content)}
+            </div>
+            <div className="text-caption text-base-content opacity-50 font-mono text-xs pt-0.5">
+              Room: {message.room_id}
+            </div>
+          </div>
+        ),
       },
       {
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CREATED,
@@ -111,8 +138,8 @@ export const AdminChatMessagesPage: React.FC = () => {
                   ),
               },
               {
-                type: ADMIN_ACTIONS.DELETE,
-                onClick: () => setDeleteTarget(message),
+                type: ADMIN_ACTIONS.DISCARD,
+                onClick: () => setDiscardTarget(message),
               },
             ]}
           />
@@ -122,55 +149,70 @@ export const AdminChatMessagesPage: React.FC = () => {
     [navigate],
   );
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
+  const handleDiscard = async () => {
+    if (!discardTarget) return;
 
-    setIsDeleting(true);
-    await ChatController.deleteMessage(
-      deleteTarget.id,
+    setLoading(true);
+
+    await ChatController.discardMessage(
+      discardTarget.id,
       () => {
-        toast.success("Chat message deleted");
-        setDeleteTarget(null);
-        setIsDeleting(false);
+        toast.success("Chat message discarded");
+        setDiscardTarget(null);
+        setLoading(false);
         void loadMessages();
       },
       (message) => {
         toast.error(message);
-        setIsDeleting(false);
+        setLoading(false);
       },
     );
   };
 
   return (
-    <>
+    <div className="space-y-6">
+      <PageHeader
+        title="Chat Messages"
+        description="Audit and moderate posted chat messages across all discussion rooms."
+      />
+
+      {/* Table & States */}
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load chat messages"
+          title="Unable to load messages"
           message={error}
         />
-      ) : messages.length === 0 ? (
+      ) : !isLoading && messages.length === 0 ? (
         <AdminState
           icon={iconsLib.inboxStack}
           title="No chat messages yet"
-          message="Chat messages will appear here when conversations have messages."
+          message="Messages will appear here as users participate in chat rooms."
         />
       ) : (
         <>
-          <AdminTable columns={columns} records={messages} getRowKey={(message) => message.id} />
-          <AdminPagination pagination={pagination} onPageChange={setPage} />
+          <AdminTable
+            columns={columns}
+            records={messages}
+            getRowKey={(message) => message.id}
+          />
+          <AdminPagination
+            pagination={pagination}
+            onPageChange={(nextPage) => updateFilters({ page: nextPage })}
+          />
         </>
       )}
 
       <ConfirmDialog
-        isOpen={Boolean(deleteTarget)}
-        title="Delete chat message"
-        message="Delete this chat message? This cannot be undone."
-        confirmLabel="Delete"
-        isLoading={isDeleting}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        isOpen={Boolean(discardTarget)}
+        title="Discard Chat Message"
+        message="Are you sure you want to discard this message?"
+        confirmLabel={ADMIN_COMMON_LABELS.DISCARD}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setDiscardTarget(null)}
+        onConfirm={handleDiscard}
       />
-    </>
+    </div>
   );
 };

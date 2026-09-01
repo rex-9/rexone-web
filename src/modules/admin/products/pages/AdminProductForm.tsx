@@ -1,3 +1,5 @@
+// src/modules/admin/products/pages/AdminProductForm.tsx
+
 import React, { useState } from "react";
 import {
   AdminProductCycle,
@@ -7,6 +9,7 @@ import {
 import { ProductPriceMode } from "../productForm.utils";
 import {
   Checkbox,
+  Dropdown,
   FormActionRow,
   FormContainer,
   Radio,
@@ -26,11 +29,14 @@ const ADMIN_PRODUCT_FORM_LABELS = {
   PAID_PRODUCT: "Paid product",
   PRICE_TYPE: "Price type",
   PRODUCT_NAME: "Product name",
+  PRODUCT_CODE: "Product code",
   SAVE_CHANGES: "Save changes",
 } as const;
 
 const ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES = {
   DESCRIPTION_REQUIRED: "Description is required.",
+  CODE_INVALID:
+    "Product code must be exactly 10 alphanumeric characters without special characters.",
 } as const;
 
 interface IAdminProductFormProps {
@@ -41,6 +47,7 @@ interface IAdminProductFormProps {
 }
 
 const initialValues: IAdminProductFormValues = {
+  code: "",
   name: "",
   description: "",
   price_unit_amount: 1000,
@@ -55,6 +62,7 @@ const buildInitialValues = (
   if (!product) return initialValues;
 
   return {
+    code: product.code || "",
     name: product.name || "",
     description: product.description || "",
     price_unit_amount: product.price_unit_amount,
@@ -79,6 +87,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       : PRODUCT_TYPE.PREMIUM,
   );
   const [descriptionError, setDescriptionError] = useState("");
+  const [codeError, setCodeError] = useState("");
 
   const isInitiallyFree =
     mode === ADMIN_ACTIONS.EDIT &&
@@ -117,7 +126,6 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     event.preventDefault();
 
     const description = values.description.trim();
-
     if (!description) {
       setDescriptionError(
         ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES.DESCRIPTION_REQUIRED,
@@ -125,26 +133,26 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       return;
     }
 
-    setDescriptionError("");
-    if (isFree) {
-      onSubmit({
-        name: values.name.trim(),
-        description,
-        price_unit_amount: 0,
-        currency: values.currency,
-        cycle: PRODUCT_CYCLE.ONE_TIME,
-        active: values.active,
-      });
-    } else {
-      onSubmit({
-        name: values.name.trim(),
-        description,
-        price_unit_amount: Number(values.price_unit_amount),
-        currency: values.currency,
-        cycle: values.cycle || PRODUCT_CYCLE.ONE_TIME,
-        active: values.active,
-      });
+    const code = values.code?.trim();
+    if (code && !/^[A-Za-z0-9]{10}$/.test(code)) {
+      setCodeError(ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES.CODE_INVALID);
+      return;
     }
+
+    setDescriptionError("");
+    setCodeError("");
+
+    onSubmit({
+      code: code || undefined,
+      name: values.name.trim(),
+      description,
+      price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
+      currency: values.currency,
+      cycle: isFree
+        ? PRODUCT_CYCLE.ONE_TIME
+        : values.cycle || PRODUCT_CYCLE.ONE_TIME,
+      active: values.active,
+    });
   };
 
   return (
@@ -156,6 +164,31 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           required
           onChange={(event) => updateValue("name", event.target.value)}
         />
+
+        <div className="flex flex-col">
+          <TextInput
+            label={ADMIN_PRODUCT_FORM_LABELS.PRODUCT_CODE}
+            placeholder={
+              mode === ADMIN_ACTIONS.CREATE
+                ? "Leave blank to auto-generate"
+                : "e.g. A1b2C3d4E5"
+            }
+            value={values.code || ""}
+            maxLength={10}
+            disabled={mode === ADMIN_ACTIONS.EDIT}
+            error={codeError}
+            onChange={(event) => {
+              updateValue("code", event.target.value);
+              if (codeError) setCodeError("");
+            }}
+          />
+          <p className="mt-1 text-caption text-base-content opacity-60">
+            {mode === ADMIN_ACTIONS.CREATE
+              ? "Optional 10-character alphanumeric code. Auto-generated if left blank."
+              : "🔒 Product code is permanent and cannot be modified."}
+          </p>
+        </div>
+
         <div className="flex flex-col">
           <label className="mb-1 text-body-s font-medium text-base-content">
             {ADMIN_PRODUCT_FORM_LABELS.PRICE_TYPE}
@@ -197,6 +230,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             </p>
           )}
         </div>
+
         <TextInput
           label={ADMIN_PRODUCT_FORM_LABELS.AMOUNT_IN_CENTS}
           type="number"
@@ -209,6 +243,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             updateValue("price_unit_amount", Number(event.target.value))
           }
         />
+
         <TextInput
           label={ADMIN_PRODUCT_FORM_LABELS.DESCRIPTION}
           value={values.description}
@@ -219,44 +254,39 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             if (descriptionError) setDescriptionError("");
           }}
         />
-        <div className="flex flex-col">
-          <label className="mb-1 text-body-s font-medium text-base-content">
-            {ADMIN_PRODUCT_FORM_LABELS.CURRENCY}
-          </label>
-          <select
-            className="select select-bordered h-10 w-full rounded-md border-2 border-base-300 bg-base-100 px-3 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
-            value={values.currency}
-            onChange={(event) => updateValue("currency", event.target.value)}
-          >
-            <option value={PRODUCT_CURRENCY.USD}>USD</option>
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label className="mb-1 text-body-s font-medium text-base-content">
-            {ADMIN_PRODUCT_FORM_LABELS.BILLING_CYCLE}
-          </label>
-          <select
-            className="select select-bordered h-10 w-full rounded-md border-2 border-base-300 bg-base-100 px-3 text-body-m text-base-content disabled:cursor-not-allowed disabled:opacity-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+
+        <Dropdown
+          label={ADMIN_PRODUCT_FORM_LABELS.CURRENCY}
+          value={values.currency}
+          onValueChange={(val) => updateValue("currency", val)}
+          options={[{ value: PRODUCT_CURRENCY.USD, label: "USD" }]}
+        />
+
+        <div>
+          <Dropdown
+            label={ADMIN_PRODUCT_FORM_LABELS.BILLING_CYCLE}
             value={
               isFree
                 ? PRODUCT_CYCLE.ONE_TIME
                 : values.cycle || PRODUCT_CYCLE.ONE_TIME
             }
             disabled={isFree}
-            onChange={(event) =>
-              updateValue("cycle", event.target.value as AdminProductCycle)
+            onValueChange={(val) =>
+              updateValue("cycle", val as AdminProductCycle)
             }
-          >
-            <option value={PRODUCT_CYCLE.ONE_TIME}>One-time</option>
-            <option value={PRODUCT_CYCLE.MONTH}>Monthly</option>
-            <option value={PRODUCT_CYCLE.YEAR}>Yearly</option>
-          </select>
+            options={[
+              { value: PRODUCT_CYCLE.ONE_TIME, label: "One-time" },
+              { value: PRODUCT_CYCLE.MONTH, label: "Monthly" },
+              { value: PRODUCT_CYCLE.YEAR, label: "Yearly" },
+            ]}
+          />
           {isFree && (
             <p className="mt-1 text-caption text-base-content opacity-60">
               Free products are always one-time and cannot be recurring.
             </p>
           )}
         </div>
+
         <Checkbox
           checked={values.active}
           onChange={(event) => updateValue("active", event.target.checked)}

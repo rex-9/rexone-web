@@ -42,7 +42,9 @@ class UserService {
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>[]>>> {
     return api.get<IJsonApiResource<IAdminUser>[]>(
       AppRoutes.server.protected.admin.DISCARDED_USERS,
-      params ? { page: params.page, limit: params.limit } : undefined,
+      params
+        ? { page: params.page, limit: params.limit, search: params.search }
+        : undefined,
     );
   }
 
@@ -74,7 +76,7 @@ class UserService {
     );
   }
 
-  async restoreUser(
+  async undiscardUser(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
     return api.post<AdminUserResponse>(

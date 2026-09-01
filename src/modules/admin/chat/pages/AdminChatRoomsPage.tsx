@@ -1,27 +1,30 @@
+// src/modules/admin/chat/pages/AdminChatRoomsPage.tsx
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../../hooks";
-import { IApiPagination } from "../../../../models";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
-import { IAdminChatRoom } from "../types";
+import type { IAdminChatRoom } from "../types";
 import {
-  
   AdminPagination,
   AdminState,
   AdminTableActions,
   AdminTable,
   ConfirmDialog,
-  IAdminTableColumn,
+  PageHeader,
+  type IAdminTableColumn,
 } from "../../components";
 import { formatAdminDate, truncateAdminText } from "../../helpers/admin.helper";
 import {
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
+  ADMIN_COMMON_LABELS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
@@ -35,15 +38,36 @@ export const AdminChatRoomsPage: React.FC = () => {
 
   const toast = useToast();
   const navigate = useNavigate();
-  const { setLoading } = useLoading();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1", 10);
+
+  const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [rooms, setRooms] = useState<IAdminChatRoom[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
-  const [page, setPage] = useState(1);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminChatRoom | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [discardTarget, setDiscardTarget] = useState<IAdminChatRoom | null>(null);
+
+  const updateFilters = useCallback(
+    (updates: { page?: number }) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (updates.page !== undefined) {
+            if (updates.page > 1) next.set("page", updates.page.toString());
+            else next.delete("page");
+          }
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
+  );
 
   const loadRooms = useCallback(async () => {
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROOMS)) return;
+
     setLoading(true);
     setError("");
 
@@ -59,14 +83,10 @@ export const AdminChatRoomsPage: React.FC = () => {
         setLoading(false);
       },
     );
-  }, [page, setLoading]);
+  }, [can, page, setLoading]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      void loadRooms();
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
+    void loadRooms();
   }, [loadRooms]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
@@ -74,17 +94,27 @@ export const AdminChatRoomsPage: React.FC = () => {
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.TITLE,
         header: ADMIN_CHAT_TABLE_HEADERS.ROOM,
-        render: (room) => room.title,
+        render: (room) => (
+          <div>
+            <div className="font-semibold text-base-content">
+              {room.title || "Untitled Room"}
+            </div>
+            {room.last_message && (
+              <div className="text-body-s text-base-content opacity-60">
+                {truncateAdminText(room.last_message)}
+              </div>
+            )}
+          </div>
+        ),
       },
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.MESSAGES,
         header: ADMIN_CHAT_TABLE_HEADERS.MESSAGES,
-        render: (room) => room.message_count,
-      },
-      {
-        key: ADMIN_CHAT_ROOM_TABLE_KEYS.LAST_MESSAGE,
-        header: ADMIN_CHAT_TABLE_HEADERS.LAST_MESSAGE,
-        render: (room) => truncateAdminText(room.last_message),
+        render: (room) => (
+          <span className="font-semibold text-base-content">
+            {room.message_count ?? 0}
+          </span>
+        ),
       },
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.CREATED,
@@ -104,14 +134,14 @@ export const AdminChatRoomsPage: React.FC = () => {
                 onClick: () =>
                   navigate(
                     AppRoutes.withId(
-                     AppRoutes.client.protected.admin.CHAT_ROOM_EDIT,
+                      AppRoutes.client.protected.admin.CHAT_ROOM_EDIT,
                       room.id,
                     ),
                   ),
               },
               {
-                type: ADMIN_ACTIONS.DELETE,
-                onClick: () => setDeleteTarget(room),
+                type: ADMIN_ACTIONS.DISCARD,
+                onClick: () => setDiscardTarget(room),
               },
             ]}
           />
@@ -121,34 +151,41 @@ export const AdminChatRoomsPage: React.FC = () => {
     [navigate],
   );
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
+  const handleDiscard = async () => {
+    if (!discardTarget) return;
 
-    setIsDeleting(true);
-    await ChatController.deleteRoom(
-      deleteTarget.id,
+    setLoading(true);
+
+    await ChatController.discardRoom(
+      discardTarget.id,
       () => {
-        toast.success("Chat room deleted");
-        setDeleteTarget(null);
-        setIsDeleting(false);
+        toast.success("Chat room discarded");
+        setDiscardTarget(null);
+        setLoading(false);
         void loadRooms();
       },
       (message) => {
         toast.error(message);
-        setIsDeleting(false);
+        setLoading(false);
       },
     );
   };
 
   return (
-    <>
+    <div className="space-y-6">
+      <PageHeader
+        title="Chat Rooms"
+        description="Moderate chat rooms, inspect discussion threads, and manage community channels."
+      />
+
+      {/* Table & States */}
       {error ? (
         <AdminState
           icon={iconsLib.warning}
           title="Unable to load chat rooms"
           message={error}
         />
-      ) : rooms.length === 0 ? (
+      ) : !isLoading && rooms.length === 0 ? (
         <AdminState
           icon={iconsLib.chatBubbleLeftRight}
           title="No chat rooms yet"
@@ -156,20 +193,28 @@ export const AdminChatRoomsPage: React.FC = () => {
         />
       ) : (
         <>
-          <AdminTable columns={columns} records={rooms} getRowKey={(room) => room.id} />
-          <AdminPagination pagination={pagination} onPageChange={setPage} />
+          <AdminTable
+            columns={columns}
+            records={rooms}
+            getRowKey={(room) => room.id}
+          />
+          <AdminPagination
+            pagination={pagination}
+            onPageChange={(nextPage) => updateFilters({ page: nextPage })}
+          />
         </>
       )}
 
       <ConfirmDialog
-        isOpen={Boolean(deleteTarget)}
-        title="Delete chat room"
-        message={`Delete ${deleteTarget?.title || "this chat room"}? This will also delete its messages.`}
-        confirmLabel="Delete"
-        isLoading={isDeleting}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        isOpen={Boolean(discardTarget)}
+        title="Discard Chat Room"
+        message={`Are you sure you want to discard "${discardTarget?.title || "this chat room"}"?`}
+        confirmLabel={ADMIN_COMMON_LABELS.DISCARD}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setDiscardTarget(null)}
+        onConfirm={handleDiscard}
       />
-    </>
+    </div>
   );
 };

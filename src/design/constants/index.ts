@@ -59,6 +59,63 @@ export const BadgeVariants = {
 export type BadgeVariant = (typeof BadgeVariants)[keyof typeof BadgeVariants];
 
 // ============================================================
+// BADGE STATUS / PRIORITY / SEVERITY / ROLE / CATEGORY CONSTANTS
+// ============================================================
+export const BadgeStatuses = {
+  ACTIVE: "active",
+  RESOLVED: "resolved",
+  SUCCESS: "success",
+  COMPLETED: "completed",
+  PAID: "paid",
+  IN_PROGRESS: "in_progress",
+  PENDING: "pending",
+  TRIALING: "trialing",
+  WARNING: "warning",
+  EXPIRED: "expired",
+  REVOKED: "revoked",
+  FAILED: "failed",
+  CLOSED: "closed",
+  DISCARDED: "discarded",
+  ERROR: "error",
+  CANCELED: "canceled",
+  PAST_DUE: "past_due",
+  NEW: "new",
+  INFO: "info",
+  PAUSED: "paused",
+} as const;
+
+export const BadgePriorities = {
+  CRITICAL: "critical",
+  URGENT: "urgent",
+  HIGH: "high",
+  MEDIUM: "medium",
+  NORMAL: "normal",
+  LOW: "low",
+} as const;
+
+export const BadgeSeverities = {
+  FATAL: "fatal",
+  ERROR: "error",
+  WARN: "warn",
+  WARNING: "warning",
+  INFO: "info",
+} as const;
+
+export const BadgeRoles = {
+  SUPER_ADMIN: "super_admin",
+  ADMIN: "admin",
+  SUPPORT_ADMIN: "support_admin",
+  FEEDBACK_ADMIN: "feedback_admin",
+} as const;
+
+export const BadgeCategories = {
+  BUG: "bug",
+  FEATURE_REQUEST: "feature_request",
+  IMPROVEMENT: "improvement",
+  GENERAL: "general",
+} as const;
+
+// ============================================================
 // INPUT & FORM VARIANTS
 // ============================================================
 export const InputVariants = {

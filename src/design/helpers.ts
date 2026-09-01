@@ -109,3 +109,122 @@ export function pxToRem(pixels: number, baseFontSize: number = 16): string {
 export function remToPx(rem: string, baseFontSize: number = 16): number {
   return parseFloat(rem) * baseFontSize;
 }
+
+// ============================================================
+// BADGE VARIANT HELPERS
+// ============================================================
+
+import {
+  BadgeCategories,
+  BadgePriorities,
+  BadgeRoles,
+  BadgeSeverities,
+  BadgeStatuses,
+  BadgeVariant,
+  BadgeVariants,
+} from "./constants";
+
+/**
+ * Universal Badge Variant Mapping Helpers
+ * Shared across Admin and non-Admin views to provide consistent status and priority styling.
+ */
+
+export const getStatusBadgeVariant = (
+  status?: string | null,
+): BadgeVariant => {
+  switch (status?.toLowerCase()) {
+    case BadgeStatuses.ACTIVE:
+    case BadgeStatuses.RESOLVED:
+    case BadgeStatuses.SUCCESS:
+    case BadgeStatuses.COMPLETED:
+    case BadgeStatuses.PAID:
+      return BadgeVariants.SUCCESS;
+    case BadgeStatuses.IN_PROGRESS:
+    case BadgeStatuses.PENDING:
+    case BadgeStatuses.TRIALING:
+    case BadgeStatuses.WARNING:
+      return BadgeVariants.WARNING;
+    case BadgeStatuses.EXPIRED:
+    case BadgeStatuses.REVOKED:
+    case BadgeStatuses.FAILED:
+    case BadgeStatuses.CLOSED:
+    case BadgeStatuses.DISCARDED:
+    case BadgeStatuses.ERROR:
+    case BadgeStatuses.CANCELED:
+    case BadgeStatuses.PAST_DUE:
+      return BadgeVariants.ERROR;
+    case BadgeStatuses.NEW:
+    case BadgeStatuses.INFO:
+      return BadgeVariants.INFO;
+    case BadgeStatuses.PAUSED:
+      return BadgeVariants.SECONDARY;
+    default:
+      return BadgeVariants.DEFAULT;
+  }
+};
+
+export const getPriorityBadgeVariant = (
+  priority?: string | null,
+): BadgeVariant => {
+  switch (priority?.toLowerCase()) {
+    case BadgePriorities.CRITICAL:
+    case BadgePriorities.URGENT:
+      return BadgeVariants.ERROR;
+    case BadgePriorities.HIGH:
+      return BadgeVariants.WARNING;
+    case BadgePriorities.MEDIUM:
+    case BadgePriorities.NORMAL:
+      return BadgeVariants.INFO;
+    case BadgePriorities.LOW:
+    default:
+      return BadgeVariants.SECONDARY;
+  }
+};
+
+export const getSeverityBadgeVariant = (
+  severity?: string | null,
+): BadgeVariant => {
+  switch (severity?.toLowerCase()) {
+    case BadgeSeverities.FATAL:
+    case BadgeSeverities.ERROR:
+      return BadgeVariants.ERROR;
+    case BadgeSeverities.WARN:
+    case BadgeSeverities.WARNING:
+      return BadgeVariants.WARNING;
+    case BadgeSeverities.INFO:
+      return BadgeVariants.INFO;
+    default:
+      return BadgeVariants.SECONDARY;
+  }
+};
+
+export const getRoleBadgeVariant = (
+  role?: string | null,
+): BadgeVariant => {
+  switch (role?.toLowerCase()) {
+    case BadgeRoles.SUPER_ADMIN:
+      return BadgeVariants.ERROR;
+    case BadgeRoles.ADMIN:
+      return BadgeVariants.PRIMARY;
+    case BadgeRoles.SUPPORT_ADMIN:
+    case BadgeRoles.FEEDBACK_ADMIN:
+      return BadgeVariants.INFO;
+    default:
+      return BadgeVariants.SECONDARY;
+  }
+};
+
+export const getCategoryBadgeVariant = (
+  category?: string | null,
+): BadgeVariant => {
+  switch (category?.toLowerCase()) {
+    case BadgeCategories.BUG:
+      return BadgeVariants.ERROR;
+    case BadgeCategories.FEATURE_REQUEST:
+      return BadgeVariants.PRIMARY;
+    case BadgeCategories.IMPROVEMENT:
+      return BadgeVariants.SUCCESS;
+    default:
+      return BadgeVariants.SECONDARY;
+  }
+};

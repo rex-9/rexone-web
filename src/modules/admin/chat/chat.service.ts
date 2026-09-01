@@ -44,10 +44,14 @@ class ChatService {
     );
   }
 
-  async deleteRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+  async discardRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
+  }
+
+  async deleteRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return this.discardRoom(id);
   }
 
   async getMessages(params?: {
@@ -80,10 +84,14 @@ class ChatService {
     );
   }
 
-  async deleteMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+  async discardMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
+  }
+
+  async deleteMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return this.discardMessage(id);
   }
 }
 

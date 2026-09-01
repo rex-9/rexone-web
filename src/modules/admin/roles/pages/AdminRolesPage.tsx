@@ -1,23 +1,27 @@
+// src/modules/admin/roles/pages/AdminRolesPage.tsx
+
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle } from "../../../../hooks";
+import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { iconsLib } from "../../../../assets";
+import { Button } from "../../../../design/components";
 import RoleController from "../role.controller";
-import { IAdminRole } from "../types";
+import type { IAdminRole } from "../types";
 import {
-  
   AdminState,
   AdminTableActions,
   AdminTable,
   ConfirmDialog,
-  IAdminTableColumn,
+  PageHeader,
+  type IAdminTableColumn,
 } from "../../components";
 import {
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
+  ADMIN_COMMON_LABELS,
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
@@ -38,20 +42,19 @@ export const AdminRolesPage: React.FC = () => {
 
   const navigate = useNavigate();
   const toast = useToast();
-  const { setLoading } = useLoading();
+  const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [error, setError] = useState("");
-  const [deleteTarget, setDeleteTarget] = useState<IAdminRole | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [discardTarget, setDiscardTarget] = useState<IAdminRole | null>(null);
 
-  const loadRoles = useCallback(async () => {
+  const fetchRoles = useCallback(async () => {
     setLoading(true);
     setError("");
 
     await RoleController.getRoles(
       (nextRoles) => {
         setRoles(nextRoles);
-       
         setLoading(false);
       },
       (message) => {
@@ -62,12 +65,8 @@ export const AdminRolesPage: React.FC = () => {
   }, [setLoading]);
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      void loadRoles();
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [loadRoles]);
+    void fetchRoles();
+  }, [fetchRoles]);
 
   const columns = useMemo<IAdminTableColumn<IAdminRole>[]>(
     () => [
@@ -76,30 +75,47 @@ export const AdminRolesPage: React.FC = () => {
         header: ADMIN_ROLE_TABLE_HEADERS.ROLE,
         render: (role) => (
           <div>
-            <div className="font-medium text-base-content">{role.name}</div>
-            {role.description && (
-              <div className="text-body-s text-base-content opacity-60">
-                {role.description}
-              </div>
-            )}
+            <div className="font-semibold text-base-content">{role.name}</div>
+            <div className="text-caption text-base-content opacity-60 text-xs">
+              {role.description || "No description provided."}
+            </div>
           </div>
         ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.PERMISSIONS,
         header: ADMIN_ROLE_TABLE_HEADERS.PERMISSIONS,
-        render: (role) => countPermissions(role),
+        render: (role) => {
+          const count = countPermissions(role);
+          return (
+            <span className="font-mono text-sm text-base-content font-medium">
+              {count} {count === 1 ? "grant" : "grants"}
+            </span>
+          );
+        },
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.USERS,
         header: ADMIN_ROLE_TABLE_HEADERS.USERS,
-        render: (role) => role.user_count ?? 0,
+        render: (role) => (
+          <span className="text-body-s font-medium">
+            {role.user_count ?? 0} users
+          </span>
+        ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.SYSTEM,
         header: ADMIN_ROLE_TABLE_HEADERS.TYPE,
         render: (role) =>
-          role.system ? ADMIN_ROLE_LABELS.SYSTEM : ADMIN_ROLE_LABELS.CUSTOM,
+          role.system ? (
+            <span className="rounded-md bg-base-200 px-2 py-0.5 text-xs font-semibold text-base-content opacity-80">
+              {ADMIN_ROLE_LABELS.SYSTEM}
+            </span>
+          ) : (
+            <span className="rounded-md bg-primary/10 text-primary px-2 py-0.5 text-xs font-semibold">
+              {ADMIN_ROLE_LABELS.CUSTOM}
+            </span>
+          ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.ACTIONS,
@@ -122,8 +138,8 @@ export const AdminRolesPage: React.FC = () => {
               ...(!role.system
                 ? [
                     {
-                      type: ADMIN_ACTIONS.DELETE,
-                      onClick: () => setDeleteTarget(role),
+                      type: ADMIN_ACTIONS.DISCARD,
+                      onClick: () => setDiscardTarget(role),
                     },
                   ]
                 : []),
@@ -135,59 +151,78 @@ export const AdminRolesPage: React.FC = () => {
     [navigate],
   );
 
-  const handleDelete = async () => {
-    if (!deleteTarget) return;
+  const handleDiscard = async () => {
+    if (!discardTarget) return;
 
-    setIsDeleting(true);
+    setLoading(true);
 
-    await RoleController.deleteRole(
-      deleteTarget.id,
+    await RoleController.discardRole(
+      discardTarget.id,
       () => {
-        toast.success("Role deleted");
-        setDeleteTarget(null);
-        setIsDeleting(false);
-        void loadRoles();
+        toast.success("Role discarded successfully");
+        setDiscardTarget(null);
+        setLoading(false);
+        void fetchRoles();
       },
       (message) => {
         toast.error(message);
-        setIsDeleting(false);
+        setLoading(false);
       },
     );
   };
 
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ROLES);
+
   return (
-    <>
+    <div className="space-y-6">
+      <PageHeader
+        title="Roles & Permissions"
+        description="Define system roles, access policies, and permission grants across the platform."
+        action={
+          canCreate ? (
+            <Button
+              onClick={() =>
+                navigate(AppRoutes.client.protected.admin.ROLE_CREATE)
+              }
+            >
+              <iconsLib.plus className="mr-2 h-4 w-4" />
+              Create Role
+            </Button>
+          ) : null
+        }
+      />
+
+      {/* Table & States */}
       {error ? (
         <AdminState
           icon={iconsLib.warning}
           title="Unable to load roles"
           message={error}
         />
-      ) : roles.length === 0 ? (
+      ) : !isLoading && roles.length === 0 ? (
         <AdminState
           icon={iconsLib.key}
           title="No roles yet"
           message="Created roles appear here."
         />
       ) : (
-        <>
         <AdminTable
           columns={columns}
           records={roles}
           getRowKey={(role) => role.id}
         />
-         </>
       )}
 
       <ConfirmDialog
-        isOpen={Boolean(deleteTarget)}
-        title="Delete role"
-        message={`Delete ${deleteTarget?.name || "this role"}? This cannot be undone.`}
-        confirmLabel="Delete"
-        isLoading={isDeleting}
-        onClose={() => setDeleteTarget(null)}
-        onConfirm={handleDelete}
+        isOpen={Boolean(discardTarget)}
+        title="Discard Role"
+        message={`Are you sure you want to discard the role "${discardTarget?.name}"? Users with this role will lose associated permissions.`}
+        confirmLabel={ADMIN_COMMON_LABELS.DISCARD}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setDiscardTarget(null)}
+        onConfirm={handleDiscard}
       />
-    </>
+    </div>
   );
 };

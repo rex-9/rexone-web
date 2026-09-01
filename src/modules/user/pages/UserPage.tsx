@@ -4,20 +4,20 @@ import { Button, ProfileAvatar } from "../../../design";
 import { FileInput } from "../../../design/components/form";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
 import UserController from "../user.controller";
-import { useAuth } from "../../../contexts";
+import { useAuth, useLoading } from "../../../contexts";
 import { useTranslate } from "../../../hooks";
 import { AppLocales } from "../../../locales/app_locales";
 
 export const UserPage: React.FC = () => {
   const { currentUser, setCurrentUser } = useAuth();
+  const { isLoading, setLoading } = useLoading();
   const t = useTranslate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
 
   const handleUploadClick = async () => {
     if (!selectedFile) return;
 
-    setIsUploading(true);
+    setLoading(true);
     try {
       const result = await UserController.uploadImage(selectedFile, {
         type: "avatar",
@@ -33,7 +33,7 @@ export const UserPage: React.FC = () => {
         setSelectedFile(null);
       }
     } finally {
-      setIsUploading(false);
+      setLoading(false);
     }
   };
 
@@ -83,10 +83,11 @@ export const UserPage: React.FC = () => {
             <Button
               variant={ButtonVariants.PRIMARY}
               size={ComponentSizes.MD}
-              disabled={isUploading}
+              disabled={isLoading}
+              isLoading={isLoading}
               onClick={handleUploadClick}
             >
-              {isUploading ? t(AppLocales.Common.Loading) : t(AppLocales.User.UploadAvatar)}
+              {t(AppLocales.User.UploadAvatar)}
             </Button>
           )}
         </div>

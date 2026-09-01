@@ -1,9 +1,9 @@
-import AppRoutes from '../../../AppRoutes';
-import { IApiEnvelope, IApiResponse, IJsonApiResource } from '../../../models';
-import { api } from '../../../services';
-import { ADMIN_COMMON_PAGINATION_LABELS } from '../constants';
-import { IAdminPermissionListParams } from './types';
-import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from './types';
+import AppRoutes from "../../../AppRoutes";
+import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../../models";
+import { api } from "../../../services";
+import { ADMIN_COMMON_PAGINATION_LABELS } from "../constants";
+import { IAdminPermissionListParams } from "./types";
+import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "./types";
 
 type AdminRoleResponse = IAdminRole | { role: IAdminRole };
 type AdminRoleListResponse =
@@ -28,7 +28,9 @@ class RoleService {
     );
   }
 
-  async getPermissions(params?: IAdminPermissionListParams): Promise<IApiResponse<IApiEnvelope<AdminPermissionListResponse>>> {
+  async getPermissions(
+    params?: IAdminPermissionListParams,
+  ): Promise<IApiResponse<IApiEnvelope<AdminPermissionListResponse>>> {
     const queryParams: Record<string, unknown> = {
       page: 1,
       limit: ADMIN_COMMON_PAGINATION_LABELS.POFF,
@@ -60,7 +62,7 @@ class RoleService {
     );
   }
 
-  async deleteRole(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+  async discardRole(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
     return api.delete<null>(
       AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
     );

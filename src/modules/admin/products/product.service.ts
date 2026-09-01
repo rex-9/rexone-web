@@ -64,12 +64,12 @@ class ProductService {
   }
 
   async discardProduct(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.admin.PAYMENT_PRODUCT_DETAIL, id),
+    return api.post<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.PAYMENT_PRODUCT_DISCARD, id),
     );
   }
 
-  async restoreProduct(
+  async undiscardProduct(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<AdminProductResponse>>> {
     return api.post<AdminProductResponse>(

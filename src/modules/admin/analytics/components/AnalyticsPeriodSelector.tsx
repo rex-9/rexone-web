@@ -1,6 +1,7 @@
 // src/modules/admin/analytics/components/AnalyticsPeriodSelector.tsx
 import React, { useMemo } from "react";
 import { iconsLib } from "../../../../assets";
+import { Dropdown, type IDropdownOption } from "../../../../design";
 import {
   ANALYTICS_PERIODS,
   ANALYTICS_PERIOD_LABELS,
@@ -18,7 +19,7 @@ export const APP_INCEPTION_MONTH = 8; // 0-indexed: 8 = September 2026
 export interface ISelectedPeriodOption {
   period: TAnalyticsPeriod;
   startDate: string; // ISO 8601 UTC
-  endDate: string;   // ISO 8601 UTC
+  endDate: string; // ISO 8601 UTC
   label: string;
 }
 
@@ -163,9 +164,33 @@ export const AnalyticsPeriodSelector: React.FC<
     return presets;
   }, [appInceptionDate]);
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value;
+  const options = useMemo(() => {
+    const list: IDropdownOption[] = [];
+    standardPresets.forEach((p) => {
+      list.push({ value: p.id, label: p.label, group: "Standard Presets" });
+    });
+    if (pastMonths.length > 0) {
+      pastMonths.forEach((m) => {
+        list.push({
+          value: m.id,
+          label: m.label,
+          group: "Previous Completed Months",
+        });
+      });
+    }
+    if (pastYears.length > 0) {
+      pastYears.forEach((y) => {
+        list.push({
+          value: y.id,
+          label: y.label,
+          group: "Previous Completed Years",
+        });
+      });
+    }
+    return list;
+  }, [standardPresets, pastMonths, pastYears]);
 
+  const handleValueChange = (value: string) => {
     // Check standard preset
     const preset = standardPresets.find((p) => p.id === value);
     if (preset) {
@@ -219,50 +244,16 @@ export const AnalyticsPeriodSelector: React.FC<
   }, [pastMonths, pastYears, selected]);
 
   return (
-    <div className="relative inline-flex items-center">
-      <div className="pointer-events-none absolute left-3 flex items-center text-base-content opacity-60">
-        <iconsLib.clock className="h-4 w-4" />
-      </div>
-
-      <select
-        value={currentValue}
-        disabled={disabled}
-        onChange={handleSelectChange}
-        className="h-10 cursor-pointer appearance-none rounded-md border border-base-300 bg-base-100 pl-9 pr-10 text-body-s font-semibold text-base-content shadow-sm transition-colors hover:border-primary focus:border-primary focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        <optgroup label="Standard Presets">
-          {standardPresets.map((preset) => (
-            <option key={preset.id} value={preset.id}>
-              {preset.label}
-            </option>
-          ))}
-        </optgroup>
-
-        {pastMonths.length > 0 && (
-          <optgroup label="Previous Completed Months">
-            {pastMonths.map((month) => (
-              <option key={month.id} value={month.id}>
-                {month.label}
-              </option>
-            ))}
-          </optgroup>
-        )}
-
-        {pastYears.length > 0 && (
-          <optgroup label="Previous Completed Years">
-            {pastYears.map((year) => (
-              <option key={year.id} value={year.id}>
-                {year.label}
-              </option>
-            ))}
-          </optgroup>
-        )}
-      </select>
-
-      <div className="pointer-events-none absolute right-3 flex items-center text-base-content opacity-60">
-        <iconsLib.chevronDown className="h-4 w-4" />
-      </div>
-    </div>
+    <Dropdown
+      value={currentValue}
+      onValueChange={handleValueChange}
+      options={options}
+      disabled={disabled}
+      fullWidth={false}
+      size="sm"
+      icon={<iconsLib.clock className="h-4 w-4" />}
+      className="w-auto font-semibold pr-8"
+    />
   );
 };
 

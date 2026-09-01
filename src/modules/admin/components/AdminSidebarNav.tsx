@@ -47,6 +47,48 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
+    id: "commerce",
+    label: ADMIN_NAV_SECTION_LABELS.COMMERCE,
+    items: [
+      {
+        label: ADMIN_NAV_LABELS.PRODUCTS,
+        to: AppRoutes.client.protected.admin.PRODUCTS,
+        resource: ADMIN_RESOURCES.PRODUCTS,
+        icon: iconsLib.cube,
+      },
+      {
+        label: ADMIN_NAV_LABELS.ACCESSES,
+        to: AppRoutes.client.protected.admin.ACCESSES,
+        resource: ADMIN_RESOURCES.ACCESSES,
+        icon: iconsLib.shieldCheck,
+      },
+    ],
+  },
+  {
+    id: "communication",
+    label: ADMIN_NAV_SECTION_LABELS.COMMUNICATION,
+    items: [
+      {
+        label: ADMIN_NAV_LABELS.NOTIFICATIONS,
+        to: AppRoutes.client.protected.admin.NOTIFICATIONS,
+        resource: ADMIN_RESOURCES.NOTIFICATIONS,
+        icon: iconsLib.bellAlert,
+      },
+      {
+        label: ADMIN_NAV_LABELS.CHAT_ROOMS,
+        to: AppRoutes.client.protected.admin.CHAT_ROOMS,
+        resource: ADMIN_RESOURCES.ROOMS,
+        icon: iconsLib.chatBubbleLeftRight,
+      },
+      {
+        label: ADMIN_NAV_LABELS.CHAT_MESSAGES,
+        to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
+        resource: ADMIN_RESOURCES.MESSAGES,
+        icon: iconsLib.inboxStack,
+      },
+    ],
+  },
+  {
     id: "access",
     label: ADMIN_NAV_SECTION_LABELS.IAM,
     items: [
@@ -67,44 +109,26 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
-    id: "communication",
-    label: ADMIN_NAV_SECTION_LABELS.COMMUNICATION,
+    id: "support",
+    label: ADMIN_NAV_SECTION_LABELS.SUPPORT,
     items: [
       {
-        label: ADMIN_NAV_LABELS.NOTIFICATIONS,
-        to: AppRoutes.client.protected.admin.NOTIFICATIONS,
-        resource: ADMIN_RESOURCES.NOTIFICATIONS,
-        icon: iconsLib.bellAlert,
+        label: ADMIN_NAV_LABELS.FEEDBACK,
+        to: AppRoutes.client.protected.admin.FEEDBACK,
+        resource: ADMIN_RESOURCES.FEEDBACKS,
+        icon: iconsLib.mail,
       },
     ],
   },
   {
-    id: "commerce",
-    label: ADMIN_NAV_SECTION_LABELS.COMMERCE,
+    id: "observability",
+    label: ADMIN_NAV_SECTION_LABELS.OBSERVABILITY,
     items: [
       {
-        label: ADMIN_NAV_LABELS.PRODUCTS,
-        to: AppRoutes.client.protected.admin.PRODUCTS,
-        resource: ADMIN_RESOURCES.PRODUCTS,
-        icon: iconsLib.cube,
-      },
-    ],
-  },
-  {
-    id: "chat",
-    label: ADMIN_NAV_SECTION_LABELS.CHAT,
-    items: [
-      {
-        label: ADMIN_NAV_LABELS.CHAT_ROOMS,
-        to: AppRoutes.client.protected.admin.CHAT_ROOMS,
-        resource: ADMIN_RESOURCES.ROOMS,
-        icon: iconsLib.chatBubbleLeftRight,
-      },
-      {
-        label: ADMIN_NAV_LABELS.CHAT_MESSAGES,
-        to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
-        resource: ADMIN_RESOURCES.MESSAGES,
-        icon: iconsLib.inboxStack,
+        label: ADMIN_NAV_LABELS.LOGS,
+        to: AppRoutes.client.protected.admin.LOGS,
+        resource: ADMIN_RESOURCES.CLIENTS,
+        icon: iconsLib.document,
       },
     ],
   },

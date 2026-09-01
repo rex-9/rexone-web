@@ -8,7 +8,7 @@ import {
   TextArea,
   Button,
 } from "../../../design/components";
-import { useToast } from "../../../contexts";
+import { useToast, useLoading } from "../../../contexts";
 import FeedbackController from "../feedback.controller";
 import { FEEDBACK_RATINGS } from "../constants";
 
@@ -23,9 +23,9 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const { success, error } = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [rating, setRating] = useState<number>(FEEDBACK_RATINGS.DEFAULT);
-  const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +35,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
     }
 
     try {
-      setSubmitting(true);
+      setLoading(true);
       await FeedbackController.submitFeedback({
         content,
         rating,
@@ -55,7 +55,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
             );
       error(message);
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -72,7 +72,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
           min={FEEDBACK_RATINGS.MIN}
           max={FEEDBACK_RATINGS.MAX}
           label={t("feedback.rating_label", "How was your experience?")}
-          disabled={submitting}
+          disabled={isLoading}
         />
 
         <TextArea
@@ -85,7 +85,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
             "feedback.placeholder",
             "Tell us anything — bugs, suggestions, questions, or ideas. We triage automatically!",
           )}
-          disabled={submitting}
+          disabled={isLoading}
           autoExpand={false}
         />
 
@@ -95,7 +95,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
             variant="tertiary"
             size="sm"
             onClick={onClose}
-            disabled={submitting}
+            disabled={isLoading}
           >
             {t("common.cancel", "Cancel")}
           </Button>
@@ -103,8 +103,8 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
             type="submit"
             variant="primary"
             size="sm"
-            isLoading={submitting}
-            disabled={submitting || !content.trim()}
+            isLoading={isLoading}
+            disabled={isLoading || !content.trim()}
           >
             {t("feedback.submit", "Send Feedback")}
           </Button>

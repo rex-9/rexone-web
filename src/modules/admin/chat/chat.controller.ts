@@ -33,12 +33,12 @@ class ChatController {
       onSuccess?.(records, pagination ?? undefined);
   }
 
-  async deleteRoom(
+  async discardRoom(
     id: string,
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await ChatService.deleteRoom(id);
+    const response = await ChatService.discardRoom(id);
     const { status } = response.data || {};
 
     if (!status?.success) {
@@ -49,6 +49,14 @@ class ChatController {
     }
 
     onSuccess?.();
+  }
+
+  async deleteRoom(
+    id: string,
+    onSuccess?: () => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    return this.discardRoom(id, onSuccess, onError);
   }
 
   async getRoom(
@@ -113,12 +121,12 @@ class ChatController {
       onSuccess?.(records, pagination ?? undefined);
   }
 
-  async deleteMessage(
+  async discardMessage(
     id: string,
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await ChatService.deleteMessage(id);
+    const response = await ChatService.discardMessage(id);
     const { status } = response.data || {};
 
     if (!status?.success) {
@@ -132,6 +140,14 @@ class ChatController {
     }
 
     onSuccess?.();
+  }
+
+  async deleteMessage(
+    id: string,
+    onSuccess?: () => void,
+    onError?: (error: string) => void,
+  ): Promise<void> {
+    return this.discardMessage(id, onSuccess, onError);
   }
 
   async getMessage(

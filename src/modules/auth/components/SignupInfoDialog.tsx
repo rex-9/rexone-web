@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Button, Dialog, TextInput, FormContainer } from "../../../design/components";
-import { useToast } from "../../../contexts";
+import { useToast, useLoading } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -30,10 +30,10 @@ export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
 }) => {
   const t = useTranslate();
   const { success } = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [fullName, setFullName] = useState(fullNameParam);
   const [username, setUsername] = useState(userNameParam);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
       return;
     }
 
-    setIsLoading(true);
+    setLoading(true);
     setError("");
 
     const result = await AuthController.signUpWithEmail(
@@ -60,7 +60,7 @@ export const SignupInfoDialog: React.FC<ISignupInfoDialogProps> = ({
       password,
       password, // password confirmation is same as password
     );
-    setIsLoading(false);
+    setLoading(false);
 
     if (result.success) {
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });

@@ -1,7 +1,10 @@
 export { HeadNavbar, HeadNavbarBrand } from "./HeadNavbar";
 export type { HeadNavbarProps } from "./HeadNavbar";
-export { NavBar } from "./NavBar";
 export { ProfileAvatar } from "./ProfileAvatar";
 export { TextLink } from "./TextLink.tsx";
 export { Typography } from "./Typography.tsx";
 export { Badge } from "./Badge";
+export { PageHeader } from "./PageHeader";
+export type { IPageHeaderProps } from "./PageHeader";
+export { Tabs } from "./Tabs";
+export type { ITabItem, ITabsProps } from "./Tabs";

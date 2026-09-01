@@ -132,17 +132,17 @@ class ProductController {
     onSuccess?.(status.message);
   }
 
-  async restoreProduct(
+  async undiscardProduct(
     id: string,
     onSuccess?: (message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await ProductService.restoreProduct(id);
+    const response = await ProductService.undiscardProduct(id);
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {
       onError?.(
-        getApiError(response, translate(AppLocales.Admin.Products.Errors.Update)),
+        getApiError(response, translate(AppLocales.Admin.Products.Errors.Restore)),
       );
       return;
     }

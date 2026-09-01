@@ -54,6 +54,11 @@ class AppRoutes {
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
         PRODUCT_CREATE: AppRoutes.admin("/products/create"),
         PRODUCT_EDIT: AppRoutes.admin("/products/:id/edit"),
+        ACCESSES: AppRoutes.admin("/accesses"),
+        FEEDBACK: AppRoutes.admin("/feedback"),
+        FEEDBACK_DETAIL: AppRoutes.admin("/feedback/:id"),
+        LOGS: AppRoutes.admin("/logs"),
+        LOG_DETAIL: AppRoutes.admin("/logs/:id"),
         CHAT_ROOMS: AppRoutes.admin("/chat/rooms"),
         CHAT_ROOM_EDIT: AppRoutes.admin("/chat/rooms/:id/edit"),
         CHAT_MESSAGES: AppRoutes.admin("/chat/messages"),
@@ -136,14 +141,14 @@ class AppRoutes {
       admin: {
         USERS: AppRoutes.adminApi("/users"), // GET, POST
         USER_ROLES: AppRoutes.adminApi("/iam/roles"), // GET
-        USER_DETAIL: AppRoutes.adminApi("/users/:id"), // GET, PATCH, PUT
+        USER_DETAIL: AppRoutes.adminApi("/users/:id"), // GET, PUT
         DISCARDED_USERS: AppRoutes.adminApi("/users/discarded"), // GET
         USER_DISCARD: AppRoutes.adminApi("/users/:id/discard"), // POST
         USER_UNDISCARD: AppRoutes.adminApi("/users/:id/undiscard"), // POST
         IAM_ROLES: AppRoutes.adminApi("/iam/roles"), // GET, POST
-        IAM_ROLE_DETAIL: AppRoutes.adminApi("/iam/roles/:id"), // GET, PATCH, DELETE
+        IAM_ROLE_DETAIL: AppRoutes.adminApi("/iam/roles/:id"), // GET, PUT, DELETE
         IAM_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET, POST
-        IAM_PERMISSION_DETAIL: AppRoutes.adminApi("/iam/permissions/:id"), // GET, PATCH, DELETE
+        IAM_PERMISSION_DETAIL: AppRoutes.adminApi("/iam/permissions/:id"), // GET, PUT, DELETE
         IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET
         NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // POST
         NOTIFICATION_TEMPLATES: AppRoutes.adminApi("/notifications/templates"), // GET
@@ -151,15 +156,25 @@ class AppRoutes {
         DISCARDED_PAYMENT_PRODUCTS: AppRoutes.adminApi(
           "/payment/products/discarded",
         ), // GET
-        PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PATCH, DELETE
+        PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PUT, DELETE
+        PAYMENT_PRODUCT_DISCARD: AppRoutes.adminApi(
+          "/payment/products/:id/discard",
+        ), // POST
         PAYMENT_PRODUCT_UNDISCARD: AppRoutes.adminApi(
           "/payment/products/:id/undiscard",
         ), // POST
         CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
-        CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PATCH, DELETE
+        CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PUT, DELETE
         CHAT_MESSAGES: AppRoutes.adminApi("/chat/messages"), // GET
-        CHAT_MESSAGE_DETAIL: AppRoutes.adminApi("/chat/messages/:id"), // GET, PATCH, DELETE
-        FEEDBACKS: AppRoutes.adminApi("/feedbacks"),
+        CHAT_MESSAGE_DETAIL: AppRoutes.adminApi("/chat/messages/:id"), // GET, PUT, DELETE
+        FEEDBACKS: AppRoutes.adminApi("/feedbacks"), // GET
+        FEEDBACK_DETAIL: AppRoutes.adminApi("/feedbacks/:id"), // GET, PUT, DELETE
+        ACCESSES: AppRoutes.adminApi("/accesses"), // GET, POST
+        ACCESS_DETAIL: AppRoutes.adminApi("/accesses/:id"), // GET, PUT, DELETE
+        LOGS: AppRoutes.api("/log/clients"), // GET, POST
+        LOG_DETAIL: AppRoutes.api("/log/clients/:id"), // GET, DELETE
+        LOG_RESOLVE: AppRoutes.api("/log/clients/:id/resolve"), // PUT
+        LOG_UNRESOLVE: AppRoutes.api("/log/clients/:id/unresolve"), // PUT
         ANALYTICS_OVERVIEW: AppRoutes.adminApi("/analytics/overview"), // GET
       },
     },

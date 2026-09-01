@@ -2,15 +2,39 @@
 
 export const ADMIN_PAGE_SIZE = 20;
 
+export const ADMIN_VIEW_MODES = {
+  ACTIVE: "active",
+  DISCARDED: "discarded",
+} as const;
+
+export type TAdminViewMode =
+  (typeof ADMIN_VIEW_MODES)[keyof typeof ADMIN_VIEW_MODES];
+
 export const ADMIN_ACTIONS = {
   CREATE: "create",
   DELETE: "delete",
   READ: "read",
   UPDATE: "update",
-  DISCARD: "discard",
   EDIT: "edit",
-  RESTORE: "restore",
+  DISCARD: "discard",
+  UNDISCARD: "undiscard",
+  DESTROY: "destroy",
+
+  EXTEND: "extend",
+  REVOKE: "revoke",
+
+  REVIEW: "review",
+  INSPECT: "inspect",
 } as const;
+
+export const ADMIN_ACTION_CATEGORIES = {
+  NEUTRAL: "neutral",
+  DANGER: "danger",
+  SUCCESS: "success",
+} as const;
+
+export type TAdminActionCategory =
+  (typeof ADMIN_ACTION_CATEGORIES)[keyof typeof ADMIN_ACTION_CATEGORIES];
 
 export type TAdminActionsType =
   (typeof ADMIN_ACTIONS)[keyof typeof ADMIN_ACTIONS];
@@ -19,10 +43,13 @@ export const ADMIN_RESOURCES = {
   USERS: "users",
   ROLES: "roles",
   PRODUCTS: "products",
+  ACCESSES: "accesses",
   NOTIFICATIONS: "notifications",
   ROOMS: "rooms",
   MESSAGES: "messages",
   ANALYTICS: "analytics",
+  FEEDBACKS: "feedbacks",
+  CLIENTS: "clients",
 } as const;
 
 export type TAdminResourceName =
@@ -55,6 +82,8 @@ export const ADMIN_NAV_SECTION_LABELS = {
   CHAT: "Chat",
   COMMERCE: "Commerce",
   COMMUNICATION: "Communication",
+  SUPPORT: "Support",
+  OBSERVABILITY: "Observability",
 } as const;
 
 export const ADMIN_NAV_LABELS = {
@@ -63,6 +92,9 @@ export const ADMIN_NAV_LABELS = {
   CHAT_ROOMS: "Chat Rooms",
   NOTIFICATIONS: "Notifications",
   PRODUCTS: "Products",
+  ACCESSES: "Access",
+  FEEDBACK: "Feedback Inbox",
+  LOGS: "Client Logs & Telemetry",
   ROLES: "Roles",
   USERS: "Users",
 } as const;
@@ -106,11 +138,16 @@ export const ADMIN_COMMON_LABELS = {
   CUSTOM: "Custom",
   DELETE: "Delete",
   DISCARD: "Discard",
+  DESTROY: "Destroy",
   EDIT: "Edit",
+  EXTEND: "Extend",
   INACTIVE: "Inactive",
+  INSPECT: "Inspect",
   NOT_AVAILABLE: "Not available",
   OPENRECYCLEBIN: "Open recycle bin",
-  RESTORE: "Restore",
+  UNDISCARD: "Restore",
+  REVIEW: "Review",
+  REVOKE: "Revoke",
   SYSTEM: "System",
   UNASSIGNED: "Unassigned",
 } as const;

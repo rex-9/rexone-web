@@ -10,7 +10,7 @@ export const ADMIN_USER_PAGE_TITLES = {
 
 export const ADMIN_USER_TABLE_HEADERS = {
   EMAIL: "Email",
-  ROLE: "Role",
+  ROLE: "Roles",
   USER: "User",
 } as const;
 

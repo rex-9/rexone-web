@@ -33,6 +33,9 @@ import {
   ADMIN_ACTIONS,
   ADMIN_RESOURCES,
   AdminAnalyticsPage,
+  AdminAccessesPage,
+  AdminFeedbackPage,
+  AdminLogsPage,
   AdminChatMessageEditPage,
   AdminChatMessagesPage,
   AdminChatRoomEditPage,
@@ -334,6 +337,45 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.PRODUCT_EDIT}
               element={<AdminProductEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.ACCESSES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ACCESSES}
+              element={<AdminAccessesPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.FEEDBACKS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.FEEDBACK}
+              element={<AdminFeedbackPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.CLIENTS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.LOGS}
+              element={<AdminLogsPage />}
             />
           </Route>
         </Route>

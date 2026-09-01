@@ -1,6 +1,7 @@
 export { TextInput } from "./TextInput";
 export { TextArea } from "./TextArea";
 export { Dropdown } from "./Dropdown";
+export type { IDropdownProps, IDropdownOption, DropdownSize } from "./Dropdown";
 export { PasswordInput } from "./PasswordInput";
 export { Toggle } from "./Toggle";
 export { FormContainer } from "./FormContainer";
@@ -12,3 +13,5 @@ export { Checkbox } from "./Checkbox";
 export type { CheckboxProps } from "./Checkbox";
 export { RatingSlider } from "./RatingSlider";
 export { FileInput } from "./FileInput";
+export { SearchInput } from "./SearchInput";
+export type { ISearchInputProps } from "./SearchInput";

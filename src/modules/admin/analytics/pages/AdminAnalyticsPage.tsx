@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useDocumentTitle } from "../../../../hooks";
 import { ANALYTICS_PERIODS, ANALYTICS_PERIOD_LABELS } from "../../constants";
-import { AdminState } from "../../components";
+import { AdminState, PageHeader } from "../../components";
 import {
   AnalyticsKpiCard,
   AnalyticsPeriodSelector,
@@ -96,32 +96,30 @@ export const AdminAnalyticsPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Top Header & Period Dropdown Control */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-heading-m font-bold text-base-content tracking-tight md:text-heading-l">
-            Analytics Overview
-          </h1>
-          <p className="mt-1 flex flex-wrap items-center gap-2 text-body-s text-base-content opacity-70">
+      <PageHeader
+        title="Analytics Overview"
+        description={
+          <span className="flex flex-wrap items-center gap-2">
             <span>Real-time system health and operational growth.</span>
             <span className="rounded bg-base-200 px-2 py-0.5 text-caption font-medium text-base-content opacity-80">
               🕒 Local Time ({Intl.DateTimeFormat().resolvedOptions().timeZone})
             </span>
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-          <AnalyticsPeriodSelector
-            selected={selectedOption}
-            onSelect={(nextOption) => setSelectedOption(nextOption)}
-            disabled={isFetching}
-          />
-          <CacheSourceBadge
-            isFetching={isFetching}
-            isHistorical={isHistorical}
-          />
-        </div>
-      </div>
+          </span>
+        }
+        action={
+          <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+            <AnalyticsPeriodSelector
+              selected={selectedOption}
+              onSelect={(nextOption) => setSelectedOption(nextOption)}
+              disabled={isFetching}
+            />
+            <CacheSourceBadge
+              isFetching={isFetching}
+              isHistorical={isHistorical}
+            />
+          </div>
+        }
+      />
 
       {/* Main KPI Cards Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

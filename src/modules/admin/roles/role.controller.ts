@@ -1,29 +1,28 @@
 import { getApiError, parseRecord } from "../../../services/api.service";
 import { AppLocales, translate } from "../../../locales";
 import RoleService from "./role.service";
-import {
-  IAdminPermission,
-  IAdminRole,
-  IAdminRoleFormValues,
-} from "./types";
+import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "./types";
 
 class RoleController {
   async getRoles(
     onSuccess?: (roles: IAdminRole[]) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.getRoles();
-      const { status, data } = response.data || {};
+    const response = await RoleService.getRoles();
+    const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadList)),
-        );
-        return;
-      }
+    if (!status?.success || !data) {
+      onError?.(
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Roles.Errors.LoadList),
+        ),
+      );
+      return;
+    }
 
-      const roles = Array.isArray(data) ? data : data.roles;
-      onSuccess?.(roles.map(parseRecord));
+    const roles = Array.isArray(data) ? data : data.roles;
+    onSuccess?.(roles.map(parseRecord));
   }
 
   async getRole(
@@ -31,38 +30,38 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.getRole(id);
-      const { status, data } = response.data || {};
+    const response = await RoleService.getRole(id);
+    const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadOne)),
-        );
-        return;
-      }
+    if (!status?.success || !data) {
+      onError?.(
+        getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadOne)),
+      );
+      return;
+    }
 
-      onSuccess?.(parseRecord("role" in data ? data.role : data));
+    onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
   async getPermissions(
     onSuccess?: (permissions: IAdminPermission[]) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.getPermissions();
-      const { status, data } = response.data || {};
+    const response = await RoleService.getPermissions();
+    const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(
-            response,
-            translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
-          ),
-        );
-        return;
-      }
+    if (!status?.success || !data) {
+      onError?.(
+        getApiError(
+          response,
+          translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
+        ),
+      );
+      return;
+    }
 
-      const permissions = Array.isArray(data) ? data : data.permissions;
-      onSuccess?.(permissions.map(parseRecord));
+    const permissions = Array.isArray(data) ? data : data.permissions;
+    onSuccess?.(permissions.map(parseRecord));
   }
 
   async createRole(
@@ -70,17 +69,17 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.createRole(values);
-      const { status, data } = response.data || {};
+    const response = await RoleService.createRole(values);
+    const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Create)),
-        );
-        return;
-      }
+    if (!status?.success || !data) {
+      onError?.(
+        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Create)),
+      );
+      return;
+    }
 
-      onSuccess?.(parseRecord("role" in data ? data.role : data));
+    onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
   async updateRole(
@@ -89,35 +88,35 @@ class RoleController {
     onSuccess?: (role: IAdminRole) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.updateRole(id, values);
-      const { status, data } = response.data || {};
+    const response = await RoleService.updateRole(id, values);
+    const { status, data } = response.data || {};
 
-      if (!status?.success || !data) {
-        onError?.(
-          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Update)),
-        );
-        return;
-      }
+    if (!status?.success || !data) {
+      onError?.(
+        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Update)),
+      );
+      return;
+    }
 
-      onSuccess?.(parseRecord("role" in data ? data.role : data));
+    onSuccess?.(parseRecord("role" in data ? data.role : data));
   }
 
-  async deleteRole(
+  async discardRole(
     id: string,
     onSuccess?: () => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-      const response = await RoleService.deleteRole(id);
-      const { status } = response.data || {};
+    const response = await RoleService.discardRole(id);
+    const { status } = response.data || {};
 
-      if (!status?.success) {
-        onError?.(
-          getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
-        );
-        return;
-      }
+    if (!status?.success) {
+      onError?.(
+        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
+      );
+      return;
+    }
 
-      onSuccess?.();
+    onSuccess?.();
   }
 }
 

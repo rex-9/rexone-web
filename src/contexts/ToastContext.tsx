@@ -1,4 +1,12 @@
-import React, { createContext, useCallback, useContext, useMemo, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  ReactNode,
+} from "react";
+import { createPortal } from "react-dom";
 import { translate } from "../locales";
 import { Toast, ToastType } from "../design/components/overlay/Toast";
 
@@ -50,17 +58,22 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({
     [showToast, success, error, info, warning],
   );
 
+  const toastElement = toast ? (
+    <Toast
+      type={toast.type}
+      message={toast.message}
+      title={toast.title}
+      onClose={() => setToast(null)}
+    />
+  ) : null;
+
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {toast && (
-        <Toast
-          type={toast.type}
-          message={toast.message}
-          title={toast.title}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toastElement &&
+        (typeof document !== "undefined"
+          ? createPortal(toastElement, document.body)
+          : toastElement)}
     </ToastContext.Provider>
   );
 };

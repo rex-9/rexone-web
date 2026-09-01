@@ -32,10 +32,10 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
 
   // Auto-submit when 6 digits are entered
   useEffect(() => {
-    if (value.length === 6 && onComplete && !disabled && !hasError) {
+    if (value.length === 6 && onComplete && !disabled) {
       onComplete(value);
     }
-  }, [value, onComplete, disabled, hasError]);
+  }, [value, onComplete, disabled]);
 
   // Auto-focus first input
   useEffect(() => {

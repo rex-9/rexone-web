@@ -1,7 +1,6 @@
 export { AdminActionButton } from "./AdminActionButton";
 export { AdminTableActions } from "./AdminTableActions";
 export type { IAdminTableAction } from "./AdminTableActions";
-export { AdminHeaderActionButton } from "./AdminHeaderActionButton";
 export { AdminLayout } from "./AdminLayout";
 export {  AdminState } from "./AdminState";
 export { AdminPagination } from "./AdminPagination";
@@ -32,3 +31,5 @@ export {
   ConfirmDialog,
   Dialog,
 } from "../../../design/components/overlay";
+export { PageHeader, Tabs } from "../../../design/components/common";
+export type { IPageHeaderProps, ITabItem, ITabsProps } from "../../../design/components/common";

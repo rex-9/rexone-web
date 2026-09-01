@@ -63,7 +63,7 @@ export const Toast: React.FC<IToastProps> = ({
   };
 
   return (
-    <div className="toast toast-top toast-center z-50 animate-fade-in">
+    <div className="toast toast-top toast-center z-[9999] animate-fade-in">
       <div
         className={cn(
           "alert shadow-lg max-w-md border border-base-300",

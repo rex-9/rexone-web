@@ -160,6 +160,7 @@ export const AppLocales = {
         Create: "admin.products.errors.create",
         Update: "admin.products.errors.update",
         Discard: "admin.products.errors.discard",
+        Restore: "admin.products.errors.restore",
       },
     },
     Roles: {

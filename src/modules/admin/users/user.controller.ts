@@ -179,12 +179,12 @@ class UserController {
     onSuccess?.(status.message);
   }
 
-  async restoreUser(
+  async undiscardUser(
     id: string,
     onSuccess?: (message: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
-    const response = await UserService.restoreUser(id);
+    const response = await UserService.undiscardUser(id);
     const { status, data } = response.data || {};
 
     if (!status?.success || !data) {

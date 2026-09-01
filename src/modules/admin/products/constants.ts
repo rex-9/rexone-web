@@ -13,11 +13,14 @@ export const ADMIN_PRODUCT_TABLE_HEADERS = {
   DISCARDED: "Discarded",
   PRICE: "Price",
   PRODUCT: "Product",
+  NAME: "Product Name",
+  STATUS: "Status",
 } as const;
 
 export const ADMIN_PRODUCT_TABLE_KEYS = {
   ACTIONS: "actions",
   CYCLE: "cycle",
+  IDENTITY: "identity",
   LIFECYCLE_DATE: "lifecycle_date",
   PRICE: "price",
   PRODUCT: "product",

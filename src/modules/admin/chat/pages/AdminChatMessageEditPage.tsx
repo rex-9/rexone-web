@@ -12,6 +12,7 @@ import {
 import {
   AlertDialog,
   AdminState,
+  Dropdown,
   FormActionRow,
   FormContainer,
   TextArea,
@@ -19,7 +20,10 @@ import {
 import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
 import { ADMIN_COMMON_LABELS } from "../../constants";
 
-const messageRoles = ["user", "assistant"];
+const messageRoleOptions = [
+  { value: "user", label: "User" },
+  { value: "assistant", label: "Assistant" },
+];
 
 export const AdminChatMessageEditPage: React.FC = () => {
   useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.MESSAGE_EDIT);
@@ -96,22 +100,12 @@ export const AdminChatMessageEditPage: React.FC = () => {
       ) : message? (
         <FormContainer onSubmit={handleSubmit}>
             <div className="grid gap-4">
-              <label className="flex flex-col gap-1">
-                <span className="text-body-s font-medium text-base-content">
-                  Role
-                </span>
-                <select
-                  className="rounded-md border-2 border-base-300 bg-base-100 px-4 py-3 text-body-m text-base-content focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={role}
-                  onChange={(event) => setRole(event.target.value)}
-                >
-                  {messageRoles.map((nextRole) => (
-                    <option key={nextRole} value={nextRole}>
-                      {nextRole}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <Dropdown
+                label="Role"
+                value={role}
+                onValueChange={(val) => setRole(val)}
+                options={messageRoleOptions}
+              />
               <TextArea
                 label="Message"
                 value={content}

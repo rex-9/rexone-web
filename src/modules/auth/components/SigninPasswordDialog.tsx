@@ -1,8 +1,8 @@
 // src/design/components/auth/SigninPasswordDialog.tsx
 
 import React, { useState, useEffect, useRef } from "react";
-import { useAuth, useToast } from "../../../contexts";
-import { useCountdown } from "../../../hooks";
+import { useAuth, useToast, useLoading } from "../../../contexts";
+import { useCountdown, useTranslate } from "../../../hooks";
 import {
   Button,
   Dialog,
@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
-import { AppLocales, useTranslate } from "../../../locales";
+import { AppLocales } from "../../../locales/app_locales";
 
 interface ISigninPasswordDialogProps {
   email: string;
@@ -40,12 +40,12 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
   onCooldownClear,
 }) => {
   const { signin } = useAuth();
+  const { isLoading, setLoading } = useLoading();
   const t = useTranslate();
   const navigate = useNavigate();
   const { success, info } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [remainingAttempts, setRemainingAttempts] = useState<number>(3);
   const [hasFailureHistory, setHasFailureHistory] = useState(false);
 
@@ -59,12 +59,15 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
     }
   }, [cooldownTargetTimeMs, startCooldownAt]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (password.length !== 6 || cooldown.isActive) return;
+  const submitPassword = async (passcodeToSubmit: string) => {
+    if (passcodeToSubmit.length !== 6 || cooldown.isActive || isLoading) return;
 
-    setIsLoading(true);
-    const result = await AuthController.signInWithEmailOrUsername(email, password);
+    setLoading(true);
+    const result = await AuthController.signInWithEmailOrUsername(
+      email,
+      passcodeToSubmit,
+    );
+    setLoading(false);
 
     if (result.success && result.token && result.user) {
       signin(result.token, result.user);
@@ -74,7 +77,6 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
       setHasFailureHistory(false);
       setPassword("");
       setError("");
-      onClose();
       navigate(AppRoutes.client.protected.HOME);
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
@@ -115,8 +117,11 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
           t(AppLocales.Auth.Shared.SignInFailed),
       );
     }
+  };
 
-    setIsLoading(false);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await submitPassword(password);
   };
 
   // Reset attempts when cooldown expires
@@ -130,13 +135,6 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
     }
     prevIsActiveRef.current = cooldown.isActive;
   }, [cooldown.isActive, onCooldownClear, setPassword]);
-
-  const triggerSubmit = () => {
-    if (formRef.current) {
-      const event = new Event("submit", { bubbles: true, cancelable: true });
-      formRef.current.dispatchEvent(event);
-    }
-  };
 
   // Helper text with countdown
   const getHelperText = (): string => {
@@ -205,7 +203,9 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
             setPassword(value);
             setError("");
           }}
-          onComplete={triggerSubmit}
+          onComplete={(completed) => {
+            void submitPassword(completed);
+          }}
           label=""
           error={displayedError}
           disabled={isLoading || cooldown.isActive}

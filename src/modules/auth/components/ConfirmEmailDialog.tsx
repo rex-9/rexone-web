@@ -1,7 +1,6 @@
 // src/design/components/auth/ConfirmEmailDialog.tsx
 
 import React, { useState, useRef } from "react";
-import { useAuth, useToast } from "../../../contexts";
 import {
   Button,
   Dialog,
@@ -9,12 +8,13 @@ import {
   TextLink,
   FormContainer,
 } from "../../../design/components";
-import { useCountdown } from "../../../hooks";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { AuthController } from "..";
-import { AppLocales, useTranslate } from "../../../locales";
+import { useAuth, useToast, useLoading } from "../../../contexts";
+import { useCountdown, useTranslate } from "../../../hooks";
+import { AppLocales } from "../../../locales";
 
 interface IConfirmEmailDialogProps {
   email: string;
@@ -32,6 +32,7 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
   onBack,
 }) => {
   const { signin } = useAuth();
+  const { isLoading, setLoading } = useLoading();
   const t = useTranslate();
   const navigate = useNavigate();
   const { success, info } = useToast();
@@ -39,19 +40,19 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const cooldown = useCountdown(0);
   const isCooldown = cooldown.isActive;
   const secondsLeft = cooldown.secondsLeft;
 
-  const handleVerify = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
+  const handleVerify = async (codeToVerify?: string) => {
+    const code = typeof codeToVerify === "string" ? codeToVerify : otp;
+    if (isLoading || code.length !== 6) return;
+    setLoading(true);
     setError("");
     setMessage("");
 
-    const result = await AuthController.confirmEmailWithCode(email, otp);
-    setIsLoading(false);
+    const result = await AuthController.confirmEmailWithCode(email, code);
+    setLoading(false);
 
     if (result.success && result.token && result.user) {
       setMessage(result.message || "");
@@ -79,15 +80,6 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
     }
   };
 
-  // Auto-submit trigger
-  const triggerSubmit = () => {
-    if (formRef.current) {
-      // Dispatch a synthetic submit event
-      const event = new Event("submit", { bubbles: true, cancelable: true });
-      formRef.current.dispatchEvent(event);
-    }
-  };
-
   return (
     <Dialog
       isOpen={true}
@@ -104,19 +96,21 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
           ref={formRef}
           onSubmit={(e) => {
             e.preventDefault();
-            handleVerify();
+            void handleVerify();
           }}
           className="space-y-4"
         >
           <PasswordInput
-            idPrefix="confirm-email-code"
+            idPrefix="confirm-email-otp"
             value={otp}
             onChange={(value: string) => {
               setOtp(value);
               updateUrl({ otp: value });
               setError("");
             }}
-            onComplete={triggerSubmit}
+            onComplete={(completed: string) => {
+              void handleVerify(completed);
+            }}
             label={t(AppLocales.Auth.ConfirmEmail.FieldLabel)}
             error={error}
             helperText={t(AppLocales.Auth.ConfirmEmail.FieldHelper)}

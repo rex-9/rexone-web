@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { icons, iconsLib } from "../../../assets";
+import { FeedbackDialog } from "../../../modules/feedback";
 import { Button } from "../button";
 import { Asset } from "../media";
 import { LanguageDropdown } from "../settings/LanguageDropdown";
 import { ThemeToggle } from "../settings/ThemeToggle";
+import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../constants";
 import { cn } from "../../helpers";
 import ProfileAvatar from "./ProfileAvatar";
 
@@ -16,6 +18,7 @@ export interface HeadNavbarProps {
   leading?: React.ReactNode;
   actions?: React.ReactNode;
   showNotifications?: boolean;
+  showFeedback?: boolean;
 }
 
 export interface IHeadNavbarBrandProps {
@@ -75,39 +78,65 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   className,
   leading,
   showNotifications = true,
-}) => (
-  <header
-    className={cn(
-      "fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-base-300 bg-base-100 px-4 md:px-6",
-      className,
-    )}
-  >
-    {children ?? (
-      <>
-        <div className="flex min-w-0 items-center gap-3">
-          {leading ?? <HeadNavbarBrand />}
-        </div>
-        <div className="flex items-center gap-2">
-          {showNotifications && (
-            <Button
-              type="button"
-              variant="tertiary"
-              className="hidden h-10 w-10 p-0 md:inline-flex"
-              aria-label="Notifications"
-            >
-              <iconsLib.bell className="h-5 w-5" />
-            </Button>
-          )}
-          <ThemeToggle />
-          <div className="hidden sm:block">
-            <LanguageDropdown />
-          </div>
-          {actions}
-          <ProfileAvatar />
-        </div>
-      </>
-    )}
-  </header>
-);
+  showFeedback = true,
+}) => {
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  return (
+    <>
+      <header
+        className={cn(
+          "fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-base-300 bg-base-100 px-4 md:px-6",
+          className,
+        )}
+      >
+        {children ?? (
+          <>
+            <div className="flex min-w-0 items-center gap-3">
+              {leading ?? <HeadNavbarBrand />}
+            </div>
+            <div className="flex items-center gap-2">
+              {showFeedback && (
+                <Button
+                  type={ButtonTypes.BUTTON}
+                  variant={ButtonVariants.TERTIARY}
+                  size={ComponentSizes.SM}
+                  className="h-10 w-10 p-0 inline-flex items-center justify-center"
+                  onClick={() => setFeedbackOpen(true)}
+                  title="Send Feedback"
+                  aria-label="Send Feedback"
+                >
+                  <iconsLib.feedback className="h-5 w-5" />
+                </Button>
+              )}
+              {showNotifications && (
+                <Button
+                  type={ButtonTypes.BUTTON}
+                  variant={ButtonVariants.TERTIARY}
+                  size={ComponentSizes.SM}
+                  className="hidden h-10 w-10 p-0 md:inline-flex items-center justify-center"
+                  aria-label="Notifications"
+                  title="Notifications"
+                >
+                  <iconsLib.bell className="h-5 w-5" />
+                </Button>
+              )}
+              <ThemeToggle />
+              <div className="hidden sm:block">
+                <LanguageDropdown />
+              </div>
+              {actions}
+              <ProfileAvatar />
+            </div>
+          </>
+        )}
+      </header>
+      <FeedbackDialog
+        isOpen={feedbackOpen}
+        onClose={() => setFeedbackOpen(false)}
+      />
+    </>
+  );
+};
 
 export default HeadNavbar;

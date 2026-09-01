@@ -24,16 +24,14 @@ export class SignInPasswordPage {
 
   async enterPassword(password: string) {
     await this.waitForVisible();
-    if (!(await this.inputs.first().isEnabled())) {
-      return;
-    }
+    const firstInput = this.inputs.first();
+    await firstInput.waitFor({ state: "visible", timeout: 10000 });
     for (let i = 0; i < 6; i++) {
       const input = this.inputs.nth(i);
-      if (await input.isEnabled()) {
+      if (await input.isVisible()) {
         await input.fill("");
       }
     }
-    const firstInput = this.inputs.first();
     await firstInput.click();
     await this.page.keyboard.type(password, { delay: 60 });
   }

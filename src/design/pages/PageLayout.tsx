@@ -1,7 +1,6 @@
 import React from "react";
 import { HeadNavbar, HeadNavbarBrand } from "../components";
 import { cn } from "../helpers";
-import { useAxiosInterceptor } from "../../services";
 import { useSocket } from "../../hooks/useSocket";
 
 export interface IPageLayoutProps {
@@ -23,7 +22,6 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   isAdmin = false,
   showHeadNavbar = true,
 }) => {
-  useAxiosInterceptor();
   useSocket();
 
   return (

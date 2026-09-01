@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth, useToast } from "../../../contexts";
+import { useAuth, useToast, useLoading } from "../../../contexts";
 import {
   Button,
   GoogleButton,
@@ -35,10 +35,10 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { success } = useToast();
+  const { isLoading, setLoading } = useLoading();
 
   const [localEmail, setLocalEmail] = useState(email);
   const [emailError, setEmailError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   const [error, setError] = useState("");
 
@@ -80,7 +80,7 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateEmail(localEmail)) return;
-    setIsLoading(true);
+    setLoading(true);
     try {
       const result = await UserController.peekUser(localEmail);
 
@@ -119,14 +119,14 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
           : t(AppLocales.Auth.Initial.UserCheckFailed),
       );
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const handleGoogleSignIn = useGoogleLogin({
     flow: "implicit",
     onSuccess: async (tokenResponse) => {
-      setIsLoading(true);
+      setLoading(true);
       setError("");
 
       try {
@@ -160,7 +160,7 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
             : t(AppLocales.Auth.Initial.GoogleSignInFailed),
         );
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     },
 

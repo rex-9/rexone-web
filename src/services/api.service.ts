@@ -1,10 +1,8 @@
+// src/services/api.service.ts
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 import AppConfig from "../AppConfig";
 import AppRoutes from "../AppRoutes";
-import { Platform } from "../constants";
-import { useLoading } from "../contexts/LoadingContext";
-import { useEffect } from "react";
-import { useAuth } from "../contexts";
+import { Platform, StorageKeys } from "../constants";
 import { AppLocales, getApiLocale, translate } from "../locales";
 import {
   IApiEnvelope,
@@ -16,24 +14,90 @@ import { DialogAuthSteps, DialogParams } from "../modules/auth";
 
 const PLATFORM_HEADER_VALUE = Platform.WEB;
 
+export const getStoredToken = (): string | null => {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") {
+    return null;
+  }
+  try {
+    const raw = localStorage.getItem(StorageKeys.TOKEN);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "string" ? parsed : raw;
+  } catch {
+    const raw = localStorage.getItem(StorageKeys.TOKEN);
+    return raw || null;
+  }
+};
+
+const handleUnauthorized = () => {
+  if (typeof window === "undefined" || typeof localStorage === "undefined") return;
+
+  // Clear auth storage
+  localStorage.removeItem(StorageKeys.TOKEN);
+  localStorage.removeItem(StorageKeys.USER);
+
+  const nextUrl = new URL(
+    window.location.origin + AppRoutes.client.public.ROOT,
+  );
+  nextUrl.searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
+  nextUrl.searchParams.set("step", DialogAuthSteps.INITIAL);
+  nextUrl.searchParams.set(
+    "message",
+    translate(AppLocales.Auth.Shared.SessionExpired),
+  );
+  window.location.assign(nextUrl.toString());
+};
+
 // Create an axios instance
 const axiosInstance = axios.create({
   baseURL: AppConfig.SERVER_BASE_URL,
-  timeout: 10000, // Set a timeout for requests
-  withCredentials: true, // Include credentials in requests
+  timeout: 10000,
+  withCredentials: true,
 });
 
-const getRequestToken = (config?: AxiosRequestConfig): string | null => {
-  const headers = AxiosHeaders.from(config?.headers as AxiosHeaders | undefined);
-  const authorization = headers.get("Authorization");
-  const value = Array.isArray(authorization)
-    ? authorization[0]
-    : authorization;
+// Static Request Interceptor (Always active from millisecond 0, including on fresh page reload)
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const headers = AxiosHeaders.from(config.headers);
 
-  return typeof value === "string" && value.startsWith("Bearer ")
-    ? value.slice("Bearer ".length)
-    : null;
-};
+    // Always send platform so backend can enforce one active session per platform
+    headers.set("X-Platform", PLATFORM_HEADER_VALUE);
+
+    // Rexone Core locale
+    headers.set("X-Locale", getApiLocale());
+
+    if (config.data instanceof FormData) {
+      headers.delete("Content-Type");
+      headers.set("Content-Type", "multipart/form-data");
+    } else if (config.data && typeof config.data === "object") {
+      headers.set("Content-Type", "application/json");
+    }
+
+    const token = getStoredToken();
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    config.headers = headers;
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+// Static Response Interceptor (Handles 401 Unauthorized globally)
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      const token = getStoredToken();
+      // If we had a stored token that the backend rejected as 401, automatically log out and redirect
+      if (token) {
+        handleUnauthorized();
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 // Utility function to handle errors
 const handleError = <T = unknown>(
@@ -141,89 +205,6 @@ export const api = {
       method: "DELETE",
     });
   },
-};
-
-// Custom hook to set up axios interceptor
-export const useAxiosInterceptor = () => {
-  const { setLoading } = useLoading();
-  const { token, signout } = useAuth();
-
-  useEffect(() => {
-    const requestInterceptor = axiosInstance.interceptors.request.use(
-      (config) => {
-        const headers = AxiosHeaders.from(config.headers);
-
-        // Always send platform so backend can enforce one active session per platform.
-        headers.set("X-Platform", PLATFORM_HEADER_VALUE);
-
-        // Rexone Core currently supports English and Burmese. Unsupported
-        // frontend locales (such as Spanish) intentionally fall back to English.
-        headers.set("X-Locale", getApiLocale());
-
-        // Check if data is FormData - let axios set Content-Type automatically
-        if (config.data instanceof FormData) {
-          // Don't set Content-Type - axios will set it with boundary
-          // Remove any existing Content-Type to let axios handle it
-          headers.delete("Content-Type");
-          headers.set("Content-Type", "multipart/form-data");
-        } else if (config.data && typeof config.data === "object") {
-          // For JSON data, set Content-Type
-          headers.set("Content-Type", "application/json");
-        }
-
-        if (token) {
-          headers.set("Authorization", `Bearer ${token}`);
-        }
-
-        config.headers = headers;
-        setLoading(true);
-        return config;
-      },
-      (error) => {
-        setLoading(false);
-        return Promise.reject(error);
-      },
-    );
-
-    const responseInterceptor = axiosInstance.interceptors.response.use(
-      (response) => {
-        setLoading(false);
-        return response;
-      },
-      (error) => {
-        console.log("interceptor response error ===>", error);
-
-        const requestToken = getRequestToken(error?.config);
-        const isActiveRequest = !requestToken || !token || requestToken === token;
-
-        if (error?.response?.status === 401 && token && isActiveRequest) {
-          signout();
-
-          if (typeof window !== "undefined") {
-            const nextUrl = new URL(
-              window.location.origin + AppRoutes.client.public.ROOT,
-            );
-            nextUrl.searchParams.set(DialogParams.DIALOG, DialogParams.AUTH);
-            nextUrl.searchParams.set("step", DialogAuthSteps.INITIAL);
-
-            nextUrl.searchParams.set(
-              "message",
-              translate(AppLocales.Auth.Shared.SessionExpired),
-            );
-            window.location.assign(nextUrl.toString());
-          }
-        }
-
-        setLoading(false);
-        return Promise.reject(error);
-      },
-    );
-
-    return () => {
-      axiosInstance.interceptors.request.eject(requestInterceptor);
-      axiosInstance.interceptors.response.eject(responseInterceptor);
-    };
-  }, [setLoading, token, signout]);
 };
 
 export const parseRecord = <T extends object>(

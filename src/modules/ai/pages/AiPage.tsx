@@ -2,15 +2,15 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button, TextArea, ConfirmDialog } from "../../../design/components";
-import { useToast } from "../../../contexts/ToastContext";
+import { useToast, useLoading } from "../../../contexts";
 import AiController from "../ai.controller";
 import { IMessage } from "..";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [input, setInput] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isClearDialogOpen, setIsClearDialogOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -70,11 +70,11 @@ export const AiPage: React.FC = () => {
   }, [loadHistory]);
 
   const handleSend = async () => {
-    if (!input.trim() || isSubmitting || isProcessing) return;
+    if (!input.trim() || isLoading || isProcessing) return;
 
     const content = input.trim();
     setInput("");
-    setIsSubmitting(true);
+    setLoading(true);
 
     const result = await AiController.chat(content, null);
 
@@ -90,7 +90,7 @@ export const AiPage: React.FC = () => {
       error(result.error || "Failed to get AI response");
     }
 
-    setIsSubmitting(false);
+    setLoading(false);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -202,17 +202,18 @@ export const AiPage: React.FC = () => {
               }
               rows={3}
               className="flex-1"
-              disabled={isSubmitting || isProcessing}
+              disabled={isLoading || isProcessing}
               showCounter
               maxLength={2000}
             />
             <Button
               variant="primary"
               onClick={handleSend}
-              disabled={isSubmitting || isProcessing || !input.trim()}
+              isLoading={isLoading}
+              disabled={isLoading || isProcessing || !input.trim()}
               className="self-end"
             >
-              {isSubmitting ? "Sending…" : "Send"}
+              Send
             </Button>
           </div>
           <p className="text-caption text-base-content/60 mt-2">

@@ -1,7 +1,7 @@
 // src/design/components/auth/ForgotPasswordDialog.tsx
 
 import React, { useState } from "react";
-import { useCountdown } from "../../../hooks";
+import { useCountdown, useTranslate } from "../../../hooks";
 import {
   Button,
   Dialog,
@@ -9,10 +9,10 @@ import {
   TextLink,
   FormContainer,
 } from "../../../design/components";
-import { useToast } from "../../../contexts";
+import { useToast, useLoading } from "../../../contexts";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
-import { AppLocales, useTranslate } from "../../../locales";
+import { AppLocales } from "../../../locales/app_locales";
 
 interface IForgotPasswordDialogProps {
   email: string;
@@ -31,22 +31,22 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
 }) => {
   const t = useTranslate();
   const { success } = useToast();
+  const { isLoading, setLoading } = useLoading();
   const [localEmail, setLocalEmail] = useState(email);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const cooldown = useCountdown(0);
   const isCooldown = cooldown.isActive;
   const secondsLeft = cooldown.secondsLeft;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
     setError("");
     setMessage("");
 
     const result = await AuthController.sendForgotPasswordMail(localEmail);
-    setIsLoading(false);
+    setLoading(false);
 
     if (result.success) {
       setMessage(result.message || "");

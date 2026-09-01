@@ -21,11 +21,11 @@
     - Overlays: `Dialog`, `ConfirmDialog`, `LoadingOverlay`, `Toast`.
     - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Image`/`Asset`, `Video`/`VideoPlayer`.
   - `src/design/pages/` — Shared layout shells, base pages (`LayoutPage`, `HomePage`, `NotFoundPage`).
-- **Rule**: NEVER use raw HTML `<img>`, raw `<video>`, raw `<a>`, raw `<textarea>`, raw `<button>`, raw `<form>`, or ad-hoc containers in module dialogs or pages. Always re-use the Design System wrappers:
+- **Rule**: NEVER use raw HTML `<img>`, raw `<video>`, raw `<a>`, raw `<textarea>`, raw `<button>`, raw `<form>`, raw `<select>`, or ad-hoc containers in module dialogs or pages. Always re-use the Design System wrappers:
   - **Images / Icons**: Use `Asset` or `Image` (`src/design/components/media/Image.tsx`) with typed asset objects (`icons.*`, `images.*`) from `src/assets/`.
   - **Videos**: Use `Video` or `VideoPlayer` (`src/design/components/media/Video.tsx`) with typed video assets (`videos.*`).
   - **Links & Navigation**: Use `TextLink` (`src/design/components/common/TextLink.tsx`) for external URLs and styled link buttons, or React Router `<Link>`. Never write raw `<a href="...">` tags.
-  - **Forms & Inputs**: Re-use `FormContainer`, `TextArea`, `TextInput`, `PasswordInput`, `Button`, and `Dialog`.
+  - **Forms & Inputs**: Re-use `FormContainer`, `TextArea`, `TextInput`, `PasswordInput`, `Dropdown`, `SearchInput`, `Button`, and `Dialog`. Raw HTML `<select>` is strictly forbidden.
   - If a design element is missing, build it cleanly in `src/design/components/` first.
 
 ### 1.2 Automated Theming & Pure Tailwind Spacing
@@ -66,6 +66,32 @@
 - **Rule**: NEVER call `localStorage.getItem()`, `localStorage.setItem()`, `sessionStorage`, or `document.cookie` directly in components, pages, or controllers.
 - **Rule**: ALL persistent and reactive state MUST go through Jotai atoms defined in `src/atoms.ts` using `AtomService.getAtom()` with typed `StorageKeys`.
 - Standard keys are centralized in `src/constants/storageKeys.ts` (`StorageKeys.LOCALE`, `StorageKeys.TOKEN`, `StorageKeys.USER`, `StorageKeys.THEME`).
+
+### 3.2 Zero Redundant Local Loading States Law (Universal `LoadingContext` Authority)
+
+- **Rule**: NEVER create redundant local loading states (e.g., `const [isLoading, setIsLoading] = useState(false)`, `const [actionLoading, setActionLoading] = useState(false)`, or `const [isDeleting, setIsDeleting] = useState(false)`) across views, pages, or dialogs.
+- **Rule**: ALL async operations, page data fetches, table pagination transitions, and action mutations MUST use the centralized `LoadingContext` via `useLoading()`:
+  - `const { isLoading, isOverlayLoading, setLoading } = useLoading();`
+  - For page and table data fetching: `setLoading(true)` on start, `setLoading(false)` upon completion.
+  - For action mutations (e.g. grant, extend, revoke, discard, restore, destroy): `setLoading(true)` on start, `setLoading(false)` upon completion.
+  - Pass `isLoading` directly to dialogs/buttons (`isLoading={isLoading}` or `disabled={isLoading}`).
+  - Read `isLoading` from `useLoading()` to control table skeleton/empty states to prevent flashing empty content before data arrives.
+
+### 3.3 Lifecycle State, Recycle Bin & Non-Ambiguous Terminology Law
+
+- **Lifecycle Hierarchy & Terminology**:
+  1. **`discard` (Soft Delete)**: Stamps `discarded_at` timestamp. Invoked strictly from the Active resource view to move an item to the Recycle Bin.
+  2. **`undiscard` (Restore in UI)**: Clears `discarded_at` timestamp to `nil`. In code, always name functions, constants, variables, endpoints, and handlers `undiscard` (`ADMIN_ACTIONS.UNDISCARD`, `undiscardUser`, `undiscardProduct`, `undiscardRole`, `undiscardMessage`), while displaying "Restore" as the user-facing label string literal (`ADMIN_COMMON_LABELS.UNDISCARD = "Restore"`).
+  3. **`destroy` (Hard Delete)**: Permanently purges and deletes the record from the database. Invoked **ONLY** from inside the Recycle Bin for destroyable resources (e.g. chat messages, chat rooms).
+- **Non-Destroyable Domain Resources (Users, Products, Roles, Permissions)**:
+  - Users, Products, Roles, and Permissions are strictly soft-deleted (`discard`) and restored (`undiscard`). They must NEVER be permanently destroyed (`destroy`) to preserve audit trails, prevent orphaned references, and maintain external provider synchronization.
+- **Zero Ambiguous "Delete" Terminology Rule**:
+  - The generic term "delete" (e.g. `deleteTarget`, `handleDelete`, `isDeleting`, "Delete", `USER_DELETED`) is strictly forbidden across UI labels, variable names, handlers, constants, and API controller action semantics.
+  - Use `discardTarget` / `handleDiscard` for active soft-deletions.
+  - Use `destroyTarget` / `handleDestroy` for permanent hard-deletions from the Recycle Bin where applicable.
+- **Recycle Bin Accessibility Rule**:
+  - Any domain resource that implements discard MUST provide an accessible Recycle Bin interface with **Restore** (`undiscard`).
+  - Triage/Audit resources (such as Customer Feedback) represent immutable operational records and must not be discarded; they are managed through triage statuses (`new`, `in_progress`, `resolved`, `closed`) and priority rankings.
 
 ---
 
@@ -177,9 +203,21 @@ The client-side RBAC system strictly synchronizes with the backend's three-tier 
    - Users who possess the base `user` role plus a specific `*_admin` role (e.g. `feedback_admin`, `payment_admin`, `ai_admin`).
    - **Sidebar Visibility Law**: Partial admins **ONLY see the specific admin sidebar navigation items corresponding to the `read_<resource>` permissions under their `*_admin` role** (e.g. a user with `feedback_admin` role only sees the Feedbacks admin nav item).
 
-### 6.2 Permission Evaluation & UI Guards
+### 6.3 Declarative Single-Pass Permission Ingestion
 
-- `currentUser.permissions` are grouped by resource (`{ users: ["read", "create", ...], feedbacks: ["read", "update"], ... }`).
+- `usePermissions()` automatically consumes `currentUser.admin_permissions` and `currentUser.permissions` returned from `GET /v1/users/current/iam`.
+- UI components check authorization declaratively: `can("read", "users")`, `can("create", "products")`, `can("update", "accesses")`.
+
+### 6.4 Client Admin Portal Completeness & Sub-Admin Scope
+
+- The Client Admin Portal (`/admin/*`) is the dedicated business, operational, and customer support portal for all administrators (`super_admin`, `admin`, and `*_admin` partial admins).
+- Sub-admins do NOT have access to Rails internal dashboards (`/admin`, `/red`, `/solid_queue`, `/pulse`). Therefore, the Client Admin Portal MUST provide complete, high-level operational modules:
+  - **Overview**: Analytics (`/admin/analytics`)
+  - **Commerce**: Products (`/admin/products`), Entitlements & Accesses (`/admin/accesses`)
+  - **Support & Communication**: Feedback Inbox (`/admin/feedback`), Notifications (`/admin/notifications`), Chat Rooms & Messages (`/admin/chat/*`)
+  - **IAM**: Users (`/admin/users`), Roles & Permissions (`/admin/roles`)
+  - **Observability**: Client Telemetry & Exception Logs (`/admin/logs`)
+- Every module strictly adheres to the 4-tier MVCS pattern (`types.ts` $\rightarrow$ `*.service.ts` $\rightarrow$ `*.controller.ts` $\rightarrow$ `pages/*` & `components/*`) with zero components or raw fetch calls outside the design system.
 - Client UI, protected routes, and side navigation bars enforce permissions via `usePermissions()` hook or permission guards.
 - Zero hardcoded bypasses in UI logic.
 
