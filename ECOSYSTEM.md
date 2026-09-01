@@ -99,7 +99,7 @@ All tables use **UUID** primary keys (`gen_random_uuid()`), utilize **Discard** 
 
 Heavy or external provider operations sit behind clean service interfaces and execute in dedicated background queues (`config/queue.yml`):
 
-- **AI Queue (`ai`)**: `Ai::ProcessChatJob` communicates with DeepSeek (`AiService::Client`), runs asynchronously with room-level concurrency locks, commits assistant messages to Postgres, and alerts the user over WebSocket (`NotificationChannel`).
+- **AI & Speech Queue (`ai`)**: `Ai::ProcessChatJob` communicates with DeepSeek (`AiService::Client`) for chat completion. `Speech::ProcessTtsJob` communicates with Azure/Nova (`SpeechService::Client`) to synthesize audio for chat messages, saves MP3 assets via `StorageService::Client`, and alerts the user over WebSocket (`NotificationChannel`).
 - **Payments Queue (`payments`)**: `Payment::ProcessWebhookJob` asynchronously fulfills Stripe webhooks (checkout completed, invoice paid, subscription updated/deleted) with idempotency.
 - **Notifications Queue (`notifications`)**: `NotificationService` fans out work to `Notification::DeliverJob` for Action Cable broadcasts, OneSignal push notifications, and OneSignal transactional emails.
 - **Storage Queue (`storage`)**: `Storage::DeleteJob` handles remote deletion asynchronously after DB commits.
@@ -241,6 +241,9 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 | **AI: Conversational Rooms & Message History**                            |      ✅       |          ✅          |            ✅            |
 | **AI: Queued Background Execution (DeepSeek)**                            |      ✅       |          ✅          |            ✅            |
 | **AI: Real-Time WebSocket Completion Alerts**                             |      ✅       |          ✅          |            ✅            |
+| **Speech: Text-to-Speech (Sync & Async Binary Streaming)**                |      ✅       |          ✅          |            ✅            |
+| **Speech: Speech-to-Text (Sync Upload / URL)**                            |      ✅       |          ✅          |            ✅            |
+| **Speech: Live Audio STT Streaming (WebSocket)**                          |      ✅       |          ✅          |            ✅            |
 | **Push Notifications (OneSignal)**                                        |      ✅       |         N/A          |            ✅            |
 | **Product Analytics (Firebase)**                                          |      N/A      |         N/A          |            ✅            |
 | **Client Admin Panel: User, IAM, Product, Chat, Notification Management** |      ✅       |          ✅          |           N/A            |
@@ -342,7 +345,7 @@ Payload sent on uncaught errors in Web and Mobile:
   - **Rails Administrate**: Low-level database table CRUD for development and database inspection.
 - **Client Admin Panel (React SPA)**:
   - Focuses exclusively on **Business Growth, Governance, and End-User Operations**:
-    - Operational Analytics & KPIs (Gross revenue, active subscriptions, user acquisition, AI chat usage).
+    - Operational Analytics & KPIs (Gross revenue, active subscriptions, user acquisition, AI chat usage — see [ANALYTICS.md](ANALYTICS.md)).
     - Governance & RBAC (User management, role assignment, permission matrix, lifecycle recovery).
     - Commerce Catalogue (Product creation, Free vs. Premium rules, entitlements).
     - User Feedback Inbox & Triage (Ratings, category taxonomy, priority levels, status workflows).
