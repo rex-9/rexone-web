@@ -247,7 +247,26 @@ The client-side RBAC system strictly synchronizes with the backend's three-tier 
 
 ---
 
-## 📚 12. Documentation Synchronization Law
+## 📊 12. Dashboard Separation & Non-Duplication Law
+
+- **Rule**: Clear architectural separation MUST be maintained between backend infrastructure engines and the Client Admin Panel:
+  1. **Rails Infrastructure Dashboards (Backend Engines)**:
+     - **Rails Pulse**: Server hardware, CPU load, memory usage, request latency, slow database queries.
+     - **RED (Rails Error Dashboard)**: Server-side Ruby exceptions, 500 errors, and Rails backtraces.
+     - **Solid UI / Solid Queue**: Background jobs, queue throughput, retry backoffs, cron schedules.
+     - **Rails Administrate**: Low-level database table CRUD for development and database inspection.
+  2. **Client Admin Panel (React SPA)**:
+     - Focuses exclusively on **Business Growth, Governance, and End-User Operations**:
+       - Operational Analytics & KPIs (Gross revenue, active subscriptions, user acquisition, AI chat usage).
+       - Governance & RBAC (User management, role assignment, permission matrix, lifecycle recovery).
+       - Commerce Catalogue (Product creation, Free vs. Premium rules, entitlements).
+       - User Feedback Inbox & Triage (Ratings, category taxonomy, priority levels, status workflows).
+       - Client Telemetry (`Log::Client` capturing browser/mobile JS crashes that never touch Rails RED).
+- **Strict Non-Duplication Rule**: NEVER duplicate server CPU/memory, queue depths, or database query telemetry inside the Client Admin Panel. Prioritize business domain operations and client-side observability.
+
+---
+
+## 📚 13. Documentation Synchronization Law
 
 - **Rule**: After EVERY feature creation, modification, or bugfix:
   - **`README.md`** MUST be updated with newly added screens, user workflows, feature capabilities, or configuration variables.

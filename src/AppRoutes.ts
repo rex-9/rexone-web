@@ -101,9 +101,10 @@ class AppRoutes {
       // Media
       UPLOAD_ASSET: AppRoutes.api("/media/upload"), // POST
 
-      // Access
-      ACCESS: AppRoutes.api("/access"), // GET
-      CHECK_ACCESS: AppRoutes.api("/access/check"), // GET
+      // Accesses
+      ACCESSES: AppRoutes.api("/accesses"), // GET
+      ACTIVE_ACCESSES: AppRoutes.api("/accesses/active"), // GET
+      CHECK_ACCESSES: AppRoutes.api("/accesses/check"), // GET
 
       // Payments
       PAYMENT_SESSION: AppRoutes.api("/payment/session"), // POST

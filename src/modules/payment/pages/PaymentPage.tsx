@@ -8,7 +8,7 @@ import {
   BadgeVariants,
   ComponentSizes,
 } from "../../../design/constants";
-import { IProduct, ISubscription, ITransaction } from "..";
+import { IAccess, IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
 
 export const PaymentPage: React.FC = () => {
@@ -17,15 +17,17 @@ export const PaymentPage: React.FC = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [subscriptions, setSubscriptions] = useState<ISubscription[]>([]);
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
+  const [accesses, setAccesses] = useState<IAccess[]>([]);
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
 
   const fetchData = React.useCallback(async () => {
     setLoading(true);
-    const [productsResult, subscriptionsResult, transactionsResult] =
+    const [productsResult, subscriptionsResult, transactionsResult, accessesResult] =
       await Promise.all([
         PaymentController.getProducts(),
         PaymentController.getSubscriptions(),
         PaymentController.getTransactions(),
+        PaymentController.getActiveAccesses(),
       ]);
 
     if (productsResult.success && productsResult.products) {
@@ -38,6 +40,10 @@ export const PaymentPage: React.FC = () => {
 
     if (transactionsResult.success && transactionsResult.transactions) {
       setTransactions(transactionsResult.transactions);
+    }
+
+    if (accessesResult.success && accessesResult.accesses) {
+      setAccesses(accessesResult.accesses);
     }
 
     setLoading(false);
@@ -56,12 +62,21 @@ export const PaymentPage: React.FC = () => {
     const result = await PaymentController.createCheckout(productId);
     setLoading(false);
 
-    if (result.success && result.checkoutUrl) {
-      success("Redirecting to checkout...");
-      window.location.assign(result.checkoutUrl);
-    } else {
-      error(result.error || "Failed to create checkout session");
+    if (result.success) {
+      if (result.freeAccessGranted) {
+        success("Free access claimed successfully! 🎉");
+        await fetchData();
+        return;
+      }
+
+      if (result.checkoutUrl) {
+        success("Redirecting to checkout...");
+        window.location.assign(result.checkoutUrl);
+        return;
+      }
     }
+
+    error(result.error || "Failed to process checkout");
   };
 
   const handleCancel = async (subscriptionId: string) => {
@@ -95,6 +110,10 @@ export const PaymentPage: React.FC = () => {
       .length;
   };
 
+  const hasActiveAccess = (productId: string) => {
+    return accesses.some((a) => a.product_id === productId && a.active);
+  };
+
   const getActiveSubscription = (productId: string) => {
     return subscriptions.find(
       (s) => s.product_id === productId && s.active && !s.canceled_at,
@@ -118,10 +137,46 @@ export const PaymentPage: React.FC = () => {
   };
 
   const renderProductActions = (product: IProduct) => {
+    const isFree = product.free || product.price_unit_amount === 0;
+    const hasAccess = hasActiveAccess(product.id);
     const activeSub = getActiveSubscription(product.id);
     const canceledSub = getCanceledSubscription(product.id);
     const fullyCanceledSub = getFullyCanceledSubscription(product.id);
     const purchaseCount = getPurchaseCount(product.id);
+
+    // Free Product Flow
+    if (isFree) {
+      if (hasAccess) {
+        return (
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Badge variant={BadgeVariants.SUCCESS} size={ComponentSizes.MD}>
+                ✅ Free Access Claimed
+              </Badge>
+            </div>
+            <Button
+              variant={ButtonVariants.SECONDARY}
+              fullWidth
+              size={ComponentSizes.MD}
+              disabled
+            >
+              Claimed
+            </Button>
+          </div>
+        );
+      }
+
+      return (
+        <Button
+          variant={ButtonVariants.PRIMARY}
+          fullWidth
+          size={ComponentSizes.MD}
+          onClick={() => handleCheckout(product.id)}
+        >
+          Claim Now
+        </Button>
+      );
+    }
 
     // Active subscription
     if (activeSub) {
@@ -197,7 +252,33 @@ export const PaymentPage: React.FC = () => {
       );
     }
 
-    // One-time product - show purchase count
+    // One-time paid product with active access
+    if (!product.recurring && hasAccess) {
+      return (
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Badge variant={BadgeVariants.SUCCESS} size={ComponentSizes.MD}>
+              ✅ Lifetime Access Active
+            </Badge>
+          </div>
+          <Button
+            variant={ButtonVariants.PRIMARY}
+            fullWidth
+            size={ComponentSizes.MD}
+            onClick={() => handleCheckout(product.id)}
+          >
+            Buy Again
+          </Button>
+          {purchaseCount > 0 && (
+            <p className="text-xs text-base-content/60 text-center">
+              Purchased {purchaseCount} time{purchaseCount > 1 ? "s" : ""}
+            </p>
+          )}
+        </div>
+      );
+    }
+
+    // One-time paid product previously purchased
     if (!product.recurring && purchaseCount > 0) {
       return (
         <div className="space-y-3">

@@ -2,6 +2,7 @@ import AppRoutes from "../../AppRoutes";
 import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../models";
 import { api } from "../../services";
 import {
+  IAccess,
   ICheckoutResponse,
   IProduct,
   ISubscription,
@@ -61,6 +62,27 @@ class PaymentService {
   > {
     const response = await api.get<IJsonApiResource<ITransaction>[]>(
       AppRoutes.server.protected.PAYMENT_TRANSACTIONS,
+      params,
+    );
+    return response;
+  }
+
+  // ===== ACCESSES =====
+  async getAccesses(params?: { page?: number; limit?: number }): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAccess>[]>>
+  > {
+    const response = await api.get<IJsonApiResource<IAccess>[]>(
+      AppRoutes.server.protected.ACCESSES,
+      params,
+    );
+    return response;
+  }
+
+  async getActiveAccesses(params?: { page?: number; limit?: number }): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAccess>[]>>
+  > {
+    const response = await api.get<IJsonApiResource<IAccess>[]>(
+      AppRoutes.server.protected.ACTIVE_ACCESSES,
       params,
     );
     return response;

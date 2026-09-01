@@ -1,7 +1,7 @@
 import { PaymentService } from ".";
 import { AppLocales, translate } from "../../locales";
 import { getApiError, parsePagyList } from "../../services/api.service";
-import { IProduct, ISubscription, ITransaction } from "./types";
+import { IAccess, IProduct, ISubscription, ITransaction } from "./types";
 import { IApiPagination } from "../../models";
 
 class PaymentController {
@@ -27,6 +27,57 @@ class PaymentController {
       error: getApiError(
         response,
         translate(AppLocales.Payment.Errors.LoadProducts),
+      ),
+    };
+  }
+
+  // ===== ACCESSES =====
+  async getAccesses(params?: { page?: number; limit?: number }): Promise<{
+    success: boolean;
+    accesses: IAccess[];
+    pagination: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await PaymentService.getAccesses(params);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      const { records, pagination } = parsePagyList<IAccess>(response);
+      return { success: true, accesses: records, pagination };
+    }
+
+    return {
+      success: false,
+      accesses: [],
+      pagination: null,
+      error: getApiError(
+        response,
+        "Failed to load accesses",
+      ),
+    };
+  }
+
+  async getActiveAccesses(params?: { page?: number; limit?: number }): Promise<{
+    success: boolean;
+    accesses: IAccess[];
+    pagination: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await PaymentService.getActiveAccesses(params);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      const { records, pagination } = parsePagyList<IAccess>(response);
+      return { success: true, accesses: records, pagination };
+    }
+
+    return {
+      success: false,
+      accesses: [],
+      pagination: null,
+      error: getApiError(
+        response,
+        "Failed to load accesses",
       ),
     };
   }
@@ -139,16 +190,26 @@ class PaymentController {
   async createCheckout(productId: string): Promise<{
     success: boolean;
     checkoutUrl?: string;
+    freeAccessGranted?: boolean;
     error?: string;
   }> {
     const response = await PaymentService.createCheckout(productId);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.checkout_url) {
-      return {
-        success: true,
-        checkoutUrl: data.checkout_url,
-      };
+    if (status?.success) {
+      if (data?.free_access_granted) {
+        return {
+          success: true,
+          freeAccessGranted: true,
+        };
+      }
+
+      if (data?.checkout_url) {
+        return {
+          success: true,
+          checkoutUrl: data.checkout_url,
+        };
+      }
     }
 
     return {

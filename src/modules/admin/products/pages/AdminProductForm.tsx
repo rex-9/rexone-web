@@ -5,13 +5,15 @@ import {
   IAdminProductFormValues,
 } from "../types";
 import { ProductPriceMode } from "../productForm.utils";
-import { Checkbox, FormActionRow, FormContainer, Radio, TextInput } from "../../components";
-import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
 import {
-  PRODUCT_CURRENCY,
-  PRODUCT_CYCLE,
-  PRODUCT_TYPE,
-} from "../constants";
+  Checkbox,
+  FormActionRow,
+  FormContainer,
+  Radio,
+  TextInput,
+} from "../../components";
+import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
+import { PRODUCT_CURRENCY, PRODUCT_CYCLE, PRODUCT_TYPE } from "../constants";
 
 const ADMIN_PRODUCT_FORM_LABELS = {
   ACTIVE: "Active",
@@ -78,6 +80,9 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   );
   const [descriptionError, setDescriptionError] = useState("");
 
+  const isInitiallyFree =
+    mode === ADMIN_ACTIONS.EDIT &&
+    (product?.free || product?.price_unit_amount === 0);
   const isFree = priceMode === PRODUCT_TYPE.FREE;
 
   const updateValue = (
@@ -87,18 +92,22 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     setValues((current) => ({ ...current, [field]: value }));
   };
 
-  const updatePriceMode = (mode: ProductPriceMode) => {
-    setPriceMode(mode);
+  const updatePriceMode = (nextMode: ProductPriceMode) => {
+    if (isInitiallyFree && nextMode === PRODUCT_TYPE.PREMIUM) {
+      return;
+    }
+
+    setPriceMode(nextMode);
     setValues((current) => ({
       ...current,
       price_unit_amount:
-        mode === PRODUCT_TYPE.FREE
+        nextMode === PRODUCT_TYPE.FREE
           ? 0
           : current.price_unit_amount > 0
             ? current.price_unit_amount
             : initialValues.price_unit_amount,
       cycle:
-        mode === PRODUCT_TYPE.FREE
+        nextMode === PRODUCT_TYPE.FREE
           ? PRODUCT_CYCLE.ONE_TIME
           : current.cycle || initialValues.cycle,
     }));
@@ -117,27 +126,25 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     }
 
     setDescriptionError("");
-    if(isFree){
+    if (isFree) {
       onSubmit({
-      name: values.name.trim(),
-      description,
-      price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
-      currency: values.currency,
-      active: values.active,
-    });
-    }else{
+        name: values.name.trim(),
+        description,
+        price_unit_amount: 0,
+        currency: values.currency,
+        cycle: PRODUCT_CYCLE.ONE_TIME,
+        active: values.active,
+      });
+    } else {
       onSubmit({
-      name: values.name.trim(),
-      description,
-      price_unit_amount: isFree ? 0 : Number(values.price_unit_amount),
-      currency: values.currency,
-      cycle: isFree
-        ? PRODUCT_CYCLE.ONE_TIME
-        : values.cycle || PRODUCT_CYCLE.ONE_TIME,
-      active: values.active,
-    });
+        name: values.name.trim(),
+        description,
+        price_unit_amount: Number(values.price_unit_amount),
+        currency: values.currency,
+        cycle: values.cycle || PRODUCT_CYCLE.ONE_TIME,
+        active: values.active,
+      });
     }
-    
   };
 
   return (
@@ -154,20 +161,41 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             {ADMIN_PRODUCT_FORM_LABELS.PRICE_TYPE}
           </label>
           <div className="grid gap-2 sm:grid-cols-2">
-            {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => (
-              <Radio
-                key={option}
-                name="price_type"
-                checked={priceMode === option}
-                onChange={() => updatePriceMode(option)}
-                containerClassName="min-h-10 bg-base-100"
-              >
-                {option === PRODUCT_TYPE.PREMIUM
-                  ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
-                  : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
-              </Radio>
-            ))}
+            {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => {
+              const isDisabled =
+                isInitiallyFree && option === PRODUCT_TYPE.PREMIUM;
+
+              return (
+                <Radio
+                  key={option}
+                  name="price_type"
+                  checked={priceMode === option}
+                  disabled={isDisabled}
+                  onChange={() => updatePriceMode(option)}
+                  containerClassName={
+                    isDisabled
+                      ? "min-h-10 bg-base-200 opacity-50 cursor-not-allowed"
+                      : "min-h-10 bg-base-100"
+                  }
+                >
+                  {option === PRODUCT_TYPE.PREMIUM
+                    ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
+                    : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
+                </Radio>
+              );
+            })}
           </div>
+          {isInitiallyFree && (
+            <p className="mt-1 text-caption text-base-content opacity-60">
+              Free products cannot be converted to premium products.
+            </p>
+          )}
+          {!isInitiallyFree && mode === ADMIN_ACTIONS.EDIT && isFree && (
+            <p className="mt-1 text-caption text-amber-500 font-medium">
+              ⚠️ Converting this product to Free is permanent and will detach
+              payment provider handling... such as Stripe.
+            </p>
+          )}
         </div>
         <TextInput
           label={ADMIN_PRODUCT_FORM_LABELS.AMOUNT_IN_CENTS}
@@ -223,6 +251,11 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             <option value={PRODUCT_CYCLE.MONTH}>Monthly</option>
             <option value={PRODUCT_CYCLE.YEAR}>Yearly</option>
           </select>
+          {isFree && (
+            <p className="mt-1 text-caption text-base-content opacity-60">
+              Free products are always one-time and cannot be recurring.
+            </p>
+          )}
         </div>
         <Checkbox
           checked={values.active}

@@ -9,6 +9,7 @@ export interface IProduct {
   period_label: string;
   recurring: boolean;
   active: boolean;
+  free?: boolean;
 }
 
 export interface ISubscription {
@@ -105,7 +106,25 @@ export interface ITransaction {
   product_name: string | null;
 }
 
+export interface IAccess {
+  id: string;
+  status: string;
+  granted_at: string | null;
+  expires_at: string | null;
+  revoked_at?: string | null;
+  expired_at?: string | null;
+  product_id: string;
+  product_name?: string | null;
+  remaining_days?: number | null;
+  active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ICheckoutResponse {
-  checkout_url: string;
-  session_id: string;
+  checkout_url?: string;
+  session_id?: string;
+  free_access_granted?: boolean;
+  product_id?: string;
+  access_id?: string;
 }
