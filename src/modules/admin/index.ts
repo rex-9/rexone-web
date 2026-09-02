@@ -42,4 +42,6 @@ export const Admin = {
   AdminAccessesService,
   AdminFeedbackController,
   AdminFeedbackService,
+  AdminLogsController,
+  AdminLogsService,
 };

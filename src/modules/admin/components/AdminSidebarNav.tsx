@@ -121,6 +121,18 @@ const navSections: IAdminNavSection[] = [
       },
     ],
   },
+  {
+    id: "observability",
+    label: ADMIN_NAV_SECTION_LABELS.OBSERVABILITY,
+    items: [
+      {
+        label: ADMIN_NAV_LABELS.LOGS,
+        to: AppRoutes.client.protected.admin.LOGS,
+        resource: ADMIN_RESOURCES.CLIENTS,
+        icon: iconsLib.document,
+      },
+    ],
+  },
 ];
 
 export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
@@ -169,10 +181,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
       )}
     >
       <div
-        className={cn(
-          "space-y-4",
-          !isSidebarOpen && "space-y-2 lg:space-y-4",
-        )}
+        className={cn("space-y-4", !isSidebarOpen && "space-y-2 lg:space-y-4")}
       >
         {enabledItems.map((section, idx) => {
           const isCollapsed = collapsedSections[section.id] ?? false;

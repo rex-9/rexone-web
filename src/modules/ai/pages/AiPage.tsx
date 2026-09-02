@@ -1,3 +1,5 @@
+// src/design/pages/AiPage.tsx
+
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button, TextArea, ConfirmDialog } from "../../../design/components";
 import { useToast, useLoading } from "../../../contexts";
@@ -7,6 +9,7 @@ import AiController from "../ai.controller";
 import { AI_SOCKET_EVENTS, getMessageAudioUrl, IMessage } from "..";
 import { SPEECH_LISTEN_RESULTS, useLiveSpeech } from "../../speech";
 import { ADMIN_CHAT_ROLES } from "../../admin";
+import { ButtonSizes, ButtonVariants } from "../../../design";
 
 export const AiPage: React.FC = () => {
   const t = useTranslate();
@@ -47,7 +50,7 @@ export const AiPage: React.FC = () => {
         setMessages([
           {
             id: "welcome",
-            role: "assistant",
+            role: ADMIN_CHAT_ROLES.ASSISTANT,
             content: greeting,
             created_at: new Date().toISOString(),
           },
@@ -61,7 +64,7 @@ export const AiPage: React.FC = () => {
       setMessages([
         {
           id: "welcome",
-          role: "assistant",
+          role: ADMIN_CHAT_ROLES.ASSISTANT,
           content: greeting,
           created_at: new Date().toISOString(),
         },
@@ -206,7 +209,10 @@ export const AiPage: React.FC = () => {
   };
 
   const renderTtsControl = (message: IMessage) => {
-    if (message.role !== "assistant" || !message.content.trim()) {
+    if (
+      message.role !== ADMIN_CHAT_ROLES.ASSISTANT ||
+      !message.content.trim()
+    ) {
       return null;
     }
 
@@ -230,8 +236,8 @@ export const AiPage: React.FC = () => {
 
     return (
       <Button
-        variant="tertiary"
-        size="sm"
+        variant={ButtonVariants.TERTIARY}
+        size={ButtonSizes.SM}
         className="mt-2 min-h-0 h-8 w-8 p-0"
         onClick={() => void handleTtsTap(message)}
         disabled={disabled}
@@ -293,7 +299,7 @@ export const AiPage: React.FC = () => {
       setMessages([
         {
           id: "welcome",
-          role: "assistant",
+          role: ADMIN_CHAT_ROLES.ASSISTANT,
           content: greeting,
           created_at: new Date().toISOString(),
         },
@@ -316,8 +322,8 @@ export const AiPage: React.FC = () => {
           <div className="w-24 flex justify-end">
             {messages.length > 1 && (
               <Button
-                variant="tertiary"
-                size="sm"
+                variant={ButtonVariants.TERTIARY}
+                size={ButtonSizes.SM}
                 onClick={() => setIsClearDialogOpen(true)}
               >
                 {t(AppLocales.Ai.ClearHistory)}
@@ -393,8 +399,8 @@ export const AiPage: React.FC = () => {
               {isListenSessionActive ? (
                 <>
                   <Button
-                    variant="secondary"
-                    size="sm"
+                    variant={ButtonVariants.SECONDARY}
+                    size={ButtonSizes.SM}
                     onClick={() => void handleStopListening()}
                     aria-label={t(AppLocales.Ai.Listen)}
                     title={t(AppLocales.Ai.Listen)}
@@ -402,8 +408,8 @@ export const AiPage: React.FC = () => {
                     <iconsLib.stop className="h-5 w-5" />
                   </Button>
                   <Button
-                    variant="tertiary"
-                    size="sm"
+                    variant={ButtonVariants.TERTIARY}
+                    size={ButtonSizes.SM}
                     onClick={() => void handleCancelListening()}
                     aria-label={t(AppLocales.Ai.CancelListening)}
                     title={t(AppLocales.Ai.CancelListening)}
@@ -413,8 +419,8 @@ export const AiPage: React.FC = () => {
                 </>
               ) : (
                 <Button
-                  variant="tertiary"
-                  size="sm"
+                  variant={ButtonVariants.TERTIARY}
+                  size={ButtonSizes.SM}
                   onClick={() => void handleStartListening()}
                   disabled={!canListen}
                   aria-label={t(AppLocales.Ai.Listen)}
@@ -424,7 +430,7 @@ export const AiPage: React.FC = () => {
                 </Button>
               )}
               <Button
-                variant="primary"
+                variant={ButtonVariants.PRIMARY}
                 onClick={() => void handleSend()}
                 isLoading={isLoading}
                 disabled={
