@@ -1,7 +1,17 @@
 // src/design/components/form/Toggle.tsx
 // TODO: UI bug
+
 import React from "react";
 import { cn } from "../../helpers";
+import { ComponentSize, ComponentSizes } from "../../constants";
+
+export const TOGGLE_LABEL_POSITIONS = {
+  LEFT: "left",
+  RIGHT: "right",
+} as const;
+
+export type TToggleLabelPosition =
+  (typeof TOGGLE_LABEL_POSITIONS)[keyof typeof TOGGLE_LABEL_POSITIONS];
 
 export interface IToggleProps extends Omit<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
@@ -10,37 +20,41 @@ export interface IToggleProps extends Omit<
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   label?: string;
-  labelPosition?: "left" | "right";
-  size?: "sm" | "md" | "lg";
+  labelPosition?: TToggleLabelPosition;
+  size?: ComponentSize;
 }
 
 export function Toggle({
   checked,
   onCheckedChange,
   label,
-  labelPosition = "right",
-  size = "md",
+  labelPosition = TOGGLE_LABEL_POSITIONS.RIGHT,
+  size = ComponentSizes.MD,
   disabled,
   className,
   ...props
 }: IToggleProps) {
-  const sizes = {
-    sm: {
+  const sizes: Partial<
+    Record<ComponentSize, { track: string; thumb: string; on: string }>
+  > = {
+    [ComponentSizes.SM]: {
       track: "w-12 h-5",
       thumb: "w-4 h-4",
       on: "translate-x-7",
     },
-    md: {
+    [ComponentSizes.MD]: {
       track: "w-16 h-6",
       thumb: "w-5 h-5",
       on: "translate-x-10",
     },
-    lg: {
+    [ComponentSizes.LG]: {
       track: "w-20 h-8",
       thumb: "w-7 h-7",
       on: "translate-x-12",
     },
-  } as const;
+  };
+
+  const currentSize = sizes[size] || sizes[ComponentSizes.MD]!;
 
   const toggle = (
     <button
@@ -54,7 +68,7 @@ export function Toggle({
         "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-base-100",
         checked ? "bg-primary" : "bg-base-300",
         disabled && "cursor-not-allowed opacity-50",
-        sizes[size].track,
+        currentSize.track,
         className,
       )}
       {...props}
@@ -62,8 +76,8 @@ export function Toggle({
       <span
         className={cn(
           "absolute left-1 rounded-full bg-base-100 shadow-sm transition-transform duration-200",
-          sizes[size].thumb,
-          checked ? sizes[size].on : "translate-x-0",
+          currentSize.thumb,
+          checked ? currentSize.on : "translate-x-0",
         )}
       />
     </button>

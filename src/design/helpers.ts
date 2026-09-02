@@ -8,7 +8,14 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { colors, radius, shadows, font } from "./elements";
+import {
+  colors,
+  radius,
+  shadows,
+  font,
+  type BrandColorKey,
+  type SemanticColorKey,
+} from "./elements";
 
 // ============================================================
 // CLASS NAME UTILITIES
@@ -30,9 +37,7 @@ export function cn(...inputs: ClassValue[]) {
  * Get brand color value
  * @example getBrandColor('primary') => '#F8D57E'
  */
-export function getBrandColor(
-  brand: "primary" | "secondary" | "accent",
-): string {
+export function getBrandColor(brand: BrandColorKey): string {
   return colors[brand];
 }
 
@@ -40,9 +45,7 @@ export function getBrandColor(
  * Get a semantic color value
  * @example getSemanticColor('success') => '#10B981'
  */
-export function getSemanticColor(
-  color: "success" | "warning" | "error" | "info",
-): string {
+export function getSemanticColor(color: SemanticColorKey): string {
   return colors.semantic[color];
 }
 

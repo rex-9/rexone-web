@@ -16,8 +16,15 @@ interface ILoadingContextProps {
 }
 
 const LoadingContext = createContext<ILoadingContextProps | undefined>(
-  undefined
+  undefined,
 );
+
+export const LOADING_MODES = {
+  OVERLAY: "overlay",
+  INLINE: "inline",
+} as const;
+
+export type TLoadingMode = (typeof LOADING_MODES)[keyof typeof LOADING_MODES];
 
 const LOADING_RESET_DELAY_MS = 50;
 
@@ -27,7 +34,7 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isOverlayLoading, setIsOverlayLoading] = useState(false);
   const resetTimeoutRef = useRef<number | null>(null);
-  const loadingModeRef = useRef<"overlay" | "inline" | null>(null);
+  const loadingModeRef = useRef<TLoadingMode | null>(null);
 
   const clearResetTimeout = useCallback(() => {
     if (resetTimeoutRef.current !== null) {
@@ -42,9 +49,11 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
 
       if (loading) {
         const useOverlay =
-          options?.overlay ?? loadingModeRef.current !== "inline";
+          options?.overlay ?? loadingModeRef.current !== LOADING_MODES.INLINE;
 
-        loadingModeRef.current = useOverlay ? "overlay" : "inline";
+        loadingModeRef.current = useOverlay
+          ? LOADING_MODES.OVERLAY
+          : LOADING_MODES.INLINE;
         setIsLoading(true);
         setIsOverlayLoading(useOverlay);
         return;
@@ -64,13 +73,11 @@ export const LoadingProvider: React.FC<{ children: ReactNode }> = ({
 
   const value = useMemo(
     () => ({ isLoading, isOverlayLoading, setLoading }),
-    [isLoading, isOverlayLoading, setLoading]
+    [isLoading, isOverlayLoading, setLoading],
   );
 
   return (
-    <LoadingContext.Provider value={value}>
-      {children}
-    </LoadingContext.Provider>
+    <LoadingContext.Provider value={value}>{children}</LoadingContext.Provider>
   );
 };
 

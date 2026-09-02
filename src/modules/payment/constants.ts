@@ -29,3 +29,21 @@ export const PAYMENT_MODES = {
 } as const;
 
 export type TPaymentMode = (typeof PAYMENT_MODES)[keyof typeof PAYMENT_MODES];
+
+export const ACCESS_STATUS = {
+  ACTIVE: "active",
+  EXPIRED: "expired",
+  REVOKED: "revoked",
+} as const;
+
+export type TAccessStatus = (typeof ACCESS_STATUS)[keyof typeof ACCESS_STATUS];
+
+export const PRODUCT_CYCLES = {
+  ONE_TIME: "one_time",
+  MONTHLY: "monthly",
+  YEARLY: "yearly",
+} as const;
+
+export type TProductCycle =
+  (typeof PRODUCT_CYCLES)[keyof typeof PRODUCT_CYCLES];
+

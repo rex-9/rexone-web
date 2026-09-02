@@ -1,26 +1,53 @@
 // src/modules/feedback/feedback.controller.ts
+
 import { feedbackService } from "./feedback.service";
-import { ICreateFeedbackRequest, IFeedback } from "./types";
+import {
+  ICreateFeedbackRequest,
+  IFeedback,
+  IFeedbackListParams,
+} from "./types";
 import { parsePaginatedResponse } from "../../services/api.service";
+import {
+  BROWSER_NAMES,
+  OS_NAMES,
+  USER_AGENT_TOKENS,
+  type TBrowserName,
+  type TOsName,
+} from "../log/constants";
 
 export class FeedbackController {
-  private static detectBrowser(): string {
+  private static detectBrowser(): TBrowserName {
     const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
-    if (ua.includes("Chrome") && !ua.includes("Edg/")) return "Chrome";
-    if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
-    if (ua.includes("Firefox")) return "Firefox";
-    if (ua.includes("Edg/")) return "Edge";
-    return "Browser";
+    if (
+      ua.includes(USER_AGENT_TOKENS.CHROME) &&
+      !ua.includes(USER_AGENT_TOKENS.EDGE)
+    ) {
+      return BROWSER_NAMES.CHROME;
+    }
+    if (
+      ua.includes(USER_AGENT_TOKENS.SAFARI) &&
+      !ua.includes(USER_AGENT_TOKENS.CHROME)
+    ) {
+      return BROWSER_NAMES.SAFARI;
+    }
+    if (ua.includes(USER_AGENT_TOKENS.FIREFOX)) return BROWSER_NAMES.FIREFOX;
+    if (ua.includes(USER_AGENT_TOKENS.EDGE)) return BROWSER_NAMES.EDGE;
+    return BROWSER_NAMES.UNKNOWN;
   }
 
-  private static detectOS(): string {
+  private static detectOS(): TOsName {
     const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
-    if (ua.includes("Mac OS")) return "macOS";
-    if (ua.includes("Windows")) return "Windows";
-    if (ua.includes("Linux")) return "Linux";
-    if (ua.includes("Android")) return "Android";
-    if (ua.includes("iPhone") || ua.includes("iPad")) return "iOS";
-    return "Unknown OS";
+    if (ua.includes(USER_AGENT_TOKENS.MAC_OS)) return OS_NAMES.MACOS;
+    if (ua.includes(USER_AGENT_TOKENS.WINDOWS)) return OS_NAMES.WINDOWS;
+    if (ua.includes(USER_AGENT_TOKENS.LINUX)) return OS_NAMES.LINUX;
+    if (ua.includes(USER_AGENT_TOKENS.ANDROID)) return OS_NAMES.ANDROID;
+    if (
+      ua.includes(USER_AGENT_TOKENS.IPHONE) ||
+      ua.includes(USER_AGENT_TOKENS.IPAD)
+    ) {
+      return OS_NAMES.IOS;
+    }
+    return OS_NAMES.UNKNOWN;
   }
 
   /**
@@ -81,12 +108,7 @@ export class FeedbackController {
   /**
    * Admin: fetch paginated feedbacks
    */
-  static async getAdminFeedbacks(params?: {
-    page?: number;
-    limit?: number;
-    status?: string;
-    category?: string;
-  }) {
+  static async getAdminFeedbacks(params?: IFeedbackListParams) {
     const response = await feedbackService.getAdminFeedbacks(params);
     return parsePaginatedResponse<IFeedback>(response);
   }

@@ -1,6 +1,7 @@
 import {
   ANALYTICS_GRAINS,
   ANALYTICS_PERIODS,
+  TAnalyticsGrain,
   TAnalyticsPeriod,
 } from "../../constants";
 
@@ -109,7 +110,7 @@ export const calculateUtcRangeForYear = (year: number): IUtcDateRange => {
  */
 export const formatUtcToLocalLabel = (
   utcIsoString: string,
-  grain: "hourly" | "daily" | "monthly",
+  grain: TAnalyticsGrain,
 ): string => {
   try {
     const d = new Date(utcIsoString);

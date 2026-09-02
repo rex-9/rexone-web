@@ -3,6 +3,14 @@ import React from "react";
 import { cn } from "../../helpers";
 import { ComponentSize, ComponentSizes } from "../../constants";
 
+export const TabVariants = {
+  SEGMENTED: "segmented",
+  UNDERLINE: "underline",
+  PILLS: "pills",
+} as const;
+
+export type TabVariant = (typeof TabVariants)[keyof typeof TabVariants];
+
 export interface ITabItem<T extends string = string> {
   value: T;
   label: React.ReactNode;
@@ -16,7 +24,7 @@ export interface ITabsProps<T extends string = string> {
   value: T;
   onChange: (value: T) => void;
   size?: ComponentSize;
-  variant?: "segmented" | "underline" | "pills";
+  variant?: TabVariant;
   className?: string;
   tabClassName?: string;
   activeTabClassName?: string;
@@ -28,7 +36,7 @@ export const Tabs = <T extends string = string>({
   value,
   onChange,
   size = ComponentSizes.MD,
-  variant = "segmented",
+  variant = TabVariants.SEGMENTED,
   className,
   tabClassName,
   activeTabClassName,
@@ -53,7 +61,7 @@ export const Tabs = <T extends string = string>({
 
   const selectedSize = sizeStyles[size] || sizeStyles[ComponentSizes.MD]!;
 
-  if (variant === "underline") {
+  if (variant === TabVariants.UNDERLINE) {
     return (
       <div
         role="tablist"

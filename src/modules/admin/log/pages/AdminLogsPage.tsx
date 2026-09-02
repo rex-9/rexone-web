@@ -48,6 +48,7 @@ import {
   ADMIN_LOG_SORT_KEYS,
   ADMIN_LOG_TABLE_HEADERS,
   ADMIN_LOG_TABLE_KEYS,
+  type TAdminLogResolution,
 } from "../constants";
 import { AdminLogDetailDialog } from "../components/AdminLogDetailDialog";
 
@@ -68,7 +69,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const resolutionFilter = (searchParams.get("resolution") ||
-    ADMIN_LOG_RESOLUTION.UNRESOLVED) as "unresolved" | "resolved" | "all";
+    ADMIN_LOG_RESOLUTION.UNRESOLVED) as TAdminLogResolution;
   const severityFilter = searchParams.get("severity") || "";
   const platformFilter = searchParams.get("platform") || "";
 

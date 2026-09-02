@@ -8,8 +8,16 @@ import {
   Button,
   FormContainer,
 } from "../../../../design/components";
-import { ButtonVariants, ButtonTypes } from "../../../../design/constants";
+import {
+  ButtonVariants,
+  ButtonTypes,
+  ButtonSizes,
+} from "../../../../design/constants";
 import type { IGrantAccessPayload } from "../types";
+import {
+  ADMIN_ACCESS_DURATION_OPTIONS,
+  type TAdminAccessDurationOption,
+} from "../constants";
 
 interface IAdminAccessGrantDialogProps {
   isOpen: boolean;
@@ -26,9 +34,8 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
 }) => {
   const [emailsInput, setEmailsInput] = useState("");
   const [productCode, setProductCode] = useState("");
-  const [durationOption, setDurationOption] = useState<
-    "30" | "90" | "365" | "lifetime" | "custom"
-  >("30");
+  const [durationOption, setDurationOption] =
+    useState<TAdminAccessDurationOption>(ADMIN_ACCESS_DURATION_OPTIONS.DAYS_30);
   const [customDays, setCustomDays] = useState<number>(30);
   const [error, setError] = useState<string | null>(null);
 
@@ -72,11 +79,15 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
 
     setError(null);
     let days: number | null = null;
-    if (durationOption === "30") days = 30;
-    else if (durationOption === "90") days = 90;
-    else if (durationOption === "365") days = 365;
-    else if (durationOption === "custom") days = customDays;
-    else if (durationOption === "lifetime") days = null;
+    if (durationOption === ADMIN_ACCESS_DURATION_OPTIONS.DAYS_30) days = 30;
+    else if (durationOption === ADMIN_ACCESS_DURATION_OPTIONS.DAYS_90)
+      days = 90;
+    else if (durationOption === ADMIN_ACCESS_DURATION_OPTIONS.DAYS_365)
+      days = 365;
+    else if (durationOption === ADMIN_ACCESS_DURATION_OPTIONS.CUSTOM)
+      days = customDays;
+    else if (durationOption === ADMIN_ACCESS_DURATION_OPTIONS.LIFETIME)
+      days = null;
 
     await onSubmit({
       emails: emails.length > 0 ? emails : undefined,
@@ -142,30 +153,32 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
           </label>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              { id: "30", label: "30 Days" },
-              { id: "90", label: "90 Days" },
-              { id: "365", label: "1 Year" },
-              { id: "lifetime", label: "Lifetime" },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_30, label: "30 Days" },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_90, label: "90 Days" },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_365, label: "1 Year" },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.LIFETIME, label: "Lifetime" },
             ].map((option) => (
-              <button
+              <Button
                 key={option.id}
-                type="button"
+                type={ButtonTypes.BUTTON}
+                variant={
+                  durationOption === option.id
+                    ? ButtonVariants.PRIMARY
+                    : ButtonVariants.SECONDARY
+                }
+                size={ButtonSizes.SM}
                 onClick={() =>
                   setDurationOption(option.id as typeof durationOption)
                 }
-                className={`h-10 rounded-md border text-caption font-semibold transition-colors ${
-                  durationOption === option.id
-                    ? "border-primary bg-primary/10 text-primary font-bold"
-                    : "border-base-300 bg-base-100 text-base-content hover:bg-base-200"
-                }`}
+                className="w-full text-caption"
               >
                 {option.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
-        {durationOption === "custom" && (
+        {durationOption === ADMIN_ACCESS_DURATION_OPTIONS.CUSTOM && (
           <TextInput
             label="Custom Duration (Days)"
             type="number"
