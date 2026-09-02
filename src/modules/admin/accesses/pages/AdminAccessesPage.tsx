@@ -8,13 +8,10 @@ import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
-  Badge,
   Button,
-  getStatusBadgeVariant,
-} from "../../../../design";
-import {
-  SearchInput,
   Dropdown,
+  SearchInput,
+  StatusBadge,
 } from "../../../../design/components";
 import type { IAdminAccess, IGrantAccessPayload } from "../types";
 import AdminAccessesController from "../accesses.controller";
@@ -240,11 +237,7 @@ export const AdminAccessesPage: React.FC = () => {
     {
       key: ADMIN_ACCESS_TABLE_KEYS.STATUS,
       header: ADMIN_ACCESS_TABLE_HEADERS.STATUS,
-      render: (access) => (
-        <Badge variant={getStatusBadgeVariant(access.status)}>
-          {access.status.toUpperCase()}
-        </Badge>
-      ),
+      render: (access) => <StatusBadge status={access.status} />,
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.GRANTED_AT,

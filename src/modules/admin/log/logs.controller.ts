@@ -81,6 +81,40 @@ class AdminLogsController {
     };
   }
 
+  async discardLog(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await AdminLogsService.discardLog(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to discard log"),
+    };
+  }
+
+  async undiscardLog(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await AdminLogsService.undiscardLog(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to restore log"),
+    };
+  }
+
   async deleteLog(id: string): Promise<{
     success: boolean;
     error?: string;
@@ -94,7 +128,7 @@ class AdminLogsController {
 
     return {
       success: false,
-      error: getApiError(response, "Failed to delete log"),
+      error: getApiError(response, "Failed to destroy log"),
     };
   }
 }

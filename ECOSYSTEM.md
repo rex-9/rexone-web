@@ -175,7 +175,7 @@ Defined under `src/design/`:
   - Inputs (`TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`).
   - Overlays: Base `Dialog` molecule, `ConfirmDialog` (powered by `Dialog` underneath for destructive confirmations), `LoadingOverlay`, `Toast`.
   - Buttons (`Button`, `GoogleButton`, `SignOutButton`).
-  - Common & Media: `NavBar`, `HeadNavbar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Asset` / `Image`, `VideoPlayer` / `Video`. Strictly zero raw `<img>`, `<video>`, or `<a>` tags.
+  - Common & Media: `NavBar`, `HeadNavbar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Asset` / `Image`, `Video`. Strictly zero raw `<img>`, `<video>`, or `<a>` tags.
 
 ### 🧩 Domain Modules & Flows
 

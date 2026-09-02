@@ -131,7 +131,7 @@ export const icons = {
 } as const;
 
 // ============================================================
-// VIDEO ASSETS (for VideoPlayer component)
+// VIDEO ASSETS (for Video component)
 // ============================================================
 
 export const videos = {

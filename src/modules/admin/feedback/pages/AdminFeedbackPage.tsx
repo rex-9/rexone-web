@@ -8,12 +8,11 @@ import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
-  Badge,
   Dropdown,
   DropdownSizes,
   getCategoryBadgeVariant,
   getPriorityBadgeVariant,
-  getStatusBadgeVariant,
+  StatusBadge,
 } from "../../../../design";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback } from "../types";
@@ -153,9 +152,10 @@ export const AdminFeedbackPage: React.FC = () => {
       key: ADMIN_FEEDBACK_TABLE_KEYS.CATEGORY,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.CATEGORY,
       render: (item) => (
-        <Badge variant={getCategoryBadgeVariant(item.category)}>
-          {item.category.replace("_", " ")}
-        </Badge>
+        <StatusBadge
+          status={item.category}
+          variant={getCategoryBadgeVariant(item.category)}
+        />
       ),
     },
     {
@@ -195,19 +195,16 @@ export const AdminFeedbackPage: React.FC = () => {
     {
       key: ADMIN_FEEDBACK_TABLE_KEYS.STATUS,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.STATUS,
-      render: (item) => (
-        <Badge variant={getStatusBadgeVariant(item.status)}>
-          {item.status.replace("_", " ")}
-        </Badge>
-      ),
+      render: (item) => <StatusBadge status={item.status} />,
     },
     {
       key: ADMIN_FEEDBACK_TABLE_KEYS.PRIORITY,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.PRIORITY,
       render: (item) => (
-        <Badge variant={getPriorityBadgeVariant(item.priority)}>
-          {(item.priority || "medium").replace("_", " ").toUpperCase()}
-        </Badge>
+        <StatusBadge
+          status={item.priority || "medium"}
+          variant={getPriorityBadgeVariant(item.priority)}
+        />
       ),
     },
     {

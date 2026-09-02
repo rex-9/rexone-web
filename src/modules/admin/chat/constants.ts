@@ -12,8 +12,10 @@ export type TAdminChatRole =
 export const ADMIN_CHAT_PAGE_TITLES = {
   MESSAGE_EDIT: "Edit Chat Message",
   MESSAGES: "Chat Messages",
+  MESSAGES_RECYCLE_BIN: "Recycle Bin | Chat Messages",
   ROOM_EDIT: "Edit Chat Room",
   ROOMS: "Chat Rooms",
+  ROOMS_RECYCLE_BIN: "Recycle Bin | Chat Rooms",
 } as const;
 
 export const ADMIN_CHAT_TABLE_HEADERS = {

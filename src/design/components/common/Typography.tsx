@@ -5,7 +5,7 @@ import { TypographyVariant, TypographyVariants } from "../../constants";
 export interface ITypographyProps extends React.HTMLAttributes<HTMLParagraphElement> {
   children: React.ReactNode;
   className?: string;
-  variant?: TypographyVariant | "primary" | "secondary";
+  variant?: TypographyVariant;
 }
 
 export const Typography: React.FC<ITypographyProps> = ({
@@ -21,7 +21,9 @@ export const Typography: React.FC<ITypographyProps> = ({
     <p
       {...props}
       className={cn(
-        variant === "primary" ? primaryClasses : secondaryClasses,
+        variant === TypographyVariants.PRIMARY
+          ? primaryClasses
+          : secondaryClasses,
         className,
       )}
     >

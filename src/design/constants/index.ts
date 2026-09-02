@@ -8,6 +8,7 @@
  */
 
 export * from "./sizes.constants";
+export * from "./theme.constants";
 export * from "./button.constants";
 export * from "./badge.constants";
 export * from "./form.constants";

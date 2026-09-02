@@ -36,4 +36,5 @@ export interface IAdminChatListParams {
   limit?: number;
   sort_by?: string;
   sort_order?: TSortOrder;
+  discarded?: boolean | string;
 }

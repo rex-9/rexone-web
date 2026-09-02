@@ -5,10 +5,15 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
-import { Button, Badge } from "../../../../design";
+import { Button, StatusBadge } from "../../../../design";
 import type { IAdminProduct } from "../types";
 import ProductController from "../product.controller";
 import {
@@ -31,7 +36,6 @@ import {
   type TAdminViewMode,
 } from "../../constants";
 import {
-  ADMIN_PRODUCT_LABELS,
   ADMIN_PRODUCT_PAGE_TITLES,
   ADMIN_PRODUCT_SORT_KEYS,
   ADMIN_PRODUCT_TABLE_HEADERS,
@@ -47,7 +51,6 @@ const formatPrice = (amount: number, currency: string): string => {
   }).format(amount / 100);
 };
 
-import { BadgeSizes, BadgeVariants } from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 
 type ProductLifecycleAction =
@@ -115,7 +118,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     setError("");
 
     const result =
-      view === "active"
+      view === ADMIN_VIEW_MODES.ACTIVE
         ? await ProductController.getProducts({
             page,
             limit: ADMIN_PAGE_SIZE,
@@ -189,14 +192,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         key: ADMIN_PRODUCT_TABLE_KEYS.STATUS,
         header: ADMIN_PRODUCT_TABLE_HEADERS.STATUS,
         render: (product) => (
-          <Badge
-            size={BadgeSizes.XS}
-            variant={product.active ? BadgeVariants.SUCCESS : BadgeVariants.SECONDARY}
-          >
-            {product.active
-              ? ADMIN_PRODUCT_LABELS.ACTIVE
-              : ADMIN_PRODUCT_LABELS.INACTIVE}
-          </Badge>
+          <StatusBadge status={product.active ? "active" : "inactive"} />
         ),
       },
       {
@@ -415,7 +411,3 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     </div>
   );
 };
-
-export const AdminDiscardedProductsPage: React.FC = () => (
-  <AdminProductsPage view={ADMIN_VIEW_MODES.DISCARDED} />
-);

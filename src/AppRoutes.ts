@@ -47,6 +47,7 @@ class AppRoutes {
         USER_CREATE: AppRoutes.admin("/users/create"),
         USER_EDIT: AppRoutes.admin("/users/:id/edit"),
         ROLES: AppRoutes.admin("/roles"),
+        ROLES_RECYCLE_BIN: AppRoutes.admin("/roles/bin"),
         ROLE_CREATE: AppRoutes.admin("/roles/create"),
         ROLE_EDIT: AppRoutes.admin("/roles/:id/edit"),
         NOTIFICATIONS: AppRoutes.admin("/notifications"),
@@ -58,10 +59,13 @@ class AppRoutes {
         FEEDBACK: AppRoutes.admin("/feedback"),
         FEEDBACK_DETAIL: AppRoutes.admin("/feedback/:id"),
         LOGS: AppRoutes.admin("/logs"),
+        LOGS_RECYCLE_BIN: AppRoutes.admin("/logs/bin"),
         LOG_DETAIL: AppRoutes.admin("/logs/:id"),
         CHAT_ROOMS: AppRoutes.admin("/chat/rooms"),
+        CHAT_ROOMS_RECYCLE_BIN: AppRoutes.admin("/chat/rooms/bin"),
         CHAT_ROOM_EDIT: AppRoutes.admin("/chat/rooms/:id/edit"),
         CHAT_MESSAGES: AppRoutes.admin("/chat/messages"),
+        CHAT_MESSAGES_RECYCLE_BIN: AppRoutes.admin("/chat/messages/bin"),
         CHAT_MESSAGE_EDIT: AppRoutes.admin("/chat/messages/:id/edit"),
       },
     },
@@ -147,6 +151,8 @@ class AppRoutes {
         USER_UNDISCARD: AppRoutes.adminApi("/users/:id/undiscard"), // POST
         IAM_ROLES: AppRoutes.adminApi("/iam/roles"), // GET, POST
         IAM_ROLE_DETAIL: AppRoutes.adminApi("/iam/roles/:id"), // GET, PUT, DELETE
+        IAM_ROLE_DISCARD: AppRoutes.adminApi("/iam/roles/:id/discard"), // POST
+        IAM_ROLE_UNDISCARD: AppRoutes.adminApi("/iam/roles/:id/undiscard"), // POST
         IAM_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET, POST
         IAM_PERMISSION_DETAIL: AppRoutes.adminApi("/iam/permissions/:id"), // GET, PUT, DELETE
         IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET
@@ -165,14 +171,22 @@ class AppRoutes {
         ), // POST
         CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
         CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PUT, DELETE
+        CHAT_ROOM_DISCARD: AppRoutes.adminApi("/chat/rooms/:id/discard"), // POST
+        CHAT_ROOM_UNDISCARD: AppRoutes.adminApi("/chat/rooms/:id/undiscard"), // POST
         CHAT_MESSAGES: AppRoutes.adminApi("/chat/messages"), // GET
         CHAT_MESSAGE_DETAIL: AppRoutes.adminApi("/chat/messages/:id"), // GET, PUT, DELETE
+        CHAT_MESSAGE_DISCARD: AppRoutes.adminApi("/chat/messages/:id/discard"), // POST
+        CHAT_MESSAGE_UNDISCARD: AppRoutes.adminApi(
+          "/chat/messages/:id/undiscard",
+        ), // POST
         FEEDBACKS: AppRoutes.adminApi("/feedbacks"), // GET
         FEEDBACK_DETAIL: AppRoutes.adminApi("/feedbacks/:id"), // GET, PUT, DELETE
         ACCESSES: AppRoutes.adminApi("/accesses"), // GET, POST
         ACCESS_DETAIL: AppRoutes.adminApi("/accesses/:id"), // GET, PUT, DELETE
         LOGS: AppRoutes.api("/log/clients"), // GET, POST
         LOG_DETAIL: AppRoutes.api("/log/clients/:id"), // GET, DELETE
+        LOG_DISCARD: AppRoutes.api("/log/clients/:id/discard"), // POST
+        LOG_UNDISCARD: AppRoutes.api("/log/clients/:id/undiscard"), // POST
         LOG_RESOLVE: AppRoutes.api("/log/clients/:id/resolve"), // PUT
         LOG_UNRESOLVE: AppRoutes.api("/log/clients/:id/unresolve"), // PUT
         ANALYTICS_OVERVIEW: AppRoutes.adminApi("/analytics/overview"), // GET

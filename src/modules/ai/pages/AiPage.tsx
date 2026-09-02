@@ -5,6 +5,7 @@ import { Button, TextArea, ConfirmDialog } from "../../../design/components";
 import { useToast, useLoading } from "../../../contexts";
 import AiController from "../ai.controller";
 import { IMessage } from "..";
+import { ADMIN_CHAT_ROLES } from "../../admin";
 
 export const AiPage: React.FC = () => {
   const { success, error } = useToast();
@@ -153,12 +154,14 @@ export const AiPage: React.FC = () => {
             <div
               key={message.id}
               className={`flex ${
-                message.role === "user" ? "justify-end" : "justify-start"
+                message.role === ADMIN_CHAT_ROLES.USER
+                  ? "justify-end"
+                  : "justify-start"
               }`}
             >
               <div
                 className={`max-w-[80%] rounded-md p-3 ${
-                  message.role === "user"
+                  message.role === ADMIN_CHAT_ROLES.USER
                     ? "bg-primary text-primary-content"
                     : "bg-base-200"
                 }`}

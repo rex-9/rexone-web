@@ -13,11 +13,13 @@ vi.mock("./chat.service", () => ({
     getRoom: vi.fn(),
     updateRoom: vi.fn(),
     discardRoom: vi.fn(),
+    undiscardRoom: vi.fn(),
     deleteRoom: vi.fn(),
     getMessages: vi.fn(),
     getMessage: vi.fn(),
     updateMessage: vi.fn(),
     discardMessage: vi.fn(),
+    undiscardMessage: vi.fn(),
     deleteMessage: vi.fn(),
   },
 }));
@@ -139,6 +141,40 @@ describe("ChatController", () => {
     });
   });
 
+  describe("undiscardRoom", () => {
+    it("returns success on restore room", async () => {
+      const mockResponse = {
+        data: { status: { code: 200, success: true, message: "OK" } },
+      };
+
+      vi.mocked(ChatService.undiscardRoom).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await ChatController.undiscardRoom("room_1");
+
+      expect(ChatService.undiscardRoom).toHaveBeenCalledWith("room_1");
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("deleteRoom", () => {
+    it("returns success on permanent delete room", async () => {
+      const mockResponse = {
+        data: { status: { code: 200, success: true, message: "OK" } },
+      };
+
+      vi.mocked(ChatService.deleteRoom).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await ChatController.deleteRoom("room_1");
+
+      expect(ChatService.deleteRoom).toHaveBeenCalledWith("room_1");
+      expect(result.success).toBe(true);
+    });
+  });
+
   describe("getMessages", () => {
     it("returns messages list and pagination", async () => {
       const mockMessages = [
@@ -239,6 +275,40 @@ describe("ChatController", () => {
       const result = await ChatController.discardMessage("msg_1");
 
       expect(ChatService.discardMessage).toHaveBeenCalledWith("msg_1");
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("undiscardMessage", () => {
+    it("returns success on restore message", async () => {
+      const mockResponse = {
+        data: { status: { code: 200, success: true, message: "OK" } },
+      };
+
+      vi.mocked(ChatService.undiscardMessage).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await ChatController.undiscardMessage("msg_1");
+
+      expect(ChatService.undiscardMessage).toHaveBeenCalledWith("msg_1");
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("deleteMessage", () => {
+    it("returns success on permanent delete message", async () => {
+      const mockResponse = {
+        data: { status: { code: 200, success: true, message: "OK" } },
+      };
+
+      vi.mocked(ChatService.deleteMessage).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await ChatController.deleteMessage("msg_1");
+
+      expect(ChatService.deleteMessage).toHaveBeenCalledWith("msg_1");
       expect(result.success).toBe(true);
     });
   });
