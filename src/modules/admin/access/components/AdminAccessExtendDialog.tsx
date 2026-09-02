@@ -1,4 +1,4 @@
-// src/modules/admin/accesses/components/AdminAccessExtendDialog.tsx
+// src/modules/admin/access/components/AdminAccessExtendDialog.tsx
 
 import React, { useState } from "react";
 import {
@@ -10,6 +10,7 @@ import {
 import { ButtonVariants, ButtonTypes } from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminAccess, IExtendAccessPayload } from "../types";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminAccessExtendDialogProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ interface IAdminAccessExtendDialogProps {
 export const AdminAccessExtendDialog: React.FC<
   IAdminAccessExtendDialogProps
 > = ({ isOpen, access, onClose, onSubmit, isLoading = false }) => {
+  const t = useTranslate();
   const [days, setDays] = useState<number>(30);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +49,7 @@ export const AdminAccessExtendDialog: React.FC<
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="Extend Entitlement Expiration"
+      title={t(AppLocales.Admin.Accesses.ExtendDialog.Title)}
     >
       <FormContainer onSubmit={handleSubmit} className="space-y-4">
         {error && (
@@ -58,28 +60,29 @@ export const AdminAccessExtendDialog: React.FC<
 
         <div className="rounded-md bg-base-200 p-3 text-caption space-y-1">
           <div>
-            <span className="font-semibold">User:</span>{" "}
+            <span className="font-semibold">{t(AppLocales.Admin.Accesses.Table.User)}:</span>{" "}
             {access.user_name || access.user_email || access.user_id}
           </div>
           <div>
-            <span className="font-semibold">Product:</span>{" "}
+            <span className="font-semibold">{t(AppLocales.Admin.Accesses.Table.Product)}:</span>{" "}
             {access.product_name || access.product_code || access.product_id}
           </div>
           <div>
-            <span className="font-semibold">Current Expiry:</span>{" "}
+            <span className="font-semibold">{t(AppLocales.Admin.Accesses.Table.ExpiresAt)}:</span>{" "}
             {access.expires_at
               ? formatAdminDate(access.expires_at)
-              : "Never (Lifetime)"}
+              : t(AppLocales.Admin.Common.Status.Lifetime)}
           </div>
         </div>
 
         {!access.expires_at ? (
           <div className="rounded-md bg-warning/10 p-3 text-caption text-warning">
-            This entitlement has Lifetime validity and cannot be extended.
+            {t(AppLocales.Admin.Common.Status.Lifetime)}
           </div>
         ) : (
           <TextInput
-            label="Add Additional Days"
+            label={t(AppLocales.Admin.Accesses.ExtendDialog.AdditionalDaysLabel)}
+            placeholder={t(AppLocales.Admin.Accesses.ExtendDialog.AdditionalDaysPlaceholder)}
             type="number"
             value={days.toString()}
             onChange={(e) => setDays(parseInt(e.target.value, 10) || 0)}
@@ -95,7 +98,7 @@ export const AdminAccessExtendDialog: React.FC<
             onClick={onClose}
             disabled={isLoading}
           >
-            Cancel
+            {t(AppLocales.Admin.Common.Actions.Cancel)}
           </Button>
           <Button
             type={ButtonTypes.SUBMIT}
@@ -103,10 +106,11 @@ export const AdminAccessExtendDialog: React.FC<
             isLoading={isLoading}
             disabled={!access.expires_at || isLoading}
           >
-            Extend Expiration
+            {t(AppLocales.Admin.Accesses.ExtendDialog.ExtendButton)}
           </Button>
         </div>
       </FormContainer>
     </Dialog>
   );
 };
+

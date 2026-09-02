@@ -1,3 +1,4 @@
+// src/modules/admin/products/pages/AdminProductEditPage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -10,21 +11,21 @@ import {
 } from "../types";
 import {
   AlertDialog,
-  
   AdminState,
 } from "../../components";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
-import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
 import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminProductEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.EDIT);
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Products.EditTitle)} | Admin`);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const {setLoading } = useLoading();
+  const { setLoading } = useLoading();
   const [product, setProduct] = useState<IAdminProduct | null>(null);
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -40,12 +41,12 @@ export const AdminProductEditPage: React.FC = () => {
       if (result.success && result.product) {
         setProduct(result.product);
       } else {
-        setError(result.error || "Product not found");
+        setError(result.error || t(AppLocales.Admin.Products.Errors.LoadOne));
       }
     };
 
     void loadProduct();
-  }, [id, setLoading]);
+  }, [id, setLoading, t]);
 
   const handleSubmit = async (values: IAdminProductFormValues) => {
     if (!id) return;
@@ -56,10 +57,10 @@ export const AdminProductEditPage: React.FC = () => {
     setLoading(false, { overlay: false });
 
     if (result.success) {
-      toast.success(result.message || "Product updated");
+      toast.success(result.message || t(AppLocales.Admin.Products.Toasts.UpdateSuccess));
       navigate(AppRoutes.client.protected.admin.PRODUCTS);
     } else {
-      setAlertMessage(result.error || "Failed to update product");
+      setAlertMessage(result.error || t(AppLocales.Admin.Products.Errors.Update));
     }
   };
 
@@ -71,15 +72,16 @@ export const AdminProductEditPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
       {error && !product ? (
-        <AdminState title="Unable to load product" message={error} />
-      ) : product? (
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
+      ) : product ? (
         <AdminProductForm
-            mode={ADMIN_ACTIONS.EDIT}
-            product={product}
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
-          />
-      ):null}
+          mode={ADMIN_ACTIONS.EDIT}
+          product={product}
+          onSubmit={handleSubmit}
+          onCancel={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
+        />
+      ) : null}
     </>
   );
 };
+

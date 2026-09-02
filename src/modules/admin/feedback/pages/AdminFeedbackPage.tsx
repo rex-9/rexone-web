@@ -1,10 +1,10 @@
 // src/modules/admin/feedback/pages/AdminFeedbackPage.tsx
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -35,13 +35,14 @@ import {
   ADMIN_FEEDBACK_PRIORITY,
   ADMIN_FEEDBACK_SORT_KEYS,
   ADMIN_FEEDBACK_STATUS,
-  ADMIN_FEEDBACK_TABLE_HEADERS,
   ADMIN_FEEDBACK_TABLE_KEYS,
 } from "../constants";
 import { AdminFeedbackTriageDialog } from "../components/AdminFeedbackTriageDialog";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminFeedbackPage: React.FC = () => {
-  useDocumentTitle("Feedback Inbox | Admin");
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Feedback.Title)} | Admin`);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -118,11 +119,11 @@ export const AdminFeedbackPage: React.FC = () => {
       setFeedbacks(result.feedbacks);
       setPagination(result.pagination);
     } else {
-      setError(result.error || "Failed to load feedback");
+      setError(result.error || t(AppLocales.Admin.Feedback.Errors.LoadListFailed));
     }
 
     setLoading(false);
-  }, [can, page, statusFilter, categoryFilter, priorityFilter, setLoading, sortBy, sortOrder]);
+  }, [can, page, statusFilter, categoryFilter, priorityFilter, setLoading, sortBy, sortOrder, t]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -139,107 +140,115 @@ export const AdminFeedbackPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Feedback updated successfully!");
+      toast.success(t(AppLocales.Admin.Feedback.Toasts.StatusUpdateSuccess));
       setTriageTarget(null);
       void loadFeedbacks();
     } else {
-      toast.error(result.error || "Failed to update feedback");
+      toast.error(result.error || t(AppLocales.Admin.Feedback.Errors.UpdateStatusFailed));
     }
   };
 
-  const columns: IAdminTableColumn<IAdminFeedback>[] = [
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.CATEGORY,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.CATEGORY,
-      render: (item) => (
-        <StatusBadge
-          status={item.category}
-          variant={getCategoryBadgeVariant(item.category)}
-        />
-      ),
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.CONTENT,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.CONTENT,
-      sortKey: ADMIN_FEEDBACK_SORT_KEYS.RATING,
-      render: (item) => (
-        <div className="max-w-md">
-          <div className="line-clamp-2 text-body-m font-medium text-base-content">
-            {item.content}
-          </div>
-          {item.rating && (
-            <div className="text-caption text-warning pt-0.5">
-              {"⭐".repeat(item.rating)} ({item.rating}/10)
+  const columns: IAdminTableColumn<IAdminFeedback>[] = useMemo(
+    () => [
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.CATEGORY,
+        header: t(AppLocales.Admin.Feedback.Table.Category),
+        render: (item) => (
+          <StatusBadge
+            status={item.category}
+            variant={getCategoryBadgeVariant(item.category)}
+          />
+        ),
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.CONTENT,
+        header: t(AppLocales.Admin.Feedback.Table.Content),
+        sortKey: ADMIN_FEEDBACK_SORT_KEYS.RATING,
+        render: (item) => (
+          <div className="max-w-md">
+            <div className="line-clamp-2 text-body-m font-medium text-base-content">
+              {item.content}
             </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.USER,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.USER,
-      sortKey: ADMIN_FEEDBACK_SORT_KEYS.USER_NAME,
-      render: (item) => (
-        <div>
-          <div className="font-semibold text-base-content">
-            {item.user_name || item.user_email || "Anonymous"}
+            {item.rating && (
+              <div className="text-caption text-warning pt-0.5">
+                {"⭐".repeat(item.rating)} ({item.rating}/10)
+              </div>
+            )}
+            {item.admin_notes && (
+              <div className="line-clamp-1 text-caption text-primary opacity-80 text-xs mt-0.5">
+                Note: {item.admin_notes}
+              </div>
+            )}
           </div>
-          {item.platform && (
-            <div className="text-caption text-base-content opacity-60 text-xs">
-              {item.platform} • {item.app_version || "web"}
+        ),
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.USER,
+        header: t(AppLocales.Admin.Feedback.Table.User),
+        sortKey: ADMIN_FEEDBACK_SORT_KEYS.USER_NAME,
+        render: (item) => (
+          <div>
+            <div className="font-semibold text-base-content">
+              {item.user_name || item.user_email || "Anonymous"}
             </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.STATUS,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.STATUS,
-      render: (item) => <StatusBadge status={item.status} />,
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.PRIORITY,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.PRIORITY,
-      render: (item) => (
-        <StatusBadge
-          status={item.priority || "medium"}
-          variant={getPriorityBadgeVariant(item.priority)}
-        />
-      ),
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.CREATED_AT,
-      header: ADMIN_FEEDBACK_TABLE_HEADERS.CREATED_AT,
-      sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
-      render: (item) => (
-        <div className="text-caption text-base-content opacity-70">
-          {formatAdminDate(item.created_at)}
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_FEEDBACK_TABLE_KEYS.ACTIONS,
-      header: "",
-      className: "text-right",
-      render: (item) => (
-        <AdminTableActions
-          resource={ADMIN_RESOURCES.FEEDBACKS}
-          actions={[
-            {
-              type: ADMIN_ACTIONS.REVIEW,
-              onClick: () => setTriageTarget(item),
-            },
-          ]}
-        />
-      ),
-    },
-  ];
+            {item.platform && (
+              <div className="text-caption text-base-content opacity-60 text-xs">
+                {item.platform} • {item.app_version || "web"}
+              </div>
+            )}
+          </div>
+        ),
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.STATUS,
+        header: t(AppLocales.Admin.Feedback.Table.Status),
+        render: (item) => <StatusBadge status={item.status} />,
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.PRIORITY,
+        header: t(AppLocales.Admin.Feedback.Table.Priority),
+        render: (item) => (
+          <StatusBadge
+            status={item.priority || "medium"}
+            variant={getPriorityBadgeVariant(item.priority)}
+          />
+        ),
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.CREATED_AT,
+        header: t(AppLocales.Admin.Common.Table.CreatedAt),
+        sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
+        render: (item) => (
+          <div className="text-caption text-base-content opacity-70">
+            {formatAdminDate(item.created_at)}
+          </div>
+        ),
+      },
+      {
+        key: ADMIN_FEEDBACK_TABLE_KEYS.ACTIONS,
+        header: "",
+        className: "text-right",
+        render: (item) => (
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.FEEDBACKS}
+            actions={[
+              {
+                type: ADMIN_ACTIONS.REVIEW,
+                onClick: () => setTriageTarget(item),
+              },
+            ]}
+          />
+        ),
+      },
+    ],
+    [t],
+  );
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Feedback Inbox"
-        description="Triage customer feedback, review bug reports, and prioritize feature requests."
+        title={t(AppLocales.Admin.Feedback.Title)}
+        description={t(AppLocales.Admin.Feedback.Description)}
       />
 
       {/* Dropdown Filters */}
@@ -250,11 +259,11 @@ export const AdminFeedbackPage: React.FC = () => {
           value={statusFilter}
           onValueChange={(val) => updateFilters({ status: val, page: 1 })}
           options={[
-            { value: "", label: "All Statuses" },
-            { value: ADMIN_FEEDBACK_STATUS.NEW, label: "New" },
-            { value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS, label: "In Progress" },
-            { value: ADMIN_FEEDBACK_STATUS.RESOLVED, label: "Resolved" },
-            { value: ADMIN_FEEDBACK_STATUS.CLOSED, label: "Closed" },
+            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllStatuses) },
+            { value: ADMIN_FEEDBACK_STATUS.NEW, label: t(AppLocales.Admin.Feedback.Filters.Open) },
+            { value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS, label: t(AppLocales.Admin.Feedback.Filters.InReview) },
+            { value: ADMIN_FEEDBACK_STATUS.RESOLVED, label: t(AppLocales.Admin.Feedback.Filters.Resolved) },
+            { value: ADMIN_FEEDBACK_STATUS.CLOSED, label: t(AppLocales.Admin.Feedback.Filters.Closed) },
           ]}
         />
 
@@ -264,17 +273,17 @@ export const AdminFeedbackPage: React.FC = () => {
           value={categoryFilter}
           onValueChange={(val) => updateFilters({ category: val, page: 1 })}
           options={[
-            { value: "", label: "All Categories" },
-            { value: ADMIN_FEEDBACK_CATEGORY.BUG, label: "Bug Report" },
+            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllCategories) },
+            { value: ADMIN_FEEDBACK_CATEGORY.BUG, label: t(AppLocales.Admin.Feedback.Filters.Bug) },
             {
               value: ADMIN_FEEDBACK_CATEGORY.FEATURE_REQUEST,
-              label: "Feature Request",
+              label: t(AppLocales.Admin.Feedback.Filters.FeatureRequest),
             },
             {
               value: ADMIN_FEEDBACK_CATEGORY.IMPROVEMENT,
-              label: "Improvement",
+              label: t(AppLocales.Admin.Feedback.Filters.Improvement),
             },
-            { value: ADMIN_FEEDBACK_CATEGORY.GENERAL, label: "General" },
+            { value: ADMIN_FEEDBACK_CATEGORY.GENERAL, label: t(AppLocales.Admin.Feedback.Filters.General) },
           ]}
         />
 
@@ -284,12 +293,12 @@ export const AdminFeedbackPage: React.FC = () => {
           value={priorityFilter}
           onValueChange={(val) => updateFilters({ priority: val, page: 1 })}
           options={[
-            { value: "", label: "All Priorities" },
-            { value: ADMIN_FEEDBACK_PRIORITY.CRITICAL, label: "Critical" },
-            { value: ADMIN_FEEDBACK_PRIORITY.URGENT, label: "Urgent" },
-            { value: ADMIN_FEEDBACK_PRIORITY.HIGH, label: "High" },
-            { value: ADMIN_FEEDBACK_PRIORITY.MEDIUM, label: "Medium" },
-            { value: ADMIN_FEEDBACK_PRIORITY.LOW, label: "Low" },
+            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllPriorities) },
+            { value: ADMIN_FEEDBACK_PRIORITY.CRITICAL, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
+            { value: ADMIN_FEEDBACK_PRIORITY.URGENT, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
+            { value: ADMIN_FEEDBACK_PRIORITY.HIGH, label: t(AppLocales.Admin.Feedback.Filters.High) },
+            { value: ADMIN_FEEDBACK_PRIORITY.MEDIUM, label: t(AppLocales.Admin.Feedback.Filters.Normal) },
+            { value: ADMIN_FEEDBACK_PRIORITY.LOW, label: t(AppLocales.Admin.Feedback.Filters.Low) },
           ]}
         />
       </div>
@@ -298,14 +307,14 @@ export const AdminFeedbackPage: React.FC = () => {
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load feedback"
+          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
           message={error}
         />
       ) : !isLoading && feedbacks.length === 0 ? (
         <AdminState
           icon={iconsLib.mail}
-          title="No feedback found"
-          message="No user feedback matching your filter criteria."
+          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
         />
       ) : (
         <>
@@ -335,3 +344,4 @@ export const AdminFeedbackPage: React.FC = () => {
     </div>
   );
 };
+

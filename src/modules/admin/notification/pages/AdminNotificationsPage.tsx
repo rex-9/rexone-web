@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
-import { useTranslate } from "../../../../locales";
+import { useTranslate, AppLocales } from "../../../../locales";
 import type { IUser } from "../../../../models";
 import UserController from "../../user/user.controller";
 import RoleController from "../../role/role.controller";
@@ -22,7 +22,6 @@ import {
   NOTIFICATION_LOCALES,
 } from "../constants";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
-import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
 import {
   AlertDialog,
   AdminState,
@@ -66,9 +65,9 @@ const mergeUsersById = (currentUsers: IUser[], nextUsers: IUser[]) => {
 };
 
 export const AdminNotificationsPage: React.FC = () => {
-  useDocumentTitle(ADMIN_NOTIFICATION_PAGE_TITLES.LIST);
-
   const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Notifications.Title)} | Admin`);
+
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
@@ -111,7 +110,7 @@ export const AdminNotificationsPage: React.FC = () => {
           setValues((v) => ({ ...v, event: firstAvailable.event }));
         }
       } else {
-        setError(templateRes.error || "Failed to load notification templates");
+        setError(templateRes.error || t(AppLocales.Admin.Notifications.Errors.LoadTemplates));
       }
 
       if (rolesRes && rolesRes.success) {
@@ -120,7 +119,7 @@ export const AdminNotificationsPage: React.FC = () => {
     };
 
     void loadInitialData();
-  }, [canReadRoles, permissionsLoading, setLoading]);
+  }, [canReadRoles, permissionsLoading, setLoading, t]);
 
   const searchRecipients = useCallback(
     async (search: string) => {
@@ -141,7 +140,7 @@ export const AdminNotificationsPage: React.FC = () => {
         setUsers((currentUsers) => mergeUsersById(currentUsers, result.users));
         setRecipientSearchError("");
       } else {
-        setRecipientSearchError(result.error || "Failed to search users");
+        setRecipientSearchError(result.error || t(AppLocales.Admin.Users.Errors.LoadListFailed));
       }
     },
     [canReadUsers, setLoading, t],
@@ -314,11 +313,11 @@ export const AdminNotificationsPage: React.FC = () => {
 
     if (result.success) {
       toast.success(
-        result.message || "Notification dispatched successfully! 🚀",
+        result.message || t(AppLocales.Admin.Notifications.Toasts.SendSuccess),
       );
       setValues(initialValues);
     } else {
-      setAlertMessage(result.error || "Failed to dispatch notification");
+      setAlertMessage(result.error || t(AppLocales.Admin.Notifications.Errors.Send));
     }
   };
 
@@ -331,8 +330,8 @@ export const AdminNotificationsPage: React.FC = () => {
       />
 
       <PageHeader
-        title="Notification Dispatch"
-        description="Broadcast system announcements, alerts, and updates across in-app WebSockets, push notifications, and email."
+        title={t(AppLocales.Admin.Notifications.Title)}
+        description={t(AppLocales.Admin.Notifications.Description)}
       />
 
       {error && templates.length === 0 ? (
@@ -349,7 +348,7 @@ export const AdminNotificationsPage: React.FC = () => {
               <div>
                 <h2 className="text-body-l font-bold text-base-content flex items-center gap-2">
                   <iconsLib.bellAlert className="h-5 w-5 text-primary" />
-                  1. Select Notification Event
+                  1. {t(AppLocales.Admin.Notifications.Labels.Event)}
                 </h2>
                 <p className="text-caption text-base-content opacity-60">
                   Select the template and purpose for this notification.
@@ -416,7 +415,7 @@ export const AdminNotificationsPage: React.FC = () => {
               <div>
                 <h2 className="text-body-l font-bold text-base-content flex items-center gap-2">
                   <iconsLib.userGroup className="h-5 w-5 text-primary" />
-                  2. Target Audience
+                  2. {t(AppLocales.Admin.Notifications.Labels.Audience)}
                 </h2>
                 <p className="text-caption text-base-content opacity-60">
                   Choose which users will receive this broadcast.
@@ -433,21 +432,21 @@ export const AdminNotificationsPage: React.FC = () => {
               items={[
                 {
                   value: NOTIFICATION_AUDIENCE_TYPES.USERS,
-                  label: "Specific Users",
+                  label: t(AppLocales.Admin.Notifications.Labels.SelectedUsers),
                   icon: iconsLib.user,
                 },
                 ...(canReadRoles
                   ? [
                       {
                         value: NOTIFICATION_AUDIENCE_TYPES.ROLES,
-                        label: "By IAM Role",
+                        label: t(AppLocales.Admin.Notifications.Labels.SelectedRoles),
                         icon: iconsLib.key,
                       },
                     ]
                   : []),
                 {
                   value: NOTIFICATION_AUDIENCE_TYPES.ALL,
-                  label: "All Active Users",
+                  label: t(AppLocales.Admin.Notifications.Labels.AllUsers),
                   icon: iconsLib.userGroup,
                 },
               ]}
@@ -519,7 +518,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 {selectedUsers.length > 0 && (
                   <div className="flex flex-wrap items-center gap-2 pt-1">
                     <span className="text-caption font-semibold text-base-content opacity-75 mr-1">
-                      Recipients ({selectedUsers.length}):
+                      {t(AppLocales.Admin.Notifications.Labels.Recipients)} ({selectedUsers.length}):
                     </span>
                     {selectedUsers.map((user) => (
                       <span
@@ -591,7 +590,7 @@ export const AdminNotificationsPage: React.FC = () => {
             <div>
               <h2 className="text-body-l font-bold text-base-content flex items-center gap-2">
                 <iconsLib.sparkles className="h-5 w-5 text-primary" />
-                3. Delivery Channels
+                3. {t(AppLocales.Admin.Notifications.Labels.Delivery)}
               </h2>
               <p className="text-caption text-base-content opacity-60">
                 Select one or more delivery channels for transmission.
@@ -617,10 +616,10 @@ export const AdminNotificationsPage: React.FC = () => {
                       </div>
                       <div className="text-caption text-base-content opacity-60 text-xs">
                         {field === NOTIFICATION_FIELDS.SEND_SOCKET
-                          ? "Real-time ActionCable banner"
+                          ? t(AppLocales.Admin.Notifications.Labels.InApp)
                           : field === NOTIFICATION_FIELDS.SEND_PUSH
-                            ? "Mobile & Web push alert"
-                            : "Transactional email dispatch"}
+                            ? t(AppLocales.Admin.Notifications.Labels.Push)
+                            : t(AppLocales.Admin.Notifications.Labels.Email)}
                       </div>
                     </div>
                     <Checkbox
@@ -643,7 +642,7 @@ export const AdminNotificationsPage: React.FC = () => {
               className="px-8"
             >
               <iconsLib.bell className="mr-2 h-5 w-5" />
-              Dispatch Notification
+              {t(AppLocales.Admin.Notifications.Actions.Send)}
             </Button>
           </div>
         </FormContainer>
@@ -651,3 +650,4 @@ export const AdminNotificationsPage: React.FC = () => {
     </div>
   );
 };
+

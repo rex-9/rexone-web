@@ -1,3 +1,4 @@
+// src/modules/admin/user/pages/AdminUserEditPage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -10,13 +11,14 @@ import {
   IAdminUserFormValues,
 } from "../types";
 import { IAdminRole } from "../../role/types";
-import { AlertDialog,  AdminState } from "../../components";
+import { AlertDialog, AdminState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
-import { ADMIN_USER_PAGE_TITLES } from "../constants";
 import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminUserEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_USER_PAGE_TITLES.EDIT);
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Users.EditTitle)} | Admin`);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ export const AdminUserEditPage: React.FC = () => {
       if (userResult.success && userResult.user) {
         setUser(userResult.user);
       } else {
-        setError(userResult.error || "Unable to load user");
+        setError(userResult.error || t(AppLocales.Admin.Users.Errors.LoadOneFailed));
       }
 
       if (rolesResult.success) {
@@ -50,7 +52,7 @@ export const AdminUserEditPage: React.FC = () => {
     };
 
     void loadData();
-  }, [id, setLoading]);
+  }, [id, setLoading, t]);
 
   const handleSubmit = async (values: IAdminUserFormValues) => {
     if (!id) return;
@@ -61,10 +63,10 @@ export const AdminUserEditPage: React.FC = () => {
     setLoading(false, { overlay: false });
 
     if (result.success) {
-      toast.success(result.message || "User updated");
+      toast.success(result.message || t(AppLocales.Admin.Users.Toasts.UpdateSuccess));
       navigate(AppRoutes.client.protected.admin.USERS);
     } else {
-      setAlertMessage(result.error || "Failed to update user");
+      setAlertMessage(result.error || t(AppLocales.Admin.Users.Errors.UpdateFailed));
     }
   };
 
@@ -76,8 +78,10 @@ export const AdminUserEditPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
       {error && (!user || !id) ? (
-        <AdminState title="Unable to load user" message={error} />
-      ) : user ? (
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
+      ) : !user ? (
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={t(AppLocales.Admin.Users.Errors.LoadOneFailed)} />
+      ) : (
         <AdminUserForm
           mode={ADMIN_ACTIONS.EDIT}
           user={user}
@@ -85,7 +89,8 @@ export const AdminUserEditPage: React.FC = () => {
           onSubmit={handleSubmit}
           onCancel={() => navigate(AppRoutes.client.protected.admin.USERS)}
         />
-      ) : null}
+      )}
     </>
   );
 };
+

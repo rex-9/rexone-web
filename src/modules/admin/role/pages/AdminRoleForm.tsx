@@ -1,3 +1,4 @@
+// src/modules/admin/role/pages/AdminRoleForm.tsx
 import React, { useMemo, useState } from "react";
 import { isAdminRoleName } from "../constants";
 import {
@@ -11,8 +12,8 @@ import {
   FormContainer,
   TextInput,
 } from "../../components";
-import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
-import { ADMIN_ROLE_FORM_LABELS } from "../constants";
+import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminRoleFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
@@ -29,6 +30,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
+  const t = useTranslate();
   const [name, setName] = useState(role?.name ?? "");
   const [description, setDescription] = useState(role?.description ?? "");
   const [nameError, setNameError] = useState("");
@@ -73,7 +75,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
     const nextName = name.trim();
 
     if (shouldValidateAdminName && !isAdminRoleName(nextName)) {
-      setNameError(ADMIN_ROLE_FORM_LABELS.NAME_ERROR);
+      setNameError(t(AppLocales.Admin.Roles.Form.KeyPlaceholder));
       return;
     }
 
@@ -90,14 +92,15 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
     <FormContainer onSubmit={handleSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
         <TextInput
-          label={ADMIN_ROLE_FORM_LABELS.ROLE_NAME}
+          label={t(AppLocales.Admin.Roles.Form.NameLabel)}
+          placeholder={t(AppLocales.Admin.Roles.Form.NamePlaceholder)}
           value={name}
           required
           disabled={role?.system}
           error={nameError}
           helperText={
             shouldValidateAdminName
-              ? ADMIN_ROLE_FORM_LABELS.NAME_HELPER
+              ? t(AppLocales.Admin.Roles.Form.KeyPlaceholder)
               : undefined
           }
           onChange={(event) => {
@@ -106,7 +109,8 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
           }}
         />
         <TextInput
-          label={ADMIN_ROLE_FORM_LABELS.DESCRIPTION}
+          label={t(AppLocales.Admin.Roles.Form.DescriptionLabel)}
+          placeholder={t(AppLocales.Admin.Roles.Form.DescriptionPlaceholder)}
           value={description}
           onChange={(event) => setDescription(event.target.value)}
         />
@@ -115,7 +119,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
           <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-body-m font-semibold text-base-content">
-                {ADMIN_ROLE_FORM_LABELS.PERMISSIONS}
+                {t(AppLocales.Admin.Roles.Form.PermissionsMatrixTitle)}
               </h2>
             </div>
 
@@ -133,14 +137,15 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
       </div>
 
       <FormActionRow
-        cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         submitLabel={
           mode === ADMIN_ACTIONS.CREATE
-            ? ADMIN_ROLE_FORM_LABELS.CREATE_ROLE
-            : ADMIN_ROLE_FORM_LABELS.SAVE_CHANGES
+            ? t(AppLocales.Admin.Roles.Form.CreateRole)
+            : t(AppLocales.Admin.Roles.Form.SaveRole)
         }
         onCancel={onCancel}
       />
     </FormContainer>
   );
 };
+

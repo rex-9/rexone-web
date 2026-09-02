@@ -1,4 +1,4 @@
-// src/modules/admin/accesses/components/AdminAccessGrantDialog.tsx
+// src/modules/admin/access/components/AdminAccessGrantDialog.tsx
 
 import React, { useState } from "react";
 import {
@@ -18,6 +18,7 @@ import {
   ADMIN_ACCESS_DURATION_OPTIONS,
   type TAdminAccessDurationOption,
 } from "../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminAccessGrantDialogProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
   onSubmit,
   isLoading = false,
 }) => {
+  const t = useTranslate();
   const [emailsInput, setEmailsInput] = useState("");
   const [productCode, setProductCode] = useState("");
   const [durationOption, setDurationOption] =
@@ -50,7 +52,7 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
       .filter(Boolean);
 
     if (rawTokens.length === 0) {
-      setError("Please enter at least one valid user email or username.");
+      setError(t(AppLocales.Admin.Notifications.Validation.UserRequired));
       return;
     }
 
@@ -66,7 +68,7 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
 
     const trimmedCode = productCode.trim();
     if (!trimmedCode) {
-      setError("Product code is required.");
+      setError(t(AppLocales.Admin.Accesses.GrantDialog.ProductLabel));
       return;
     }
 
@@ -109,7 +111,7 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={handleClose}
-      title="Grant User Entitlement"
+      title={t(AppLocales.Admin.Accesses.GrantDialog.Title)}
     >
       <FormContainer onSubmit={handleSubmit} className="space-y-4">
         {error && (
@@ -120,43 +122,39 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
 
         <div>
           <TextArea
-            label="User Emails or Usernames"
-            placeholder="e.g. user1@example.com, username123, user2@company.com"
+            label={t(AppLocales.Admin.Accesses.GrantDialog.EmailsLabel)}
+            placeholder={t(AppLocales.Admin.Accesses.GrantDialog.EmailsPlaceholder)}
             value={emailsInput}
             onChange={(e) => setEmailsInput(e.target.value)}
             rows={3}
             required
           />
           <p className="mt-1 text-caption text-base-content opacity-60">
-            Enter one or more email addresses or usernames (separated by commas
-            or line breaks).
+            {t(AppLocales.Admin.Accesses.GrantDialog.EmailsHelper)}
           </p>
         </div>
 
         <div>
           <TextInput
-            label="Product Code"
-            placeholder="e.g. A1b2C3d4E5"
+            label={t(AppLocales.Admin.Accesses.GrantDialog.ProductLabel)}
+            placeholder={t(AppLocales.Admin.Accesses.GrantDialog.ProductPlaceholder)}
             value={productCode}
             onChange={(e) => setProductCode(e.target.value)}
             maxLength={10}
             required
           />
-          <p className="mt-1 text-caption text-base-content opacity-60">
-            10-character unique product code.
-          </p>
         </div>
 
         <div>
           <label className="mb-1 block text-caption font-medium text-base-content opacity-70">
-            Entitlement Duration
+            {t(AppLocales.Admin.Accesses.GrantDialog.DurationLabel)}
           </label>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_30, label: "30 Days" },
-              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_90, label: "90 Days" },
-              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_365, label: "1 Year" },
-              { id: ADMIN_ACCESS_DURATION_OPTIONS.LIFETIME, label: "Lifetime" },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_30, label: t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, { days: 30 }) },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_90, label: t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, { days: 90 }) },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.DAYS_365, label: t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, { days: 365 }) },
+              { id: ADMIN_ACCESS_DURATION_OPTIONS.LIFETIME, label: t(AppLocales.Admin.Accesses.GrantDialog.Lifetime) },
             ].map((option) => (
               <Button
                 key={option.id}
@@ -194,17 +192,18 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
             onClick={handleClose}
             disabled={isLoading}
           >
-            Cancel
+            {t(AppLocales.Admin.Common.Actions.Cancel)}
           </Button>
           <Button
             type={ButtonTypes.SUBMIT}
             variant={ButtonVariants.PRIMARY}
             isLoading={isLoading}
           >
-            Grant Access
+            {t(AppLocales.Admin.Accesses.GrantDialog.GrantButton)}
           </Button>
         </div>
       </FormContainer>
     </Dialog>
   );
 };
+

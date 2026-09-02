@@ -1,10 +1,10 @@
-// src/modules/admin/accesses/pages/AdminAccessesPage.tsx
+// src/modules/admin/access/pages/AdminAccessesPage.tsx
 
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -29,22 +29,22 @@ import {
   ADMIN_PAGE_SIZE,
   ADMIN_ACTIONS,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
   ADMIN_ACCESS_SORT_KEYS,
   ADMIN_ACCESS_STATUS,
-  ADMIN_ACCESS_TABLE_HEADERS,
   ADMIN_ACCESS_TABLE_KEYS,
 } from "../constants";
 import { AdminAccessGrantDialog } from "../components/AdminAccessGrantDialog";
 import { AdminAccessExtendDialog } from "../components/AdminAccessExtendDialog";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 import { DropdownSizes } from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 
 export const AdminAccessesPage: React.FC = () => {
-  useDocumentTitle("Access | Admin");
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Accesses.Title)} | Admin`);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
@@ -129,11 +129,11 @@ export const AdminAccessesPage: React.FC = () => {
       setAccesses(result.accesses);
       setPagination(result.pagination);
     } else {
-      setError(result.error || "Failed to load entitlements");
+      setError(result.error || t(AppLocales.Admin.Accesses.Errors.LoadListFailed));
     }
 
     setLoading(false);
-  }, [can, page, statusFilter, searchQuery, setLoading, sortBy, sortOrder]);
+  }, [can, page, statusFilter, searchQuery, setLoading, sortBy, sortOrder, t]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -147,11 +147,11 @@ export const AdminAccessesPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Entitlement granted successfully! 🎉");
+      toast.success(t(AppLocales.Admin.Accesses.Toasts.GrantSuccess));
       setIsGrantOpen(false);
       void loadAccesses();
     } else {
-      toast.error(result.error || "Failed to grant entitlement");
+      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.GrantFailed));
     }
   };
 
@@ -164,11 +164,11 @@ export const AdminAccessesPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Entitlement extended successfully!");
+      toast.success(t(AppLocales.Admin.Accesses.Toasts.ExtendSuccess));
       setExtendTarget(null);
       void loadAccesses();
     } else {
-      toast.error(result.error || "Failed to extend entitlement");
+      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.ExtendFailed));
     }
   };
 
@@ -180,18 +180,18 @@ export const AdminAccessesPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success("Entitlement revoked successfully");
+      toast.success(t(AppLocales.Admin.Accesses.Toasts.RevokeSuccess));
       setRevokeTarget(null);
       void loadAccesses();
     } else {
-      toast.error(result.error || "Failed to revoke entitlement");
+      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.RevokeFailed));
     }
   };
 
   const columns: IAdminTableColumn<IAdminAccess>[] = [
     {
       key: ADMIN_ACCESS_TABLE_KEYS.USER,
-      header: ADMIN_ACCESS_TABLE_HEADERS.USER,
+      header: t(AppLocales.Admin.Accesses.Table.User),
       sortKey: ADMIN_ACCESS_SORT_KEYS.USER_NAME,
       render: (access) => {
         const displayName =
@@ -217,7 +217,7 @@ export const AdminAccessesPage: React.FC = () => {
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.PRODUCT,
-      header: ADMIN_ACCESS_TABLE_HEADERS.PRODUCT,
+      header: t(AppLocales.Admin.Accesses.Table.Product),
       sortKey: ADMIN_ACCESS_SORT_KEYS.PRODUCT_NAME,
       render: (access) => (
         <div>
@@ -236,22 +236,22 @@ export const AdminAccessesPage: React.FC = () => {
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.STATUS,
-      header: ADMIN_ACCESS_TABLE_HEADERS.STATUS,
+      header: t(AppLocales.Admin.Accesses.Table.Status),
       render: (access) => <StatusBadge status={access.status} />,
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.GRANTED_AT,
-      header: ADMIN_ACCESS_TABLE_HEADERS.GRANTED_AT,
+      header: t(AppLocales.Admin.Accesses.Table.GrantedAt),
       sortKey: ADMIN_ACCESS_SORT_KEYS.CREATED_AT,
       render: (access) => formatAdminDate(access.granted_at),
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.EXPIRES_AT,
-      header: ADMIN_ACCESS_TABLE_HEADERS.EXPIRES,
+      header: t(AppLocales.Admin.Accesses.Table.ExpiresAt),
       sortKey: ADMIN_ACCESS_SORT_KEYS.EXPIRES_AT,
       render: (access) => {
         if (!access.expires_at)
-          return <span className="text-success font-semibold">Lifetime</span>;
+          return <span className="text-success font-semibold">{t(AppLocales.Admin.Common.Status.Lifetime)}</span>;
         return (
           <div>
             <div>{formatAdminDate(access.expires_at)}</div>
@@ -259,7 +259,7 @@ export const AdminAccessesPage: React.FC = () => {
               access.remaining_days !== null &&
               access.remaining_days > 0 && (
                 <span className="text-caption text-base-content opacity-60">
-                  ({access.remaining_days} days left)
+                  ({t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, { days: access.remaining_days })})
                 </span>
               )}
           </div>
@@ -268,7 +268,7 @@ export const AdminAccessesPage: React.FC = () => {
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.ACTIONS,
-      header: ADMIN_TABLE_HEADERS.ACTIONS,
+      header: t(AppLocales.Admin.Accesses.Table.Actions),
       className: "text-right",
       render: (access) => {
         const actions: IAdminTableAction[] = [];
@@ -315,13 +315,10 @@ export const AdminAccessesPage: React.FC = () => {
 
       <ConfirmDialog
         isOpen={Boolean(revokeTarget)}
-        title="Revoke Access"
-        message={`Are you sure you want to revoke entitlement access for ${
-          revokeTarget?.user_name || revokeTarget?.username || "this user"
-        }? They will immediately lose access to ${
-          revokeTarget?.product_name || "the product"
-        }.`}
-        confirmLabel="Revoke Access"
+        title={t(AppLocales.Admin.Common.Confirm.RevokeTitle)}
+        message={t(AppLocales.Admin.Common.Confirm.RevokeMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Revoke)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         isDestructive={true}
         onConfirm={handleRevoke}
         onClose={() => setRevokeTarget(null)}
@@ -329,8 +326,8 @@ export const AdminAccessesPage: React.FC = () => {
 
       {/* Header */}
       <PageHeader
-        title="Entitlement & Access Management"
-        description="Monitor user entitlements, grant complimentary access passes, extend durations, or revoke access rights."
+        title={t(AppLocales.Admin.Accesses.Title)}
+        description={t(AppLocales.Admin.Accesses.Description)}
         action={
           can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ACCESSES) ? (
             <Button
@@ -339,7 +336,7 @@ export const AdminAccessesPage: React.FC = () => {
               className="flex items-center gap-1.5"
             >
               <iconsLib.plus className="h-4 w-4" />
-              Grant Access
+              {t(AppLocales.Admin.Accesses.GrantButton)}
             </Button>
           ) : null
         }
@@ -354,10 +351,10 @@ export const AdminAccessesPage: React.FC = () => {
             value={statusFilter}
             onValueChange={(val) => updateFilters({ status: val, page: 1 })}
             options={[
-              { value: "", label: "All Statuses" },
-              { value: ADMIN_ACCESS_STATUS.ACTIVE, label: "Active" },
-              { value: ADMIN_ACCESS_STATUS.REVOKED, label: "Revoked" },
-              { value: ADMIN_ACCESS_STATUS.EXPIRED, label: "Expired" },
+              { value: "", label: t(AppLocales.Admin.Accesses.Filters.AllTypes) },
+              { value: ADMIN_ACCESS_STATUS.ACTIVE, label: t(AppLocales.Admin.Common.Status.Active) },
+              { value: ADMIN_ACCESS_STATUS.REVOKED, label: t(AppLocales.Admin.Common.Status.Revoked) },
+              { value: ADMIN_ACCESS_STATUS.EXPIRED, label: t(AppLocales.Admin.Common.Status.Expired) },
             ]}
           />
         </div>
@@ -365,7 +362,7 @@ export const AdminAccessesPage: React.FC = () => {
         {/* Search */}
         <div className="w-full sm:w-72">
           <SearchInput
-            placeholder="Search by user email or name..."
+            placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onClear={() => setSearchInput("")}
@@ -377,14 +374,14 @@ export const AdminAccessesPage: React.FC = () => {
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load entitlements"
+          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
           message={error}
         />
       ) : !isLoading && accesses.length === 0 ? (
         <AdminState
           icon={iconsLib.shieldCheck}
-          title="No entitlements found"
-          message="No entitlements matching your filter parameters."
+          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
         />
       ) : (
         <>
@@ -405,3 +402,4 @@ export const AdminAccessesPage: React.FC = () => {
     </div>
   );
 };
+

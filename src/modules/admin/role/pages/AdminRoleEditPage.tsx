@@ -1,3 +1,4 @@
+// src/modules/admin/role/pages/AdminRoleEditPage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -8,11 +9,12 @@ import RoleController from "../role.controller";
 import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "../types";
 import { AlertDialog, AdminState } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
-import { ADMIN_ROLE_PAGE_TITLES } from "../constants";
 import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminRoleEditPage: React.FC = () => {
-  useDocumentTitle(ADMIN_ROLE_PAGE_TITLES.EDIT);
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Roles.EditTitle)} | Admin`);
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ export const AdminRoleEditPage: React.FC = () => {
       if (roleResult.success && roleResult.role) {
         setRole(roleResult.role);
       } else {
-        setError(roleResult.error || "Role was not found.");
+        setError(roleResult.error || t(AppLocales.Admin.Roles.Errors.LoadOne));
       }
 
       if (permResult.success) {
@@ -46,7 +48,7 @@ export const AdminRoleEditPage: React.FC = () => {
     };
 
     void loadData();
-  }, [id, setLoading]);
+  }, [id, setLoading, t]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
     if (!id) return;
@@ -57,10 +59,10 @@ export const AdminRoleEditPage: React.FC = () => {
     setLoading(false, { overlay: false });
 
     if (result.success) {
-      toast.success("Role updated");
+      toast.success(t(AppLocales.Admin.Roles.Toasts.UpdateSuccess));
       navigate(AppRoutes.client.protected.admin.ROLES);
     } else {
-      setAlertMessage(result.error || "Failed to update role");
+      setAlertMessage(result.error || t(AppLocales.Admin.Roles.Errors.Update));
     }
   };
 
@@ -72,9 +74,9 @@ export const AdminRoleEditPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
       {error && !role ? (
-        <AdminState title="Unable to load role" message={error} />
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : !role ? (
-        <AdminState title="Unable to load role" message="Role was not found." />
+        <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={t(AppLocales.Admin.Roles.Errors.LoadOne)} />
       ) : (
         <AdminRoleForm
           mode={ADMIN_ACTIONS.EDIT}
@@ -87,3 +89,4 @@ export const AdminRoleEditPage: React.FC = () => {
     </>
   );
 };
+

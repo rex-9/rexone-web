@@ -9,6 +9,7 @@ import {
 import { formatAdminDate } from "../../../../helpers";
 import { ADMIN_LOG_SEVERITY } from "../constants";
 import type { IAdminLog } from "../types";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminLogDetailDialogProps {
   isOpen: boolean;
@@ -25,12 +26,13 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
   onToggleResolve,
   isLoading = false,
 }) => {
+  const t = useTranslate();
   if (!isOpen || !log) return null;
 
   const isResolved = Boolean(log.resolved_at);
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Client Error Telemetry">
+    <Dialog isOpen={isOpen} onClose={onClose} title={t(AppLocales.Admin.Logs.Drawer.Title)}>
       <div className="space-y-4">
         {/* Severity, Platform & State header */}
         <div className="rounded-lg bg-base-200 p-3 space-y-2 text-caption">
@@ -52,7 +54,7 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
                 />
               )}
               <span className="font-semibold text-xs opacity-70">
-                Occurrences: {log.occurrence_count}
+                {t(AppLocales.Admin.Logs.Table.Occurrences)}: {log.occurrence_count}
               </span>
             </div>
             <StatusBadge
@@ -63,22 +65,22 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
 
           <div className="font-mono text-xs opacity-75 pt-1">
             <div>
-              <span className="font-semibold">URL:</span> {log.method || "GET"}{" "}
+              <span className="font-semibold">{t(AppLocales.Admin.Logs.Drawer.Url)}:</span> {log.method || "GET"}{" "}
               {log.url || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">Client:</span>{" "}
+              <span className="font-semibold">{t(AppLocales.Admin.Logs.Table.Platform)}:</span>{" "}
               {[log.browser, log.os, log.device, log.app_version]
                 .filter(Boolean)
                 .join(" • ") || "N/A"}
             </div>
             <div>
-              <span className="font-semibold">First Logged:</span>{" "}
+              <span className="font-semibold">{t(AppLocales.Admin.Common.Table.CreatedAt)}:</span>{" "}
               {formatAdminDate(log.created_at)}
             </div>
             {log.last_occurred_at && (
               <div>
-                <span className="font-semibold">Last Logged:</span>{" "}
+                <span className="font-semibold">{t(AppLocales.Admin.Logs.Table.Timestamp)}:</span>{" "}
                 {formatAdminDate(log.last_occurred_at)}
               </div>
             )}
@@ -88,7 +90,7 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
         {/* Message */}
         <div>
           <label className="mb-1 block text-caption font-semibold text-base-content opacity-70">
-            Error Message
+            {t(AppLocales.Admin.Logs.Drawer.Message)}
           </label>
           <div className="rounded-lg border border-error/30 bg-error/5 p-3 text-body-m font-mono text-error font-medium">
             {log.message}
@@ -99,7 +101,7 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
         {log.stack_trace && log.stack_trace.length > 0 && (
           <div>
             <label className="mb-1 block text-caption font-semibold text-base-content opacity-70">
-              Stack Trace
+              {t(AppLocales.Admin.Logs.Drawer.StackTrace)}
             </label>
             <div className="max-h-48 overflow-auto rounded-lg border border-base-300 bg-base-300 p-3 font-mono text-xs text-base-content whitespace-pre">
               {log.stack_trace.join("\n")}
@@ -111,7 +113,7 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
         {log.context && Object.keys(log.context).length > 0 && (
           <div>
             <label className="mb-1 block text-caption font-semibold text-base-content opacity-70">
-              Diagnostic Context
+              {t(AppLocales.Admin.Logs.Drawer.StorageSnapshot)}
             </label>
             <pre className="max-h-36 overflow-auto rounded-lg border border-base-300 bg-base-200 p-3 font-mono text-xs text-base-content">
               {JSON.stringify(log.context, null, 2)}
@@ -129,7 +131,9 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
             onClick={() => onToggleResolve(log.id, isResolved)}
             isLoading={isLoading}
           >
-            {isResolved ? "Mark as Unresolved" : "Mark as Resolved"}
+            {isResolved
+              ? t(AppLocales.Admin.Logs.Drawer.MarkUnresolved)
+              : t(AppLocales.Admin.Logs.Drawer.MarkResolved)}
           </Button>
 
           <Button
@@ -137,10 +141,11 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
             variant={ButtonVariants.SECONDARY}
             onClick={onClose}
           >
-            Close
+            {t(AppLocales.Admin.Logs.Drawer.Close)}
           </Button>
         </div>
       </div>
     </Dialog>
   );
 };
+

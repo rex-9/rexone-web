@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// src/modules/admin/feedback/components/AdminFeedbackTriageDialog.tsx
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Dialog,
   TextArea,
@@ -19,21 +20,7 @@ import {
   ADMIN_FEEDBACK_PRIORITY,
   ADMIN_FEEDBACK_STATUS,
 } from "../constants";
-
-const statusOptions = [
-  { value: ADMIN_FEEDBACK_STATUS.NEW, label: "New" },
-  { value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS, label: "In Progress" },
-  { value: ADMIN_FEEDBACK_STATUS.RESOLVED, label: "Resolved" },
-  { value: ADMIN_FEEDBACK_STATUS.CLOSED, label: "Closed" },
-];
-
-const priorityOptions = [
-  { value: ADMIN_FEEDBACK_PRIORITY.LOW, label: "Low" },
-  { value: ADMIN_FEEDBACK_PRIORITY.MEDIUM, label: "Medium" },
-  { value: ADMIN_FEEDBACK_PRIORITY.HIGH, label: "High" },
-  { value: ADMIN_FEEDBACK_PRIORITY.URGENT, label: "Urgent" },
-  { value: ADMIN_FEEDBACK_PRIORITY.CRITICAL, label: "Critical" },
-];
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminFeedbackTriageDialogProps {
   isOpen: boolean;
@@ -46,9 +33,31 @@ interface IAdminFeedbackTriageDialogProps {
 export const AdminFeedbackTriageDialog: React.FC<
   IAdminFeedbackTriageDialogProps
 > = ({ isOpen, feedback, onClose, onSubmit, isLoading = false }) => {
+  const t = useTranslate();
   const [status, setStatus] = useState<string>(ADMIN_FEEDBACK_STATUS.NEW);
   const [priority, setPriority] = useState<string>(ADMIN_FEEDBACK_PRIORITY.MEDIUM);
   const [adminNotes, setAdminNotes] = useState<string>("");
+
+  const statusOptions = useMemo(
+    () => [
+      { value: ADMIN_FEEDBACK_STATUS.NEW, label: t(AppLocales.Admin.Feedback.Filters.Open) },
+      { value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS, label: t(AppLocales.Admin.Feedback.Filters.InReview) },
+      { value: ADMIN_FEEDBACK_STATUS.RESOLVED, label: t(AppLocales.Admin.Feedback.Filters.Resolved) },
+      { value: ADMIN_FEEDBACK_STATUS.CLOSED, label: t(AppLocales.Admin.Feedback.Filters.Closed) },
+    ],
+    [t],
+  );
+
+  const priorityOptions = useMemo(
+    () => [
+      { value: ADMIN_FEEDBACK_PRIORITY.LOW, label: t(AppLocales.Admin.Feedback.Filters.Low) },
+      { value: ADMIN_FEEDBACK_PRIORITY.MEDIUM, label: t(AppLocales.Admin.Feedback.Filters.Normal) },
+      { value: ADMIN_FEEDBACK_PRIORITY.HIGH, label: t(AppLocales.Admin.Feedback.Filters.High) },
+      { value: ADMIN_FEEDBACK_PRIORITY.URGENT, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
+      { value: ADMIN_FEEDBACK_PRIORITY.CRITICAL, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     if (feedback) {
@@ -70,7 +79,7 @@ export const AdminFeedbackTriageDialog: React.FC<
   };
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} title="Feedback Details & Triage">
+    <Dialog isOpen={isOpen} onClose={onClose} title={t(AppLocales.Admin.Feedback.Drawer.Title)}>
       <FormContainer onSubmit={handleSubmit} className="space-y-4">
         {/* User & Meta info */}
         <div className="rounded-lg bg-base-200 p-3 space-y-2 text-caption">
@@ -118,7 +127,7 @@ export const AdminFeedbackTriageDialog: React.FC<
         {/* Content */}
         <div>
           <label className="mb-1 block text-caption font-semibold text-base-content opacity-70">
-            User Message
+            {t(AppLocales.Admin.Feedback.Table.Content)}
           </label>
           <div className="rounded-lg border border-base-300 bg-base-100 p-3 text-body-m text-base-content whitespace-pre-wrap">
             {feedback.content}
@@ -128,14 +137,14 @@ export const AdminFeedbackTriageDialog: React.FC<
         {/* Status & Priority Selection */}
         <div className="grid grid-cols-2 gap-3">
           <Dropdown
-            label="Status"
+            label={t(AppLocales.Admin.Feedback.Table.Status)}
             value={status}
             onValueChange={(val) => setStatus(val)}
             options={statusOptions}
             size={DropdownSizes.SM}
           />
           <Dropdown
-            label="Priority"
+            label={t(AppLocales.Admin.Feedback.Table.Priority)}
             value={priority}
             onValueChange={(val) => setPriority(val)}
             options={priorityOptions}
@@ -146,8 +155,8 @@ export const AdminFeedbackTriageDialog: React.FC<
         {/* Admin Notes */}
         <div>
           <TextArea
-            label="Internal Admin Notes"
-            placeholder="Add internal resolution notes or steps taken..."
+            label="Admin Notes"
+            placeholder="Enter internal moderation notes..."
             value={adminNotes}
             onChange={(e) => setAdminNotes(e.target.value)}
             rows={3}
@@ -161,17 +170,18 @@ export const AdminFeedbackTriageDialog: React.FC<
             onClick={onClose}
             disabled={isLoading}
           >
-            Close
+            {t(AppLocales.Admin.Common.Actions.Cancel)}
           </Button>
           <Button
             type={ButtonTypes.SUBMIT}
             variant={ButtonVariants.PRIMARY}
             isLoading={isLoading}
           >
-            Update Status
+            {t(AppLocales.Admin.Feedback.Drawer.UpdateStatus)}
           </Button>
         </div>
       </FormContainer>
     </Dialog>
   );
 };
+

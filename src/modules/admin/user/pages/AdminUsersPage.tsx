@@ -1,4 +1,4 @@
-// src/modules/admin/users/pages/AdminUsersPage.tsx
+// src/modules/admin/user/pages/AdminUsersPage.tsx
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -33,31 +33,26 @@ import {
 } from "../../components";
 import {
   ADMIN_ACTIONS,
-  ADMIN_COMMON_LABELS,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
-  ADMIN_TABLE_HEADERS,
   ADMIN_VIEW_MODES,
   type TAdminViewMode,
 } from "../../constants";
 import {
-  ADMIN_USER_LABELS,
-  ADMIN_USER_PAGE_TITLES,
   ADMIN_USER_SORT_KEYS,
-  ADMIN_USER_TABLE_HEADERS,
   ADMIN_USER_TABLE_KEYS,
 } from "../constants";
-import { translate } from "../../../../locales";
+import { useTranslate, AppLocales } from "../../../../locales";
 import { BadgeSizes } from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 
-const renderUserRoles = (user: IAdminUser) => {
+const renderUserRoles = (user: IAdminUser, unassignedLabel: string) => {
   const roles: string[] =
     user.role_names ?? user.roles ?? (user.role ? [user.role] : []);
   if (!roles.length) {
     return (
       <span className="text-caption text-base-content opacity-50">
-        {ADMIN_USER_LABELS.UNASSIGNED}
+        {unassignedLabel}
       </span>
     );
   }
@@ -87,10 +82,11 @@ interface IAdminUsersPageProps {
 export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   view = ADMIN_VIEW_MODES.ACTIVE,
 }) => {
+  const t = useTranslate();
   useDocumentTitle(
     view === ADMIN_VIEW_MODES.ACTIVE
-      ? ADMIN_USER_PAGE_TITLES.LIST
-      : ADMIN_USER_PAGE_TITLES.RECYCLE_BIN,
+      ? `${t(AppLocales.Admin.Users.Title)} | Admin`
+      : `${t(AppLocales.Admin.Users.RecycleTitle)} | Admin`,
   );
 
   const navigate = useNavigate();
@@ -178,10 +174,10 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       setUsers(result.users);
       setPagination(result.pagination);
     } else {
-      setError(translate(result.error || "Failed to load users"));
+      setError(result.error || t(AppLocales.Admin.Users.Errors.LoadListFailed));
     }
     setLoading(false);
-  }, [can, page, searchQuery, setLoading, sortBy, sortOrder, view]);
+  }, [can, page, searchQuery, setLoading, sortBy, sortOrder, t, view]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -208,7 +204,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     () => [
       {
         key: ADMIN_USER_TABLE_KEYS.IDENTITY,
-        header: ADMIN_USER_TABLE_HEADERS.USER,
+        header: t(AppLocales.Admin.Users.Table.User),
         sortKey: ADMIN_USER_SORT_KEYS.NAME,
         render: (user) => (
           <div>
@@ -230,15 +226,15 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       },
       {
         key: ADMIN_USER_TABLE_KEYS.ROLE,
-        header: ADMIN_USER_TABLE_HEADERS.ROLE,
-        render: (user) => renderUserRoles(user),
+        header: t(AppLocales.Admin.Users.Table.Roles),
+        render: (user) => renderUserRoles(user, "Unassigned"),
       },
       {
         key: ADMIN_USER_TABLE_KEYS.LIFECYCLE_DATE,
         header:
           view === ADMIN_VIEW_MODES.ACTIVE
-            ? ADMIN_TABLE_HEADERS.CREATED
-            : "Discarded",
+            ? t(AppLocales.Admin.Common.Table.CreatedAt)
+            : t(AppLocales.Admin.Common.Table.DiscardedAt),
         sortKey:
           view === ADMIN_VIEW_MODES.ACTIVE
             ? ADMIN_USER_SORT_KEYS.CREATED_AT
@@ -252,7 +248,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       },
       {
         key: ADMIN_USER_TABLE_KEYS.ACTIONS,
-        header: ADMIN_TABLE_HEADERS.ACTIONS,
+        header: t(AppLocales.Admin.Common.Table.Actions),
         className: "text-right",
         render: (user) => (
           <AdminTableActions
@@ -288,7 +284,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         ),
       },
     ],
-    [navigate, view],
+    [navigate, t, view],
   );
 
   const handleLifecycleAction = async () => {
@@ -309,40 +305,39 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success(result.message || "Operation successful");
+      toast.success(
+        result.message ||
+          (lifecycleAction === ADMIN_ACTIONS.DISCARD
+            ? t(AppLocales.Admin.Users.Toasts.DiscardSuccess)
+            : t(AppLocales.Admin.Users.Toasts.RestoreSuccess)),
+      );
       setActionTarget(null);
       setLifecycleAction(null);
       void loadUsers();
     } else {
-      toast.error(result.error || "Operation failed");
+      toast.error(
+        result.error ||
+          (lifecycleAction === ADMIN_ACTIONS.DISCARD
+            ? t(AppLocales.Admin.Users.Errors.DeleteFailed)
+            : t(AppLocales.Admin.Users.Errors.UpdateFailed)),
+      );
     }
   };
-
-  const lifecycleDialog =
-    lifecycleAction === ADMIN_ACTIONS.DISCARD
-      ? {
-          title: "Discard User",
-          message: `Move ${actionTarget?.email || "this user"} to the recycle bin? You can restore this account later.`,
-          confirmLabel: ADMIN_COMMON_LABELS.DISCARD,
-          isDestructive: true,
-        }
-      : {
-          title: "Restore User",
-          message: `Restore ${actionTarget?.email || "this user"}? This account will return to the active users list.`,
-          confirmLabel: ADMIN_COMMON_LABELS.UNDISCARD,
-          isDestructive: false,
-        };
 
   const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.USERS);
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title={view === ADMIN_VIEW_MODES.ACTIVE ? "Users" : "User Recycle Bin"}
+        title={
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? t(AppLocales.Admin.Users.Title)
+            : t(AppLocales.Admin.Users.RecycleTitle)
+        }
         description={
           view === ADMIN_VIEW_MODES.ACTIVE
-            ? "Manage customer accounts, assign IAM roles, and oversee account access."
-            : "Review and restore discarded user accounts."
+            ? t(AppLocales.Admin.Users.Description)
+            : t(AppLocales.Admin.Users.RecycleDescription)
         }
         action={
           view === "active" && canCreate ? (
@@ -352,7 +347,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
               }
             >
               <iconsLib.plus className="mr-2 h-4 w-4" />
-              Create User
+              {t(AppLocales.Admin.Users.Form.CreateUser)}
             </Button>
           ) : null
         }
@@ -370,14 +365,14 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
                 updateFilters({ page: 1 });
               }}
               items={[
-                { value: ADMIN_VIEW_MODES.ACTIVE, label: "Active Users" },
-                { value: ADMIN_VIEW_MODES.DISCARDED, label: "Recycle Bin" },
+                { value: ADMIN_VIEW_MODES.ACTIVE, label: t(AppLocales.Admin.Users.Tabs.ActiveUsers) },
+                { value: ADMIN_VIEW_MODES.DISCARDED, label: t(AppLocales.Admin.Users.Tabs.RecycleBin) },
               ]}
             />
           )}
           <div className="w-full sm:w-72">
             <SearchInput
-              placeholder="Search by name, username or email..."
+              placeholder={t(AppLocales.Admin.Users.SearchPlaceholder)}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onClear={() => setSearchInput("")}
@@ -390,22 +385,14 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load users"
+          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
           message={error}
         />
       ) : !isLoading && users.length === 0 ? (
         <AdminState
           icon={iconsLib.user}
-          title={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "No active users"
-              : "No discarded users in recycle bin"
-          }
-          message={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "No user accounts found matching your filter criteria."
-              : "Discarded users can be restored here."
-          }
+          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
         />
       ) : (
         <>
@@ -427,10 +414,23 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       {/* Discard / Restore Confirmation Dialog */}
       <ConfirmDialog
         isOpen={Boolean(actionTarget && lifecycleAction)}
-        title={lifecycleDialog.title}
-        message={lifecycleDialog.message}
-        confirmLabel={lifecycleDialog.confirmLabel}
-        isDestructive={lifecycleDialog.isDestructive}
+        title={
+          lifecycleAction === ADMIN_ACTIONS.DISCARD
+            ? t(AppLocales.Admin.Common.Confirm.DiscardTitle)
+            : t(AppLocales.Admin.Common.Confirm.RestoreTitle)
+        }
+        message={
+          lifecycleAction === ADMIN_ACTIONS.DISCARD
+            ? t(AppLocales.Admin.Common.Confirm.DiscardMessage)
+            : t(AppLocales.Admin.Common.Confirm.RestoreMessage)
+        }
+        confirmLabel={
+          lifecycleAction === ADMIN_ACTIONS.DISCARD
+            ? t(AppLocales.Admin.Common.Actions.Discard)
+            : t(AppLocales.Admin.Common.Actions.Restore)
+        }
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        isDestructive={lifecycleAction === ADMIN_ACTIONS.DISCARD}
         isLoading={isLoading}
         onClose={closeLifecycleDialog}
         onConfirm={handleLifecycleAction}
@@ -438,3 +438,4 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     </div>
   );
 };
+

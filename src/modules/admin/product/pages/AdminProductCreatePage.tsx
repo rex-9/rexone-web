@@ -1,3 +1,4 @@
+// src/modules/admin/products/pages/AdminProductCreatePage.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -7,12 +8,13 @@ import { useDocumentTitle } from "../../../../hooks";
 import { IAdminProductFormValues } from "../types";
 import ProductController from "../product.controller";
 import { AdminProductForm } from "./AdminProductForm";
-import { ADMIN_PRODUCT_PAGE_TITLES } from "../constants";
 import { AlertDialog } from "../../components";
 import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminProductCreatePage: React.FC = () => {
-  useDocumentTitle(ADMIN_PRODUCT_PAGE_TITLES.CREATE);
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Products.CreateTitle)} | Admin`);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -26,12 +28,12 @@ export const AdminProductCreatePage: React.FC = () => {
     setLoading(false, { overlay: false });
 
     if (result.success) {
-      toast.success(result.message || "Product created");
+      toast.success(result.message || t(AppLocales.Admin.Products.Toasts.CreateSuccess));
       navigate(AppRoutes.client.protected.admin.PRODUCTS, {
         replace: true,
       });
     } else {
-      setAlertMessage(result.error || "Failed to create product");
+      setAlertMessage(result.error || t(AppLocales.Admin.Products.Errors.Create));
     }
   };
 
@@ -50,3 +52,4 @@ export const AdminProductCreatePage: React.FC = () => {
     </>
   );
 };
+

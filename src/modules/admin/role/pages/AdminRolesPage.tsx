@@ -1,11 +1,11 @@
-// src/modules/admin/roles/pages/AdminRolesPage.tsx
+// src/modules/admin/role/pages/AdminRolesPage.tsx
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
 import { iconsLib } from "../../../../assets";
 import { Button, StatusBadge } from "../../../../design/components";
 import RoleController from "../role.controller";
@@ -22,18 +22,14 @@ import {
 import {
   ADMIN_RESOURCES,
   ADMIN_ACTIONS,
-  ADMIN_COMMON_LABELS,
-  ADMIN_TABLE_HEADERS,
   ADMIN_VIEW_MODES,
   type TAdminViewMode,
 } from "../../constants";
 import {
-  ADMIN_ROLE_LABELS,
-  ADMIN_ROLE_PAGE_TITLES,
   ADMIN_ROLE_SORT_KEYS,
-  ADMIN_ROLE_TABLE_HEADERS,
   ADMIN_ROLE_TABLE_KEYS,
 } from "../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 const countPermissions = (role: IAdminRole): number =>
   Object.values(role.permissions ?? {}).reduce(
@@ -48,10 +44,11 @@ interface IAdminRolesPageProps {
 export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
   view = ADMIN_VIEW_MODES.ACTIVE,
 }) => {
+  const t = useTranslate();
   useDocumentTitle(
     view === ADMIN_VIEW_MODES.ACTIVE
-      ? ADMIN_ROLE_PAGE_TITLES.LIST
-      : ADMIN_ROLE_PAGE_TITLES.RECYCLE_BIN,
+      ? `${t(AppLocales.Admin.Roles.Title)} | Admin`
+      : `${t(AppLocales.Admin.Roles.RecycleTitle)} | Admin`,
   );
 
   const navigate = useNavigate();
@@ -80,10 +77,10 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     if (result.success) {
       setRoles(result.roles);
     } else {
-      setError(result.error || "Failed to load roles");
+      setError(result.error || t(AppLocales.Admin.Roles.Errors.LoadList));
     }
     setLoading(false);
-  }, [setLoading, sortBy, sortOrder, view]);
+  }, [setLoading, sortBy, sortOrder, t, view]);
 
   useEffect(() => {
     void fetchRoles();
@@ -95,10 +92,10 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success("Role restored successfully");
+      toast.success(t(AppLocales.Admin.Roles.Toasts.RestoreSuccess));
       void fetchRoles();
     } else {
-      toast.error(result.error || "Failed to restore role");
+      toast.error(result.error || t(AppLocales.Admin.Roles.Errors.Update));
     }
   };
 
@@ -106,55 +103,55 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     () => [
       {
         key: ADMIN_ROLE_TABLE_KEYS.NAME,
-        header: ADMIN_ROLE_TABLE_HEADERS.ROLE,
+        header: t(AppLocales.Admin.Roles.Table.RoleName),
         sortKey: ADMIN_ROLE_SORT_KEYS.NAME,
         render: (role) => (
           <div>
             <div className="font-semibold text-base-content">{role.name}</div>
             <div className="text-caption text-base-content opacity-60 text-xs">
-              {role.description || "No description provided."}
+              {role.description || "—"}
             </div>
           </div>
         ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.PERMISSIONS,
-        header: ADMIN_ROLE_TABLE_HEADERS.PERMISSIONS,
+        header: t(AppLocales.Admin.Roles.Table.PermissionsCount),
         render: (role) => {
           const count = countPermissions(role);
           return (
             <span className="font-mono text-sm text-base-content font-medium">
-              {count} {count === 1 ? "grant" : "grants"}
+              {count}
             </span>
           );
         },
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.USERS,
-        header: ADMIN_ROLE_TABLE_HEADERS.USERS,
+        header: t(AppLocales.Admin.Users.Title),
         render: (role) => (
           <span className="text-body-s font-medium">
-            {role.user_count ?? 0} users
+            {role.user_count ?? 0}
           </span>
         ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.SYSTEM,
-        header: ADMIN_ROLE_TABLE_HEADERS.TYPE,
+        header: t(AppLocales.Admin.Roles.Table.Type),
         render: (role) => (
           <StatusBadge
             status={role.system ? "system" : "custom"}
             label={
               role.system
-                ? ADMIN_ROLE_LABELS.SYSTEM
-                : ADMIN_ROLE_LABELS.CUSTOM
+                ? t(AppLocales.Admin.Common.Status.System)
+                : t(AppLocales.Admin.Common.Status.Custom)
             }
           />
         ),
       },
       {
         key: ADMIN_ROLE_TABLE_KEYS.ACTIONS,
-        header: ADMIN_TABLE_HEADERS.ACTIONS,
+        header: t(AppLocales.Admin.Common.Table.Actions),
         className: "text-right",
         render: (role) => (
           <AdminTableActions
@@ -192,7 +189,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
         ),
       },
     ],
-    [navigate, toast, view],
+    [navigate, t, toast, view],
   );
 
   const handleDiscard = async () => {
@@ -204,11 +201,11 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success("Role discarded successfully");
+      toast.success(t(AppLocales.Admin.Roles.Toasts.DiscardSuccess));
       setDiscardTarget(null);
       void fetchRoles();
     } else {
-      toast.error(result.error || "Failed to discard role");
+      toast.error(result.error || t(AppLocales.Admin.Roles.Errors.Delete));
     }
   };
 
@@ -217,8 +214,16 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Roles & Permissions"
-        description="Define system roles, access policies, and permission grants across the platform."
+        title={
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? t(AppLocales.Admin.Roles.Title)
+            : t(AppLocales.Admin.Roles.RecycleTitle)
+        }
+        description={
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? t(AppLocales.Admin.Roles.Description)
+            : t(AppLocales.Admin.Roles.RecycleDescription)
+        }
         action={
           canCreate && view === ADMIN_VIEW_MODES.ACTIVE ? (
             <Button
@@ -227,7 +232,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
               }
             >
               <iconsLib.plus className="mr-2 h-4 w-4" />
-              Create Role
+              {t(AppLocales.Admin.Roles.Form.CreateRole)}
             </Button>
           ) : null
         }
@@ -245,14 +250,14 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
             items={[
               {
                 value: ADMIN_VIEW_MODES.ACTIVE,
-                label: "Active Roles",
+                label: t(AppLocales.Admin.Roles.Tabs.ActiveRoles),
                 icon: iconsLib.shieldCheck,
                 count:
                   view === ADMIN_VIEW_MODES.ACTIVE ? roles.length : undefined,
               },
               {
                 value: ADMIN_VIEW_MODES.DISCARDED,
-                label: "Recycle Bin",
+                label: t(AppLocales.Admin.Roles.Tabs.RecycleBin),
                 icon: iconsLib.trash,
                 count:
                   view === ADMIN_VIEW_MODES.DISCARDED
@@ -268,22 +273,14 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load roles"
+          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
           message={error}
         />
       ) : !isLoading && roles.length === 0 ? (
         <AdminState
           icon={view === ADMIN_VIEW_MODES.ACTIVE ? iconsLib.key : iconsLib.trash}
-          title={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "No roles yet"
-              : "Recycle bin is empty"
-          }
-          message={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "Created roles appear here."
-              : "Discarded custom roles will appear here."
-          }
+          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
         />
       ) : (
         <AdminTable
@@ -298,9 +295,10 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
 
       <ConfirmDialog
         isOpen={Boolean(discardTarget)}
-        title="Discard Role"
-        message={`Are you sure you want to discard the role "${discardTarget?.name}"? Users with this role will lose associated permissions.`}
-        confirmLabel={ADMIN_COMMON_LABELS.DISCARD}
+        title={t(AppLocales.Admin.Common.Confirm.DiscardTitle)}
+        message={t(AppLocales.Admin.Common.Confirm.DiscardMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Discard)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         isDestructive={true}
         isLoading={isLoading}
         onClose={() => setDiscardTarget(null)}
@@ -309,3 +307,4 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     </div>
   );
 };
+

@@ -1,3 +1,4 @@
+// src/modules/admin/role/pages/AdminRoleCreatePage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
@@ -11,11 +12,12 @@ import {
 } from "../types";
 import { AlertDialog } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
-import { ADMIN_ROLE_PAGE_TITLES } from "../constants";
 import { ADMIN_ACTIONS } from "../../constants";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminRoleCreatePage: React.FC = () => {
-  useDocumentTitle(ADMIN_ROLE_PAGE_TITLES.CREATE);
+  const t = useTranslate();
+  useDocumentTitle(`${t(AppLocales.Admin.Roles.CreateTitle)} | Admin`);
 
   const navigate = useNavigate();
   const toast = useToast();
@@ -31,12 +33,12 @@ export const AdminRoleCreatePage: React.FC = () => {
       if (result.success) {
         setPermissions(result.permissions);
       } else {
-        setAlertMessage(result.error || "Failed to load permissions");
+        setAlertMessage(result.error || t(AppLocales.Admin.Roles.Errors.LoadPermissions));
       }
     };
 
     void loadPermissions();
-  }, [setLoading]);
+  }, [setLoading, t]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
     setLoading(true, { overlay: false });
@@ -45,10 +47,10 @@ export const AdminRoleCreatePage: React.FC = () => {
     setLoading(false, { overlay: false });
 
     if (result.success) {
-      toast.success("Role created");
+      toast.success(t(AppLocales.Admin.Roles.Toasts.CreateSuccess));
       navigate(AppRoutes.client.protected.admin.ROLES);
     } else {
-      setAlertMessage(result.error || "Failed to create role");
+      setAlertMessage(result.error || t(AppLocales.Admin.Roles.Errors.Create));
     }
   };
 
@@ -59,14 +61,13 @@ export const AdminRoleCreatePage: React.FC = () => {
         message={alertMessage}
         onClose={() => setAlertMessage("")}
       />
-      {(
-        <AdminRoleForm
-            mode={ADMIN_ACTIONS.CREATE}
-            permissions={permissions}
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}
-          />
-      )}
+      <AdminRoleForm
+        mode={ADMIN_ACTIONS.CREATE}
+        permissions={permissions}
+        onSubmit={handleSubmit}
+        onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}
+      />
     </>
   );
 };
+

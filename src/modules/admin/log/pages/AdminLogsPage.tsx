@@ -1,6 +1,6 @@
 // src/modules/admin/log/pages/AdminLogsPage.tsx
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -37,7 +37,6 @@ import {
 } from "../../components";
 import {
   ADMIN_ACTIONS,
-  ADMIN_COMMON_LABELS,
   ADMIN_PAGE_SIZE,
   ADMIN_RESOURCES,
   ADMIN_VIEW_MODES,
@@ -46,11 +45,11 @@ import {
 import {
   ADMIN_LOG_RESOLUTION,
   ADMIN_LOG_SORT_KEYS,
-  ADMIN_LOG_TABLE_HEADERS,
   ADMIN_LOG_TABLE_KEYS,
   type TAdminLogResolution,
 } from "../constants";
 import { AdminLogDetailDialog } from "../components/AdminLogDetailDialog";
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminLogsPageProps {
   view?: TAdminViewMode;
@@ -59,10 +58,11 @@ interface IAdminLogsPageProps {
 export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
   view = ADMIN_VIEW_MODES.ACTIVE,
 }) => {
+  const t = useTranslate();
   useDocumentTitle(
     view === ADMIN_VIEW_MODES.ACTIVE
-      ? "Client Telemetry & Logs | Admin"
-      : "Recycle Bin | Client Telemetry & Logs",
+      ? `${t(AppLocales.Admin.Logs.Title)} | Admin`
+      : `${t(AppLocales.Admin.Logs.RecycleTitle)} | Admin`,
   );
 
   const navigate = useNavigate();
@@ -154,7 +154,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
       setLogs(result.logs);
       setPagination(result.pagination);
     } else {
-      setError(result.error || "Failed to load telemetry logs");
+      setError(result.error || t(AppLocales.Admin.Logs.Errors.LoadListFailed));
     }
 
     setLoading(false);
@@ -167,6 +167,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     setLoading,
     sortBy,
     sortOrder,
+    t,
     view,
   ]);
 
@@ -189,13 +190,13 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     if (result.success) {
       toast.success(
         currentlyResolved
-          ? "Log marked as unresolved"
-          : "Log marked as resolved! 🎉",
+          ? t(AppLocales.Admin.Logs.Toasts.UnresolveSuccess)
+          : t(AppLocales.Admin.Logs.Toasts.ResolveSuccess),
       );
       setDetailTarget(null);
       void loadLogs();
     } else {
-      toast.error(result.error || "Failed to update log resolution status");
+      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.UpdateStatusFailed));
     }
   };
 
@@ -205,10 +206,10 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success("Telemetry log restored");
+      toast.success(t(AppLocales.Admin.Logs.Toasts.RestoreSuccess));
       void loadLogs();
     } else {
-      toast.error(result.error || "Failed to restore telemetry log");
+      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.RestoreFailed));
     }
   };
 
@@ -220,11 +221,11 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success("Log entry discarded");
+      toast.success(t(AppLocales.Admin.Logs.Toasts.DiscardSuccess));
       setDiscardTarget(null);
       void loadLogs();
     } else {
-      toast.error(result.error || "Failed to discard log");
+      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.DiscardFailed));
     }
   };
 
@@ -236,118 +237,129 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     setLoading(false);
 
     if (result.success) {
-      toast.success("Log entry permanently destroyed");
+      toast.success(t(AppLocales.Admin.Logs.Toasts.DestroySuccess));
       setDestroyTarget(null);
       void loadLogs();
     } else {
-      toast.error(result.error || "Failed to destroy log");
+      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.DestroyFailed));
     }
   };
 
-  const columns: IAdminTableColumn<IAdminLog>[] = [
-    {
-      key: ADMIN_LOG_TABLE_KEYS.SEVERITY,
-      header: ADMIN_LOG_TABLE_HEADERS.SEVERITY,
-      render: (log) => (
-        <StatusBadge
-          status={log.severity}
-          variant={getSeverityBadgeVariant(log.severity)}
-        />
-      ),
-    },
-    {
-      key: ADMIN_LOG_TABLE_KEYS.MESSAGE,
-      header: ADMIN_LOG_TABLE_HEADERS.MESSAGE,
-      render: (log) => (
-        <div className="max-w-md">
-          <div className="line-clamp-2 font-mono text-body-m font-medium text-base-content">
-            {log.message}
+  const columns: IAdminTableColumn<IAdminLog>[] = useMemo(
+    () => [
+      {
+        key: ADMIN_LOG_TABLE_KEYS.SEVERITY,
+        header: t(AppLocales.Admin.Logs.Table.Severity),
+        render: (log) => (
+          <StatusBadge
+            status={log.severity}
+            variant={getSeverityBadgeVariant(log.severity)}
+          />
+        ),
+      },
+      {
+        key: ADMIN_LOG_TABLE_KEYS.MESSAGE,
+        header: t(AppLocales.Admin.Logs.Table.Message),
+        render: (log) => (
+          <div className="max-w-md">
+            <div className="line-clamp-2 font-mono text-body-m font-medium text-base-content">
+              {log.message}
+            </div>
+            <div className="text-caption text-base-content opacity-60 font-mono text-xs pt-0.5">
+              {log.url || "N/A"}
+            </div>
           </div>
-          <div className="text-caption text-base-content opacity-60 font-mono text-xs pt-0.5">
-            {log.url || "N/A"}
+        ),
+      },
+      {
+        key: ADMIN_LOG_TABLE_KEYS.PLATFORM,
+        header: t(AppLocales.Admin.Logs.Table.Platform),
+        render: (log) => (
+          <div>
+            <div className="font-semibold text-base-content">
+              {log.platform?.toUpperCase() || "WEB"}
+            </div>
+            <div className="text-caption text-base-content opacity-60 text-xs font-mono">
+              {log.environment || "production"} •{" "}
+              {log.browser || log.device || ""}
+            </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_LOG_TABLE_KEYS.PLATFORM,
-      header: ADMIN_LOG_TABLE_HEADERS.PLATFORM,
-      render: (log) => (
-        <div>
-          <div className="font-semibold text-base-content">
-            {log.platform?.toUpperCase() || "WEB"}
+        ),
+      },
+      {
+        key: ADMIN_LOG_TABLE_KEYS.COUNT,
+        header: t(AppLocales.Admin.Logs.Table.Occurrences),
+        sortKey: ADMIN_LOG_SORT_KEYS.COUNT,
+        render: (log) => (
+          <Badge size={BadgeSizes.XS} variant={BadgeVariants.SECONDARY}>
+            {log.occurrence_count}×
+          </Badge>
+        ),
+      },
+      {
+        key: ADMIN_LOG_TABLE_KEYS.LAST_OCCURRED,
+        header: t(AppLocales.Admin.Logs.Table.Timestamp),
+        sortKey: ADMIN_LOG_SORT_KEYS.CREATED_AT,
+        render: (log) => (
+          <div className="text-caption text-base-content opacity-70">
+            {formatAdminDate(log.last_occurred_at || log.created_at)}
           </div>
-          <div className="text-caption text-base-content opacity-60 text-xs font-mono">
-            {log.environment || "production"} •{" "}
-            {log.browser || log.device || ""}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_LOG_TABLE_KEYS.COUNT,
-      header: ADMIN_LOG_TABLE_HEADERS.COUNT,
-      sortKey: ADMIN_LOG_SORT_KEYS.COUNT,
-      render: (log) => (
-        <Badge size={BadgeSizes.XS} variant={BadgeVariants.SECONDARY}>
-          {log.occurrence_count}×
-        </Badge>
-      ),
-    },
-    {
-      key: ADMIN_LOG_TABLE_KEYS.LAST_OCCURRED,
-      header: ADMIN_LOG_TABLE_HEADERS.LAST_OCCURRED,
-      sortKey: ADMIN_LOG_SORT_KEYS.CREATED_AT,
-      render: (log) => (
-        <div className="text-caption text-base-content opacity-70">
-          {formatAdminDate(log.last_occurred_at || log.created_at)}
-        </div>
-      ),
-    },
-    {
-      key: ADMIN_LOG_TABLE_KEYS.ACTIONS,
-      header: "",
-      className: "text-right",
-      render: (log) => (
-        <AdminTableActions
-          resource={ADMIN_RESOURCES.CLIENTS}
-          actions={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? [
-                  {
-                    type: ADMIN_ACTIONS.INSPECT,
-                    onClick: () => setDetailTarget(log),
-                  },
-                  {
-                    type: ADMIN_ACTIONS.DISCARD,
-                    onClick: () => setDiscardTarget(log),
-                  },
-                ]
-              : [
-                  {
-                    type: ADMIN_ACTIONS.INSPECT,
-                    onClick: () => setDetailTarget(log),
-                  },
-                  {
-                    type: ADMIN_ACTIONS.UNDISCARD,
-                    onClick: () => void handleUndiscard(log),
-                  },
-                  {
-                    type: ADMIN_ACTIONS.DESTROY,
-                    onClick: () => setDestroyTarget(log),
-                  },
-                ]
-          }
-        />
-      ),
-    },
-  ];
+        ),
+      },
+      {
+        key: ADMIN_LOG_TABLE_KEYS.ACTIONS,
+        header: "",
+        className: "text-right",
+        render: (log) => (
+          <AdminTableActions
+            resource={ADMIN_RESOURCES.CLIENTS}
+            actions={
+              view === ADMIN_VIEW_MODES.ACTIVE
+                ? [
+                    {
+                      type: ADMIN_ACTIONS.INSPECT,
+                      onClick: () => setDetailTarget(log),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.DISCARD,
+                      onClick: () => setDiscardTarget(log),
+                    },
+                  ]
+                : [
+                    {
+                      type: ADMIN_ACTIONS.INSPECT,
+                      onClick: () => setDetailTarget(log),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.UNDISCARD,
+                      onClick: () => void handleUndiscard(log),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.DESTROY,
+                      onClick: () => setDestroyTarget(log),
+                    },
+                  ]
+            }
+          />
+        ),
+      },
+    ],
+    [t, view],
+  );
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Client Telemetry & Logs"
-        description="Monitor client runtime exceptions, inspect stack traces, and manage crash reports across Web and Mobile."
+        title={
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? t(AppLocales.Admin.Logs.Title)
+            : t(AppLocales.Admin.Logs.RecycleTitle)
+        }
+        description={
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? t(AppLocales.Admin.Logs.Description)
+            : t(AppLocales.Admin.Logs.RecycleDescription)
+        }
       >
         {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENTS) && (
           <Tabs
@@ -363,7 +375,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
             items={[
               {
                 value: ADMIN_VIEW_MODES.ACTIVE,
-                label: "Active Logs",
+                label: t(AppLocales.Admin.Logs.Tabs.ActiveLogs),
                 icon: iconsLib.document,
                 count:
                   view === ADMIN_VIEW_MODES.ACTIVE
@@ -372,7 +384,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
               },
               {
                 value: ADMIN_VIEW_MODES.DISCARDED,
-                label: "Recycle Bin",
+                label: t(AppLocales.Admin.Logs.Tabs.RecycleBin),
                 icon: iconsLib.trash,
                 count:
                   view === ADMIN_VIEW_MODES.DISCARDED
@@ -392,9 +404,9 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
           value={resolutionFilter}
           onValueChange={(val) => updateFilters({ resolution: val, page: 1 })}
           options={[
-            { value: ADMIN_LOG_RESOLUTION.UNRESOLVED, label: "Unresolved" },
-            { value: ADMIN_LOG_RESOLUTION.RESOLVED, label: "Resolved" },
-            { value: ADMIN_LOG_RESOLUTION.ALL, label: "All Logs" },
+            { value: ADMIN_LOG_RESOLUTION.UNRESOLVED, label: t(AppLocales.Admin.Logs.Filters.Unresolved) },
+            { value: ADMIN_LOG_RESOLUTION.RESOLVED, label: t(AppLocales.Admin.Logs.Filters.Resolved) },
+            { value: ADMIN_LOG_RESOLUTION.ALL, label: "All Statuses" },
           ]}
         />
 
@@ -404,12 +416,11 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
           value={severityFilter}
           onValueChange={(val) => updateFilters({ severity: val, page: 1 })}
           options={[
-            { value: "", label: "All Severities" },
-            { value: "error", label: "Error" },
-            { value: "warning", label: "Warning" },
-            { value: "info", label: "Info" },
-            { value: "critical", label: "Critical" },
-            { value: "debug", label: "Debug" },
+            { value: "", label: t(AppLocales.Admin.Logs.Filters.AllSeverities) },
+            { value: "error", label: t(AppLocales.Admin.Logs.Filters.Error) },
+            { value: "warning", label: t(AppLocales.Admin.Logs.Filters.Warning) },
+            { value: "info", label: t(AppLocales.Admin.Logs.Filters.Low) },
+            { value: "critical", label: t(AppLocales.Admin.Logs.Filters.Fatal) },
           ]}
         />
 
@@ -419,10 +430,10 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
           value={platformFilter}
           onValueChange={(val) => updateFilters({ platform: val, page: 1 })}
           options={[
-            { value: "", label: "All Platforms" },
-            { value: "web", label: "Web" },
-            { value: "ios", label: "iOS" },
-            { value: "android", label: "Android" },
+            { value: "", label: t(AppLocales.Admin.Logs.Filters.AllPlatforms) },
+            { value: "web", label: t(AppLocales.Admin.Logs.Filters.Web) },
+            { value: "ios", label: t(AppLocales.Admin.Logs.Filters.Ios) },
+            { value: "android", label: t(AppLocales.Admin.Logs.Filters.Android) },
           ]}
         />
       </div>
@@ -431,7 +442,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
       {error ? (
         <AdminState
           icon={iconsLib.warning}
-          title="Unable to load logs"
+          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
           message={error}
         />
       ) : !isLoading && logs.length === 0 ? (
@@ -441,16 +452,8 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
               ? iconsLib.document
               : iconsLib.trash
           }
-          title={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "No logs found"
-              : "Recycle bin is empty"
-          }
-          message={
-            view === ADMIN_VIEW_MODES.ACTIVE
-              ? "No client telemetry logs matching your filter parameters."
-              : "Discarded client telemetry logs will appear here."
-          }
+          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
         />
       ) : (
         <>
@@ -480,9 +483,10 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
 
       <ConfirmDialog
         isOpen={!!discardTarget}
-        title="Discard Telemetry Log"
-        message="Are you sure you want to discard this telemetry log entry?"
-        confirmLabel={ADMIN_COMMON_LABELS.DISCARD}
+        title={t(AppLocales.Admin.Common.Confirm.DiscardTitle)}
+        message={t(AppLocales.Admin.Common.Confirm.DiscardMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Discard)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         isDestructive={true}
         onConfirm={handleDiscard}
         onClose={() => setDiscardTarget(null)}
@@ -491,9 +495,10 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
 
       <ConfirmDialog
         isOpen={!!destroyTarget}
-        title="Destroy Telemetry Log"
-        message="Are you sure you want to permanently destroy this telemetry log entry? This action cannot be undone."
-        confirmLabel={ADMIN_COMMON_LABELS.DESTROY}
+        title={t(AppLocales.Admin.Common.Confirm.DestroyTitle)}
+        message={t(AppLocales.Admin.Common.Confirm.DestroyMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Destroy)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         isDestructive={true}
         onConfirm={handleDestroy}
         onClose={() => setDestroyTarget(null)}
@@ -502,3 +507,4 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     </div>
   );
 };
+

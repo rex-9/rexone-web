@@ -15,29 +15,9 @@ import {
   Radio,
   TextInput,
 } from "../../components";
-import { ADMIN_ACTIONS, ADMIN_COMMON_LABELS } from "../../constants";
+import { ADMIN_ACTIONS } from "../../constants";
 import { PRODUCT_CURRENCY, PRODUCT_CYCLE, PRODUCT_TYPE } from "../constants";
-
-const ADMIN_PRODUCT_FORM_LABELS = {
-  ACTIVE: "Active",
-  AMOUNT_IN_CENTS: "Amount in cents",
-  BILLING_CYCLE: "Billing cycle",
-  CREATE_PRODUCT: "Create product",
-  CURRENCY: "Currency",
-  DESCRIPTION: "Description",
-  FREE_PRODUCT: "Free product",
-  PAID_PRODUCT: "Paid product",
-  PRICE_TYPE: "Price type",
-  PRODUCT_NAME: "Product name",
-  PRODUCT_CODE: "Product code",
-  SAVE_CHANGES: "Save changes",
-} as const;
-
-const ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES = {
-  DESCRIPTION_REQUIRED: "Description is required.",
-  CODE_INVALID:
-    "Product code must be exactly 10 alphanumeric characters without special characters.",
-} as const;
+import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminProductFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
@@ -78,6 +58,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
+  const t = useTranslate();
   const [values, setValues] = useState<IAdminProductFormValues>(() =>
     buildInitialValues(product),
   );
@@ -128,14 +109,14 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     const description = values.description.trim();
     if (!description) {
       setDescriptionError(
-        ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES.DESCRIPTION_REQUIRED,
+        t(AppLocales.Admin.Products.Form.DescriptionPlaceholder),
       );
       return;
     }
 
     const code = values.code?.trim();
     if (code && !/^[A-Za-z0-9]{10}$/.test(code)) {
-      setCodeError(ADMIN_PRODUCT_FORM_VALIDATION_MESSAGES.CODE_INVALID);
+      setCodeError(t(AppLocales.Admin.Products.Form.CodePlaceholder));
       return;
     }
 
@@ -159,7 +140,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     <FormContainer onSubmit={handleSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
         <TextInput
-          label={ADMIN_PRODUCT_FORM_LABELS.PRODUCT_NAME}
+          label={t(AppLocales.Admin.Products.Form.NameLabel)}
+          placeholder={t(AppLocales.Admin.Products.Form.NamePlaceholder)}
           value={values.name}
           required
           onChange={(event) => updateValue("name", event.target.value)}
@@ -167,10 +149,10 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
 
         <div className="flex flex-col">
           <TextInput
-            label={ADMIN_PRODUCT_FORM_LABELS.PRODUCT_CODE}
+            label={t(AppLocales.Admin.Products.Form.CodeLabel)}
             placeholder={
               mode === ADMIN_ACTIONS.CREATE
-                ? "Leave blank to auto-generate"
+                ? t(AppLocales.Admin.Products.Form.CodePlaceholder)
                 : "e.g. A1b2C3d4E5"
             }
             value={values.code || ""}
@@ -191,7 +173,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
 
         <div className="flex flex-col">
           <label className="mb-1 text-body-s font-medium text-base-content">
-            {ADMIN_PRODUCT_FORM_LABELS.PRICE_TYPE}
+            {t(AppLocales.Admin.Products.Form.PriceLabel)}
           </label>
           <div className="grid gap-2 sm:grid-cols-2">
             {[PRODUCT_TYPE.PREMIUM, PRODUCT_TYPE.FREE].map((option) => {
@@ -212,8 +194,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
                   }
                 >
                   {option === PRODUCT_TYPE.PREMIUM
-                    ? ADMIN_PRODUCT_FORM_LABELS.PAID_PRODUCT
-                    : ADMIN_PRODUCT_FORM_LABELS.FREE_PRODUCT}
+                    ? "Paid Product"
+                    : "Free Product"}
                 </Radio>
               );
             })}
@@ -232,7 +214,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         </div>
 
         <TextInput
-          label={ADMIN_PRODUCT_FORM_LABELS.AMOUNT_IN_CENTS}
+          label={t(AppLocales.Admin.Products.Form.PriceLabel)}
           type="number"
           min={isFree ? 0 : 1}
           step={1}
@@ -245,7 +227,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         />
 
         <TextInput
-          label={ADMIN_PRODUCT_FORM_LABELS.DESCRIPTION}
+          label={t(AppLocales.Admin.Products.Form.DescriptionLabel)}
+          placeholder={t(AppLocales.Admin.Products.Form.DescriptionPlaceholder)}
           value={values.description}
           required
           error={descriptionError}
@@ -256,7 +239,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         />
 
         <Dropdown
-          label={ADMIN_PRODUCT_FORM_LABELS.CURRENCY}
+          label={t(AppLocales.Admin.Products.Form.CurrencyLabel)}
           value={values.currency}
           onValueChange={(val) => updateValue("currency", val)}
           options={[{ value: PRODUCT_CURRENCY.USD, label: "USD" }]}
@@ -264,7 +247,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
 
         <div>
           <Dropdown
-            label={ADMIN_PRODUCT_FORM_LABELS.BILLING_CYCLE}
+            label={t(AppLocales.Admin.Products.Form.CycleLabel)}
             value={
               isFree
                 ? PRODUCT_CYCLE.ONE_TIME
@@ -292,19 +275,20 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           onChange={(event) => updateValue("active", event.target.checked)}
           containerClassName="min-h-10 md:self-end"
         >
-          <span>{ADMIN_PRODUCT_FORM_LABELS.ACTIVE}</span>
+          <span>{t(AppLocales.Admin.Products.Form.ActiveForPurchase)}</span>
         </Checkbox>
       </div>
 
       <FormActionRow
-        cancelLabel={ADMIN_COMMON_LABELS.CANCEL}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         submitLabel={
           mode === ADMIN_ACTIONS.CREATE
-            ? ADMIN_PRODUCT_FORM_LABELS.CREATE_PRODUCT
-            : ADMIN_PRODUCT_FORM_LABELS.SAVE_CHANGES
+            ? t(AppLocales.Admin.Products.Form.CreateProduct)
+            : t(AppLocales.Admin.Products.Form.SaveProduct)
         }
         onCancel={onCancel}
       />
     </FormContainer>
   );
 };
+
