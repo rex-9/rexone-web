@@ -27,6 +27,14 @@ export const ADMIN_PRODUCT_TABLE_KEYS = {
   STATUS: "active",
 } as const;
 
+export const ADMIN_PRODUCT_SORT_KEYS = {
+  NAME: "name",
+  PRICE_UNIT_AMOUNT: "price_unit_amount",
+  CYCLE: "cycle",
+  CREATED_AT: "created_at",
+  DISCARDED_AT: "discarded_at",
+} as const;
+
 export const ADMIN_PRODUCT_LABELS = {
   ACTIVE: "Active",
   INACTIVE: "Inactive",

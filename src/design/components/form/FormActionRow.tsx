@@ -1,6 +1,7 @@
 import React from "react";
 import { useLoading } from "../../../contexts/LoadingContext";
 import { Button } from "../button";
+import { ButtonTypes, ButtonVariants } from "../../constants";
 
 export interface IFormActionRowProps {
   submitLabel: string;
@@ -21,14 +22,18 @@ export const FormActionRow: React.FC<FormActionRowProps> = ({
   return (
     <div className="mt-6 flex flex-col-reverse gap-3 border-t border-base-300 pt-4 sm:flex-row sm:justify-end">
       <Button
-        type="button"
-        variant="tertiary"
+        type={ButtonTypes.BUTTON}
+        variant={ButtonVariants.TERTIARY}
         onClick={onCancel}
         disabled={isSubmitting}
       >
         {cancelLabel}
       </Button>
-      <Button type="submit" isLoading={isSubmitting}>
+      <Button
+        type={ButtonTypes.SUBMIT}
+        variant={ButtonVariants.PRIMARY}
+        isLoading={isSubmitting}
+      >
         {submitLabel}
       </Button>
     </div>

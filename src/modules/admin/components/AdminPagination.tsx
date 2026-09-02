@@ -2,6 +2,7 @@ import React from "react";
 import { IApiPagination } from "../../../models";
 import { iconsLib } from "../../../assets";
 import { Button } from "../../../design/components/button";
+import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 
 interface IAdminPaginationProps {
   pagination: IApiPagination | null;
@@ -22,8 +23,8 @@ export const AdminPagination: React.FC<IAdminPaginationProps> = ({
       </span>
       <div className="flex items-center gap-2">
         <Button
-          size="sm"
-          variant="secondary"
+          size={ButtonSizes.SM}
+          variant={ButtonVariants.SECONDARY}
           className="flex items-center gap-1"
           disabled={!pagination.prev_page}
           onClick={() => {
@@ -34,8 +35,8 @@ export const AdminPagination: React.FC<IAdminPaginationProps> = ({
           <span>Previous</span>
         </Button>
         <Button
-          size="sm"
-          variant="secondary"
+          size={ButtonSizes.SM}
+          variant={ButtonVariants.SECONDARY}
           className="flex items-center gap-1"
           disabled={!pagination.next_page}
           onClick={() => {

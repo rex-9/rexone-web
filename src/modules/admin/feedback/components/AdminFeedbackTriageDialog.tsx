@@ -7,6 +7,13 @@ import {
   Dropdown,
   FormContainer,
 } from "../../../../design/components";
+import {
+  BadgeVariants,
+  ButtonTypes,
+  ButtonVariants,
+  DropdownSizes,
+} from "../../../../design/constants";
+import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback, IUpdateFeedbackPayload } from "../types";
 import {
   ADMIN_FEEDBACK_PRIORITY,
@@ -39,14 +46,14 @@ interface IAdminFeedbackTriageDialogProps {
 export const AdminFeedbackTriageDialog: React.FC<
   IAdminFeedbackTriageDialogProps
 > = ({ isOpen, feedback, onClose, onSubmit, isLoading = false }) => {
-  const [status, setStatus] = useState<string>("new");
-  const [priority, setPriority] = useState<string>("medium");
+  const [status, setStatus] = useState<string>(ADMIN_FEEDBACK_STATUS.NEW);
+  const [priority, setPriority] = useState<string>(ADMIN_FEEDBACK_PRIORITY.MEDIUM);
   const [adminNotes, setAdminNotes] = useState<string>("");
 
   useEffect(() => {
     if (feedback) {
-      setStatus(feedback.status || "new");
-      setPriority(feedback.priority || "medium");
+      setStatus(feedback.status || ADMIN_FEEDBACK_STATUS.NEW);
+      setPriority(feedback.priority || ADMIN_FEEDBACK_PRIORITY.MEDIUM);
       setAdminNotes(feedback.admin_notes || "");
     }
   }, [feedback]);
@@ -72,14 +79,14 @@ export const AdminFeedbackTriageDialog: React.FC<
               {feedback.user_name || feedback.user_email || "Anonymous User"}
             </span>
             <span className="opacity-60 text-xs">
-              {new Date(feedback.created_at).toLocaleString()}
+              {formatAdminDate(feedback.created_at)}
             </span>
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
-            <Badge variant="secondary">{feedback.category}</Badge>
+            <Badge variant={BadgeVariants.SECONDARY}>{feedback.category}</Badge>
             {feedback.platform && (
-              <Badge variant="info">{feedback.platform}</Badge>
+              <Badge variant={BadgeVariants.INFO}>{feedback.platform}</Badge>
             )}
             {feedback.rating && (
               <span className="text-warning font-semibold">
@@ -119,14 +126,14 @@ export const AdminFeedbackTriageDialog: React.FC<
             value={status}
             onValueChange={(val) => setStatus(val)}
             options={statusOptions}
-            size="sm"
+            size={DropdownSizes.SM}
           />
           <Dropdown
             label="Priority"
             value={priority}
             onValueChange={(val) => setPriority(val)}
             options={priorityOptions}
-            size="sm"
+            size={DropdownSizes.SM}
           />
         </div>
 
@@ -143,14 +150,18 @@ export const AdminFeedbackTriageDialog: React.FC<
 
         <div className="mt-6 flex justify-end gap-3">
           <Button
-            type="button"
-            variant="secondary"
+            type={ButtonTypes.BUTTON}
+            variant={ButtonVariants.SECONDARY}
             onClick={onClose}
             disabled={isLoading}
           >
             Close
           </Button>
-          <Button type="submit" isLoading={isLoading}>
+          <Button
+            type={ButtonTypes.SUBMIT}
+            variant={ButtonVariants.PRIMARY}
+            isLoading={isLoading}
+          >
             Update Status
           </Button>
         </div>

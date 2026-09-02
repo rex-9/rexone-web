@@ -9,6 +9,9 @@ export const ADMIN_ACCESS_STATUS = {
   REVOKED: "revoked",
 } as const;
 
+export type TAdminAccessStatus =
+  (typeof ADMIN_ACCESS_STATUS)[keyof typeof ADMIN_ACCESS_STATUS];
+
 export const ADMIN_ACCESS_PAGE_TITLES = {
   LIST: "Entitlements & Access",
 } as const;
@@ -28,6 +31,14 @@ export const ADMIN_ACCESS_TABLE_KEYS = {
   GRANTED_AT: "granted_at",
   EXPIRES_AT: "expires_at",
   ACTIONS: "actions",
+} as const;
+
+export const ADMIN_ACCESS_SORT_KEYS = {
+  USER_NAME: "user_name",
+  PRODUCT_NAME: "product_name",
+  CREATED_AT: "created_at",
+  EXPIRES_AT: "expires_at",
+  REVOKED_AT: "revoked_at",
 } as const;
 
 export const ADMIN_ACCESS_PAGE_META: Record<string, IAdminPageMeta> = {

@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 
 import { Button } from "../../../design/components/button";
+import { ButtonTypes, ButtonVariants } from "../../../design/constants";
 import { Checkbox } from "../../../design/components/form";
 import {
   ADMIN_PERMISSION_ACTION_ORDER,
@@ -179,8 +180,8 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
                 {showSelectAll && isSelectable && (
                   <td className="px-4 py-3 text-right">
                     <Button
-                      type="button"
-                      variant="secondary"
+                      type={ButtonTypes.BUTTON}
+                      variant={ButtonVariants.SECONDARY}
                       className="h-8 gap-1 px-2 text-caption"
                       onClick={() =>
                         isResourceSelected

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import { iconsLib } from "../../../../assets";
 import { Button } from "../../../../design/components";
 import RoleController from "../role.controller";
@@ -27,6 +27,7 @@ import {
 import {
   ADMIN_ROLE_LABELS,
   ADMIN_ROLE_PAGE_TITLES,
+  ADMIN_ROLE_SORT_KEYS,
   ADMIN_ROLE_TABLE_HEADERS,
   ADMIN_ROLE_TABLE_KEYS,
 } from "../constants";
@@ -48,21 +49,27 @@ export const AdminRolesPage: React.FC = () => {
   const [error, setError] = useState("");
   const [discardTarget, setDiscardTarget] = useState<IAdminRole | null>(null);
 
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy: ADMIN_ROLE_SORT_KEYS.CREATED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
+
   const fetchRoles = useCallback(async () => {
     setLoading(true);
     setError("");
 
-    await RoleController.getRoles(
-      (nextRoles) => {
-        setRoles(nextRoles);
-        setLoading(false);
-      },
-      (message) => {
-        setError(message);
-        setLoading(false);
-      },
-    );
-  }, [setLoading]);
+    const result = await RoleController.getRoles({
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    });
+
+    if (result.success) {
+      setRoles(result.roles);
+    } else {
+      setError(result.error || "Failed to load roles");
+    }
+    setLoading(false);
+  }, [setLoading, sortBy, sortOrder]);
 
   useEffect(() => {
     void fetchRoles();
@@ -73,6 +80,7 @@ export const AdminRolesPage: React.FC = () => {
       {
         key: ADMIN_ROLE_TABLE_KEYS.NAME,
         header: ADMIN_ROLE_TABLE_HEADERS.ROLE,
+        sortKey: ADMIN_ROLE_SORT_KEYS.NAME,
         render: (role) => (
           <div>
             <div className="font-semibold text-base-content">{role.name}</div>
@@ -156,19 +164,16 @@ export const AdminRolesPage: React.FC = () => {
 
     setLoading(true);
 
-    await RoleController.discardRole(
-      discardTarget.id,
-      () => {
-        toast.success("Role discarded successfully");
-        setDiscardTarget(null);
-        setLoading(false);
-        void fetchRoles();
-      },
-      (message) => {
-        toast.error(message);
-        setLoading(false);
-      },
-    );
+    const result = await RoleController.discardRole(discardTarget.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success("Role discarded successfully");
+      setDiscardTarget(null);
+      void fetchRoles();
+    } else {
+      toast.error(result.error || "Failed to discard role");
+    }
   };
 
   const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ROLES);
@@ -210,6 +215,9 @@ export const AdminRolesPage: React.FC = () => {
           columns={columns}
           records={roles}
           getRowKey={(role) => role.id}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSort={handleSort}
         />
       )}
 

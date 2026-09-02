@@ -24,13 +24,17 @@ describe("UserController", () => {
   });
 
   describe("getUsers", () => {
-    it("calls onSuccess with parsed users and pagination when API succeeds", async () => {
+    it("returns parsed users and pagination when API succeeds", async () => {
       const mockUsers = [
         {
           id: "u1",
-          email: "user1@example.com",
-          username: "user1",
-          name: "User One",
+          type: "user",
+          attributes: {
+            id: "u1",
+            email: "user1@example.com",
+            username: "user1",
+            name: "User One",
+          },
         },
       ];
       const mockResponse = {
@@ -50,20 +54,19 @@ describe("UserController", () => {
 
       vi.mocked(UserService.getUsers).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.getUsers({ page: 1 }, onSuccess, onError);
+      const result = await UserController.getUsers({ page: 1 });
 
       expect(UserService.getUsers).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.users).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "u1" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
 
-    it("calls onError when API fails", async () => {
+    it("returns error when API fails", async () => {
       const mockResponse = {
         data: {
           status: { code: 500, success: false, message: "Server Error" },
@@ -73,18 +76,16 @@ describe("UserController", () => {
 
       vi.mocked(UserService.getUsers).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await UserController.getUsers();
 
-      await UserController.getUsers(undefined, onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.users).toEqual([]);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("getUser", () => {
-    it("calls onSuccess with single user when API succeeds", async () => {
+    it("returns single user when API succeeds", async () => {
       const mockUser = {
         id: "u1",
         email: "user1@example.com",
@@ -99,19 +100,16 @@ describe("UserController", () => {
 
       vi.mocked(UserService.getUser).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.getUser("u1", onSuccess, onError);
+      const result = await UserController.getUser("u1");
 
       expect(UserService.getUser).toHaveBeenCalledWith("u1");
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.user).toEqual(
         expect.objectContaining({ id: "u1", email: "user1@example.com" }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
 
-    it("calls onError when user is not found", async () => {
+    it("returns error when user is not found", async () => {
       const mockResponse = {
         data: {
           status: { code: 404, success: false, message: "Not Found" },
@@ -121,22 +119,19 @@ describe("UserController", () => {
 
       vi.mocked(UserService.getUser).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await UserController.getUser("u999");
 
-      await UserController.getUser("u999", onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("getDiscardedUsers", () => {
-    it("calls onSuccess with discarded users list", async () => {
+    it("returns discarded users list", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: [{ id: "u2", email: "discarded@example.com" }],
+          data: [{ id: "u2", type: "user", attributes: { id: "u2", email: "discarded@example.com" } }],
           meta: {
             pagination: { page: 1, limit: 20, total_count: 1, total_pages: 1 },
           },
@@ -147,22 +142,21 @@ describe("UserController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.getDiscardedUsers({ page: 1 }, onSuccess, onError);
+      const result = await UserController.getDiscardedUsers({ page: 1 });
 
       expect(UserService.getDiscardedUsers).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.users).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "u2" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
   });
 
   describe("createUser", () => {
-    it("creates user and invokes onSuccess with created user and message", async () => {
+    it("creates user and returns created user and message", async () => {
       const formValues: IAdminUserFormValues = {
         email: "new@example.com",
         username: "newuser",
@@ -179,22 +173,17 @@ describe("UserController", () => {
 
       vi.mocked(UserService.createUser).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.createUser(formValues, onSuccess, onError);
+      const result = await UserController.createUser(formValues);
 
       expect(UserService.createUser).toHaveBeenCalledWith(formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "u3" }),
-        "User created",
-      );
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.user).toEqual(expect.objectContaining({ id: "u3" }));
+      expect(result.message).toBe("User created");
     });
   });
 
   describe("updateUser", () => {
-    it("updates user and invokes onSuccess with updated user", async () => {
+    it("updates user and returns updated user", async () => {
       const formValues: IAdminUserFormValues = {
         email: "updated@example.com",
         username: "updateduser",
@@ -210,22 +199,17 @@ describe("UserController", () => {
 
       vi.mocked(UserService.updateUser).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.updateUser("u1", formValues, onSuccess, onError);
+      const result = await UserController.updateUser("u1", formValues);
 
       expect(UserService.updateUser).toHaveBeenCalledWith("u1", formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "u1" }),
-        "User updated",
-      );
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.user).toEqual(expect.objectContaining({ id: "u1" }));
+      expect(result.message).toBe("User updated");
     });
   });
 
   describe("discardUser", () => {
-    it("discards user and calls onSuccess with status message", async () => {
+    it("discards user and returns status message", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "User moved to recycle bin" },
@@ -235,19 +219,16 @@ describe("UserController", () => {
 
       vi.mocked(UserService.discardUser).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.discardUser("u1", onSuccess, onError);
+      const result = await UserController.discardUser("u1");
 
       expect(UserService.discardUser).toHaveBeenCalledWith("u1");
-      expect(onSuccess).toHaveBeenCalledWith("User moved to recycle bin");
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("User moved to recycle bin");
     });
   });
 
   describe("undiscardUser", () => {
-    it("undiscards user and calls onSuccess with status message", async () => {
+    it("undiscards user and returns status message", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "User restored" },
@@ -259,19 +240,16 @@ describe("UserController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.undiscardUser("u1", onSuccess, onError);
+      const result = await UserController.undiscardUser("u1");
 
       expect(UserService.undiscardUser).toHaveBeenCalledWith("u1");
-      expect(onSuccess).toHaveBeenCalledWith("User restored");
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("User restored");
     });
   });
 
   describe("getRoles", () => {
-    it("calls onSuccess with role list", async () => {
+    it("returns role list", async () => {
       const mockRoles: IAdminRole[] = [
         { id: "r1", name: "admin", description: "Admin", system: true },
       ];
@@ -284,16 +262,13 @@ describe("UserController", () => {
 
       vi.mocked(UserService.getRoles).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await UserController.getRoles(onSuccess, onError);
+      const result = await UserController.getRoles();
 
       expect(UserService.getRoles).toHaveBeenCalled();
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.roles).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "r1" })]),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
   });
 });

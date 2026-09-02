@@ -1,122 +1,150 @@
-import { getApiError, parseRecord } from "../../../services/api.service";
+import { getApiError, parsePagyList, parseRecord } from "../../../services/api.service";
 import { AppLocales, translate } from "../../../locales";
 import RoleService from "./role.service";
-import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "./types";
+import type { IApiPagination, IJsonApiResource } from "../../../models";
+import {
+  IAdminPermission,
+  IAdminPermissionListParams,
+  IAdminRole,
+  IAdminRoleFormValues,
+  IAdminRoleListParams,
+} from "./types";
 
 class RoleController {
-  async getRoles(
-    onSuccess?: (roles: IAdminRole[]) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-    const response = await RoleService.getRoles();
+  async getRoles(params?: IAdminRoleListParams): Promise<{
+    success: boolean;
+    roles: IAdminRole[];
+    pagination: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await RoleService.getRoles(params);
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(
-          response,
-          translate(AppLocales.Admin.Roles.Errors.LoadList),
-        ),
-      );
-      return;
+    if (status?.success && data) {
+      const { records, pagination } = parsePagyList<IAdminRole>(response);
+      return { success: true, roles: records, pagination };
     }
 
-    const roles = Array.isArray(data) ? data : data.roles;
-    onSuccess?.(roles.map(parseRecord));
+    return {
+      success: false,
+      roles: [],
+      pagination: null,
+      error: getApiError(
+        response,
+        translate(AppLocales.Admin.Roles.Errors.LoadList),
+      ),
+    };
   }
 
-  async getRole(
-    id: string,
-    onSuccess?: (role: IAdminRole) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  async getRole(id: string): Promise<{
+    success: boolean;
+    role?: IAdminRole;
+    error?: string;
+  }> {
     const response = await RoleService.getRole(id);
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadOne)),
-      );
-      return;
+    if (status?.success && data) {
+      const raw = "role" in data ? data.role : data;
+      return {
+        success: true,
+        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+      };
     }
 
-    onSuccess?.(parseRecord("role" in data ? data.role : data));
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Admin.Roles.Errors.LoadOne)),
+    };
   }
 
-  async getPermissions(
-    onSuccess?: (permissions: IAdminPermission[]) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-    const response = await RoleService.getPermissions();
+  async getPermissions(params?: IAdminPermissionListParams): Promise<{
+    success: boolean;
+    permissions: IAdminPermission[];
+    pagination?: IApiPagination | null;
+    error?: string;
+  }> {
+    const response = await RoleService.getPermissions(params);
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(
-          response,
-          translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
-        ),
-      );
-      return;
+    if (status?.success && data) {
+      const { records, pagination } = parsePagyList<IAdminPermission>(response);
+      return { success: true, permissions: records, pagination };
     }
 
-    const permissions = Array.isArray(data) ? data : data.permissions;
-    onSuccess?.(permissions.map(parseRecord));
+    return {
+      success: false,
+      permissions: [],
+      pagination: null,
+      error: getApiError(
+        response,
+        translate(AppLocales.Admin.Roles.Errors.LoadPermissions),
+      ),
+    };
   }
 
-  async createRole(
-    values: IAdminRoleFormValues,
-    onSuccess?: (role: IAdminRole) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  async createRole(values: IAdminRoleFormValues): Promise<{
+    success: boolean;
+    role?: IAdminRole;
+    error?: string;
+  }> {
     const response = await RoleService.createRole(values);
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Create)),
-      );
-      return;
+    if (status?.success && data) {
+      const raw = "role" in data ? data.role : data;
+      return {
+        success: true,
+        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+      };
     }
 
-    onSuccess?.(parseRecord("role" in data ? data.role : data));
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Admin.Roles.Errors.Create)),
+    };
   }
 
   async updateRole(
     id: string,
     values: IAdminRoleFormValues,
-    onSuccess?: (role: IAdminRole) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  ): Promise<{
+    success: boolean;
+    role?: IAdminRole;
+    error?: string;
+  }> {
     const response = await RoleService.updateRole(id, values);
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Update)),
-      );
-      return;
+    if (status?.success && data) {
+      const raw = "role" in data ? data.role : data;
+      return {
+        success: true,
+        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+      };
     }
 
-    onSuccess?.(parseRecord("role" in data ? data.role : data));
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Admin.Roles.Errors.Update)),
+    };
   }
 
-  async discardRole(
-    id: string,
-    onSuccess?: () => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  async discardRole(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
     const response = await RoleService.discardRole(id);
     const { status } = response.data || {};
 
-    if (!status?.success) {
-      onError?.(
-        getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
-      );
-      return;
+    if (status?.success) {
+      return { success: true };
     }
 
-    onSuccess?.();
+    return {
+      success: false,
+      error: getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
+    };
   }
 }
 

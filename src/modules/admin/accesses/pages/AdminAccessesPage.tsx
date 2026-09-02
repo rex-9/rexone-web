@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -21,18 +21,21 @@ import AdminAccessesController from "../accesses.controller";
 import {
   AdminPagination,
   AdminState,
-  AdminTableActions,
   AdminTable,
+  AdminTableActions,
   ConfirmDialog,
   PageHeader,
+  type IAdminTableAction,
   type IAdminTableColumn,
 } from "../../components";
 import {
   ADMIN_PAGE_SIZE,
   ADMIN_ACTIONS,
   ADMIN_RESOURCES,
+  ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
+  ADMIN_ACCESS_SORT_KEYS,
   ADMIN_ACCESS_STATUS,
   ADMIN_ACCESS_TABLE_HEADERS,
   ADMIN_ACCESS_TABLE_KEYS,
@@ -40,10 +43,8 @@ import {
 import { AdminAccessGrantDialog } from "../components/AdminAccessGrantDialog";
 import { AdminAccessExtendDialog } from "../components/AdminAccessExtendDialog";
 
-const formatDate = (value?: string | null): string => {
-  if (!value) return "Never";
-  return new Date(value).toLocaleDateString();
-};
+import { DropdownSizes } from "../../../../design/constants";
+import { formatAdminDate } from "../../../../helpers";
 
 export const AdminAccessesPage: React.FC = () => {
   useDocumentTitle("Access | Admin");
@@ -53,6 +54,11 @@ export const AdminAccessesPage: React.FC = () => {
   const statusFilter = searchParams.get("status") || "";
   const searchQuery = searchParams.get("search") || "";
   const [searchInput, setSearchInput] = useState(searchQuery);
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy: ADMIN_ACCESS_SORT_KEYS.CREATED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
@@ -118,6 +124,8 @@ export const AdminAccessesPage: React.FC = () => {
       limit: ADMIN_PAGE_SIZE,
       status: statusFilter || undefined,
       search: searchQuery.trim() || undefined,
+      sort_by: sortBy,
+      sort_order: sortOrder,
     });
 
     if (result.success) {
@@ -128,7 +136,7 @@ export const AdminAccessesPage: React.FC = () => {
     }
 
     setLoading(false);
-  }, [can, page, statusFilter, searchQuery, setLoading]);
+  }, [can, page, statusFilter, searchQuery, setLoading, sortBy, sortOrder]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -187,6 +195,7 @@ export const AdminAccessesPage: React.FC = () => {
     {
       key: ADMIN_ACCESS_TABLE_KEYS.USER,
       header: ADMIN_ACCESS_TABLE_HEADERS.USER,
+      sortKey: ADMIN_ACCESS_SORT_KEYS.USER_NAME,
       render: (access) => {
         const displayName =
           access.user_name || access.username || access.user_email || "User";
@@ -212,6 +221,7 @@ export const AdminAccessesPage: React.FC = () => {
     {
       key: ADMIN_ACCESS_TABLE_KEYS.PRODUCT,
       header: ADMIN_ACCESS_TABLE_HEADERS.PRODUCT,
+      sortKey: ADMIN_ACCESS_SORT_KEYS.PRODUCT_NAME,
       render: (access) => (
         <div>
           <div className="flex items-center gap-2">
@@ -239,17 +249,19 @@ export const AdminAccessesPage: React.FC = () => {
     {
       key: ADMIN_ACCESS_TABLE_KEYS.GRANTED_AT,
       header: ADMIN_ACCESS_TABLE_HEADERS.GRANTED_AT,
-      render: (access) => formatDate(access.granted_at),
+      sortKey: ADMIN_ACCESS_SORT_KEYS.CREATED_AT,
+      render: (access) => formatAdminDate(access.granted_at),
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.EXPIRES_AT,
       header: ADMIN_ACCESS_TABLE_HEADERS.EXPIRES,
+      sortKey: ADMIN_ACCESS_SORT_KEYS.EXPIRES_AT,
       render: (access) => {
         if (!access.expires_at)
           return <span className="text-success font-semibold">Lifetime</span>;
         return (
           <div>
-            <div>{formatDate(access.expires_at)}</div>
+            <div>{formatAdminDate(access.expires_at)}</div>
             {access.remaining_days !== undefined &&
               access.remaining_days !== null &&
               access.remaining_days > 0 && (
@@ -263,48 +275,77 @@ export const AdminAccessesPage: React.FC = () => {
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.ACTIONS,
-      header: "",
+      header: ADMIN_TABLE_HEADERS.ACTIONS,
       className: "text-right",
       render: (access) => {
-        const isLifetime = !access.expires_at;
+        const actions: IAdminTableAction[] = [];
+
+        if (access.status !== ADMIN_ACCESS_STATUS.REVOKED) {
+          actions.push({
+            type: ADMIN_ACTIONS.EXTEND,
+            onClick: () => setExtendTarget(access),
+          });
+
+          actions.push({
+            type: ADMIN_ACTIONS.REVOKE,
+            onClick: () => setRevokeTarget(access),
+          });
+        }
+
+        if (actions.length === 0) return null;
+
         return (
           <AdminTableActions
             resource={ADMIN_RESOURCES.ACCESSES}
-            actions={[
-              ...(!isLifetime
-                ? [
-                    {
-                      type: ADMIN_ACTIONS.EXTEND,
-                      onClick: () => setExtendTarget(access),
-                    },
-                  ]
-                : []),
-              ...(access.status === ADMIN_ACCESS_STATUS.ACTIVE && access.active
-                ? [
-                    {
-                      type: ADMIN_ACTIONS.REVOKE,
-                      onClick: () => setRevokeTarget(access),
-                    },
-                  ]
-                : []),
-            ]}
+            actions={actions}
           />
         );
       },
     },
   ];
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ACCESSES);
-
   return (
     <div className="space-y-6">
+      {/* Modals & Dialogs */}
+      <AdminAccessGrantDialog
+        isOpen={isGrantOpen}
+        onClose={() => setIsGrantOpen(false)}
+        onSubmit={handleGrant}
+      />
+
+      <AdminAccessExtendDialog
+        isOpen={Boolean(extendTarget)}
+        access={extendTarget}
+        onClose={() => setExtendTarget(null)}
+        onSubmit={handleExtend}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(revokeTarget)}
+        title="Revoke Access"
+        message={`Are you sure you want to revoke entitlement access for ${
+          revokeTarget?.user_name || revokeTarget?.username || "this user"
+        }? They will immediately lose access to ${
+          revokeTarget?.product_name || "the product"
+        }.`}
+        confirmLabel="Revoke Access"
+        isDestructive={true}
+        onConfirm={handleRevoke}
+        onClose={() => setRevokeTarget(null)}
+      />
+
+      {/* Header */}
       <PageHeader
-        title="Access"
-        description="Inspect, grant, extend, and revoke customer product licenses and access rights."
+        title="Entitlement & Access Management"
+        description="Monitor user entitlements, grant complimentary access passes, extend durations, or revoke access rights."
         action={
-          canCreate ? (
-            <Button onClick={() => setIsGrantOpen(true)}>
-              <iconsLib.plus className="mr-2 h-4 w-4" />
+          can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ACCESSES) ? (
+            <Button
+              variant="primary"
+              onClick={() => setIsGrantOpen(true)}
+              className="flex items-center gap-1.5"
+            >
+              <iconsLib.plus className="h-4 w-4" />
               Grant Access
             </Button>
           ) : null
@@ -315,16 +356,15 @@ export const AdminAccessesPage: React.FC = () => {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-3">
           <Dropdown
-            size="sm"
+            size={DropdownSizes.SM}
             containerClassName="w-auto min-w-44"
             value={statusFilter}
             onValueChange={(val) => updateFilters({ status: val, page: 1 })}
             options={[
               { value: "", label: "All Statuses" },
-              { value: "active", label: "Active" },
-              { value: "expiring_soon", label: "Expiring Soon" },
-              { value: "revoked", label: "Revoked" },
-              { value: "expired", label: "Expired" },
+              { value: ADMIN_ACCESS_STATUS.ACTIVE, label: "Active" },
+              { value: ADMIN_ACCESS_STATUS.REVOKED, label: "Revoked" },
+              { value: ADMIN_ACCESS_STATUS.EXPIRED, label: "Expired" },
             ]}
           />
         </div>
@@ -359,6 +399,9 @@ export const AdminAccessesPage: React.FC = () => {
             records={accesses}
             columns={columns}
             getRowKey={(record) => record.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}
@@ -366,33 +409,6 @@ export const AdminAccessesPage: React.FC = () => {
           />
         </>
       )}
-
-      {/* Dialogs */}
-      <AdminAccessGrantDialog
-        isOpen={isGrantOpen}
-        onClose={() => setIsGrantOpen(false)}
-        onSubmit={handleGrant}
-        isLoading={isLoading}
-      />
-
-      <AdminAccessExtendDialog
-        isOpen={!!extendTarget}
-        access={extendTarget}
-        onClose={() => setExtendTarget(null)}
-        onSubmit={handleExtend}
-        isLoading={isLoading}
-      />
-
-      <ConfirmDialog
-        isOpen={!!revokeTarget}
-        title="Revoke Entitlement"
-        message={`Are you sure you want to revoke access for ${revokeTarget?.user_name || revokeTarget?.user_email || "this user"} to ${revokeTarget?.product_name || "the product"}? The user will immediately lose access.`}
-        confirmLabel="Revoke Access"
-        isDestructive={true}
-        onConfirm={handleRevoke}
-        onClose={() => setRevokeTarget(null)}
-        isLoading={isLoading}
-      />
     </div>
   );
 };

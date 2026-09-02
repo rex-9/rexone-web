@@ -7,6 +7,8 @@ import {
   Button,
   FormContainer,
 } from "../../../../design/components";
+import { ButtonVariants, ButtonTypes } from "../../../../design/constants";
+import { formatAdminDate } from "../../../../helpers";
 import type { IAdminAccess, IExtendAccessPayload } from "../types";
 
 interface IAdminAccessExtendDialogProps {
@@ -66,7 +68,7 @@ export const AdminAccessExtendDialog: React.FC<
           <div>
             <span className="font-semibold">Current Expiry:</span>{" "}
             {access.expires_at
-              ? new Date(access.expires_at).toLocaleDateString()
+              ? formatAdminDate(access.expires_at)
               : "Never (Lifetime)"}
           </div>
         </div>
@@ -88,15 +90,16 @@ export const AdminAccessExtendDialog: React.FC<
 
         <div className="mt-6 flex justify-end gap-3">
           <Button
-            type="button"
-            variant="tertiary"
+            type={ButtonTypes.BUTTON}
+            variant={ButtonVariants.TERTIARY}
             onClick={onClose}
             disabled={isLoading}
           >
             Cancel
           </Button>
           <Button
-            type="submit"
+            type={ButtonTypes.SUBMIT}
+            variant={ButtonVariants.PRIMARY}
             isLoading={isLoading}
             disabled={!access.expires_at || isLoading}
           >

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
@@ -28,6 +28,7 @@ import {
   ADMIN_TABLE_HEADERS,
 } from "../../constants";
 import {
+  ADMIN_CHAT_MESSAGE_SORT_KEYS,
   ADMIN_CHAT_MESSAGE_TABLE_KEYS,
   ADMIN_CHAT_PAGE_TITLES,
   ADMIN_CHAT_TABLE_HEADERS,
@@ -40,6 +41,11 @@ export const AdminChatMessagesPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy: ADMIN_CHAT_MESSAGE_SORT_KEYS.CREATED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const { can } = usePermissions();
   const { isLoading, setLoading } = useLoading();
@@ -71,19 +77,21 @@ export const AdminChatMessagesPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    await ChatController.getMessages(
-      { page, limit: ADMIN_PAGE_SIZE },
-      (nextMessages, nextPagination) => {
-        setMessages(nextMessages);
-        setPagination(nextPagination ?? null);
-        setLoading(false);
-      },
-      (message) => {
-        setError(message);
-        setLoading(false);
-      },
-    );
-  }, [can, page, setLoading]);
+    const result = await ChatController.getMessages({
+      page,
+      limit: ADMIN_PAGE_SIZE,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    });
+
+    if (result.success) {
+      setMessages(result.messages);
+      setPagination(result.pagination);
+    } else {
+      setError(result.error || "Failed to load messages");
+    }
+    setLoading(false);
+  }, [can, page, setLoading, sortBy, sortOrder]);
 
   useEffect(() => {
     void loadMessages();
@@ -94,6 +102,7 @@ export const AdminChatMessagesPage: React.FC = () => {
       {
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.ROLE,
         header: ADMIN_CHAT_TABLE_HEADERS.ROLE,
+        sortKey: ADMIN_CHAT_MESSAGE_SORT_KEYS.ROLE,
         render: (message) => (
           <span className="rounded-md bg-base-200 px-2 py-0.5 font-mono text-xs font-semibold text-base-content opacity-80">
             {message.role}
@@ -117,6 +126,7 @@ export const AdminChatMessagesPage: React.FC = () => {
       {
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CREATED,
         header: ADMIN_TABLE_HEADERS.CREATED,
+        sortKey: ADMIN_CHAT_MESSAGE_SORT_KEYS.CREATED_AT,
         render: (message) => formatAdminDate(message.created_at),
       },
       {
@@ -154,19 +164,16 @@ export const AdminChatMessagesPage: React.FC = () => {
 
     setLoading(true);
 
-    await ChatController.discardMessage(
-      discardTarget.id,
-      () => {
-        toast.success("Chat message discarded");
-        setDiscardTarget(null);
-        setLoading(false);
-        void loadMessages();
-      },
-      (message) => {
-        toast.error(message);
-        setLoading(false);
-      },
-    );
+    const result = await ChatController.discardMessage(discardTarget.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success("Chat message discarded");
+      setDiscardTarget(null);
+      void loadMessages();
+    } else {
+      toast.error(result.error || "Failed to discard message");
+    }
   };
 
   return (
@@ -195,6 +202,9 @@ export const AdminChatMessagesPage: React.FC = () => {
             columns={columns}
             records={messages}
             getRowKey={(message) => message.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}

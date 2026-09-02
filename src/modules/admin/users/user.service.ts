@@ -24,7 +24,13 @@ class UserService {
     return api.get<IJsonApiResource<IAdminUser>[]>(
       AppRoutes.server.protected.admin.USERS,
       params
-        ? { page: params.page, limit: params.limit, search: params.search }
+        ? {
+            page: params.page,
+            limit: params.limit,
+            search: params.search,
+            sort_by: params.sort_by,
+            sort_order: params.sort_order,
+          }
         : undefined,
     );
   }
@@ -43,7 +49,13 @@ class UserService {
     return api.get<IJsonApiResource<IAdminUser>[]>(
       AppRoutes.server.protected.admin.DISCARDED_USERS,
       params
-        ? { page: params.page, limit: params.limit, search: params.search }
+        ? {
+            page: params.page,
+            limit: params.limit,
+            search: params.search,
+            sort_by: params.sort_by,
+            sort_order: params.sort_order,
+          }
         : undefined,
     );
   }

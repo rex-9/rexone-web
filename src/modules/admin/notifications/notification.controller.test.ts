@@ -17,7 +17,7 @@ describe("NotificationController", () => {
   });
 
   describe("getTemplates", () => {
-    it("calls onSuccess with templates on success", async () => {
+    it("returns templates on success", async () => {
       const mockTemplates = [
         {
           id: "welcome_email",
@@ -37,17 +37,14 @@ describe("NotificationController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await NotificationController.getTemplates(onSuccess, onError);
+      const result = await NotificationController.getTemplates();
 
       expect(NotificationService.getTemplates).toHaveBeenCalled();
-      expect(onSuccess).toHaveBeenCalledWith(mockTemplates);
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.templates).toEqual(mockTemplates);
     });
 
-    it("calls onError on failure", async () => {
+    it("returns error on failure", async () => {
       vi.mocked(NotificationService.getTemplates).mockResolvedValue({
         data: {
           status: { code: 500, success: false, message: "Server Error" },
@@ -55,18 +52,16 @@ describe("NotificationController", () => {
         },
       } as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await NotificationController.getTemplates();
 
-      await NotificationController.getTemplates(onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.templates).toEqual([]);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("createNotification", () => {
-    it("calls onSuccess when notification is broadcast or queued", async () => {
+    it("returns delivered info when notification is broadcast or queued", async () => {
       const formValues: IAdminNotificationFormValues = {
         event: "system.maintenance",
         audience_type: "all",
@@ -96,23 +91,14 @@ describe("NotificationController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await NotificationController.createNotification(
-        formValues,
-        onSuccess,
-        onError,
-      );
+      const result = await NotificationController.createNotification(formValues);
 
       expect(NotificationService.createNotification).toHaveBeenCalledWith(
         formValues,
       );
-      expect(onSuccess).toHaveBeenCalledWith(
-        mockDelivery,
-        "Notification sent",
-      );
-      expect(onError).not.toHaveBeenCalled();
+      expect(result.success).toBe(true);
+      expect(result.delivered).toEqual(mockDelivery);
+      expect(result.message).toBe("Notification sent");
     });
 
     it("handles 202 Accepted queued status", async () => {
@@ -145,19 +131,11 @@ describe("NotificationController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await NotificationController.createNotification(formValues);
 
-      await NotificationController.createNotification(
-        formValues,
-        onSuccess,
-        onError,
-      );
-
-      expect(onSuccess).toHaveBeenCalledWith(
-        mockDelivery,
-        "Notification queued",
-      );
+      expect(result.success).toBe(true);
+      expect(result.delivered).toEqual(mockDelivery);
+      expect(result.message).toBe("Notification queued");
     });
   });
 });

@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import ChatController from "../chat.controller";
@@ -29,6 +29,7 @@ import {
 } from "../../constants";
 import {
   ADMIN_CHAT_PAGE_TITLES,
+  ADMIN_CHAT_ROOM_SORT_KEYS,
   ADMIN_CHAT_ROOM_TABLE_KEYS,
   ADMIN_CHAT_TABLE_HEADERS,
 } from "../constants";
@@ -40,6 +41,11 @@ export const AdminChatRoomsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy: ADMIN_CHAT_ROOM_SORT_KEYS.CREATED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const { can } = usePermissions();
   const { isLoading, setLoading } = useLoading();
@@ -71,19 +77,21 @@ export const AdminChatRoomsPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    await ChatController.getRooms(
-      { page, limit: ADMIN_PAGE_SIZE },
-      (nextRooms, nextPagination) => {
-        setRooms(nextRooms);
-        setPagination(nextPagination ?? null);
-        setLoading(false);
-      },
-      (message) => {
-        setError(message);
-        setLoading(false);
-      },
-    );
-  }, [can, page, setLoading]);
+    const result = await ChatController.getRooms({
+      page,
+      limit: ADMIN_PAGE_SIZE,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+    });
+
+    if (result.success) {
+      setRooms(result.rooms);
+      setPagination(result.pagination);
+    } else {
+      setError(result.error || "Failed to load chat rooms");
+    }
+    setLoading(false);
+  }, [can, page, setLoading, sortBy, sortOrder]);
 
   useEffect(() => {
     void loadRooms();
@@ -94,6 +102,7 @@ export const AdminChatRoomsPage: React.FC = () => {
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.TITLE,
         header: ADMIN_CHAT_TABLE_HEADERS.ROOM,
+        sortKey: ADMIN_CHAT_ROOM_SORT_KEYS.TITLE,
         render: (room) => (
           <div>
             <div className="font-semibold text-base-content">
@@ -110,6 +119,7 @@ export const AdminChatRoomsPage: React.FC = () => {
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.MESSAGES,
         header: ADMIN_CHAT_TABLE_HEADERS.MESSAGES,
+        sortKey: ADMIN_CHAT_ROOM_SORT_KEYS.MESSAGE_COUNT,
         render: (room) => (
           <span className="font-semibold text-base-content">
             {room.message_count ?? 0}
@@ -119,6 +129,7 @@ export const AdminChatRoomsPage: React.FC = () => {
       {
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.CREATED,
         header: ADMIN_TABLE_HEADERS.CREATED,
+        sortKey: ADMIN_CHAT_ROOM_SORT_KEYS.CREATED_AT,
         render: (room) => formatAdminDate(room.created_at),
       },
       {
@@ -156,19 +167,16 @@ export const AdminChatRoomsPage: React.FC = () => {
 
     setLoading(true);
 
-    await ChatController.discardRoom(
-      discardTarget.id,
-      () => {
-        toast.success("Chat room discarded");
-        setDiscardTarget(null);
-        setLoading(false);
-        void loadRooms();
-      },
-      (message) => {
-        toast.error(message);
-        setLoading(false);
-      },
-    );
+    const result = await ChatController.discardRoom(discardTarget.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success("Chat room discarded");
+      setDiscardTarget(null);
+      void loadRooms();
+    } else {
+      toast.error(result.error || "Failed to discard room");
+    }
   };
 
   return (
@@ -197,6 +205,9 @@ export const AdminChatRoomsPage: React.FC = () => {
             columns={columns}
             records={rooms}
             getRowKey={(room) => room.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}

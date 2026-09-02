@@ -2,8 +2,9 @@
 
 import React from "react";
 import { cn } from "../../helpers";
+import { DropdownSizes, type DropdownSize } from "../../constants";
 
-export type DropdownSize = "sm" | "md" | "lg";
+export { DropdownSizes, type DropdownSize };
 
 export interface IDropdownOption {
   value: string;
@@ -55,7 +56,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   className,
   containerClassName,
   disabled,
-  size = "md",
+  size = DropdownSizes.MD,
   icon,
   fullWidth = true,
   multiple = false,

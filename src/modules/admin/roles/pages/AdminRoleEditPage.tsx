@@ -5,12 +5,8 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import RoleController from "../role.controller";
-import {
-  IAdminPermission,
-  IAdminRole,
-  IAdminRoleFormValues,
-} from "../types";
-import { AlertDialog,  AdminState } from "../../components";
+import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "../types";
+import { AlertDialog, AdminState } from "../../components";
 import { AdminRoleForm } from "./AdminRoleForm";
 import { ADMIN_ROLE_PAGE_TITLES } from "../constants";
 import { ADMIN_ACTIONS } from "../../constants";
@@ -30,23 +26,26 @@ export const AdminRoleEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
+    const loadData = async () => {
+      setLoading(true);
+      const [roleResult, permResult] = await Promise.all([
+        RoleController.getRole(id),
+        RoleController.getPermissions(),
+      ]);
+      setLoading(false);
 
-    const timeoutId = window.setTimeout(() => {
-      void Promise.all([
-        RoleController.getRole(
-          id,
-          (nextRole) => setRole(nextRole),
-          (message) => setError(message),
-        ),
-        RoleController.getPermissions(
-          (nextPermissions) => setPermissions(nextPermissions),
-          (message) => setError(message),
-        ),
-      ]).finally(() => setLoading(false));
-    }, 0);
+      if (roleResult.success && roleResult.role) {
+        setRole(roleResult.role);
+      } else {
+        setError(roleResult.error || "Role was not found.");
+      }
 
-    return () => window.clearTimeout(timeoutId);
+      if (permResult.success) {
+        setPermissions(permResult.permissions);
+      }
+    };
+
+    void loadData();
   }, [id, setLoading]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
@@ -54,19 +53,15 @@ export const AdminRoleEditPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    await RoleController.updateRole(
-      id,
-      values,
-      () => {
-        setLoading(false, { overlay: false });
-        toast.success("Role updated");
-        navigate(AppRoutes.client.protected.admin.ROLES);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await RoleController.updateRole(id, values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success("Role updated");
+      navigate(AppRoutes.client.protected.admin.ROLES);
+    } else {
+      setAlertMessage(result.error || "Failed to update role");
+    }
   };
 
   return (
@@ -82,12 +77,12 @@ export const AdminRoleEditPage: React.FC = () => {
         <AdminState title="Unable to load role" message="Role was not found." />
       ) : (
         <AdminRoleForm
-            mode={ADMIN_ACTIONS.EDIT}
-            role={role}
-            permissions={permissions}
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}
-          />
+          mode={ADMIN_ACTIONS.EDIT}
+          role={role}
+          permissions={permissions}
+          onSubmit={handleSubmit}
+          onCancel={() => navigate(AppRoutes.client.protected.admin.ROLES)}
+        />
       )}
     </>
   );

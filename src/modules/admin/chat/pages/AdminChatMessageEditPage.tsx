@@ -17,12 +17,13 @@ import {
   FormContainer,
   TextArea,
 } from "../../components";
-import { ADMIN_CHAT_PAGE_TITLES } from "../constants";
+import { ADMIN_CHAT_PAGE_TITLES, ADMIN_CHAT_ROLES } from "../constants";
 import { ADMIN_COMMON_LABELS } from "../../constants";
+import type { TAdminChatRole } from "../types";
 
 const messageRoleOptions = [
-  { value: "user", label: "User" },
-  { value: "assistant", label: "Assistant" },
+  { value: ADMIN_CHAT_ROLES.USER, label: "User" },
+  { value: ADMIN_CHAT_ROLES.ASSISTANT, label: "Assistant" },
 ];
 
 export const AdminChatMessageEditPage: React.FC = () => {
@@ -33,7 +34,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
   const toast = useToast();
   const { setLoading } = useLoading();
   const [message, setMessage] = useState<IAdminChatMessage | null>(null);
-  const [role, setRole] = useState("user");
+  const [role, setRole] = useState<TAdminChatRole>(ADMIN_CHAT_ROLES.USER);
   const [content, setContent] = useState("");
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
@@ -41,25 +42,21 @@ export const AdminChatMessageEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
+    const loadMessage = async () => {
+      setLoading(true);
+      const result = await ChatController.getMessage(id);
+      setLoading(false);
 
-    const timeoutId = window.setTimeout(() => {
-      void ChatController.getMessage(
-        id,
-        (nextMessage) => {
-          setMessage(nextMessage);
-          setRole(nextMessage.role || "user");
-          setContent(nextMessage.content || "");
-          setLoading(false);
-        },
-        (message) => {
-          setError(message);
-          setLoading(false);
-        },
-      );
-    }, 0);
+      if (result.success && result.message) {
+        setMessage(result.message);
+        setRole((result.message.role as TAdminChatRole) || ADMIN_CHAT_ROLES.USER);
+        setContent(result.message.content || "");
+      } else {
+        setError(result.error || "Unable to load chat message");
+      }
+    };
 
-    return () => window.clearTimeout(timeoutId);
+    void loadMessage();
   }, [id, setLoading]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -73,19 +70,15 @@ export const AdminChatMessageEditPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    await ChatController.updateMessage(
-      id,
-      values,
-      () => {
-        setLoading(false, { overlay: false });
-        toast.success("Chat message updated");
-        navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await ChatController.updateMessage(id, values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success("Chat message updated");
+      navigate(AppRoutes.client.protected.admin.CHAT_MESSAGES);
+    } else {
+      setAlertMessage(result.error || "Failed to update chat message");
+    }
   };
 
   return (
@@ -103,7 +96,7 @@ export const AdminChatMessageEditPage: React.FC = () => {
               <Dropdown
                 label="Role"
                 value={role}
-                onValueChange={(val) => setRole(val)}
+                onValueChange={(val) => setRole(val as TAdminChatRole)}
                 options={messageRoleOptions}
               />
               <TextArea

@@ -32,17 +32,19 @@ export const AdminProductEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
+    const loadProduct = async () => {
+      setLoading(true);
+      const result = await ProductController.getProduct(id);
+      setLoading(false);
 
-    const timeoutId = window.setTimeout(() => {
-      void ProductController.getProduct(
-        id,
-        (nextProduct) => setProduct(nextProduct),
-        (message) => setError(message),
-      ).finally(() => setLoading(false));
-    }, 0);
+      if (result.success && result.product) {
+        setProduct(result.product);
+      } else {
+        setError(result.error || "Product not found");
+      }
+    };
 
-    return () => window.clearTimeout(timeoutId);
+    void loadProduct();
   }, [id, setLoading]);
 
   const handleSubmit = async (values: IAdminProductFormValues) => {
@@ -50,18 +52,15 @@ export const AdminProductEditPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    await ProductController.updateProduct(
-      id,
-      values,
-      (_product, message) => {
-        toast.success(message);
-        navigate(AppRoutes.client.protected.admin.PRODUCTS);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await ProductController.updateProduct(id, values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success(result.message || "Product updated");
+      navigate(AppRoutes.client.protected.admin.PRODUCTS);
+    } else {
+      setAlertMessage(result.error || "Failed to update product");
+    }
   };
 
   return (

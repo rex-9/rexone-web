@@ -3,6 +3,7 @@
 import React from "react";
 import type { AdminAction, AdminResource } from "../roles";
 import { cn } from "../../../design/helpers";
+import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 import {
   ADMIN_ACTION_CATEGORIES,
   ADMIN_ACTIONS,
@@ -103,8 +104,8 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
           key={type}
           action={config.action}
           resource={resource}
-          size="sm"
-          variant="tertiary"
+          size={ButtonSizes.SM}
+          variant={ButtonVariants.TERTIARY}
           className={cn(
             "px-2.5 py-1 text-xs font-semibold rounded-md transition-all duration-150 shadow-none border",
             categoryStyles[config.category],

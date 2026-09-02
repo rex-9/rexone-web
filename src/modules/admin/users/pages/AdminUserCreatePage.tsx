@@ -22,33 +22,33 @@ export const AdminUserCreatePage: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
+    const loadRoles = async () => {
       setLoading(true);
+      const result = await UserController.getRoles();
+      setLoading(false);
 
-      void UserController.getRoles(
-        (nextRoles) => setRoles(nextRoles),
-        (message) => setAlertMessage(message),
-      ).finally(() => setLoading(false));
-    }, 0);
+      if (result.success) {
+        setRoles(result.roles);
+      } else {
+        setAlertMessage(result.error || "Failed to load roles");
+      }
+    };
 
-    return () => window.clearTimeout(timeoutId);
+    void loadRoles();
   }, [setLoading]);
 
   const handleSubmit = async (values: IAdminUserFormValues) => {
     setLoading(true, { overlay: false });
 
-    await UserController.createUser(
-      values,
-      () => {
-        setLoading(false, { overlay: false });
-        toast.success("User created");
-        navigate(AppRoutes.client.protected.admin.USERS);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await UserController.createUser(values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success(result.message || "User created");
+      navigate(AppRoutes.client.protected.admin.USERS);
+    } else {
+      setAlertMessage(result.error || "Failed to create user");
+    }
   };
 
   return (

@@ -36,6 +36,11 @@ export const ADMIN_ROLE_TABLE_KEYS = {
   USERS: "users",
 } as const;
 
+export const ADMIN_ROLE_SORT_KEYS = {
+  NAME: "name",
+  CREATED_AT: "created_at",
+} as const;
+
 export const ADMIN_ROLE_LABELS = {
   CUSTOM: "Custom",
   SYSTEM: "System",

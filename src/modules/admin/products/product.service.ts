@@ -21,7 +21,14 @@ class ProductService {
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminProduct>[]>>> {
     return api.get<IJsonApiResource<IAdminProduct>[]>(
       AppRoutes.server.protected.admin.PAYMENT_PRODUCTS,
-      params ? { page: params.page, limit: params.limit } : undefined,
+      params
+        ? {
+            page: params.page,
+            limit: params.limit,
+            sort_by: params.sort_by,
+            sort_order: params.sort_order,
+          }
+        : undefined,
     );
   }
 
@@ -38,7 +45,14 @@ class ProductService {
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminProduct>[]>>> {
     return api.get<IJsonApiResource<IAdminProduct>[]>(
       AppRoutes.server.protected.admin.DISCARDED_PAYMENT_PRODUCTS,
-      params ? { page: params.page, limit: params.limit } : undefined,
+      params
+        ? {
+            page: params.page,
+            limit: params.limit,
+            sort_by: params.sort_by,
+            sort_order: params.sort_order,
+          }
+        : undefined,
     );
   }
 

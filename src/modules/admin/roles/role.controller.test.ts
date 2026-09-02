@@ -21,40 +21,41 @@ describe("RoleController", () => {
   });
 
   describe("getRoles", () => {
-    it("calls onSuccess with parsed roles when API succeeds", async () => {
+    it("returns parsed roles when API succeeds", async () => {
       const mockRoles = [
         {
           id: "r1",
-          name: "Manager",
-          description: "Branch manager",
-          system: false,
-          permissions: { users: ["read", "update"] },
+          type: "role",
+          attributes: {
+            id: "r1",
+            name: "Manager",
+            description: "Branch manager",
+            system: false,
+            permissions: { users: ["read", "update"] },
+          },
         },
       ];
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { roles: mockRoles },
+          data: mockRoles,
         },
       };
 
       vi.mocked(RoleService.getRoles).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.getRoles(onSuccess, onError);
+      const result = await RoleController.getRoles();
 
       expect(RoleService.getRoles).toHaveBeenCalled();
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.roles).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ id: "r1", name: "Manager" }),
         ]),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
 
-    it("calls onError when API fails", async () => {
+    it("returns error when API fails", async () => {
       vi.mocked(RoleService.getRoles).mockResolvedValue({
         data: {
           status: { code: 500, success: false, message: "Error" },
@@ -62,18 +63,16 @@ describe("RoleController", () => {
         },
       } as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await RoleController.getRoles();
 
-      await RoleController.getRoles(onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.roles).toEqual([]);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("getRole", () => {
-    it("calls onSuccess with single role", async () => {
+    it("returns single role", async () => {
       const mockRole = { id: "r1", name: "Admin" };
       const mockResponse = {
         data: {
@@ -84,28 +83,26 @@ describe("RoleController", () => {
 
       vi.mocked(RoleService.getRole).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.getRole("r1", onSuccess, onError);
+      const result = await RoleController.getRole("r1");
 
       expect(RoleService.getRole).toHaveBeenCalledWith("r1");
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.role).toEqual(
         expect.objectContaining({ id: "r1", name: "Admin" }),
       );
     });
   });
 
   describe("getPermissions", () => {
-    it("calls onSuccess with permission definitions", async () => {
+    it("returns permission definitions", async () => {
       const mockPermissions = [
-        { id: "p1", resource: "users", action: "read" },
-        { id: "p2", resource: "users", action: "create" },
+        { id: "p1", type: "permission", attributes: { id: "p1", resource: "users", action: "read" } },
+        { id: "p2", type: "permission", attributes: { id: "p2", resource: "users", action: "create" } },
       ];
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { permissions: mockPermissions },
+          data: mockPermissions,
         },
       };
 
@@ -113,13 +110,11 @@ describe("RoleController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.getPermissions(onSuccess, onError);
+      const result = await RoleController.getPermissions();
 
       expect(RoleService.getPermissions).toHaveBeenCalled();
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.permissions).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ resource: "users" }),
         ]),
@@ -128,7 +123,7 @@ describe("RoleController", () => {
   });
 
   describe("createRole", () => {
-    it("calls onSuccess with created role", async () => {
+    it("returns created role", async () => {
       const formValues: IAdminRoleFormValues = {
         name: "Support Specialist",
         description: "Customer support staff",
@@ -146,20 +141,18 @@ describe("RoleController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.createRole(formValues, onSuccess, onError);
+      const result = await RoleController.createRole(formValues);
 
       expect(RoleService.createRole).toHaveBeenCalledWith(formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.role).toEqual(
         expect.objectContaining({ id: "r2", name: "Support Specialist" }),
       );
     });
   });
 
   describe("updateRole", () => {
-    it("calls onSuccess with updated role", async () => {
+    it("returns updated role", async () => {
       const formValues: IAdminRoleFormValues = {
         name: "Support Lead",
         description: "Lead customer support",
@@ -177,20 +170,18 @@ describe("RoleController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.updateRole("r2", formValues, onSuccess, onError);
+      const result = await RoleController.updateRole("r2", formValues);
 
       expect(RoleService.updateRole).toHaveBeenCalledWith("r2", formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.role).toEqual(
         expect.objectContaining({ id: "r2", name: "Support Lead" }),
       );
     });
   });
 
   describe("discardRole", () => {
-    it("calls onSuccess when role is discarded", async () => {
+    it("returns success when role is discarded", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Role discarded" },
@@ -201,13 +192,10 @@ describe("RoleController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await RoleController.discardRole("r2", onSuccess, onError);
+      const result = await RoleController.discardRole("r2");
 
       expect(RoleService.discardRole).toHaveBeenCalledWith("r2");
-      expect(onSuccess).toHaveBeenCalled();
+      expect(result.success).toBe(true);
     });
   });
 });

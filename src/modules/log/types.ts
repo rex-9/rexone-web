@@ -1,10 +1,10 @@
 // src/modules/log/types.ts
 
-import { SEVERITIES, PLATFORMS, ENVIRONMENTS } from "./constants";
+import { LOG_SEVERITIES, LOG_PLATFORMS, LOG_ENVIRONMENTS } from "./constants";
 
-export type Severity = (typeof SEVERITIES)[number];
-export type Platform = (typeof PLATFORMS)[number];
-export type Environment = (typeof ENVIRONMENTS)[number];
+export type Severity = (typeof LOG_SEVERITIES)[keyof typeof LOG_SEVERITIES];
+export type Platform = (typeof LOG_PLATFORMS)[keyof typeof LOG_PLATFORMS];
+export type Environment = (typeof LOG_ENVIRONMENTS)[keyof typeof LOG_ENVIRONMENTS];
 
 export interface ILogPayload {
   message: string;

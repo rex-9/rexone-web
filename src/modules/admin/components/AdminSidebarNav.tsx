@@ -31,6 +31,7 @@ interface IAdminNavSection {
 
 interface IAdminSidebarNavProps {
   onNavigate: () => void;
+  isSidebarOpen?: boolean;
 }
 
 const navSections: IAdminNavSection[] = [
@@ -136,6 +137,7 @@ const navSections: IAdminNavSection[] = [
 
 export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   onNavigate,
+  isSidebarOpen = false,
 }) => {
   const [collapsedSections, setCollapsedSections] = useState<
     Record<string, boolean>
@@ -172,19 +174,35 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   };
 
   return (
-    <nav className="flex-1 overflow-y-auto px-4 py-3">
-      <div className="space-y-4">
-        {enabledItems.map((section) => {
+    <nav
+      className={cn(
+        "flex-1 overflow-y-auto py-3",
+        isSidebarOpen ? "px-4" : "px-2 lg:px-4",
+      )}
+    >
+      <div
+        className={cn(
+          "space-y-4",
+          !isSidebarOpen && "space-y-2 lg:space-y-4",
+        )}
+      >
+        {enabledItems.map((section, idx) => {
           const isCollapsed = collapsedSections[section.id] ?? false;
 
           return (
             <div key={section.id}>
+              {!isSidebarOpen && idx > 0 && (
+                <div className="my-2 border-t border-base-300/40 lg:hidden" />
+              )}
               <button
                 type="button"
                 aria-expanded={!isCollapsed}
                 aria-controls={`admin-nav-section-${section.id}`}
                 onClick={() => toggleSection(section.id)}
-                className="mb-2 flex h-7 w-full items-center justify-between rounded-md px-2 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100"
+                className={cn(
+                  "mb-2 h-7 w-full items-center justify-between rounded-md px-2 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100",
+                  isSidebarOpen ? "flex" : "hidden lg:flex",
+                )}
               >
                 <span>{section.label}</span>
                 <iconsLib.chevronDown
@@ -198,9 +216,13 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                 id={`admin-nav-section-${section.id}`}
                 className={cn(
                   "grid transition-[grid-template-rows,opacity] duration-200 ease-out",
-                  isCollapsed
-                    ? "grid-rows-[0fr] opacity-0"
-                    : "grid-rows-[1fr] opacity-100",
+                  isSidebarOpen
+                    ? isCollapsed
+                      ? "grid-rows-[0fr] opacity-0"
+                      : "grid-rows-[1fr] opacity-100"
+                    : isCollapsed
+                      ? "grid-rows-[1fr] opacity-100 lg:grid-rows-[0fr] lg:opacity-0"
+                      : "grid-rows-[1fr] opacity-100",
                 )}
               >
                 <div className="min-h-0 overflow-hidden">
@@ -212,17 +234,28 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                           key={item.to}
                           to={item.to}
                           onClick={onNavigate}
+                          title={item.label}
+                          aria-label={item.label}
                           className={({ isActive }) =>
                             cn(
-                              "flex h-11 items-center gap-3 rounded-md px-3 text-body-m font-medium transition-colors",
+                              "flex items-center rounded-md font-medium transition-colors",
+                              isSidebarOpen
+                                ? "h-11 gap-3 px-3 text-body-m justify-start"
+                                : "h-10 w-10 p-0 mx-auto justify-center lg:h-11 lg:w-full lg:px-3 lg:gap-3 lg:justify-start text-body-m",
                               isActive
                                 ? "bg-primary text-navy-900 shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                             )
                           }
                         >
-                          <Icon className="h-5 w-5" />
-                          <span>{item.label}</span>
+                          <Icon className="h-5 w-5 shrink-0" />
+                          <span
+                            className={
+                              isSidebarOpen ? "inline" : "hidden lg:inline"
+                            }
+                          >
+                            {item.label}
+                          </span>
                         </NavLink>
                       );
                     })}

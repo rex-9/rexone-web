@@ -1,4 +1,5 @@
 import { IUser } from "../../../models";
+import type { TSortOrder } from "../../../hooks/useSort";
 
 export interface IAdminUser extends IUser {
   id: string;
@@ -18,4 +19,6 @@ export interface IAdminUserListParams {
   page?: number;
   limit?: number;
   search?: string;
+  sort_by?: string;
+  sort_order?: TSortOrder;
 }

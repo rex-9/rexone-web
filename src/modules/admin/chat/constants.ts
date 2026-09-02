@@ -1,6 +1,14 @@
 import AppRoutes from "../../../AppRoutes";
 import { IAdminPageMeta } from "../constants";
 
+export const ADMIN_CHAT_ROLES = {
+  USER: "user",
+  ASSISTANT: "assistant",
+} as const;
+
+export type TAdminChatRole =
+  (typeof ADMIN_CHAT_ROLES)[keyof typeof ADMIN_CHAT_ROLES];
+
 export const ADMIN_CHAT_PAGE_TITLES = {
   MESSAGE_EDIT: "Edit Chat Message",
   MESSAGES: "Chat Messages",
@@ -31,6 +39,19 @@ export const ADMIN_CHAT_ROOM_TABLE_KEYS = {
   LAST_MESSAGE: "last",
   MESSAGES: "messages",
   TITLE: "title",
+} as const;
+
+export const ADMIN_CHAT_ROOM_SORT_KEYS = {
+  TITLE: "title",
+  MESSAGE_COUNT: "message_count",
+  CREATED_AT: "created_at",
+  DISCARDED_AT: "discarded_at",
+} as const;
+
+export const ADMIN_CHAT_MESSAGE_SORT_KEYS = {
+  ROLE: "role",
+  CREATED_AT: "created_at",
+  DISCARDED_AT: "discarded_at",
 } as const;
 
 export const ADMIN_CHAT_PAGE_META: Record<string, IAdminPageMeta> = {

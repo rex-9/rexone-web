@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import { Button, Badge, SearchInput, getRoleBadgeVariant } from "../../../../design";
@@ -33,15 +33,13 @@ import {
 import {
   ADMIN_USER_LABELS,
   ADMIN_USER_PAGE_TITLES,
+  ADMIN_USER_SORT_KEYS,
   ADMIN_USER_TABLE_HEADERS,
   ADMIN_USER_TABLE_KEYS,
 } from "../constants";
 import { translate } from "../../../../locales";
-
-const formatDate = (value?: Date | string | null): string => {
-  if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
-  return new Date(value).toLocaleDateString();
-};
+import { BadgeSizes } from "../../../../design/constants";
+import { formatAdminDate } from "../../../../helpers";
 
 const renderUserRoles = (user: IAdminUser) => {
   const roles: string[] =
@@ -56,7 +54,7 @@ const renderUserRoles = (user: IAdminUser) => {
   return (
     <div className="flex flex-wrap items-center gap-1">
       {roles.map((role) => (
-        <Badge key={role} size="xs" variant={getRoleBadgeVariant(role)}>
+        <Badge key={role} size={BadgeSizes.XS} variant={getRoleBadgeVariant(role)}>
           {role}
         </Badge>
       ))}
@@ -85,6 +83,14 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const searchQuery = searchParams.get("search") || "";
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy:
+      view === ADMIN_VIEW_MODES.ACTIVE
+        ? ADMIN_USER_SORT_KEYS.CREATED_AT
+        : ADMIN_USER_SORT_KEYS.DISCARDED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const [searchInput, setSearchInput] = useState(searchQuery);
   const toast = useToast();
@@ -140,24 +146,28 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     setLoading(true);
     setError("");
 
-    const load =
+    const result =
       view === "active"
-        ? UserController.getUsers.bind(UserController)
-        : UserController.getDiscardedUsers.bind(UserController);
+        ? await UserController.getUsers({
+            page,
+            limit: ADMIN_PAGE_SIZE,
+            search: searchQuery.trim() || undefined,
+            sort_by: sortBy,
+            sort_order: sortOrder,
+          })
+        : await UserController.getDiscardedUsers({
+            page,
+            limit: ADMIN_PAGE_SIZE,
+          });
 
-    await load(
-      { page, limit: ADMIN_PAGE_SIZE, search: searchQuery.trim() || undefined },
-      (nextUsers, nextPagination) => {
-        setUsers(nextUsers);
-        setPagination(nextPagination ?? null);
-        setLoading(false);
-      },
-      (message) => {
-        setError(translate(message));
-        setLoading(false);
-      },
-    );
-  }, [can, page, searchQuery, setLoading, view]);
+    if (result.success) {
+      setUsers(result.users);
+      setPagination(result.pagination);
+    } else {
+      setError(translate(result.error || "Failed to load users"));
+    }
+    setLoading(false);
+  }, [can, page, searchQuery, setLoading, sortBy, sortOrder, view]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -185,6 +195,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
       {
         key: ADMIN_USER_TABLE_KEYS.IDENTITY,
         header: ADMIN_USER_TABLE_HEADERS.USER,
+        sortKey: ADMIN_USER_SORT_KEYS.NAME,
         render: (user) => (
           <div>
             <div className="flex items-center gap-1.5">
@@ -214,8 +225,12 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
           view === ADMIN_VIEW_MODES.ACTIVE
             ? ADMIN_TABLE_HEADERS.CREATED
             : "Discarded",
+        sortKey:
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? ADMIN_USER_SORT_KEYS.CREATED_AT
+            : ADMIN_USER_SORT_KEYS.DISCARDED_AT,
         render: (user) =>
-          formatDate(
+          formatAdminDate(
             view === ADMIN_VIEW_MODES.ACTIVE
               ? user.created_at
               : user.discarded_at,
@@ -229,7 +244,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
           <AdminTableActions
             resource={ADMIN_RESOURCES.USERS}
             actions={
-              view === "active"
+              view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
                     {
                       type: ADMIN_ACTIONS.EDIT,
@@ -272,27 +287,20 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
 
     setLoading(true);
 
-    const onSuccess = (message: string) => {
-      toast.success(message);
-      setLoading(false);
+    const result =
+      lifecycleAction === ADMIN_ACTIONS.DISCARD
+        ? await UserController.discardUser(actionTarget.id)
+        : await UserController.undiscardUser(actionTarget.id);
+
+    setLoading(false);
+
+    if (result.success) {
+      toast.success(result.message || "Operation successful");
       setActionTarget(null);
       setLifecycleAction(null);
       void loadUsers();
-    };
-
-    const onError = (message: string) => {
-      toast.error(message);
-      setLoading(false);
-    };
-
-    if (lifecycleAction === "discard") {
-      await UserController.discardUser(actionTarget.id, onSuccess, onError);
-      return;
-    }
-
-    if (lifecycleAction === "undiscard") {
-      await UserController.undiscardUser(actionTarget.id, onSuccess, onError);
-      return;
+    } else {
+      toast.error(result.error || "Operation failed");
     }
   };
 
@@ -389,6 +397,9 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
             columns={columns}
             records={users}
             getRowKey={(user) => user.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}

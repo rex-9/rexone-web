@@ -4,16 +4,18 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
   Badge,
   Dropdown,
+  DropdownSizes,
   getCategoryBadgeVariant,
   getPriorityBadgeVariant,
   getStatusBadgeVariant,
 } from "../../../../design";
+import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback } from "../types";
 import AdminFeedbackController from "../feedback.controller";
 import {
@@ -32,6 +34,7 @@ import {
 import {
   ADMIN_FEEDBACK_CATEGORY,
   ADMIN_FEEDBACK_PRIORITY,
+  ADMIN_FEEDBACK_SORT_KEYS,
   ADMIN_FEEDBACK_STATUS,
   ADMIN_FEEDBACK_TABLE_HEADERS,
   ADMIN_FEEDBACK_TABLE_KEYS,
@@ -46,6 +49,11 @@ export const AdminFeedbackPage: React.FC = () => {
   const statusFilter = searchParams.get("status") || "";
   const categoryFilter = searchParams.get("category") || "";
   const priorityFilter = searchParams.get("priority") || "";
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
@@ -103,6 +111,8 @@ export const AdminFeedbackPage: React.FC = () => {
       status: statusFilter || undefined,
       category: categoryFilter || undefined,
       priority: priorityFilter || undefined,
+      sort_by: sortBy,
+      sort_order: sortOrder,
     });
 
     if (result.success) {
@@ -113,7 +123,7 @@ export const AdminFeedbackPage: React.FC = () => {
     }
 
     setLoading(false);
-  }, [can, page, statusFilter, categoryFilter, priorityFilter, setLoading]);
+  }, [can, page, statusFilter, categoryFilter, priorityFilter, setLoading, sortBy, sortOrder]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -151,6 +161,7 @@ export const AdminFeedbackPage: React.FC = () => {
     {
       key: ADMIN_FEEDBACK_TABLE_KEYS.CONTENT,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.CONTENT,
+      sortKey: ADMIN_FEEDBACK_SORT_KEYS.RATING,
       render: (item) => (
         <div className="max-w-md">
           <div className="line-clamp-2 text-body-m font-medium text-base-content">
@@ -167,6 +178,7 @@ export const AdminFeedbackPage: React.FC = () => {
     {
       key: ADMIN_FEEDBACK_TABLE_KEYS.USER,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.USER,
+      sortKey: ADMIN_FEEDBACK_SORT_KEYS.USER_NAME,
       render: (item) => (
         <div>
           <div className="font-semibold text-base-content">
@@ -201,9 +213,10 @@ export const AdminFeedbackPage: React.FC = () => {
     {
       key: ADMIN_FEEDBACK_TABLE_KEYS.CREATED_AT,
       header: ADMIN_FEEDBACK_TABLE_HEADERS.CREATED_AT,
+      sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
       render: (item) => (
         <div className="text-caption text-base-content opacity-70">
-          {new Date(item.created_at).toLocaleDateString()}
+          {formatAdminDate(item.created_at)}
         </div>
       ),
     },
@@ -235,7 +248,7 @@ export const AdminFeedbackPage: React.FC = () => {
       {/* Dropdown Filters */}
       <div className="flex flex-wrap items-center gap-3">
         <Dropdown
-          size="sm"
+          size={DropdownSizes.SM}
           containerClassName="w-auto min-w-44"
           value={statusFilter}
           onValueChange={(val) => updateFilters({ status: val, page: 1 })}
@@ -249,7 +262,7 @@ export const AdminFeedbackPage: React.FC = () => {
         />
 
         <Dropdown
-          size="sm"
+          size={DropdownSizes.SM}
           containerClassName="w-auto min-w-44"
           value={categoryFilter}
           onValueChange={(val) => updateFilters({ category: val, page: 1 })}
@@ -269,7 +282,7 @@ export const AdminFeedbackPage: React.FC = () => {
         />
 
         <Dropdown
-          size="sm"
+          size={DropdownSizes.SM}
           containerClassName="w-auto min-w-44"
           value={priorityFilter}
           onValueChange={(val) => updateFilters({ priority: val, page: 1 })}
@@ -303,6 +316,9 @@ export const AdminFeedbackPage: React.FC = () => {
             records={feedbacks}
             columns={columns}
             getRowKey={(record) => record.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}
