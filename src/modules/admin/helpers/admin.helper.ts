@@ -5,6 +5,8 @@ import { ADMIN_PRODUCT_PAGE_META } from "../products/constants";
 import { ADMIN_ROLE_PAGE_META } from "../roles/constants";
 import { ADMIN_USER_PAGE_META } from "../users/constants";
 
+export { formatAdminDate, formatDateTime } from "../../../helpers/date.helper";
+
 const adminPageMeta: Record<string, IAdminPageMeta> = {
   ...ADMIN_USER_PAGE_META,
   ...ADMIN_ROLE_PAGE_META,
@@ -15,11 +17,6 @@ const adminPageMeta: Record<string, IAdminPageMeta> = {
 
 const escapeRouteSegment = (segment: string): string =>
   segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-export const formatAdminDate = (value: Date): string => {
-  if (!value) return "Not available";
-  return new Date(value).toLocaleDateString();
-};
 
 export const truncateAdminText = (value: string | null | undefined): string => {
   if (!value) return "Not available";

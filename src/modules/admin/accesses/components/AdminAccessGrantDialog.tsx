@@ -8,6 +8,7 @@ import {
   Button,
   FormContainer,
 } from "../../../../design/components";
+import { ButtonVariants, ButtonTypes } from "../../../../design/constants";
 import type { IGrantAccessPayload } from "../types";
 
 interface IAdminAccessGrantDialogProps {
@@ -175,14 +176,18 @@ export const AdminAccessGrantDialog: React.FC<IAdminAccessGrantDialogProps> = ({
 
         <div className="mt-6 flex justify-end gap-3">
           <Button
-            type="button"
-            variant="tertiary"
+            type={ButtonTypes.BUTTON}
+            variant={ButtonVariants.TERTIARY}
             onClick={handleClose}
             disabled={isLoading}
           >
             Cancel
           </Button>
-          <Button type="submit" isLoading={isLoading}>
+          <Button
+            type={ButtonTypes.SUBMIT}
+            variant={ButtonVariants.PRIMARY}
+            isLoading={isLoading}
+          >
             Grant Access
           </Button>
         </div>

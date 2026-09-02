@@ -34,24 +34,20 @@ export const AdminChatRoomEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
+    const loadRoom = async () => {
+      setLoading(true);
+      const result = await ChatController.getRoom(id);
+      setLoading(false);
 
-    const timeoutId = window.setTimeout(() => {
-      void ChatController.getRoom(
-        id,
-        (nextRoom) => {
-          setRoom(nextRoom);
-          setTitle(nextRoom.title || "");
-          setLoading(false);
-        },
-        (message) => {
-          setError(message);
-          setLoading(false);
-        },
-      );
-    }, 0);
+      if (result.success && result.room) {
+        setRoom(result.room);
+        setTitle(result.room.title || "");
+      } else {
+        setError(result.error || "Unable to load chat room");
+      }
+    };
 
-    return () => window.clearTimeout(timeoutId);
+    void loadRoom();
   }, [id, setLoading]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -64,19 +60,15 @@ export const AdminChatRoomEditPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    await ChatController.updateRoom(
-      id,
-      values,
-      () => {
-        setLoading(false, { overlay: false });
-        toast.success("Chat room updated");
-        navigate(AppRoutes.client.protected.admin.CHAT_ROOMS);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await ChatController.updateRoom(id, values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success("Chat room updated");
+      navigate(AppRoutes.client.protected.admin.CHAT_ROOMS);
+    } else {
+      setAlertMessage(result.error || "Failed to update chat room");
+    }
   };
 
   return (

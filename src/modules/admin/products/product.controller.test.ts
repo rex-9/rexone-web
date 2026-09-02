@@ -22,15 +22,19 @@ describe("ProductController", () => {
   });
 
   describe("getProducts", () => {
-    it("calls onSuccess with parsed products and pagination", async () => {
+    it("returns parsed products and pagination", async () => {
       const mockProducts = [
         {
           id: "p1",
-          name: "Pro Plan",
-          price_unit_amount: 1999,
-          currency: "USD",
-          cycle: "month",
-          active: true,
+          type: "product",
+          attributes: {
+            id: "p1",
+            name: "Pro Plan",
+            price_unit_amount: 1999,
+            currency: "USD",
+            cycle: "month",
+            active: true,
+          },
         },
       ];
       const mockResponse = {
@@ -52,20 +56,19 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.getProducts({ page: 1 }, onSuccess, onError);
+      const result = await ProductController.getProducts({ page: 1 });
 
       expect(ProductService.getProducts).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.products).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "p1" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
 
-    it("calls onError on failure", async () => {
+    it("returns error on failure", async () => {
       vi.mocked(ProductService.getProducts).mockResolvedValue({
         data: {
           status: { code: 500, success: false, message: "Server Error" },
@@ -73,18 +76,16 @@ describe("ProductController", () => {
         },
       } as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await ProductController.getProducts();
 
-      await ProductController.getProducts(undefined, onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.products).toEqual([]);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("getProduct", () => {
-    it("calls onSuccess with parsed product on success", async () => {
+    it("returns parsed product on success", async () => {
       const mockProduct = { id: "p1", name: "Pro Plan" };
       const mockResponse = {
         data: {
@@ -97,25 +98,22 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.getProduct("p1", onSuccess, onError);
+      const result = await ProductController.getProduct("p1");
 
       expect(ProductService.getProduct).toHaveBeenCalledWith("p1");
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.product).toEqual(
         expect.objectContaining({ id: "p1", name: "Pro Plan" }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
   });
 
   describe("getDiscardedProducts", () => {
-    it("calls onSuccess with discarded products list", async () => {
+    it("returns discarded products list", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: [{ id: "p2", name: "Old Plan" }],
+          data: [{ id: "p2", type: "product", attributes: { id: "p2", name: "Old Plan" } }],
           meta: {
             pagination: { page: 1, limit: 20, total_count: 1, total_pages: 1 },
           },
@@ -126,21 +124,21 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.getDiscardedProducts({ page: 1 }, onSuccess, onError);
+      const result = await ProductController.getDiscardedProducts({ page: 1 });
 
       expect(ProductService.getDiscardedProducts).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.products).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "p2" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
     });
   });
 
   describe("createProduct", () => {
-    it("calls onSuccess with created product and message", async () => {
+    it("returns created product and message", async () => {
       const formValues: IAdminProductFormValues = {
         name: "Enterprise",
         description: "Enterprise tier",
@@ -161,21 +159,17 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.createProduct(formValues, onSuccess, onError);
+      const result = await ProductController.createProduct(formValues);
 
       expect(ProductService.createProduct).toHaveBeenCalledWith(formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "p3" }),
-        "Product created",
-      );
+      expect(result.success).toBe(true);
+      expect(result.product).toEqual(expect.objectContaining({ id: "p3" }));
+      expect(result.message).toBe("Product created");
     });
   });
 
   describe("updateProduct", () => {
-    it("calls onSuccess with updated product", async () => {
+    it("returns updated product and message", async () => {
       const formValues: IAdminProductFormValues = {
         name: "Enterprise Updated",
         description: "Updated description",
@@ -196,21 +190,17 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.updateProduct("p3", formValues, onSuccess, onError);
+      const result = await ProductController.updateProduct("p3", formValues);
 
       expect(ProductService.updateProduct).toHaveBeenCalledWith("p3", formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "p3" }),
-        "Product updated",
-      );
+      expect(result.success).toBe(true);
+      expect(result.product).toEqual(expect.objectContaining({ id: "p3" }));
+      expect(result.message).toBe("Product updated");
     });
   });
 
   describe("discardProduct", () => {
-    it("discards product and calls onSuccess with status message", async () => {
+    it("discards product and returns status message", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Product discarded" },
@@ -221,18 +211,16 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.discardProduct("p1", onSuccess, onError);
+      const result = await ProductController.discardProduct("p1");
 
       expect(ProductService.discardProduct).toHaveBeenCalledWith("p1");
-      expect(onSuccess).toHaveBeenCalledWith("Product discarded");
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Product discarded");
     });
   });
 
   describe("undiscardProduct", () => {
-    it("undiscards product and calls onSuccess with status message", async () => {
+    it("undiscards product and returns status message", async () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Product restored" },
@@ -244,13 +232,11 @@ describe("ProductController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ProductController.undiscardProduct("p1", onSuccess, onError);
+      const result = await ProductController.undiscardProduct("p1");
 
       expect(ProductService.undiscardProduct).toHaveBeenCalledWith("p1");
-      expect(onSuccess).toHaveBeenCalledWith("Product restored");
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Product restored");
     });
   });
 });

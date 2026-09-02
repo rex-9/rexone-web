@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions } from "../../../../hooks";
+import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import { Button, Badge } from "../../../../design";
@@ -33,27 +33,30 @@ import {
 import {
   ADMIN_PRODUCT_LABELS,
   ADMIN_PRODUCT_PAGE_TITLES,
+  ADMIN_PRODUCT_SORT_KEYS,
   ADMIN_PRODUCT_TABLE_HEADERS,
   ADMIN_PRODUCT_TABLE_KEYS,
 } from "../constants";
 
-const formatDate = (value?: Date | null): string => {
-  if (!value) return ADMIN_COMMON_LABELS.NOT_AVAILABLE;
-  return new Date(value).toLocaleDateString();
-};
-
 const formatPrice = (amount: number, currency: string): string => {
-  const formatted = (amount / 100).toFixed(2);
-  return `$${formatted} ${currency.toUpperCase()}`;
+  if (amount === 0) return "Free";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency.toUpperCase(),
+    minimumFractionDigits: 2,
+  }).format(amount / 100);
 };
 
-interface IAdminProductsPageProps {
-  view?: TAdminViewMode;
-}
+import { BadgeSizes, BadgeVariants } from "../../../../design/constants";
+import { formatAdminDate } from "../../../../helpers";
 
 type ProductLifecycleAction =
   | typeof ADMIN_ACTIONS.DISCARD
   | typeof ADMIN_ACTIONS.UNDISCARD;
+
+interface IAdminProductsPageProps {
+  view?: TAdminViewMode;
+}
 
 export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   view = ADMIN_VIEW_MODES.ACTIVE,
@@ -67,6 +70,14 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
+
+  const { sortBy, sortOrder, handleSort } = useSort({
+    defaultSortBy:
+      view === ADMIN_VIEW_MODES.ACTIVE
+        ? ADMIN_PRODUCT_SORT_KEYS.CREATED_AT
+        : ADMIN_PRODUCT_SORT_KEYS.DISCARDED_AT,
+    defaultSortOrder: SORT_ORDERS.DESC,
+  });
 
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
@@ -103,24 +114,29 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     setLoading(true);
     setError("");
 
-    const load =
+    const result =
       view === "active"
-        ? ProductController.getProducts.bind(ProductController)
-        : ProductController.getDiscardedProducts.bind(ProductController);
+        ? await ProductController.getProducts({
+            page,
+            limit: ADMIN_PAGE_SIZE,
+            sort_by: sortBy,
+            sort_order: sortOrder,
+          })
+        : await ProductController.getDiscardedProducts({
+            page,
+            limit: ADMIN_PAGE_SIZE,
+            sort_by: sortBy,
+            sort_order: sortOrder,
+          });
 
-    await load(
-      { page, limit: ADMIN_PAGE_SIZE },
-      (nextProducts, nextPagination) => {
-        setProducts(nextProducts);
-        setPagination(nextPagination ?? null);
-        setLoading(false);
-      },
-      (message) => {
-        setError(message);
-        setLoading(false);
-      },
-    );
-  }, [can, page, setLoading, view]);
+    if (result.success) {
+      setProducts(result.products);
+      setPagination(result.pagination);
+    } else {
+      setError(result.error || "Failed to load products");
+    }
+    setLoading(false);
+  }, [can, page, setLoading, sortBy, sortOrder, view]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -137,6 +153,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       {
         key: ADMIN_PRODUCT_TABLE_KEYS.IDENTITY,
         header: ADMIN_PRODUCT_TABLE_HEADERS.NAME,
+        sortKey: ADMIN_PRODUCT_SORT_KEYS.NAME,
         render: (product) => (
           <div>
             <div className="font-semibold text-base-content">
@@ -151,6 +168,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       {
         key: ADMIN_PRODUCT_TABLE_KEYS.PRICE,
         header: ADMIN_PRODUCT_TABLE_HEADERS.PRICE,
+        sortKey: ADMIN_PRODUCT_SORT_KEYS.PRICE_UNIT_AMOUNT,
         render: (product) => (
           <div className="font-medium text-base-content">
             {formatPrice(product.price_unit_amount, product.currency)}
@@ -160,6 +178,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
       {
         key: ADMIN_PRODUCT_TABLE_KEYS.CYCLE,
         header: ADMIN_PRODUCT_TABLE_HEADERS.CYCLE,
+        sortKey: ADMIN_PRODUCT_SORT_KEYS.CYCLE,
         render: (product) => (
           <span className="text-body-m capitalize text-base-content">
             {product.cycle || "One-time"}
@@ -171,8 +190,8 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         header: ADMIN_PRODUCT_TABLE_HEADERS.STATUS,
         render: (product) => (
           <Badge
-            size="xs"
-            variant={product.active ? "success" : "secondary"}
+            size={BadgeSizes.XS}
+            variant={product.active ? BadgeVariants.SUCCESS : BadgeVariants.SECONDARY}
           >
             {product.active
               ? ADMIN_PRODUCT_LABELS.ACTIVE
@@ -186,8 +205,12 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           view === ADMIN_VIEW_MODES.ACTIVE
             ? ADMIN_TABLE_HEADERS.CREATED
             : "Discarded",
+        sortKey:
+          view === ADMIN_VIEW_MODES.ACTIVE
+            ? ADMIN_PRODUCT_SORT_KEYS.CREATED_AT
+            : ADMIN_PRODUCT_SORT_KEYS.DISCARDED_AT,
         render: (product) =>
-          formatDate(
+          formatAdminDate(
             view === ADMIN_VIEW_MODES.ACTIVE
               ? product.created_at
               : product.discarded_at,
@@ -248,25 +271,20 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     )
       return;
 
-    setLoading(true);
-
-    const onSuccess = (message: string) => {
-      toast.success(message);
-      setLifecycleTarget(null);
-      setLoading(false);
-      void loadProducts();
-    };
-    const onError = (message: string) => {
-      toast.error(message);
-      setLoading(false);
-    };
-
-    const action =
+    const result =
       lifecycleTarget.action === ADMIN_ACTIONS.DISCARD
-        ? ProductController.discardProduct.bind(ProductController)
-        : ProductController.undiscardProduct.bind(ProductController);
+        ? await ProductController.discardProduct(lifecycleTarget.product.id)
+        : await ProductController.undiscardProduct(lifecycleTarget.product.id);
 
-    await action(lifecycleTarget.product.id, onSuccess, onError);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success(result.message || "Operation successful");
+      setLifecycleTarget(null);
+      void loadProducts();
+    } else {
+      toast.error(result.error || "Operation failed");
+    }
   };
 
   const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.PRODUCTS);
@@ -361,6 +379,9 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
             records={products}
             columns={columns}
             getRowKey={(record) => record.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
           <AdminPagination
             pagination={pagination}

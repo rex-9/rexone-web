@@ -51,6 +51,12 @@ export const ADMIN_FEEDBACK_TABLE_KEYS = {
   ACTIONS: "actions",
 } as const;
 
+export const ADMIN_FEEDBACK_SORT_KEYS = {
+  USER_NAME: "user_name",
+  RATING: "rating",
+  CREATED_AT: "created_at",
+} as const;
+
 export const ADMIN_FEEDBACK_PAGE_META: Record<string, IAdminPageMeta> = {
   [AppRoutes.client.protected.admin.FEEDBACK]: {
     title: ADMIN_FEEDBACK_PAGE_TITLES.INBOX,

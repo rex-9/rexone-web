@@ -1,5 +1,5 @@
 import type { ADMIN_ROLE_NAMES } from "./constants";
-import { ADMIN_COMMON_PAGINATION_LABELS } from '../constants';
+import type { TSortOrder } from "../../../hooks/useSort";
 
 export type AdminAction = string;
 
@@ -24,11 +24,18 @@ export interface IAdminPermission {
   created_at?: Date;
   updated_at?: Date;
 }
+
 export interface IAdminPermissionListParams {
   page?: number;
-  limit?: number| typeof ADMIN_COMMON_PAGINATION_LABELS.POFF;
+  limit?: number;
 }
 
+export interface IAdminRoleListParams {
+  page?: number;
+  limit?: number;
+  sort_by?: string;
+  sort_order?: TSortOrder;
+}
 
 export interface IAdminRole {
   id: string;

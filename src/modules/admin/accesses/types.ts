@@ -1,8 +1,9 @@
-// src/modules/admin/accesses/types.ts
+import type { TSortOrder } from "../../../hooks/useSort";
+import type { TAdminAccessStatus } from "./constants";
 
 export interface IAdminAccess {
   id: string;
-  status: "active" | "expired" | "revoked" | string;
+  status: TAdminAccessStatus | string;
   granted_at: string | null;
   expires_at: string | null;
   revoked_at?: string | null;
@@ -43,4 +44,6 @@ export interface IAdminAccessFilters {
   product_id?: string;
   user_id?: string;
   search?: string;
+  sort_by?: string;
+  sort_order?: TSortOrder;
 }

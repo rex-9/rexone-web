@@ -1,6 +1,7 @@
 // src/modules/admin/products/types.ts
 
 import { PRODUCT_CYCLE } from "./constants";
+import type { TSortOrder } from "../../../hooks/useSort";
 
 export type AdminProductCycle =
   (typeof PRODUCT_CYCLE)[keyof typeof PRODUCT_CYCLE];
@@ -39,4 +40,6 @@ export interface IAdminProductFormValues {
 export interface IAdminProductListParams {
   page?: number;
   limit?: number;
+  sort_by?: string;
+  sort_order?: TSortOrder;
 }

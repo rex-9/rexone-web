@@ -24,33 +24,32 @@ export const AdminRoleCreatePage: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
-    setLoading(true);
+    const loadPermissions = async () => {
+      setLoading(true);
+      const result = await RoleController.getPermissions();
+      setLoading(false);
+      if (result.success) {
+        setPermissions(result.permissions);
+      } else {
+        setAlertMessage(result.error || "Failed to load permissions");
+      }
+    };
 
-    const timeoutId = window.setTimeout(() => {
-      void RoleController.getPermissions(
-        (nextPermissions) => setPermissions(nextPermissions),
-        (message) => setAlertMessage(message),
-      ).finally(() => setLoading(false));
-    }, 0);
-
-    return () => window.clearTimeout(timeoutId);
+    void loadPermissions();
   }, [setLoading]);
 
   const handleSubmit = async (values: IAdminRoleFormValues) => {
     setLoading(true, { overlay: false });
 
-    await RoleController.createRole(
-      values,
-      () => {
-        setLoading(false, { overlay: false });
-        toast.success("Role created");
-        navigate(AppRoutes.client.protected.admin.ROLES);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await RoleController.createRole(values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success("Role created");
+      navigate(AppRoutes.client.protected.admin.ROLES);
+    } else {
+      setAlertMessage(result.error || "Failed to create role");
+    }
   };
 
   return (

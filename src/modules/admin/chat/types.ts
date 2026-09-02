@@ -1,3 +1,8 @@
+import type { TSortOrder } from "../../../hooks/useSort";
+import type { TAdminChatRole } from "./constants";
+
+export type { TAdminChatRole };
+
 export interface IAdminChatRoom {
   id: string;
   title: string;
@@ -14,7 +19,7 @@ export interface IAdminChatRoomFormValues {
 
 export interface IAdminChatMessage {
   id: string;
-  role: "user" | "assistant" | string;
+  role: TAdminChatRole | string;
   content: string;
   room_id: string;
   created_at: Date;
@@ -22,6 +27,13 @@ export interface IAdminChatMessage {
 }
 
 export interface IAdminChatMessageFormValues {
-  role: "user" | "assistant" | string;
+  role: TAdminChatRole | string;
   content: string;
+}
+
+export interface IAdminChatListParams {
+  page?: number;
+  limit?: number;
+  sort_by?: string;
+  sort_order?: TSortOrder;
 }

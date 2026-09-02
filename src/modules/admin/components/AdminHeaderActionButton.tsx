@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "../../../design/components/button";
+import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 import { iconsLib } from "../../../assets";
 import { ADMIN_ACTIONS } from "../constants";
 import type { AdminResource } from "../roles";
@@ -23,8 +24,8 @@ export const AdminHeaderActionButton: React.FC<
       <AdminActionButton
         action={ADMIN_ACTIONS.READ}
         resource={recycle.resource}
-        size="sm"
-        variant="secondary"
+        size={ButtonSizes.SM}
+        variant={ButtonVariants.SECONDARY}
         className="h-10 w-10 p-0"
         aria-label={recycle.label}
         title={recycle.label}

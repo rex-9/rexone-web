@@ -28,9 +28,13 @@ describe("ChatController", () => {
   });
 
   describe("getRooms", () => {
-    it("calls onSuccess with parsed rooms and pagination", async () => {
+    it("returns parsed rooms and pagination", async () => {
       const mockRooms = [
-        { id: "room_1", title: "General Support", message_count: 5 },
+        {
+          id: "room_1",
+          type: "room",
+          attributes: { id: "room_1", title: "General Support", message_count: 5 },
+        },
       ];
       const mockResponse = {
         data: {
@@ -44,20 +48,19 @@ describe("ChatController", () => {
 
       vi.mocked(ChatService.getRooms).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.getRooms({ page: 1 }, onSuccess, onError);
+      const result = await ChatController.getRooms({ page: 1 });
 
       expect(ChatService.getRooms).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.rooms).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "room_1" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
-      expect(onError).not.toHaveBeenCalled();
     });
 
-    it("calls onError on failure", async () => {
+    it("returns error on failure", async () => {
       vi.mocked(ChatService.getRooms).mockResolvedValue({
         data: {
           status: { code: 500, success: false, message: "Error" },
@@ -65,18 +68,16 @@ describe("ChatController", () => {
         },
       } as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
+      const result = await ChatController.getRooms({ page: 1 });
 
-      await ChatController.getRooms({ page: 1 }, onSuccess, onError);
-
-      expect(onError).toHaveBeenCalled();
-      expect(onSuccess).not.toHaveBeenCalled();
+      expect(result.success).toBe(false);
+      expect(result.rooms).toEqual([]);
+      expect(result.error).toBeTruthy();
     });
   });
 
   describe("getRoom", () => {
-    it("calls onSuccess with single room", async () => {
+    it("returns single room", async () => {
       const mockRoom = { id: "room_1", title: "VIP Chat" };
       const mockResponse = {
         data: {
@@ -87,20 +88,18 @@ describe("ChatController", () => {
 
       vi.mocked(ChatService.getRoom).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.getRoom("room_1", onSuccess, onError);
+      const result = await ChatController.getRoom("room_1");
 
       expect(ChatService.getRoom).toHaveBeenCalledWith("room_1");
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.room).toEqual(
         expect.objectContaining({ id: "room_1", title: "VIP Chat" }),
       );
     });
   });
 
   describe("updateRoom", () => {
-    it("calls onSuccess with updated room", async () => {
+    it("returns updated room", async () => {
       const formValues: IAdminChatRoomFormValues = {
         title: "Renamed Room",
       };
@@ -113,20 +112,18 @@ describe("ChatController", () => {
 
       vi.mocked(ChatService.updateRoom).mockResolvedValue(mockResponse as never);
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.updateRoom("room_1", formValues, onSuccess, onError);
+      const result = await ChatController.updateRoom("room_1", formValues);
 
       expect(ChatService.updateRoom).toHaveBeenCalledWith("room_1", formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.room).toEqual(
         expect.objectContaining({ id: "room_1", title: "Renamed Room" }),
       );
     });
   });
 
   describe("discardRoom", () => {
-    it("calls onSuccess on discard room", async () => {
+    it("returns success on discard room", async () => {
       const mockResponse = {
         data: { status: { code: 200, success: true, message: "OK" } },
       };
@@ -135,20 +132,21 @@ describe("ChatController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.discardRoom("room_1", onSuccess, onError);
+      const result = await ChatController.discardRoom("room_1");
 
       expect(ChatService.discardRoom).toHaveBeenCalledWith("room_1");
-      expect(onSuccess).toHaveBeenCalled();
+      expect(result.success).toBe(true);
     });
   });
 
   describe("getMessages", () => {
-    it("calls onSuccess with messages list and pagination", async () => {
+    it("returns messages list and pagination", async () => {
       const mockMessages = [
-        { id: "msg_1", content: "Hello", role: "user", room_id: "room_1" },
+        {
+          id: "msg_1",
+          type: "message",
+          attributes: { id: "msg_1", content: "Hello", role: "user", room_id: "room_1" },
+        },
       ];
       const mockResponse = {
         data: {
@@ -164,21 +162,21 @@ describe("ChatController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.getMessages({ page: 1 }, onSuccess, onError);
+      const result = await ChatController.getMessages({ page: 1 });
 
       expect(ChatService.getMessages).toHaveBeenCalledWith({ page: 1 });
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.messages).toEqual(
         expect.arrayContaining([expect.objectContaining({ id: "msg_1" })]),
+      );
+      expect(result.pagination).toEqual(
         expect.objectContaining({ total_count: 1 }),
       );
     });
   });
 
   describe("getMessage", () => {
-    it("calls onSuccess with single message", async () => {
+    it("returns single message", async () => {
       const mockMessage = { id: "msg_1", content: "Hello there" };
       const mockResponse = {
         data: {
@@ -191,20 +189,18 @@ describe("ChatController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.getMessage("msg_1", onSuccess, onError);
+      const result = await ChatController.getMessage("msg_1");
 
       expect(ChatService.getMessage).toHaveBeenCalledWith("msg_1");
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.message).toEqual(
         expect.objectContaining({ id: "msg_1", content: "Hello there" }),
       );
     });
   });
 
   describe("updateMessage", () => {
-    it("calls onSuccess with updated message", async () => {
+    it("returns updated message", async () => {
       const formValues: IAdminChatMessageFormValues = {
         content: "Updated message content",
         role: "assistant",
@@ -220,20 +216,18 @@ describe("ChatController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.updateMessage("msg_1", formValues, onSuccess, onError);
+      const result = await ChatController.updateMessage("msg_1", formValues);
 
       expect(ChatService.updateMessage).toHaveBeenCalledWith("msg_1", formValues);
-      expect(onSuccess).toHaveBeenCalledWith(
+      expect(result.success).toBe(true);
+      expect(result.message).toEqual(
         expect.objectContaining({ id: "msg_1" }),
       );
     });
   });
 
   describe("discardMessage", () => {
-    it("calls onSuccess on discard message", async () => {
+    it("returns success on discard message", async () => {
       const mockResponse = {
         data: { status: { code: 200, success: true, message: "OK" } },
       };
@@ -242,13 +236,10 @@ describe("ChatController", () => {
         mockResponse as never,
       );
 
-      const onSuccess = vi.fn();
-      const onError = vi.fn();
-
-      await ChatController.discardMessage("msg_1", onSuccess, onError);
+      const result = await ChatController.discardMessage("msg_1");
 
       expect(ChatService.discardMessage).toHaveBeenCalledWith("msg_1");
-      expect(onSuccess).toHaveBeenCalled();
+      expect(result.success).toBe(true);
     });
   });
 });

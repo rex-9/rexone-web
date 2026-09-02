@@ -114,6 +114,15 @@ export const ANALYTICS_PERIODS = {
 export type TAnalyticsPeriod =
   (typeof ANALYTICS_PERIODS)[keyof typeof ANALYTICS_PERIODS];
 
+export const ANALYTICS_GRAINS = {
+  HOURLY: "hourly",
+  DAILY: "daily",
+  MONTHLY: "monthly",
+} as const;
+
+export type TAnalyticsGrain =
+  (typeof ANALYTICS_GRAINS)[keyof typeof ANALYTICS_GRAINS];
+
 export const ANALYTICS_PERIOD_LABELS: Record<TAnalyticsPeriod, string> = {
   [ANALYTICS_PERIODS.TODAY]: "Today",
   [ANALYTICS_PERIODS.YESTERDAY]: "Yesterday",
@@ -150,8 +159,4 @@ export const ADMIN_COMMON_LABELS = {
   REVOKE: "Revoke",
   SYSTEM: "System",
   UNASSIGNED: "Unassigned",
-} as const;
-
-export const ADMIN_COMMON_PAGINATION_LABELS = {
-  POFF: "off",
 } as const;

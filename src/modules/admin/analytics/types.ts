@@ -1,5 +1,5 @@
 // src/modules/admin/analytics/types.ts
-import { TAnalyticsPeriod } from "../constants";
+import { TAnalyticsPeriod, TAnalyticsGrain } from "../constants";
 
 export interface IAnalyticsKpis {
   total_users: number;
@@ -45,7 +45,7 @@ export interface IAnalyticsOverview {
   period: TAnalyticsPeriod | string;
   start_date: string;
   end_date: string;
-  grain: "hourly" | "daily" | "monthly";
+  grain: TAnalyticsGrain;
   kpis: IAnalyticsKpis;
   time_series: IAnalyticsTimeSeriesPoint[];
   breakdowns: IAnalyticsBreakdowns;

@@ -1,22 +1,25 @@
 import AppRoutes from "../../../AppRoutes";
 import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../../models";
 import { api } from "../../../services";
-import { ADMIN_COMMON_PAGINATION_LABELS } from "../constants";
-import { IAdminPermissionListParams } from "./types";
-import { IAdminPermission, IAdminRole, IAdminRoleFormValues } from "./types";
+import {
+  IAdminPermission,
+  IAdminPermissionListParams,
+  IAdminRole,
+  IAdminRoleFormValues,
+  IAdminRoleListParams,
+} from "./types";
 
-type AdminRoleResponse = IAdminRole | { role: IAdminRole };
-type AdminRoleListResponse =
-  | IJsonApiResource<IAdminRole>[]
-  | { roles: IJsonApiResource<IAdminRole>[] };
-type AdminPermissionListResponse =
-  | IJsonApiResource<IAdminPermission>[]
-  | { permissions: IJsonApiResource<IAdminPermission>[] };
+type AdminRoleResponse = IJsonApiResource<IAdminRole> | IAdminRole | { role: IAdminRole };
+type AdminRoleListResponse = IJsonApiResource<IAdminRole>[];
+type AdminPermissionListResponse = IJsonApiResource<IAdminPermission>[];
 
 class RoleService {
-  async getRoles(): Promise<IApiResponse<IApiEnvelope<AdminRoleListResponse>>> {
+  async getRoles(
+    params?: IAdminRoleListParams,
+  ): Promise<IApiResponse<IApiEnvelope<AdminRoleListResponse>>> {
     return api.get<AdminRoleListResponse>(
       AppRoutes.server.protected.admin.IAM_ROLES,
+      params as Record<string, unknown>,
     );
   }
 
@@ -31,15 +34,9 @@ class RoleService {
   async getPermissions(
     params?: IAdminPermissionListParams,
   ): Promise<IApiResponse<IApiEnvelope<AdminPermissionListResponse>>> {
-    const queryParams: Record<string, unknown> = {
-      page: 1,
-      limit: ADMIN_COMMON_PAGINATION_LABELS.POFF,
-      ...params,
-    };
-
     return api.get<AdminPermissionListResponse>(
       AppRoutes.server.protected.admin.IAM_ROLE_PERMISSIONS,
-      queryParams,
+      (params ?? {}) as Record<string, unknown>,
     );
   }
 

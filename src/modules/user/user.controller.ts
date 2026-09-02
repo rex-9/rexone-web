@@ -1,4 +1,5 @@
-import { UserService } from ".";
+import UserService from "./user.service";
+import { USER_PEEK_STATUS, type TUserPeekStatus } from "./constants";
 import {
   IApiEnvelope,
   IApiResponse,
@@ -9,11 +10,7 @@ import {
 import { AppLocales, translate } from "../../locales";
 
 class UserController {
-  async peekUser(
-    email: string,
-  ): Promise<
-    "exists_confirmed" | "exists_unconfirmed" | "not_exists" | "discarded"
-  > {
+  async peekUser(email: string): Promise<TUserPeekStatus> {
     const response = await UserService.peekUser(email);
     const { status } = response.data || {};
     if (
@@ -21,7 +18,7 @@ class UserController {
       response.data?.status?.error ===
         translate(AppLocales.Auth.Initial.AccountDiscarded)
     ) {
-      return "discarded";
+      return USER_PEEK_STATUS.DISCARDED;
     }
 
     if (response.error || !response.data?.data) {
@@ -32,10 +29,12 @@ class UserController {
     const { user_exists, confirmed } = response.data.data;
 
     if (!user_exists) {
-      return "not_exists";
+      return USER_PEEK_STATUS.NOT_EXISTS;
     }
 
-    return confirmed ? "exists_confirmed" : "exists_unconfirmed";
+    return confirmed
+      ? USER_PEEK_STATUS.EXISTS_CONFIRMED
+      : USER_PEEK_STATUS.EXISTS_UNCONFIRMED;
   }
 
   async getCurrentUser(): Promise<IUser | null> {

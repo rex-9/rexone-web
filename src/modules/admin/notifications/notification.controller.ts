@@ -9,40 +9,56 @@ import {
 import { NOTIFICATION_LOCALES } from "./constants";
 
 class NotificationController {
-  async getTemplates(
-    onSuccess?: (templates: IAdminNotificationTemplate[]) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
+  async getTemplates(): Promise<{
+    success: boolean;
+    templates: IAdminNotificationTemplate[];
+    error?: string;
+  }> {
     const response = await NotificationService.getTemplates();
     const { status, data } = response.data || {};
 
-    if (!status?.success || !data) {
-      onError?.(
-        getApiError(response, translate(NOTIFICATION_LOCALES.Errors.LoadTemplates)),
-      );
-      return;
+    if (status?.success && data) {
+      return {
+        success: true,
+        templates: data,
+      };
     }
 
-    onSuccess?.(data);
+    return {
+      success: false,
+      templates: [],
+      error: getApiError(
+        response,
+        translate(NOTIFICATION_LOCALES.Errors.LoadTemplates),
+      ),
+    };
   }
 
-  async createNotification(
-    values: IAdminNotificationFormValues,
-    onSuccess?: (delivered: IAdminNotificationDelivery, message: string) => void,
-    onError?: (error: string) => void,
-  ): Promise<void> {
-      const response = await NotificationService.createNotification(values);
-      const { status, data } = response.data || {};
-      const isQueued = status?.code === 202;
+  async createNotification(values: IAdminNotificationFormValues): Promise<{
+    success: boolean;
+    delivered?: IAdminNotificationDelivery;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await NotificationService.createNotification(values);
+    const { status, data } = response.data || {};
+    const isQueued = status?.code === 202;
 
-      if ((!status?.success && !isQueued) || !data) {
-        onError?.(
-          getApiError(response, translate(NOTIFICATION_LOCALES.Errors.Send)),
-        );
-        return;
-      }
+    if ((status?.success || isQueued) && data) {
+      return {
+        success: true,
+        delivered: data,
+        message: status.message,
+      };
+    }
 
-      onSuccess?.(data, status.message);
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(NOTIFICATION_LOCALES.Errors.Send),
+      ),
+    };
   }
 }
 

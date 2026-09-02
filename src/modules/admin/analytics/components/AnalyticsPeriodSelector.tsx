@@ -1,7 +1,7 @@
 // src/modules/admin/analytics/components/AnalyticsPeriodSelector.tsx
 import React, { useMemo } from "react";
 import { iconsLib } from "../../../../assets";
-import { Dropdown, type IDropdownOption } from "../../../../design";
+import { Dropdown, DropdownSizes, type IDropdownOption } from "../../../../design";
 import {
   ANALYTICS_PERIODS,
   ANALYTICS_PERIOD_LABELS,
@@ -250,7 +250,7 @@ export const AnalyticsPeriodSelector: React.FC<
       options={options}
       disabled={disabled}
       fullWidth={false}
-      size="sm"
+      size={DropdownSizes.SM}
       icon={<iconsLib.clock className="h-4 w-4" />}
       className="w-auto font-semibold pr-8"
     />

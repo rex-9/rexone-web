@@ -25,6 +25,7 @@ import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
 import { AlertDialog, AdminState, Button, PageHeader, Tabs } from "../../components";
 import { Badge, FormContainer, SearchInput } from "../../../../design/components";
+import { BadgeVariants, ButtonSizes, ButtonTypes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 
 const initialValues: IAdminNotificationFormValues = {
@@ -76,36 +77,31 @@ export const AdminNotificationsPage: React.FC = () => {
   useEffect(() => {
     if (permissionsLoading) return;
 
-    setLoading(true);
+    const loadInitialData = async () => {
+      setLoading(true);
 
-    const timeoutId = window.setTimeout(() => {
-      const requests = [
-        NotificationController.getTemplates(
-          (nextTemplates) => {
-            setTemplates(nextTemplates);
-            // Default select the first admin available template
-            const firstAvailable = nextTemplates.find((t) => t.admin_available);
-            if (firstAvailable) {
-              setValues((v) => ({ ...v, event: firstAvailable.event }));
-            }
-          },
-          (message) => setError(message),
-        ),
-      ];
+      const [templateRes, rolesRes] = await Promise.all([
+        NotificationController.getTemplates(),
+        canReadRoles ? RoleController.getRoles() : Promise.resolve(null),
+      ]);
+      setLoading(false);
 
-      if (canReadRoles) {
-        requests.push(
-          RoleController.getRoles(
-            (nextRoles) => setRoles(nextRoles),
-            (message) => setError(message),
-          ),
-        );
+      if (templateRes.success) {
+        setTemplates(templateRes.templates);
+        const firstAvailable = templateRes.templates.find((t) => t.admin_available);
+        if (firstAvailable) {
+          setValues((v) => ({ ...v, event: firstAvailable.event }));
+        }
+      } else {
+        setError(templateRes.error || "Failed to load notification templates");
       }
 
-      void Promise.all(requests).finally(() => setLoading(false));
-    }, 0);
+      if (rolesRes && rolesRes.success) {
+        setRoles(rolesRes.roles);
+      }
+    };
 
-    return () => window.clearTimeout(timeoutId);
+    void loadInitialData();
   }, [canReadRoles, permissionsLoading, setLoading]);
 
   const searchRecipients = useCallback(
@@ -117,18 +113,18 @@ export const AdminNotificationsPage: React.FC = () => {
 
       setLoading(true, { overlay: false });
 
-      await UserController.getUsers(
-        { search, limit: RECIPIENT_SEARCH_LIMIT },
-        (nextUsers) => {
-          setUsers((currentUsers) => mergeUsersById(currentUsers, nextUsers));
-          setRecipientSearchError("");
-          setLoading(false);
-        },
-        (message) => {
-          setRecipientSearchError(message);
-          setLoading(false);
-        },
-      );
+      const result = await UserController.getUsers({
+        search,
+        limit: RECIPIENT_SEARCH_LIMIT,
+      });
+      setLoading(false);
+
+      if (result.success) {
+        setUsers((currentUsers) => mergeUsersById(currentUsers, result.users));
+        setRecipientSearchError("");
+      } else {
+        setRecipientSearchError(result.error || "Failed to search users");
+      }
     },
     [canReadUsers, setLoading, t],
   );
@@ -285,28 +281,25 @@ export const AdminNotificationsPage: React.FC = () => {
 
     setLoading(true);
 
-    await NotificationController.createNotification(
-      {
-        ...values,
-        user_ids:
-          values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
-            ? values.user_ids
-            : [],
-        role_ids:
-          values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
-            ? values.role_ids
-            : [],
-      },
-      (_, message) => {
-        setLoading(false);
-        toast.success(message || "Notification dispatched successfully! 🚀");
-        setValues(initialValues);
-      },
-      (message) => {
-        setLoading(false);
-        setAlertMessage(message);
-      },
-    );
+    const result = await NotificationController.createNotification({
+      ...values,
+      user_ids:
+        values.audience_type === NOTIFICATION_AUDIENCE_TYPES.USERS
+          ? values.user_ids
+          : [],
+      role_ids:
+        values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ROLES
+          ? values.role_ids
+          : [],
+    });
+    setLoading(false);
+
+    if (result.success) {
+      toast.success(result.message || "Notification dispatched successfully! 🚀");
+      setValues(initialValues);
+    } else {
+      setAlertMessage(result.error || "Failed to dispatch notification");
+    }
   };
 
   return (
@@ -343,7 +336,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 </p>
               </div>
               {selectedTemplate && (
-                <Badge variant="primary">
+                <Badge variant={BadgeVariants.PRIMARY}>
                   {selectedTemplate.category.toUpperCase()}
                 </Badge>
               )}
@@ -619,8 +612,8 @@ export const AdminNotificationsPage: React.FC = () => {
           {/* Submit Action */}
           <div className="flex items-center justify-end gap-3 pt-2">
             <Button
-              type="submit"
-              size="lg"
+              type={ButtonTypes.SUBMIT}
+              size={ButtonSizes.LG}
               isLoading={isLoading}
               disabled={
                 !canCreateNotifications || isLoading || !values.event

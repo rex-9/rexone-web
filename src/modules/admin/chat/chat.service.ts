@@ -10,19 +10,19 @@ import {
   IAdminChatMessageFormValues,
   IAdminChatRoom,
   IAdminChatRoomFormValues,
+  IAdminChatListParams,
 } from "./types";
 
 type AdminChatRoomResponse = IAdminChatRoom | { room: IAdminChatRoom };
 type AdminChatMessageResponse = IAdminChatMessage | { message: IAdminChatMessage };
 
 class ChatService {
-  async getRooms(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>[]>>> {
+  async getRooms(
+    params?: IAdminChatListParams,
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>[]>>> {
     return api.get<IJsonApiResource<IAdminChatRoom>[]>(
       AppRoutes.server.protected.admin.CHAT_ROOMS,
-      params,
+      params as Record<string, unknown>,
     );
   }
 
@@ -54,15 +54,14 @@ class ChatService {
     return this.discardRoom(id);
   }
 
-  async getMessages(params?: {
-    page?: number;
-    limit?: number;
-  }): Promise<
+  async getMessages(
+    params?: IAdminChatListParams,
+  ): Promise<
     IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatMessage>[]>>
   > {
     return api.get<IJsonApiResource<IAdminChatMessage>[]>(
       AppRoutes.server.protected.admin.CHAT_MESSAGES,
-      params,
+      params as Record<string, unknown>,
     );
   }
 

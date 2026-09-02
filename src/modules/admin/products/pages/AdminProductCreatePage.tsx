@@ -22,27 +22,16 @@ export const AdminProductCreatePage: React.FC = () => {
   const handleSubmit = async (values: IAdminProductFormValues) => {
     setLoading(true, { overlay: false });
 
-    try {
-      await ProductController.createProduct(
-        values,
-        (_product, message) => {
-          setLoading(false, { overlay: false });
-          toast.success(message || "Product created");
-          navigate(AppRoutes.client.protected.admin.PRODUCTS, {
-            replace: true,
-          });
-        },
-        (message) => {
-          setAlertMessage(message);
-          setLoading(false, { overlay: false });
-        },
-      );
-    } catch {
-      setAlertMessage("Product was created, but the page could not return to products.");
-      setLoading(false, { overlay: false });
+    const result = await ProductController.createProduct(values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success(result.message || "Product created");
       navigate(AppRoutes.client.protected.admin.PRODUCTS, {
         replace: true,
       });
+    } else {
+      setAlertMessage(result.error || "Failed to create product");
     }
   };
 

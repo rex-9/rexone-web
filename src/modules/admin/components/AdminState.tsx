@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "../../../design/components/button";
+import { ButtonVariants } from "../../../design/constants";
 import { cn } from "../../../design/helpers";
 
 interface IAdminStateProps {
@@ -58,7 +59,7 @@ export const AdminState: React.FC<IAdminStateProps> = ({
         </p>
       )}
       {actionLabel && onAction && (
-        <Button className="mt-4" variant="secondary" onClick={onAction}>
+        <Button className="mt-4" variant={ButtonVariants.SECONDARY} onClick={onAction}>
           {actionLabel}
         </Button>
       )}

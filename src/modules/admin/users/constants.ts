@@ -22,6 +22,14 @@ export const ADMIN_USER_TABLE_KEYS = {
   ROLE: "role",
 } as const;
 
+export const ADMIN_USER_SORT_KEYS = {
+  NAME: "name",
+  USERNAME: "username",
+  EMAIL: "email",
+  CREATED_AT: "created_at",
+  DISCARDED_AT: "discarded_at",
+} as const;
+
 export const ADMIN_USER_LABELS = {
   UNASSIGNED: "Unassigned",
 } as const;

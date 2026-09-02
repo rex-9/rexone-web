@@ -4,6 +4,7 @@ import {
   ADMIN_FEEDBACK_PRIORITY,
   ADMIN_FEEDBACK_STATUS,
 } from "./constants";
+import type { TSortOrder } from "../../../hooks/useSort";
 
 export type AdminFeedbackCategory =
   (typeof ADMIN_FEEDBACK_CATEGORY)[keyof typeof ADMIN_FEEDBACK_CATEGORY];
@@ -49,4 +50,6 @@ export interface IAdminFeedbackFilters {
   priority?: string;
   platform?: string;
   user_id?: string;
+  sort_by?: string;
+  sort_order?: TSortOrder;
 }

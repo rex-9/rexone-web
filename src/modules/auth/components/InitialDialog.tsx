@@ -14,7 +14,7 @@ import {
 import AppRoutes from "../../../AppRoutes";
 import { DialogAuthSteps, TAuthStep } from "..";
 import { AuthController } from "..";
-import { UserController } from "../../user";
+import { UserController, USER_PEEK_STATUS } from "../../user";
 import { AppLocales, useTranslate } from "../../../locales";
 
 interface IInitialDialogProps {
@@ -85,14 +85,14 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
       const result = await UserController.peekUser(localEmail);
 
       switch (result) {
-        case "exists_confirmed":
+        case USER_PEEK_STATUS.EXISTS_CONFIRMED:
           // Existing confirmed user
           navigateToStep(DialogAuthSteps.SIGNIN_PASSWORD, {
             email: localEmail,
           });
           break;
 
-        case "exists_unconfirmed":
+        case USER_PEEK_STATUS.EXISTS_UNCONFIRMED:
           // Existing unconfirmed user - send new OTP and go to confirm
           await AuthController.sendConfirmationEmail(localEmail);
 
@@ -101,14 +101,14 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
           });
           break;
 
-        case "not_exists":
+        case USER_PEEK_STATUS.NOT_EXISTS:
           // New user
           navigateToStep(DialogAuthSteps.SIGNUP_PASSWORD_CREATE, {
             email: localEmail,
           });
           break;
 
-        case "discarded":
+        case USER_PEEK_STATUS.DISCARDED:
           setEmailError(t(AppLocales.Auth.Initial.AccountDiscarded));
           break;
       }

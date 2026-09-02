@@ -30,23 +30,26 @@ export const AdminUserEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
+    const loadData = async () => {
+      setLoading(true);
+      const [userResult, rolesResult] = await Promise.all([
+        UserController.getUser(id),
+        UserController.getRoles(),
+      ]);
+      setLoading(false);
 
-    const timeoutId = window.setTimeout(() => {
-      void Promise.all([
-        UserController.getUser(
-          id,
-          (nextUser) => setUser(nextUser),
-          (message) => setError(message),
-        ),
-        UserController.getRoles(
-          (nextRoles) => setRoles(nextRoles),
-          (message) => setError(message),
-        ),
-      ]).finally(() => setLoading(false));
-    }, 0);
+      if (userResult.success && userResult.user) {
+        setUser(userResult.user);
+      } else {
+        setError(userResult.error || "Unable to load user");
+      }
 
-    return () => window.clearTimeout(timeoutId);
+      if (rolesResult.success) {
+        setRoles(rolesResult.roles);
+      }
+    };
+
+    void loadData();
   }, [id, setLoading]);
 
   const handleSubmit = async (values: IAdminUserFormValues) => {
@@ -54,19 +57,15 @@ export const AdminUserEditPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    await UserController.updateUser(
-      id,
-      values,
-      (_user, message) => {
-        setLoading(false, { overlay: false });
-        toast.success(message);
-        navigate(AppRoutes.client.protected.admin.USERS);
-      },
-      (message) => {
-        setAlertMessage(message);
-        setLoading(false, { overlay: false });
-      },
-    );
+    const result = await UserController.updateUser(id, values);
+    setLoading(false, { overlay: false });
+
+    if (result.success) {
+      toast.success(result.message || "User updated");
+      navigate(AppRoutes.client.protected.admin.USERS);
+    } else {
+      setAlertMessage(result.error || "Failed to update user");
+    }
   };
 
   return (

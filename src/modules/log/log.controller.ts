@@ -1,9 +1,8 @@
-// src/modules/log/log.controller.ts
 import AppConfig from "../../AppConfig";
-import { AtomService } from "../../services";
+import AtomService from "../../services/atom.service";
 import LogService from "./log.service";
-import { ILogPayload } from "./types";
-import { BROWSER_NAMES, OS_NAMES } from "./constants";
+import { ILogPayload, Platform } from "./types";
+import { BROWSER_NAMES, LOG_PLATFORMS, LOG_SEVERITIES, OS_NAMES } from "./constants";
 
 class LogController {
   /**
@@ -143,20 +142,20 @@ class LogController {
   /**
    * Detect platform from user agent
    */
-  private detectPlatform(userAgent: string): "web" | "ios" | "android" | null {
+  private detectPlatform(userAgent: string): Platform | null {
     const ua = userAgent.toLowerCase();
     if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("ios")) {
-      return "ios";
+      return LOG_PLATFORMS.IOS;
     }
     if (ua.includes("android")) {
-      return "android";
+      return LOG_PLATFORMS.ANDROID;
     }
     if (
       ua.includes("macintosh") ||
       ua.includes("windows") ||
       ua.includes("linux")
     ) {
-      return "web";
+      return LOG_PLATFORMS.WEB;
     }
     return null;
   }
@@ -177,7 +176,7 @@ class LogController {
     const message = typeof error === "string" ? error : error.message;
     const stack = error instanceof Error ? error.stack?.split("\n") : [];
 
-    const userAgent = navigator.userAgent;
+    const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : "";
     const browser = this.parseBrowser(userAgent);
     const os = this.parseOS(userAgent);
     const device = this.parseDevice(userAgent);
@@ -187,14 +186,14 @@ class LogController {
 
     const payload: ILogPayload = {
       message,
-      severity: "error",
+      severity: LOG_SEVERITIES.ERROR,
       context: context || {},
       stack_trace: stack || [],
       ...storageSnapshot,
       ...options,
       platform: platform || undefined,
       environment: AppConfig.NODE_ENV || undefined,
-      url: window.location.href,
+      url: typeof window !== "undefined" ? window.location.href : "http://localhost",
       method: "GET",
       user_agent: userAgent,
     };
@@ -247,16 +246,20 @@ class LogController {
       const localKeys = AtomService.getKeys();
 
       const sessionKeys: string[] = [];
-      for (let i = 0; i < sessionStorage.length; i++) {
-        const key = sessionStorage.key(i);
-        if (key) sessionKeys.push(key);
+      if (typeof sessionStorage !== "undefined") {
+        for (let i = 0; i < sessionStorage.length; i++) {
+          const key = sessionStorage.key(i);
+          if (key) sessionKeys.push(key);
+        }
       }
 
       const cookies: Record<string, string> = {};
-      document.cookie.split(";").forEach((cookie) => {
-        const [key, value] = cookie.trim().split("=");
-        if (key) cookies[key] = value || "";
-      });
+      if (typeof document !== "undefined" && document.cookie) {
+        document.cookie.split(";").forEach((cookie) => {
+          const [key, value] = cookie.trim().split("=");
+          if (key) cookies[key] = value || "";
+        });
+      }
 
       return {
         local_storage_keys: localKeys,
