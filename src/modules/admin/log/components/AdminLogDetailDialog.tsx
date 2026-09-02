@@ -1,7 +1,11 @@
-// src/modules/admin/logs/components/AdminLogDetailDialog.tsx
+// src/modules/admin/log/components/AdminLogDetailDialog.tsx
 import React from "react";
 import { Dialog, Button, Badge } from "../../../../design/components";
-import { BadgeVariants, ButtonTypes, ButtonVariants } from "../../../../design/constants";
+import {
+  BadgeVariants,
+  ButtonTypes,
+  ButtonVariants,
+} from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 import { ADMIN_LOG_SEVERITY } from "../constants";
 import type { IAdminLog } from "../types";
@@ -36,10 +40,21 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
         <div className="rounded-lg bg-base-200 p-3 space-y-2 text-caption">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Badge variant={log.severity === ADMIN_LOG_SEVERITY.FATAL || log.severity === ADMIN_LOG_SEVERITY.ERROR ? BadgeVariants.ERROR : BadgeVariants.WARNING}>
+              <Badge
+                variant={
+                  log.severity === ADMIN_LOG_SEVERITY.FATAL ||
+                  log.severity === ADMIN_LOG_SEVERITY.ERROR
+                    ? BadgeVariants.ERROR
+                    : BadgeVariants.WARNING
+                }
+              >
                 {log.severity.toUpperCase()}
               </Badge>
-              {log.platform && <Badge variant={BadgeVariants.SECONDARY}>{log.platform.toUpperCase()}</Badge>}
+              {log.platform && (
+                <Badge variant={BadgeVariants.SECONDARY}>
+                  {log.platform.toUpperCase()}
+                </Badge>
+              )}
               <span className="font-semibold text-xs opacity-70">
                 Occurrences: {log.occurrence_count}
               </span>
@@ -52,11 +67,25 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
           </div>
 
           <div className="font-mono text-xs opacity-75 pt-1">
-            <div><span className="font-semibold">URL:</span> {log.method || "GET"} {log.url || "N/A"}</div>
-            <div><span className="font-semibold">Client:</span> {[log.browser, log.os, log.device, log.app_version].filter(Boolean).join(" • ") || "N/A"}</div>
-            <div><span className="font-semibold">First Logged:</span> {formatAdminDate(log.created_at)}</div>
+            <div>
+              <span className="font-semibold">URL:</span> {log.method || "GET"}{" "}
+              {log.url || "N/A"}
+            </div>
+            <div>
+              <span className="font-semibold">Client:</span>{" "}
+              {[log.browser, log.os, log.device, log.app_version]
+                .filter(Boolean)
+                .join(" • ") || "N/A"}
+            </div>
+            <div>
+              <span className="font-semibold">First Logged:</span>{" "}
+              {formatAdminDate(log.created_at)}
+            </div>
             {log.last_occurred_at && (
-              <div><span className="font-semibold">Last Logged:</span> {formatAdminDate(log.last_occurred_at)}</div>
+              <div>
+                <span className="font-semibold">Last Logged:</span>{" "}
+                {formatAdminDate(log.last_occurred_at)}
+              </div>
             )}
           </div>
         </div>
@@ -99,7 +128,9 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
         <div className="mt-6 flex justify-between gap-3">
           <Button
             type={ButtonTypes.BUTTON}
-            variant={isResolved ? ButtonVariants.SECONDARY : ButtonVariants.PRIMARY}
+            variant={
+              isResolved ? ButtonVariants.SECONDARY : ButtonVariants.PRIMARY
+            }
             onClick={() => onToggleResolve(log.id, isResolved)}
             isLoading={isLoading}
           >

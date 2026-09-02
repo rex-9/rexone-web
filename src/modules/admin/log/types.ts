@@ -1,4 +1,4 @@
-// src/modules/admin/logs/types.ts
+// src/modules/admin/log/types.ts
 import type { TSortOrder } from "../../../hooks/useSort";
 import type {
   TAdminLogSeverity,

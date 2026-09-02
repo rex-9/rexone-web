@@ -1,4 +1,4 @@
-// src/modules/admin/logs/constants.ts
+// src/modules/admin/log/constants.ts
 
 import AppRoutes from "../../../AppRoutes";
 import { ADMIN_RESOURCES, IAdminPageMeta } from "../constants";
