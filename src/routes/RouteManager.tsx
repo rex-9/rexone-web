@@ -35,7 +35,7 @@ import {
   AdminAnalyticsPage,
   AdminAccessesPage,
   AdminFeedbackPage,
-  AdminLogsPage,
+  // AdminLogsPage,
   AdminChatMessageEditPage,
   AdminChatMessagesPage,
   AdminChatRoomEditPage,
@@ -365,7 +365,7 @@ const router = createBrowserRouter(
               element={<AdminFeedbackPage />}
             />
           </Route>
-          <Route
+          {/* <Route
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
@@ -377,7 +377,7 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.LOGS}
               element={<AdminLogsPage />}
             />
-          </Route>
+          </Route> */}
         </Route>
 
         {/* 404 */}

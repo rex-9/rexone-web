@@ -134,6 +134,9 @@ class AppRoutes {
       AI_TRANSLATE: AppRoutes.api("/ai/translate"), // POST
       AI_ANALYZE: AppRoutes.api("/ai/analyze"), // POST
 
+      // Speech
+      SPEECH_TTS: AppRoutes.api("/speech/tts"), // POST
+
       // Feedback
       FEEDBACKS: AppRoutes.api("/feedbacks"), // GET
 

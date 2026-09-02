@@ -75,6 +75,10 @@ import {
   ChartBarIcon,
   ShieldCheckIcon,
   ClockIcon,
+  MicrophoneIcon,
+  StopIcon,
+  SpeakerWaveIcon,
+  PlayIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -198,4 +202,8 @@ export const iconsLib = {
   chartBar: ChartBarIcon,
   shieldCheck: ShieldCheckIcon,
   clock: ClockIcon,
+  microphone: MicrophoneIcon,
+  stop: StopIcon,
+  speaker: SpeakerWaveIcon,
+  play: PlayIcon,
 } as const;

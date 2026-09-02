@@ -120,18 +120,6 @@ const navSections: IAdminNavSection[] = [
       },
     ],
   },
-  {
-    id: "observability",
-    label: ADMIN_NAV_SECTION_LABELS.OBSERVABILITY,
-    items: [
-      {
-        label: ADMIN_NAV_LABELS.LOGS,
-        to: AppRoutes.client.protected.admin.LOGS,
-        resource: ADMIN_RESOURCES.CLIENTS,
-        icon: iconsLib.document,
-      },
-    ],
-  },
 ];
 
 export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
