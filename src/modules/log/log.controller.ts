@@ -2,7 +2,18 @@ import AppConfig from "../../AppConfig";
 import AtomService from "../../services/atom.service";
 import LogService from "./log.service";
 import { ILogPayload, Platform } from "./types";
-import { BROWSER_NAMES, LOG_PLATFORMS, LOG_SEVERITIES, OS_NAMES } from "./constants";
+import {
+  BROWSER_NAMES,
+  DEVICE_FALLBACK_NAMES,
+  DEVICE_KEYWORD_LIST,
+  HTTP_METHODS,
+  LOG_PLATFORMS,
+  LOG_SEVERITIES,
+  LOG_TYPES,
+  OS_NAMES,
+  PLATFORM_UA_TOKENS,
+  USER_AGENT_TOKENS,
+} from "./constants";
 
 class LogController {
   /**
@@ -15,13 +26,17 @@ class LogController {
 
     // Chrome
     const chromeMatch = ua.match(/Chrome\/(\d+\.\d+)/);
-    if (chromeMatch && !ua.includes("Edg/") && !ua.includes("OPR/")) {
+    if (
+      chromeMatch &&
+      !ua.includes(USER_AGENT_TOKENS.EDGE) &&
+      !ua.includes(USER_AGENT_TOKENS.OPERA)
+    ) {
       return { name: BROWSER_NAMES.CHROME, version: chromeMatch[1] };
     }
 
     // Safari
     const safariMatch = ua.match(/Safari\/(\d+\.\d+)/);
-    if (safariMatch && !ua.includes("Chrome/")) {
+    if (safariMatch && !ua.includes(USER_AGENT_TOKENS.CHROME)) {
       return { name: BROWSER_NAMES.SAFARI, version: safariMatch[1] };
     }
 
@@ -79,7 +94,10 @@ class LogController {
     }
 
     // Linux (desktop, not Android)
-    if (ua.includes("Linux") && !ua.includes("Android")) {
+    if (
+      ua.includes(USER_AGENT_TOKENS.LINUX) &&
+      !ua.includes(USER_AGENT_TOKENS.ANDROID)
+    ) {
       return { name: OS_NAMES.LINUX, version: null };
     }
 
@@ -98,17 +116,8 @@ class LogController {
       const parts = modelMatch[1].split(";").map((p) => p.trim());
 
       // Look for specific device models
-      const deviceKeywords = [
-        "Pixel",
-        "Galaxy",
-        "iPhone",
-        "iPad",
-        "MacBook",
-        "ThinkPad",
-        "XPS",
-      ];
       for (const part of parts) {
-        for (const keyword of deviceKeywords) {
+        for (const keyword of DEVICE_KEYWORD_LIST) {
           if (part.includes(keyword)) {
             return part;
           }
@@ -121,7 +130,7 @@ class LogController {
       }
 
       // If we have Android and model info, combine them
-      if (parts.length >= 3 && parts[1]?.includes("Android")) {
+      if (parts.length >= 3 && parts[1]?.includes(USER_AGENT_TOKENS.ANDROID)) {
         return parts.slice(1, 3).join(" ") || null;
       }
 
@@ -129,12 +138,16 @@ class LogController {
     }
 
     // Fallback based on OS
-    if (ua.includes("Android")) return "Android Device";
-    if (ua.includes("iPhone")) return "iPhone";
-    if (ua.includes("iPad")) return "iPad";
-    if (ua.includes("Macintosh")) return "Mac";
-    if (ua.includes("Windows")) return "PC";
-    if (ua.includes("Linux")) return "Linux PC";
+    if (ua.includes(USER_AGENT_TOKENS.ANDROID))
+      return DEVICE_FALLBACK_NAMES.ANDROID;
+    if (ua.includes(USER_AGENT_TOKENS.IPHONE))
+      return DEVICE_FALLBACK_NAMES.IPHONE;
+    if (ua.includes(USER_AGENT_TOKENS.IPAD)) return DEVICE_FALLBACK_NAMES.IPAD;
+    if (ua.includes(USER_AGENT_TOKENS.MACINTOSH))
+      return DEVICE_FALLBACK_NAMES.MAC;
+    if (ua.includes(USER_AGENT_TOKENS.WINDOWS)) return DEVICE_FALLBACK_NAMES.PC;
+    if (ua.includes(USER_AGENT_TOKENS.LINUX))
+      return DEVICE_FALLBACK_NAMES.LINUX_PC;
 
     return null;
   }
@@ -144,16 +157,20 @@ class LogController {
    */
   private detectPlatform(userAgent: string): Platform | null {
     const ua = userAgent.toLowerCase();
-    if (ua.includes("iphone") || ua.includes("ipad") || ua.includes("ios")) {
+    if (
+      ua.includes(PLATFORM_UA_TOKENS.IPHONE) ||
+      ua.includes(PLATFORM_UA_TOKENS.IPAD) ||
+      ua.includes(PLATFORM_UA_TOKENS.IOS)
+    ) {
       return LOG_PLATFORMS.IOS;
     }
-    if (ua.includes("android")) {
+    if (ua.includes(PLATFORM_UA_TOKENS.ANDROID)) {
       return LOG_PLATFORMS.ANDROID;
     }
     if (
-      ua.includes("macintosh") ||
-      ua.includes("windows") ||
-      ua.includes("linux")
+      ua.includes(PLATFORM_UA_TOKENS.MACINTOSH) ||
+      ua.includes(PLATFORM_UA_TOKENS.WINDOWS) ||
+      ua.includes(PLATFORM_UA_TOKENS.LINUX)
     ) {
       return LOG_PLATFORMS.WEB;
     }
@@ -176,7 +193,8 @@ class LogController {
     const message = typeof error === "string" ? error : error.message;
     const stack = error instanceof Error ? error.stack?.split("\n") : [];
 
-    const userAgent = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const userAgent =
+      typeof navigator !== "undefined" ? navigator.userAgent : "";
     const browser = this.parseBrowser(userAgent);
     const os = this.parseOS(userAgent);
     const device = this.parseDevice(userAgent);
@@ -193,8 +211,11 @@ class LogController {
       ...options,
       platform: platform || undefined,
       environment: AppConfig.NODE_ENV || undefined,
-      url: typeof window !== "undefined" ? window.location.href : "http://localhost",
-      method: "GET",
+      url:
+        typeof window !== "undefined"
+          ? window.location.href
+          : "http://localhost",
+      method: HTTP_METHODS.GET,
       user_agent: userAgent,
     };
 
@@ -233,7 +254,7 @@ class LogController {
       storageKey: key,
       expectedValue: expected,
       actualValue: actual,
-      type: "storage_issue",
+      type: LOG_TYPES.STORAGE_ISSUE,
       ...context,
     });
   }

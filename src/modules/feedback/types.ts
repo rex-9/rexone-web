@@ -30,8 +30,8 @@ export interface IFeedback {
 export interface ICreateFeedbackRequest {
   content: string;
   rating?: number;
-  category?: string;
-  priority?: string;
+  category?: TFeedbackCategory;
+  priority?: TFeedbackPriority;
   app_version?: string;
   os?: string;
   device?: string;
@@ -50,9 +50,9 @@ export interface IUpdateAdminFeedbackRequest {
 export interface IFeedbackListParams extends Record<string, unknown> {
   page?: number;
   limit?: number;
-  status?: string;
-  category?: string;
-  priority?: string;
+  status?: TFeedbackStatus;
+  category?: TFeedbackCategory;
+  priority?: TFeedbackPriority;
   platform?: string;
   user_id?: string;
 }

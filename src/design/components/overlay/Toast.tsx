@@ -6,8 +6,10 @@
 import React, { useEffect } from "react";
 import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
+import { ToastTypes, type ToastType } from "../../constants";
 
-export type ToastType = "success" | "info" | "warning" | "error";
+export { ToastTypes };
+export type { ToastType };
 
 export interface IToastProps {
   message: string;
@@ -20,7 +22,7 @@ export interface IToastProps {
 
 export const Toast: React.FC<IToastProps> = ({
   message,
-  type = "success",
+  type = ToastTypes.SUCCESS,
   duration = 5000,
   onClose,
   icon,

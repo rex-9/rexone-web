@@ -6,13 +6,17 @@ import atoms from "../../../atoms";
 import { AppLocales, useTranslate } from "../../../locales";
 import { sounds } from "../../../assets";
 import { Dropdown, Button, TextInput } from "../../../design/components";
+import {
+  MARKER_TIME_UNITS,
+  type TMarkerTimeUnit,
+} from "../../../models";
 
 export const MarkerPopup: React.FC = () => {
   const { showToast } = useToast();
   const { addMarker, cleanMarkers } = useMarker();
   const t = useTranslate();
   const [interval, setInterval] = useState(1);
-  const [unit, setUnit] = useState<"minutes" | "hours">("minutes");
+  const [unit, setUnit] = useState<TMarkerTimeUnit>(MARKER_TIME_UNITS.MINUTES);
   const [startTime, setStartTime] = useAtom(atoms.startTimeAtom);
   const [endTime, setEndTime] = useAtom(atoms.endTimeAtom);
 
@@ -38,12 +42,18 @@ export const MarkerPopup: React.FC = () => {
   };
 
   const unitOptions = [
-    { value: "minutes", label: t(AppLocales.Anapana.Minutes) },
-    { value: "hours", label: t(AppLocales.Anapana.Hours) },
+    {
+      value: MARKER_TIME_UNITS.MINUTES,
+      label: t(AppLocales.Anapana.Minutes),
+    },
+    {
+      value: MARKER_TIME_UNITS.HOURS,
+      label: t(AppLocales.Anapana.Hours),
+    },
   ];
 
   const handleUnitChange = (value: string) => {
-    setUnit(value as "minutes" | "hours");
+    setUnit(value as TMarkerTimeUnit);
   };
 
   return (

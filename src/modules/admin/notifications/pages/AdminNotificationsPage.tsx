@@ -31,6 +31,7 @@ import {
   Tabs,
 } from "../../components";
 import {
+  Checkbox,
   FormContainer,
   SearchInput,
   StatusBadge,
@@ -39,6 +40,7 @@ import {
   BadgeVariants,
   ButtonSizes,
   ButtonTypes,
+  ButtonVariants,
 } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 
@@ -365,14 +367,19 @@ export const AdminNotificationsPage: React.FC = () => {
               {templates.map((template) => {
                 const isSelected = values.event === template.event;
                 return (
-                  <button
+                  <Button
                     key={template.event}
-                    type="button"
+                    type={ButtonTypes.BUTTON}
                     disabled={!template.admin_available}
                     onClick={() =>
                       updateValue(NOTIFICATION_FIELDS.EVENT, template.event)
                     }
-                    className={`flex flex-col text-left p-3.5 rounded-lg border transition-all ${
+                    variant={
+                      isSelected
+                        ? ButtonVariants.PRIMARY
+                        : ButtonVariants.SECONDARY
+                    }
+                    className={`h-auto flex flex-col items-start text-left p-3.5 rounded-lg border transition-all ${
                       isSelected
                         ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-sm"
                         : template.admin_available
@@ -397,7 +404,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           {template.unavailable_reason}
                         </span>
                       )}
-                  </button>
+                  </Button>
                 );
               })}
             </div>
@@ -520,14 +527,16 @@ export const AdminNotificationsPage: React.FC = () => {
                         className="inline-flex items-center gap-1.5 rounded-md bg-base-200 px-2.5 py-1 text-body-s font-medium text-base-content shadow-sm"
                       >
                         <span>{user.name || user.email || user.username}</span>
-                        <button
-                          type="button"
+                        <Button
+                          type={ButtonTypes.BUTTON}
+                          variant={ButtonVariants.TERTIARY}
+                          size={ButtonSizes.XS}
                           onClick={() => removeUser(user.id)}
-                          className="rounded-full p-0.5 text-base-content opacity-60 hover:opacity-100 hover:bg-base-300 transition-colors"
+                          className="h-5 w-5 min-h-0 p-0 rounded-full text-base-content opacity-60 hover:opacity-100"
                           title="Remove"
                         >
                           <iconsLib.close className="h-3.5 w-3.5" />
-                        </button>
+                        </Button>
                       </span>
                     ))}
                   </div>
@@ -546,11 +555,10 @@ export const AdminNotificationsPage: React.FC = () => {
                   {sortedRoles.map((role) => {
                     const isSelected = selectedRoleIdSet.has(role.id);
                     return (
-                      <button
+                      <div
                         key={role.id}
-                        type="button"
                         onClick={() => toggleRole(role.id)}
-                        className={`flex items-center justify-between p-3 rounded-lg border text-left transition-all ${
+                        className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer select-none transition-all ${
                           isSelected
                             ? "border-primary bg-primary/10 ring-1 ring-primary font-semibold text-base-content"
                             : "border-base-300 bg-base-100 hover:bg-base-200 text-base-content"
@@ -566,12 +574,11 @@ export const AdminNotificationsPage: React.FC = () => {
                             </div>
                           )}
                         </div>
-                        {isSelected ? (
-                          <iconsLib.checkr className="h-4 w-4 text-primary shrink-0" />
-                        ) : (
-                          <div className="h-4 w-4 rounded border border-base-300 shrink-0" />
-                        )}
-                      </button>
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={() => toggleRole(role.id)}
+                        />
+                      </div>
                     );
                   })}
                 </div>
@@ -595,11 +602,10 @@ export const AdminNotificationsPage: React.FC = () => {
               {NOTIFICATION_DELIVERY_FIELDS.map(({ field, label }) => {
                 const isChecked = Boolean(values[field]);
                 return (
-                  <button
+                  <div
                     key={field}
-                    type="button"
                     onClick={() => updateValue(field, !isChecked)}
-                    className={`flex items-center justify-between p-4 rounded-lg border text-left transition-all ${
+                    className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer select-none transition-all ${
                       isChecked
                         ? "border-primary bg-primary/10 ring-1 ring-primary"
                         : "border-base-300 bg-base-100 hover:bg-base-200"
@@ -617,12 +623,11 @@ export const AdminNotificationsPage: React.FC = () => {
                             : "Transactional email dispatch"}
                       </div>
                     </div>
-                    {isChecked ? (
-                      <iconsLib.checkr className="h-5 w-5 text-primary shrink-0" />
-                    ) : (
-                      <div className="h-5 w-5 rounded border border-base-300 shrink-0" />
-                    )}
-                  </button>
+                    <Checkbox
+                      checked={isChecked}
+                      onChange={() => updateValue(field, !isChecked)}
+                    />
+                  </div>
                 );
               })}
             </div>

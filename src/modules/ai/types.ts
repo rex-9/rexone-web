@@ -1,3 +1,5 @@
+import type { TAiChatRole, TAiMessageStatus } from "./constants";
+
 export interface IChatRequest {
   message: string;
   room_id?: string;
@@ -9,17 +11,17 @@ export interface IChatRequest {
 export interface IChatResponse {
   message: IMessage;
   room_id: string;
-  status: "queued";
+  status: TAiMessageStatus;
   job_id: string;
 }
 
 export interface IMessage {
   id: string;
-  role: "user" | "assistant";
+  role: TAiChatRole;
   content: string;
   room_id?: string;
   metadata?: {
-    status?: "queued" | "processing" | "retrying" | "completed" | "failed";
+    status?: TAiMessageStatus;
     system_prompt?: string;
     temperature?: number;
     max_tokens?: number;

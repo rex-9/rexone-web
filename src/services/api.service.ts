@@ -11,6 +11,7 @@ import {
   IJsonApiResource,
 } from "../models";
 import { DialogAuthSteps, DialogParams } from "../modules/auth";
+import { HTTP_METHODS } from "../modules/log";
 
 const PLATFORM_HEADER_VALUE = Platform.WEB;
 
@@ -30,7 +31,8 @@ export const getStoredToken = (): string | null => {
 };
 
 const handleUnauthorized = () => {
-  if (typeof window === "undefined" || typeof localStorage === "undefined") return;
+  if (typeof window === "undefined" || typeof localStorage === "undefined")
+    return;
 
   // Clear auth storage
   localStorage.removeItem(StorageKeys.TOKEN);
@@ -167,7 +169,7 @@ export const api = {
   ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
-      method: "GET",
+      method: HTTP_METHODS.GET,
       params,
     });
   },
@@ -179,7 +181,7 @@ export const api = {
   ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
-      method: "POST",
+      method: HTTP_METHODS.POST,
       data,
     });
   },
@@ -191,7 +193,7 @@ export const api = {
   ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
-      method: "PUT",
+      method: HTTP_METHODS.PUT,
       data,
     });
   },
@@ -202,7 +204,7 @@ export const api = {
   ): Promise<IApiResponse<IApiEnvelope<T>>> => {
     return apiRequest<T>(url, {
       ...config,
-      method: "DELETE",
+      method: HTTP_METHODS.DELETE,
     });
   },
 };

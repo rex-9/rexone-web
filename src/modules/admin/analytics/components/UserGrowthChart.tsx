@@ -1,4 +1,5 @@
 // src/modules/admin/analytics/components/UserGrowthChart.tsx
+
 import React from "react";
 import {
   Area,
@@ -11,15 +12,16 @@ import {
 } from "recharts";
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
+import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
 
 interface IUserGrowthChartProps {
   data: IAnalyticsTimeSeriesPoint[];
-  grain?: "hourly" | "daily" | "monthly";
+  grain?: TAnalyticsGrain;
 }
 
 export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
   data,
-  grain = "daily",
+  grain = ANALYTICS_GRAINS.DAILY,
 }) => {
   return (
     <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-5">
@@ -41,7 +43,13 @@ export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
             margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="userGrowthGradient" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient
+                id="userGrowthGradient"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
                 <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
               </linearGradient>
@@ -79,7 +87,8 @@ export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
                         {formattedLabel}
                       </p>
                       <p className="mt-1 text-body-m font-bold text-sky-400">
-                        {item.new_users} new user{item.new_users === 1 ? "" : "s"}
+                        {item.new_users} new user
+                        {item.new_users === 1 ? "" : "s"}
                       </p>
                     </div>
                   );

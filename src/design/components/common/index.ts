@@ -9,5 +9,5 @@ export { StatusBadge } from "./StatusBadge";
 export type { IStatusBadgeProps } from "./StatusBadge";
 export { PageHeader } from "./PageHeader";
 export type { IPageHeaderProps } from "./PageHeader";
-export { Tabs } from "./Tabs";
-export type { ITabItem, ITabsProps } from "./Tabs";
+export { Tabs, TabVariants } from "./Tabs";
+export type { ITabItem, ITabsProps, TabVariant } from "./Tabs";

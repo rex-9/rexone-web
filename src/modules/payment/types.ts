@@ -1,3 +1,10 @@
+import type {
+  TAccessStatus,
+  TProductCycle,
+  TSubscriptionStatus,
+  TTransactionStatus,
+} from "./constants";
+
 export interface IProduct {
   id: string;
   name: string;
@@ -5,7 +12,7 @@ export interface IProduct {
   price: string;
   price_unit_amount: number;
   currency: string;
-  cycle: string | null;
+  cycle: TProductCycle | string | null;
   period_label: string;
   recurring: boolean;
   active: boolean;
@@ -17,8 +24,8 @@ export interface ISubscription {
   stripe_subscription_id: string;
   stripe_customer_id: string;
 
-  status: string;
-  cycle: string;
+  status: TSubscriptionStatus;
+  cycle: TProductCycle | string;
 
   payment_method_id: string | null;
   payment_method_type: string | null;
@@ -66,7 +73,7 @@ export interface ITransaction {
   stripe_charge_id: string | null;
   stripe_customer_id: string;
 
-  status: string;
+  status: TTransactionStatus;
 
   payment_method_id: string | null;
   payment_method_type: string | null;
@@ -108,7 +115,7 @@ export interface ITransaction {
 
 export interface IAccess {
   id: string;
-  status: string;
+  status: TAccessStatus | string;
   granted_at: string | null;
   expires_at: string | null;
   revoked_at?: string | null;

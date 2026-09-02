@@ -12,15 +12,16 @@ import {
 } from "recharts";
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
+import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
 
 interface IChatActivityChartProps {
   data: IAnalyticsTimeSeriesPoint[];
-  grain?: "hourly" | "daily" | "monthly";
+  grain?: TAnalyticsGrain;
 }
 
 export const ChatActivityChart: React.FC<IChatActivityChartProps> = ({
   data,
-  grain = "daily",
+  grain = ANALYTICS_GRAINS.DAILY,
 }) => {
   return (
     <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-5">
