@@ -16,3 +16,6 @@ export const shadows = {
   "glass-card": `0 6px 30px ${colors.shadows.glassCard}`,
   "glass-hover": `0 8px 32px ${colors.shadows.glassHover}`,
 } as const;
+
+export type Shadows = typeof shadows;
+export type ShadowKey = keyof typeof shadows;

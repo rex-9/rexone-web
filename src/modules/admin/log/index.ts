@@ -1,4 +1,4 @@
-// src/modules/admin/logs/index.ts
+// src/modules/admin/log/index.ts
 
 export * from "./types";
 export * from "./constants";

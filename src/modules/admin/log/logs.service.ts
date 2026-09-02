@@ -1,4 +1,4 @@
-// src/modules/admin/logs/logs.service.ts
+// src/modules/admin/log/logs.service.ts
 import { api } from "../../../services/api.service";
 import AppRoutes from "../../../AppRoutes";
 import type {

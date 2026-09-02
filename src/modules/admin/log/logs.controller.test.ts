@@ -1,4 +1,4 @@
-// src/modules/admin/logs/logs.controller.test.ts
+// src/modules/admin/log/logs.controller.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import AdminLogsController from "./logs.controller";
 import AdminLogsService from "./logs.service";
@@ -49,7 +49,9 @@ describe("AdminLogsController", () => {
         },
       };
 
-      vi.mocked(AdminLogsService.getLogs).mockResolvedValue(mockResponse as never);
+      vi.mocked(AdminLogsService.getLogs).mockResolvedValue(
+        mockResponse as never,
+      );
 
       const result = await AdminLogsController.getLogs();
 

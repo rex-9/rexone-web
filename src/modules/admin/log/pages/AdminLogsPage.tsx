@@ -1,9 +1,14 @@
-// src/modules/admin/logs/pages/AdminLogsPage.tsx
+// src/modules/admin/log/pages/AdminLogsPage.tsx
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -67,7 +72,12 @@ export const AdminLogsPage: React.FC = () => {
   const [destroyTarget, setDestroyTarget] = useState<IAdminLog | null>(null);
 
   const updateFilters = useCallback(
-    (updates: { page?: number; resolution?: string; severity?: string; platform?: string }) => {
+    (updates: {
+      page?: number;
+      resolution?: string;
+      severity?: string;
+      platform?: string;
+    }) => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
@@ -76,7 +86,10 @@ export const AdminLogsPage: React.FC = () => {
             else next.delete("page");
           }
           if (updates.resolution !== undefined) {
-            if (updates.resolution && updates.resolution !== ADMIN_LOG_RESOLUTION.UNRESOLVED)
+            if (
+              updates.resolution &&
+              updates.resolution !== ADMIN_LOG_RESOLUTION.UNRESOLVED
+            )
               next.set("resolution", updates.resolution);
             else next.delete("resolution");
           }
@@ -107,8 +120,12 @@ export const AdminLogsPage: React.FC = () => {
       limit: ADMIN_PAGE_SIZE,
       severity: severityFilter || undefined,
       platform: platformFilter || undefined,
-      unresolved: resolutionFilter === ADMIN_LOG_RESOLUTION.UNRESOLVED ? "true" : undefined,
-      resolved: resolutionFilter === ADMIN_LOG_RESOLUTION.RESOLVED ? "true" : undefined,
+      unresolved:
+        resolutionFilter === ADMIN_LOG_RESOLUTION.UNRESOLVED
+          ? "true"
+          : undefined,
+      resolved:
+        resolutionFilter === ADMIN_LOG_RESOLUTION.RESOLVED ? "true" : undefined,
       sort_by: sortBy,
       sort_order: sortOrder,
     });
@@ -121,7 +138,16 @@ export const AdminLogsPage: React.FC = () => {
     }
 
     setLoading(false);
-  }, [can, page, resolutionFilter, severityFilter, platformFilter, setLoading, sortBy, sortOrder]);
+  }, [
+    can,
+    page,
+    resolutionFilter,
+    severityFilter,
+    platformFilter,
+    setLoading,
+    sortBy,
+    sortOrder,
+  ]);
 
   useEffect(() => {
     if (!permissionsLoading) {
@@ -129,7 +155,10 @@ export const AdminLogsPage: React.FC = () => {
     }
   }, [loadLogs, permissionsLoading]);
 
-  const handleToggleResolve = async (id: string, currentlyResolved: boolean) => {
+  const handleToggleResolve = async (
+    id: string,
+    currentlyResolved: boolean,
+  ) => {
     setLoading(true);
     const result = currentlyResolved
       ? await AdminLogsController.unresolveLog(id)
@@ -137,7 +166,11 @@ export const AdminLogsPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success(currentlyResolved ? "Log marked as unresolved" : "Log marked as resolved! 🎉");
+      toast.success(
+        currentlyResolved
+          ? "Log marked as unresolved"
+          : "Log marked as resolved! 🎉",
+      );
       setDetailTarget(null);
       void loadLogs();
     } else {
@@ -194,7 +227,8 @@ export const AdminLogsPage: React.FC = () => {
             {log.platform?.toUpperCase() || "WEB"}
           </div>
           <div className="text-caption text-base-content opacity-60 text-xs font-mono">
-            {log.environment || "production"} • {log.browser || log.device || ""}
+            {log.environment || "production"} •{" "}
+            {log.browser || log.device || ""}
           </div>
         </div>
       ),

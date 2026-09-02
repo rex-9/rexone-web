@@ -12,10 +12,18 @@ const ADMIN_ROLE_RESOURCE_PREFIXES: Record<AdminResource, readonly string[]> = {
   [ADMIN_RESOURCES.USERS]: ["user", "users"],
   [ADMIN_RESOURCES.ROLES]: ["role", "roles"],
   [ADMIN_RESOURCES.PRODUCTS]: ["product", "products"],
+  [ADMIN_RESOURCES.ACCESSES]: [
+    "access",
+    "accesses",
+    "entitlement",
+    "entitlements",
+  ],
   [ADMIN_RESOURCES.NOTIFICATIONS]: ["notification", "notifications"],
   [ADMIN_RESOURCES.ROOMS]: ["chat", "room", "rooms"],
   [ADMIN_RESOURCES.MESSAGES]: ["chat", "message", "messages"],
   [ADMIN_RESOURCES.ANALYTICS]: ["analytics"],
+  [ADMIN_RESOURCES.FEEDBACKS]: ["feedback", "feedbacks"],
+  [ADMIN_RESOURCES.CLIENTS]: ["client", "clients", "log", "logs"],
 };
 
 interface IUsePermissionsResult {
@@ -69,42 +77,37 @@ export const usePermissions = (): IUsePermissionsResult => {
     [currentUser?.is_super_admin, roleNames],
   );
 
-  const permissions = useMemo<IPermission[]>(
-    () => {
-      const scopedResources = getAdminRoleResourceScope(roleNames);
-      const permissionMap = !Array.isArray(currentUser?.permissions)
-        ? currentUser?.permissions ?? {}
-        : {};
+  const permissions = useMemo<IPermission[]>(() => {
+    const scopedResources = getAdminRoleResourceScope(roleNames);
+    const permissionMap = !Array.isArray(currentUser?.permissions)
+      ? (currentUser?.permissions ?? {})
+      : {};
 
-      return Object.entries(permissionMap).flatMap(
-        ([resource, actions]) => {
-          const adminResource = resource as AdminResource;
+    return Object.entries(permissionMap).flatMap(([resource, actions]) => {
+      const adminResource = resource as AdminResource;
 
-          if (scopedResources.has(adminResource)) {
-            return (actions ?? []).map((action: AdminAction) => ({
-              action,
-              resource: adminResource,
-            }));
-          }
+      if (scopedResources.has(adminResource)) {
+        return (actions ?? []).map((action: AdminAction) => ({
+          action,
+          resource: adminResource,
+        }));
+      }
 
-          if (
-            adminResource === ADMIN_RESOURCES.USERS &&
-            actions?.includes(ADMIN_ACTIONS.READ)
-          ) {
-            return [
-              {
-                action: ADMIN_ACTIONS.READ,
-                resource: adminResource,
-              },
-            ];
-          }
+      if (
+        adminResource === ADMIN_RESOURCES.USERS &&
+        actions?.includes(ADMIN_ACTIONS.READ)
+      ) {
+        return [
+          {
+            action: ADMIN_ACTIONS.READ,
+            resource: adminResource,
+          },
+        ];
+      }
 
-          return [];
-        },
-      );
-    },
-    [currentUser?.permissions, roleNames],
-  );
+      return [];
+    });
+  }, [currentUser?.permissions, roleNames]);
 
   const permissionKeys = useMemo(
     () =>
@@ -118,8 +121,7 @@ export const usePermissions = (): IUsePermissionsResult => {
 
   const can = useCallback(
     (action: AdminAction, resource: AdminResource) =>
-      isSuperAdmin ||
-      permissionKeys.has(`${action}:${resource}`),
+      isSuperAdmin || permissionKeys.has(`${action}:${resource}`),
     [isSuperAdmin, permissionKeys],
   );
 

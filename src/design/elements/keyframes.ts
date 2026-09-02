@@ -77,3 +77,7 @@ export const animations = {
   "neon-border-4": "btnAnim4 1s linear infinite 0.75s",
   "down-bounce": "bounce 1.2s alternate-reverse infinite ease-in-out",
 } as const;
+
+export type Keyframes = typeof keyframes;
+export type Animations = typeof animations;
+export type AnimationKey = keyof typeof animations;

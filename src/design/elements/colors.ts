@@ -86,3 +86,7 @@ export const colors = {
 } as const;
 
 export type Colors = typeof colors;
+export type BrandColorKey = "primary" | "primaryLight" | "primaryDark" | "secondary" | "accent";
+export type SemanticColorKey = keyof typeof colors.semantic;
+export type GlassTokenKey = keyof typeof colors.glass;
+export type EffectTokenKey = keyof typeof colors.effects;

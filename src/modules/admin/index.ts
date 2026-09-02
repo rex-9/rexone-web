@@ -9,6 +9,8 @@ import AdminAccessesController from "./accesses/accesses.controller";
 import AdminAccessesService from "./accesses/accesses.service";
 import AdminFeedbackController from "./feedback/feedback.controller";
 import AdminFeedbackService from "./feedback/feedback.service";
+import AdminLogsController from "./log/logs.controller";
+import AdminLogsService from "./log/logs.service";
 
 export * from "./analytics";
 export * from "./chat";
@@ -16,6 +18,7 @@ export * from "./notifications";
 export * from "./products";
 export * from "./accesses";
 export * from "./feedback";
+export * from "./log";
 export * from "./roles";
 export * from "./users";
 export * from "./components";

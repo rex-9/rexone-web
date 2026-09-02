@@ -1,4 +1,4 @@
-// src/modules/admin/logs/logs.controller.ts
+// src/modules/admin/log/logs.controller.ts
 import AdminLogsService from "./logs.service";
 import { parsePagyList, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
