@@ -3,7 +3,7 @@
 /**
  * Border Radius Tokens
  *
- * Soft & gentle radius system
+ * Soft & gentle radius system matching mobile radius tokens.
  */
 
 export const radius = {
@@ -13,3 +13,6 @@ export const radius = {
   lg: "16px",
   full: "999px",
 } as const;
+
+export type Radius = typeof radius;
+export type RadiusKey = keyof typeof radius;

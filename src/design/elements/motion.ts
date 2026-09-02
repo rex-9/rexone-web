@@ -23,3 +23,7 @@ export const motion = {
     spring: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
   },
 } as const;
+
+export type Motion = typeof motion;
+export type DurationKey = keyof typeof motion.duration;
+export type EasingKey = keyof typeof motion.easing;

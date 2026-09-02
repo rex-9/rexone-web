@@ -3,8 +3,9 @@
 /**
  * Rexone Design System - Typography Tokens
  *
- * UI: Inter / SF Pro (system)
- * Display: Cormorant Garamond
+ * Primary UI: Quicksand
+ * Display: Clip
+ * Handwritten: Storytime
  */
 
 export const font = {
@@ -36,3 +37,11 @@ export const font = {
     caption: { fontSize: "12px", lineHeight: "16px", fontWeight: 400 },
   },
 } as const;
+
+export const typography = font;
+
+export type Font = typeof font;
+export type TypographyTokens = typeof font;
+export type FontSizeKey = keyof typeof font.fontSize;
+export type FontWeightKey = keyof typeof font.fontWeight;
+export type FontFamilyKey = keyof typeof font.fontFamily;
