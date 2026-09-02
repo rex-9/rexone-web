@@ -3,8 +3,8 @@ import { NavLink } from "react-router-dom";
 import AppRoutes from "../../../AppRoutes";
 import { useAuth } from "../../../contexts";
 import { usePermissions } from "../../../hooks";
-import { ADMIN_ROLE_NAMES, hasAdminRole } from "../roles";
-import type { AdminResource } from "../roles";
+import { ADMIN_ROLE_NAMES, hasAdminRole } from "../role";
+import type { AdminResource } from "../role";
 import {
   ADMIN_ACTIONS,
   ADMIN_NAV_LABELS,

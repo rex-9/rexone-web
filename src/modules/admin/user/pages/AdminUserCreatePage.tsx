@@ -6,7 +6,7 @@ import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import UserController from "../user.controller";
 import { IAdminUserFormValues } from "../types";
-import { IAdminRole } from "../../roles/types";
+import { IAdminRole } from "../../role/types";
 import { AlertDialog } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 import { ADMIN_USER_PAGE_TITLES } from "../constants";

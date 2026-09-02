@@ -3,7 +3,7 @@ import { Button } from "../../../design/components/button";
 import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 import { iconsLib } from "../../../assets";
 import { ADMIN_ACTIONS } from "../constants";
-import type { AdminResource } from "../roles";
+import type { AdminResource } from "../role";
 import { AdminActionButton } from "./AdminActionButton";
 
 interface IAdminHeaderActionButtonProps {

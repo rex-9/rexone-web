@@ -19,7 +19,7 @@ import {
   isAdminRoleName,
   hasAdminRole,
   ADMIN_ROLE_NAMES,
-} from "../modules/admin/roles/constants";
+} from "../modules/admin/role/constants";
 import { ADMIN_RESOURCES } from "../modules/admin/constants";
 
 // =========================================================================

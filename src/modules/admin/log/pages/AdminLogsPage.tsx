@@ -24,7 +24,7 @@ import {
 } from "../../../../design";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminLog } from "../types";
-import AdminLogsController from "../logs.controller";
+import AdminLogsController from "../log.controller";
 import {
   AdminPagination,
   AdminState,

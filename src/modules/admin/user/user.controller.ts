@@ -11,7 +11,7 @@ import {
   IAdminUserFormValues,
   IAdminUserListParams,
 } from "./";
-import { IAdminRole } from "../roles";
+import { IAdminRole } from "../role";
 
 class UserController {
   async getUsers(params?: IAdminUserListParams): Promise<{

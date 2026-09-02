@@ -1,7 +1,7 @@
 import type {
   AdminRoleName,
   IUserPermissionMap,
-} from "../modules/admin/roles/types";
+} from "../modules/admin/role/types";
 
 export interface IUser {
   id: string;

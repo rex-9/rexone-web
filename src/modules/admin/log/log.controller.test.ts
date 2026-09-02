@@ -1,9 +1,8 @@
-// src/modules/admin/log/logs.controller.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import AdminLogsController from "./logs.controller";
-import AdminLogsService from "./logs.service";
+import AdminLogsController from "./log.controller";
+import AdminLogsService from "./log.service";
 
-vi.mock("./logs.service", () => ({
+vi.mock("./log.service", () => ({
   default: {
     getLogs: vi.fn(),
     getLog: vi.fn(),

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { IAdminRole } from "../../roles/types";
+import { IAdminRole } from "../../role/types";
 import {
   IAdminUser,
   IAdminUserFormValues,
@@ -23,35 +23,15 @@ const ADMIN_USER_FORM_LABELS = {
   ROLES: "Roles",
   SAVE_CHANGES: "Save changes",
   USERNAME: "Username",
-} as const;
+};
 
-interface IAdminUserFormProps {
+export interface IAdminUserFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
-  user?: IAdminUser | null;
+  user?: IAdminUser;
   roles: IAdminRole[];
-  onSubmit: (values: IAdminUserFormValues) => void;
+  onSubmit: (values: IAdminUserFormValues) => Promise<void>;
   onCancel: () => void;
 }
-
-const initialValues: IAdminUserFormValues = {
-  username: "",
-  name: "",
-  email: "",
-  role_ids: [],
-};
-
-const buildInitialValues = (
-  user?: IAdminUser | null,
-): IAdminUserFormValues => {
-  if (!user) return initialValues;
-
-  return {
-    username: user.username || "",
-    name: user.name || "",
-    email: user.email || "",
-    role_ids: user.role_ids || [],
-  };
-};
 
 export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   mode,
@@ -60,32 +40,30 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [values, setValues] = useState<IAdminUserFormValues>(() =>
-    buildInitialValues(user),
+  const initialRoleIds = useMemo(
+    () => user?.role_ids ?? [],
+    [user],
   );
 
-  const updateValue = (field: keyof IAdminUserFormValues, value: string) => {
-    setValues((current) => ({ ...current, [field]: value }));
-  };
+  const [username, setUsername] = useState(user?.username ?? "");
+  const [name, setName] = useState(user?.name ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
+  const [selectedRoleIds, setSelectedRoleIds] =
+    useState<string[]>(initialRoleIds);
 
-  const handleRolesChange = (roleIds: string[]) => {
-    setValues((current) => ({ ...current, role_ids: roleIds }));
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const payload: IAdminUserFormValues = {
-      username: values.username.trim(),
-      name: values.name.trim(),
-      email: values.email.trim(),
-      role_ids: values.role_ids || [],
+      username: username.trim(),
+      name: name.trim(),
+      email: email.trim(),
+      role_ids: selectedRoleIds,
     };
 
-    onSubmit(payload);
+    await onSubmit(payload);
   };
 
-  const selectedRoleIds = useMemo(() => values.role_ids || [], [values.role_ids]);
   const selectedRoleIdSet = useMemo(
     () => new Set(selectedRoleIds),
     [selectedRoleIds],
@@ -100,7 +78,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
 
       selectedRoles.forEach((role) => {
         Object.entries(role.permissions ?? {}).forEach(([resource, actions]) =>
-          (actions ?? []).forEach((action) => {
+          (Array.isArray(actions) ? actions : []).forEach((action: string) => {
             const key = `${resource}-${action}`;
             permissionsByKey.set(key, {
               id: key,
@@ -121,23 +99,23 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
       <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={ADMIN_USER_FORM_LABELS.USERNAME}
-          value={values.username}
+          value={username}
           required
-          onChange={(event) => updateValue("username", event.target.value)}
+          onChange={(event) => setUsername(event.target.value)}
         />
         <TextInput
           label={ADMIN_USER_FORM_LABELS.DISPLAY_NAME}
-          value={values.name}
+          value={name}
           required
-          onChange={(event) => updateValue("name", event.target.value)}
+          onChange={(event) => setName(event.target.value)}
         />
         <div className="md:col-span-2">
           <TextInput
             label={ADMIN_USER_FORM_LABELS.EMAIL}
             type="email"
-            value={values.email}
+            value={email}
             required
-            onChange={(event) => updateValue("email", event.target.value)}
+            onChange={(event) => setEmail(event.target.value)}
           />
         </div>
 
@@ -163,7 +141,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
                       const nextIds = isSelected
                         ? selectedRoleIds.filter((id) => id !== role.id)
                         : [...selectedRoleIds, role.id];
-                      handleRolesChange(nextIds);
+                      setSelectedRoleIds(nextIds);
                     }}
                     containerClassName="min-h-10 bg-base-200/40"
                   >

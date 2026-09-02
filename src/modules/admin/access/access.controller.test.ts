@@ -1,9 +1,8 @@
-// src/modules/admin/accesses/accesses.controller.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import AdminAccessesController from "./accesses.controller";
-import AdminAccessesService from "./accesses.service";
+import AdminAccessesController from "./access.controller";
+import AdminAccessesService from "./access.service";
 
-vi.mock("./accesses.service", () => ({
+vi.mock("./access.service", () => ({
   default: {
     getAccesses: vi.fn(),
     grantAccess: vi.fn(),

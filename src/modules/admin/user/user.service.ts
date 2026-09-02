@@ -6,7 +6,7 @@ import {
   IAdminUserFormValues,
   IAdminUserListParams,
 } from "./types";
-import { IAdminRole } from "../roles";
+import { IAdminRole } from "../role";
 
 export type AdminUserResponse =
   | IJsonApiResource<IAdminUser>

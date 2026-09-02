@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import UserController from "./user.controller";
 import UserService from "./user.service";
 import type { IAdminUserFormValues } from "./types";
-import type { IAdminRole } from "../roles";
+import type { IAdminRole } from "../role";
 
 vi.mock("./user.service", () => ({
   default: {

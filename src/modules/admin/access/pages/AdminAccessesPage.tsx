@@ -14,7 +14,7 @@ import {
   StatusBadge,
 } from "../../../../design/components";
 import type { IAdminAccess, IGrantAccessPayload } from "../types";
-import AdminAccessesController from "../accesses.controller";
+import AdminAccessesController from "../access.controller";
 import {
   AdminPagination,
   AdminState,

@@ -9,7 +9,7 @@ import {
   IAdminUser,
   IAdminUserFormValues,
 } from "../types";
-import { IAdminRole } from "../../roles/types";
+import { IAdminRole } from "../../role/types";
 import { AlertDialog,  AdminState } from "../../components";
 import { AdminUserForm } from "./AdminUserForm";
 import { ADMIN_USER_PAGE_TITLES } from "../constants";

@@ -1,5 +1,4 @@
-// src/modules/admin/accesses/accesses.controller.ts
-import AdminAccessesService from "./accesses.service";
+import AdminAccessService from "./access.service";
 import { parsePagyList, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type {
@@ -9,14 +8,14 @@ import type {
   IExtendAccessPayload,
 } from "./types";
 
-class AdminAccessesController {
+class AdminAccessController {
   async getAccesses(params?: IAdminAccessFilters): Promise<{
     success: boolean;
     accesses: IAdminAccess[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await AdminAccessesService.getAccesses(params);
+    const response = await AdminAccessService.getAccesses(params);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -37,7 +36,7 @@ class AdminAccessesController {
     accesses: IAdminAccess[];
     error?: string;
   }> {
-    const response = await AdminAccessesService.grantAccess(data);
+    const response = await AdminAccessService.grantAccess(data);
     const { status, data: body } = response.data || {};
 
     if (status?.success && Array.isArray(body)) {
@@ -62,7 +61,7 @@ class AdminAccessesController {
     access?: IAdminAccess;
     error?: string;
   }> {
-    const response = await AdminAccessesService.extendAccess(id, data);
+    const response = await AdminAccessService.extendAccess(id, data);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -79,7 +78,7 @@ class AdminAccessesController {
     success: boolean;
     error?: string;
   }> {
-    const response = await AdminAccessesService.revokeAccess(id);
+    const response = await AdminAccessService.revokeAccess(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -93,4 +92,4 @@ class AdminAccessesController {
   }
 }
 
-export default new AdminAccessesController();
+export default new AdminAccessController();

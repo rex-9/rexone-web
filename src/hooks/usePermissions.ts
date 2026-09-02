@@ -5,13 +5,13 @@ import {
   hasAdminRole,
   isAdminRoleName,
   ADMIN_ROLE_NAMES,
-} from "../modules/admin/roles/constants";
+} from "../modules/admin/role/constants";
 import type {
   AdminAction,
   AdminRoleName,
   AdminResource,
   IPermission,
-} from "../modules/admin/roles";
+} from "../modules/admin/role";
 
 const ADMIN_ROLE_RESOURCE_PREFIXES: Record<AdminResource, readonly string[]> = {
   [ADMIN_RESOURCES.USERS]: ["user", "users"],

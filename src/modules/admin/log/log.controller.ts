@@ -1,17 +1,16 @@
-// src/modules/admin/log/logs.controller.ts
-import AdminLogsService from "./logs.service";
+import AdminLogService from "./log.service";
 import { parsePagyList, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type { IAdminLog, IAdminLogFilters } from "./types";
 
-class AdminLogsController {
+class AdminLogController {
   async getLogs(params?: IAdminLogFilters): Promise<{
     success: boolean;
     logs: IAdminLog[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await AdminLogsService.getLogs(params);
+    const response = await AdminLogService.getLogs(params);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -32,7 +31,7 @@ class AdminLogsController {
     log?: IAdminLog;
     error?: string;
   }> {
-    const response = await AdminLogsService.getLog(id);
+    const response = await AdminLogService.getLog(id);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -50,7 +49,7 @@ class AdminLogsController {
     log?: IAdminLog;
     error?: string;
   }> {
-    const response = await AdminLogsService.resolveLog(id);
+    const response = await AdminLogService.resolveLog(id);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -68,7 +67,7 @@ class AdminLogsController {
     log?: IAdminLog;
     error?: string;
   }> {
-    const response = await AdminLogsService.unresolveLog(id);
+    const response = await AdminLogService.unresolveLog(id);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -85,7 +84,7 @@ class AdminLogsController {
     success: boolean;
     error?: string;
   }> {
-    const response = await AdminLogsService.discardLog(id);
+    const response = await AdminLogService.discardLog(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -102,7 +101,7 @@ class AdminLogsController {
     success: boolean;
     error?: string;
   }> {
-    const response = await AdminLogsService.undiscardLog(id);
+    const response = await AdminLogService.undiscardLog(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -119,7 +118,7 @@ class AdminLogsController {
     success: boolean;
     error?: string;
   }> {
-    const response = await AdminLogsService.deleteLog(id);
+    const response = await AdminLogService.deleteLog(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -133,4 +132,4 @@ class AdminLogsController {
   }
 }
 
-export default new AdminLogsController();
+export default new AdminLogController();

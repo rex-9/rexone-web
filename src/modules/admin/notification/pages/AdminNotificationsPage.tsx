@@ -6,9 +6,9 @@ import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { useTranslate } from "../../../../locales";
 import type { IUser } from "../../../../models";
-import UserController from "../../users/user.controller";
-import RoleController from "../../roles/role.controller";
-import type { IAdminRole } from "../../roles/types";
+import UserController from "../../user/user.controller";
+import RoleController from "../../role/role.controller";
+import type { IAdminRole } from "../../role/types";
 import NotificationController from "../notification.controller";
 import type {
   IAdminNotificationFormValues,

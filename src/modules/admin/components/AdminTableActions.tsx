@@ -1,7 +1,5 @@
-// src/modules/admin/components/AdminTableActions.tsx
-
 import React from "react";
-import type { AdminAction, AdminResource } from "../roles";
+import type { AdminAction, AdminResource } from "../role";
 import { cn } from "../../../design/helpers";
 import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 import {
