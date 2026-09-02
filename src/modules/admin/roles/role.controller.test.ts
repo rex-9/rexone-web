@@ -12,6 +12,7 @@ vi.mock("./role.service", () => ({
     createRole: vi.fn(),
     updateRole: vi.fn(),
     discardRole: vi.fn(),
+    undiscardRole: vi.fn(),
   },
 }));
 
@@ -195,6 +196,26 @@ describe("RoleController", () => {
       const result = await RoleController.discardRole("r2");
 
       expect(RoleService.discardRole).toHaveBeenCalledWith("r2");
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("undiscardRole", () => {
+    it("returns success when role is restored", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Role restored" },
+          data: { role: { id: "r2", name: "Support Lead" } },
+        },
+      };
+
+      vi.mocked(RoleService.undiscardRole).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await RoleController.undiscardRole("r2");
+
+      expect(RoleService.undiscardRole).toHaveBeenCalledWith("r2");
       expect(result.success).toBe(true);
     });
   });

@@ -6,8 +6,10 @@ export interface IVideoAsset {
   title?: string;
 }
 
-export interface IVideoProps
-  extends Omit<React.VideoHTMLAttributes<HTMLVideoElement>, "src"> {
+export interface IVideoProps extends Omit<
+  React.VideoHTMLAttributes<HTMLVideoElement>,
+  "src"
+> {
   asset?: IVideoAsset;
   src?: string;
   alt?: string;
@@ -51,7 +53,5 @@ export const Video: React.FC<IVideoProps> = ({
     </video>
   );
 };
-
-export const VideoPlayer = Video;
 
 export default Video;

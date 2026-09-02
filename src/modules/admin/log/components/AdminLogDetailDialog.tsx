@@ -1,6 +1,6 @@
 // src/modules/admin/log/components/AdminLogDetailDialog.tsx
 import React from "react";
-import { Dialog, Button, Badge } from "../../../../design/components";
+import { Dialog, Button, StatusBadge } from "../../../../design/components";
 import {
   BadgeVariants,
   ButtonTypes,
@@ -27,43 +27,38 @@ export const AdminLogDetailDialog: React.FC<IAdminLogDetailDialogProps> = ({
 }) => {
   if (!isOpen || !log) return null;
 
-  const isResolved = !!log.resolved_at;
+  const isResolved = Boolean(log.resolved_at);
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Client Error Telemetry Detail"
-    >
+    <Dialog isOpen={isOpen} onClose={onClose} title="Client Error Telemetry">
       <div className="space-y-4">
-        {/* Header Summary */}
+        {/* Severity, Platform & State header */}
         <div className="rounded-lg bg-base-200 p-3 space-y-2 text-caption">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Badge
+              <StatusBadge
+                status={log.severity}
                 variant={
                   log.severity === ADMIN_LOG_SEVERITY.FATAL ||
                   log.severity === ADMIN_LOG_SEVERITY.ERROR
                     ? BadgeVariants.ERROR
                     : BadgeVariants.WARNING
                 }
-              >
-                {log.severity.toUpperCase()}
-              </Badge>
+              />
               {log.platform && (
-                <Badge variant={BadgeVariants.SECONDARY}>
-                  {log.platform.toUpperCase()}
-                </Badge>
+                <StatusBadge
+                  status={log.platform}
+                  variant={BadgeVariants.SECONDARY}
+                />
               )}
               <span className="font-semibold text-xs opacity-70">
                 Occurrences: {log.occurrence_count}
               </span>
             </div>
-            {isResolved ? (
-              <Badge variant={BadgeVariants.SUCCESS}>Resolved</Badge>
-            ) : (
-              <Badge variant={BadgeVariants.WARNING}>Unresolved</Badge>
-            )}
+            <StatusBadge
+              status={isResolved ? "resolved" : "unresolved"}
+              variant={isResolved ? BadgeVariants.SUCCESS : BadgeVariants.WARNING}
+            />
           </div>
 
           <div className="font-mono text-xs opacity-75 pt-1">

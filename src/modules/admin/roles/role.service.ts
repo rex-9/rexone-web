@@ -60,8 +60,16 @@ class RoleService {
   }
 
   async discardRole(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DETAIL, id),
+    return api.post<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_DISCARD, id),
+    );
+  }
+
+  async undiscardRole(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<AdminRoleResponse>>> {
+    return api.post<AdminRoleResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.IAM_ROLE_UNDISCARD, id),
     );
   }
 }

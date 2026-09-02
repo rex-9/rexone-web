@@ -1,8 +1,12 @@
-import { ANALYTICS_PERIODS, TAnalyticsPeriod } from "../../constants";
+import {
+  ANALYTICS_GRAINS,
+  ANALYTICS_PERIODS,
+  TAnalyticsPeriod,
+} from "../../constants";
 
 export interface IUtcDateRange {
   startDate: string; // ISO 8601 UTC
-  endDate: string;   // ISO 8601 UTC
+  endDate: string; // ISO 8601 UTC
 }
 
 /**
@@ -111,10 +115,10 @@ export const formatUtcToLocalLabel = (
     const d = new Date(utcIsoString);
     if (isNaN(d.getTime())) return utcIsoString;
 
-    if (grain === "hourly") {
+    if (grain === ANALYTICS_GRAINS.HOURLY) {
       return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     }
-    if (grain === "monthly") {
+    if (grain === ANALYTICS_GRAINS.MONTHLY) {
       return d.toLocaleDateString([], { month: "short", year: "numeric" });
     }
     // daily

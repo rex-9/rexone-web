@@ -35,6 +35,7 @@ export interface IAdminRoleListParams {
   limit?: number;
   sort_by?: string;
   sort_order?: TSortOrder;
+  discarded?: boolean | string;
 }
 
 export interface IAdminRole {

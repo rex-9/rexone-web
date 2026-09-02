@@ -5,10 +5,8 @@ import { AppLocales, useTranslate } from "../../../locales";
 import { iconsLib } from "../../../assets";
 import AiController from "../ai.controller";
 import { AI_SOCKET_EVENTS, getMessageAudioUrl, IMessage } from "..";
-import {
-  SPEECH_LISTEN_RESULTS,
-  useLiveSpeech,
-} from "../../speech";
+import { SPEECH_LISTEN_RESULTS, useLiveSpeech } from "../../speech";
+import { ADMIN_CHAT_ROLES } from "../../admin";
 
 export const AiPage: React.FC = () => {
   const t = useTranslate();
@@ -160,9 +158,7 @@ export const AiPage: React.FC = () => {
       return true;
     }
 
-    return Boolean(
-      activeTtsMessageId && activeTtsMessageId !== messageId,
-    );
+    return Boolean(activeTtsMessageId && activeTtsMessageId !== messageId);
   };
 
   const handleTtsTap = async (message: IMessage) => {
@@ -335,12 +331,14 @@ export const AiPage: React.FC = () => {
             <div
               key={message.id}
               className={`flex ${
-                message.role === "user" ? "justify-end" : "justify-start"
+                message.role === ADMIN_CHAT_ROLES.USER
+                  ? "justify-end"
+                  : "justify-start"
               }`}
             >
               <div
                 className={`max-w-[80%] rounded-md p-3 ${
-                  message.role === "user"
+                  message.role === ADMIN_CHAT_ROLES.USER
                     ? "bg-primary text-primary-content"
                     : "bg-base-200"
                 }`}
@@ -479,7 +477,6 @@ export const AiPage: React.FC = () => {
         confirmLabel={t(AppLocales.Ai.OpenSettings)}
         cancelLabel={t(AppLocales.Common.Cancel)}
         isDestructive={false}
-
       />
     </>
   );

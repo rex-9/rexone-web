@@ -23,9 +23,23 @@ import {
 } from "../constants";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import { ADMIN_NOTIFICATION_PAGE_TITLES } from "../constants";
-import { AlertDialog, AdminState, Button, PageHeader, Tabs } from "../../components";
-import { Badge, FormContainer, SearchInput } from "../../../../design/components";
-import { BadgeVariants, ButtonSizes, ButtonTypes } from "../../../../design/constants";
+import {
+  AlertDialog,
+  AdminState,
+  Button,
+  PageHeader,
+  Tabs,
+} from "../../components";
+import {
+  FormContainer,
+  SearchInput,
+  StatusBadge,
+} from "../../../../design/components";
+import {
+  BadgeVariants,
+  ButtonSizes,
+  ButtonTypes,
+} from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 
 const initialValues: IAdminNotificationFormValues = {
@@ -88,7 +102,9 @@ export const AdminNotificationsPage: React.FC = () => {
 
       if (templateRes.success) {
         setTemplates(templateRes.templates);
-        const firstAvailable = templateRes.templates.find((t) => t.admin_available);
+        const firstAvailable = templateRes.templates.find(
+          (t) => t.admin_available,
+        );
         if (firstAvailable) {
           setValues((v) => ({ ...v, event: firstAvailable.event }));
         }
@@ -295,7 +311,9 @@ export const AdminNotificationsPage: React.FC = () => {
     setLoading(false);
 
     if (result.success) {
-      toast.success(result.message || "Notification dispatched successfully! 🚀");
+      toast.success(
+        result.message || "Notification dispatched successfully! 🚀",
+      );
       setValues(initialValues);
     } else {
       setAlertMessage(result.error || "Failed to dispatch notification");
@@ -336,9 +354,10 @@ export const AdminNotificationsPage: React.FC = () => {
                 </p>
               </div>
               {selectedTemplate && (
-                <Badge variant={BadgeVariants.PRIMARY}>
-                  {selectedTemplate.category.toUpperCase()}
-                </Badge>
+                <StatusBadge
+                  status={selectedTemplate.category}
+                  variant={BadgeVariants.PRIMARY}
+                />
               )}
             </div>
 
@@ -591,9 +610,9 @@ export const AdminNotificationsPage: React.FC = () => {
                         {t(label)}
                       </div>
                       <div className="text-caption text-base-content opacity-60 text-xs">
-                        {field === "send_socket"
+                        {field === NOTIFICATION_FIELDS.SEND_SOCKET
                           ? "Real-time ActionCable banner"
-                          : field === "send_push"
+                          : field === NOTIFICATION_FIELDS.SEND_PUSH
                             ? "Mobile & Web push alert"
                             : "Transactional email dispatch"}
                       </div>
@@ -615,9 +634,7 @@ export const AdminNotificationsPage: React.FC = () => {
               type={ButtonTypes.SUBMIT}
               size={ButtonSizes.LG}
               isLoading={isLoading}
-              disabled={
-                !canCreateNotifications || isLoading || !values.event
-              }
+              disabled={!canCreateNotifications || isLoading || !values.event}
               className="px-8"
             >
               <iconsLib.bell className="mr-2 h-5 w-5" />

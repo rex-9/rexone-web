@@ -19,6 +19,7 @@ export const ADMIN_ROLE_PAGE_TITLES = {
   CREATE: "Create Role",
   EDIT: "Edit Role",
   LIST: "Roles",
+  RECYCLE_BIN: "Recycle Bin | Roles",
 } as const;
 
 export const ADMIN_ROLE_TABLE_HEADERS = {

@@ -3,7 +3,7 @@ import {
   Dialog,
   TextArea,
   Button,
-  Badge,
+  StatusBadge,
   Dropdown,
   FormContainer,
 } from "../../../../design/components";
@@ -84,9 +84,15 @@ export const AdminFeedbackTriageDialog: React.FC<
           </div>
 
           <div className="flex flex-wrap gap-2 pt-1">
-            <Badge variant={BadgeVariants.SECONDARY}>{feedback.category}</Badge>
+            <StatusBadge
+              status={feedback.category}
+              variant={BadgeVariants.SECONDARY}
+            />
             {feedback.platform && (
-              <Badge variant={BadgeVariants.INFO}>{feedback.platform}</Badge>
+              <StatusBadge
+                status={feedback.platform}
+                variant={BadgeVariants.INFO}
+              />
             )}
             {feedback.rating && (
               <span className="text-warning font-semibold">

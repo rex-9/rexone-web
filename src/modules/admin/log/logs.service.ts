@@ -42,6 +42,22 @@ class AdminLogsService {
     );
   }
 
+  async discardLog(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<Record<string, unknown>>>> {
+    return api.post<Record<string, unknown>>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.LOG_DISCARD, id),
+    );
+  }
+
+  async undiscardLog(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminLog>>>> {
+    return api.post<IJsonApiResource<IAdminLog>>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.LOG_UNDISCARD, id),
+    );
+  }
+
   async deleteLog(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<Record<string, unknown>>>> {

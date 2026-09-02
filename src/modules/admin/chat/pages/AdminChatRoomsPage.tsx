@@ -17,6 +17,7 @@ import {
   AdminTable,
   ConfirmDialog,
   PageHeader,
+  Tabs,
   type IAdminTableColumn,
 } from "../../components";
 import { formatAdminDate, truncateAdminText } from "../../helpers/admin.helper";
@@ -26,6 +27,8 @@ import {
   ADMIN_ACTIONS,
   ADMIN_COMMON_LABELS,
   ADMIN_TABLE_HEADERS,
+  ADMIN_VIEW_MODES,
+  type TAdminViewMode,
 } from "../../constants";
 import {
   ADMIN_CHAT_PAGE_TITLES,
@@ -34,8 +37,18 @@ import {
   ADMIN_CHAT_TABLE_HEADERS,
 } from "../constants";
 
-export const AdminChatRoomsPage: React.FC = () => {
-  useDocumentTitle(ADMIN_CHAT_PAGE_TITLES.ROOMS);
+interface IAdminChatRoomsPageProps {
+  view?: TAdminViewMode;
+}
+
+export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
+  view = ADMIN_VIEW_MODES.ACTIVE,
+}) => {
+  useDocumentTitle(
+    view === ADMIN_VIEW_MODES.ACTIVE
+      ? ADMIN_CHAT_PAGE_TITLES.ROOMS
+      : ADMIN_CHAT_PAGE_TITLES.ROOMS_RECYCLE_BIN,
+  );
 
   const toast = useToast();
   const navigate = useNavigate();
@@ -43,7 +56,10 @@ export const AdminChatRoomsPage: React.FC = () => {
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const { sortBy, sortOrder, handleSort } = useSort({
-    defaultSortBy: ADMIN_CHAT_ROOM_SORT_KEYS.CREATED_AT,
+    defaultSortBy:
+      view === ADMIN_VIEW_MODES.ACTIVE
+        ? ADMIN_CHAT_ROOM_SORT_KEYS.CREATED_AT
+        : ADMIN_CHAT_ROOM_SORT_KEYS.DISCARDED_AT,
     defaultSortOrder: SORT_ORDERS.DESC,
   });
 
@@ -53,6 +69,7 @@ export const AdminChatRoomsPage: React.FC = () => {
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
   const [discardTarget, setDiscardTarget] = useState<IAdminChatRoom | null>(null);
+  const [destroyTarget, setDestroyTarget] = useState<IAdminChatRoom | null>(null);
 
   const updateFilters = useCallback(
     (updates: { page?: number }) => {
@@ -82,6 +99,7 @@ export const AdminChatRoomsPage: React.FC = () => {
       limit: ADMIN_PAGE_SIZE,
       sort_by: sortBy,
       sort_order: sortOrder,
+      discarded: view === ADMIN_VIEW_MODES.DISCARDED ? "true" : undefined,
     });
 
     if (result.success) {
@@ -91,11 +109,24 @@ export const AdminChatRoomsPage: React.FC = () => {
       setError(result.error || "Failed to load chat rooms");
     }
     setLoading(false);
-  }, [can, page, setLoading, sortBy, sortOrder]);
+  }, [can, page, setLoading, sortBy, sortOrder, view]);
 
   useEffect(() => {
     void loadRooms();
   }, [loadRooms]);
+
+  const handleUndiscard = async (room: IAdminChatRoom) => {
+    setLoading(true);
+    const result = await ChatController.undiscardRoom(room.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success("Chat room restored");
+      void loadRooms();
+    } else {
+      toast.error(result.error || "Failed to restore chat room");
+    }
+  };
 
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
     () => [
@@ -139,27 +170,40 @@ export const AdminChatRoomsPage: React.FC = () => {
         render: (room) => (
           <AdminTableActions
             resource={ADMIN_RESOURCES.ROOMS}
-            actions={[
-              {
-                type: ADMIN_ACTIONS.EDIT,
-                onClick: () =>
-                  navigate(
-                    AppRoutes.withId(
-                      AppRoutes.client.protected.admin.CHAT_ROOM_EDIT,
-                      room.id,
-                    ),
-                  ),
-              },
-              {
-                type: ADMIN_ACTIONS.DISCARD,
-                onClick: () => setDiscardTarget(room),
-              },
-            ]}
+            actions={
+              view === ADMIN_VIEW_MODES.ACTIVE
+                ? [
+                    {
+                      type: ADMIN_ACTIONS.EDIT,
+                      onClick: () =>
+                        navigate(
+                          AppRoutes.withId(
+                            AppRoutes.client.protected.admin.CHAT_ROOM_EDIT,
+                            room.id,
+                          ),
+                        ),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.DISCARD,
+                      onClick: () => setDiscardTarget(room),
+                    },
+                  ]
+                : [
+                    {
+                      type: ADMIN_ACTIONS.UNDISCARD,
+                      onClick: () => void handleUndiscard(room),
+                    },
+                    {
+                      type: ADMIN_ACTIONS.DESTROY,
+                      onClick: () => setDestroyTarget(room),
+                    },
+                  ]
+            }
           />
         ),
       },
     ],
-    [navigate],
+    [navigate, toast, view],
   );
 
   const handleDiscard = async () => {
@@ -179,12 +223,60 @@ export const AdminChatRoomsPage: React.FC = () => {
     }
   };
 
+  const handleDestroy = async () => {
+    if (!destroyTarget) return;
+
+    setLoading(true);
+    const result = await ChatController.deleteRoom(destroyTarget.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success("Chat room permanently destroyed");
+      setDestroyTarget(null);
+      void loadRooms();
+    } else {
+      toast.error(result.error || "Failed to destroy room");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <PageHeader
         title="Chat Rooms"
         description="Moderate chat rooms, inspect discussion threads, and manage community channels."
-      />
+      >
+        <Tabs
+          value={view}
+          onChange={(tab) => {
+            navigate(
+              tab === ADMIN_VIEW_MODES.ACTIVE
+                ? AppRoutes.client.protected.admin.CHAT_ROOMS
+                : AppRoutes.client.protected.admin.CHAT_ROOMS_RECYCLE_BIN,
+            );
+            updateFilters({ page: 1 });
+          }}
+          items={[
+            {
+              value: ADMIN_VIEW_MODES.ACTIVE,
+              label: "Active Rooms",
+              icon: iconsLib.chatBubbleLeftRight,
+              count:
+                view === ADMIN_VIEW_MODES.ACTIVE
+                  ? pagination?.total_count
+                  : undefined,
+            },
+            {
+              value: ADMIN_VIEW_MODES.DISCARDED,
+              label: "Recycle Bin",
+              icon: iconsLib.trash,
+              count:
+                view === ADMIN_VIEW_MODES.DISCARDED
+                  ? pagination?.total_count
+                  : undefined,
+            },
+          ]}
+        />
+      </PageHeader>
 
       {/* Table & States */}
       {error ? (
@@ -195,9 +287,21 @@ export const AdminChatRoomsPage: React.FC = () => {
         />
       ) : !isLoading && rooms.length === 0 ? (
         <AdminState
-          icon={iconsLib.chatBubbleLeftRight}
-          title="No chat rooms yet"
-          message="Chat rooms will appear here when users start conversations."
+          icon={
+            view === ADMIN_VIEW_MODES.ACTIVE
+              ? iconsLib.chatBubbleLeftRight
+              : iconsLib.trash
+          }
+          title={
+            view === ADMIN_VIEW_MODES.ACTIVE
+              ? "No chat rooms yet"
+              : "Recycle bin is empty"
+          }
+          message={
+            view === ADMIN_VIEW_MODES.ACTIVE
+              ? "Chat rooms will appear here when users start conversations."
+              : "Discarded chat rooms will appear here."
+          }
         />
       ) : (
         <>
@@ -225,6 +329,17 @@ export const AdminChatRoomsPage: React.FC = () => {
         isLoading={isLoading}
         onClose={() => setDiscardTarget(null)}
         onConfirm={handleDiscard}
+      />
+
+      <ConfirmDialog
+        isOpen={Boolean(destroyTarget)}
+        title="Destroy Chat Room"
+        message={`Are you sure you want to permanently destroy "${destroyTarget?.title || "this chat room"}"? This action cannot be undone.`}
+        confirmLabel={ADMIN_COMMON_LABELS.DESTROY}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setDestroyTarget(null)}
+        onConfirm={handleDestroy}
       />
     </div>
   );

@@ -43,6 +43,7 @@ export interface IAdminLogFilters {
   unresolved?: boolean | string;
   resolved?: boolean | string;
   storage_issues?: boolean | string;
+  discarded?: boolean | string;
   sort_by?: string;
   sort_order?: TSortOrder;
 }

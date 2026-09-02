@@ -1,6 +1,11 @@
 import { useCallback, useMemo } from "react";
 import { useAuth } from "../contexts";
-import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../modules/admin/constants";
+import { ADMIN_RESOURCES } from "../modules/admin/constants";
+import {
+  hasAdminRole,
+  isAdminRoleName,
+  ADMIN_ROLE_NAMES,
+} from "../modules/admin/roles/constants";
 import type {
   AdminAction,
   AdminRoleName,
@@ -40,9 +45,12 @@ export const getAdminRoleResourceScope = (
   const scopedResources = new Set<AdminResource>();
 
   roleNames
-    ?.filter((roleName) => roleName !== "user")
+    ?.filter((roleName) => isAdminRoleName(roleName))
     .forEach((roleName) => {
-      if (roleName === "admin") {
+      if (
+        roleName === ADMIN_ROLE_NAMES.ADMIN ||
+        roleName === ADMIN_ROLE_NAMES.SUPER_ADMIN
+      ) {
         Object.values(ADMIN_RESOURCES).forEach((resource) =>
           scopedResources.add(resource),
         );
@@ -72,12 +80,18 @@ export const usePermissions = (): IUsePermissionsResult => {
   const isSuperAdmin = useMemo(
     () =>
       Boolean(
-        currentUser?.is_super_admin || roleNames?.includes("super_admin"),
+        currentUser?.is_super_admin ||
+          roleNames?.includes(ADMIN_ROLE_NAMES.SUPER_ADMIN),
       ),
     [currentUser?.is_super_admin, roleNames],
   );
 
   const permissions = useMemo<IPermission[]>(() => {
+    // Non-admin roles (user, etc.) NEVER grant access to admin capabilities
+    if (!hasAdminRole(roleNames)) {
+      return [];
+    }
+
     const scopedResources = getAdminRoleResourceScope(roleNames);
     const permissionMap = !Array.isArray(currentUser?.permissions)
       ? (currentUser?.permissions ?? {})
@@ -86,23 +100,12 @@ export const usePermissions = (): IUsePermissionsResult => {
     return Object.entries(permissionMap).flatMap(([resource, actions]) => {
       const adminResource = resource as AdminResource;
 
+      // Filter strictly: only accept permissions for resources covered by the user's admin roles
       if (scopedResources.has(adminResource)) {
         return (actions ?? []).map((action: AdminAction) => ({
           action,
           resource: adminResource,
         }));
-      }
-
-      if (
-        adminResource === ADMIN_RESOURCES.USERS &&
-        actions?.includes(ADMIN_ACTIONS.READ)
-      ) {
-        return [
-          {
-            action: ADMIN_ACTIONS.READ,
-            resource: adminResource,
-          },
-        ];
       }
 
       return [];
@@ -120,9 +123,12 @@ export const usePermissions = (): IUsePermissionsResult => {
   );
 
   const can = useCallback(
-    (action: AdminAction, resource: AdminResource) =>
-      isSuperAdmin || permissionKeys.has(`${action}:${resource}`),
-    [isSuperAdmin, permissionKeys],
+    (action: AdminAction, resource: AdminResource) => {
+      if (!hasAdminRole(roleNames)) return false;
+      if (isSuperAdmin) return true;
+      return permissionKeys.has(`${action}:${resource}`);
+    },
+    [isSuperAdmin, permissionKeys, roleNames],
   );
 
   const refresh = useCallback(async () => undefined, []);

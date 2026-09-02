@@ -5,10 +5,20 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions ,  useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
-import { Button, Badge, SearchInput, getRoleBadgeVariant } from "../../../../design";
+import {
+  Button,
+  Badge,
+  SearchInput,
+  getRoleBadgeVariant,
+} from "../../../../design";
 import UserController from "../user.controller";
 import type { IAdminUser } from "../types";
 import {
@@ -54,7 +64,11 @@ const renderUserRoles = (user: IAdminUser) => {
   return (
     <div className="flex flex-wrap items-center gap-1">
       {roles.map((role) => (
-        <Badge key={role} size={BadgeSizes.XS} variant={getRoleBadgeVariant(role)}>
+        <Badge
+          key={role}
+          size={BadgeSizes.XS}
+          variant={getRoleBadgeVariant(role)}
+        >
           {role}
         </Badge>
       ))}
@@ -147,7 +161,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     setError("");
 
     const result =
-      view === "active"
+      view === ADMIN_VIEW_MODES.ACTIVE
         ? await UserController.getUsers({
             page,
             limit: ADMIN_PAGE_SIZE,
@@ -305,7 +319,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   };
 
   const lifecycleDialog =
-    lifecycleAction === "discard"
+    lifecycleAction === ADMIN_ACTIONS.DISCARD
       ? {
           title: "Discard User",
           message: `Move ${actionTarget?.email || "this user"} to the recycle bin? You can restore this account later.`,
@@ -324,9 +338,9 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
   return (
     <div className="space-y-6">
       <PageHeader
-        title={view === "active" ? "Users" : "User Recycle Bin"}
+        title={view === ADMIN_VIEW_MODES.ACTIVE ? "Users" : "User Recycle Bin"}
         description={
-          view === "active"
+          view === ADMIN_VIEW_MODES.ACTIVE
             ? "Manage customer accounts, assign IAM roles, and oversee account access."
             : "Review and restore discarded user accounts."
         }
@@ -422,7 +436,3 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
     </div>
   );
 };
-
-export const AdminDiscardedUsersPage: React.FC = () => (
-  <AdminUsersPage view={ADMIN_VIEW_MODES.DISCARDED} />
-);

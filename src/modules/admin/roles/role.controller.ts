@@ -146,6 +146,23 @@ class RoleController {
       error: getApiError(response, translate(AppLocales.Admin.Roles.Errors.Delete)),
     };
   }
+
+  async undiscardRole(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await RoleService.undiscardRole(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to restore role"),
+    };
+  }
 }
 
 export default new RoleController();

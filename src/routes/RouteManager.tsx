@@ -35,11 +35,14 @@ import {
   AdminAnalyticsPage,
   AdminAccessesPage,
   AdminFeedbackPage,
-  // AdminLogsPage,
+  AdminLogsPage,
+  AdminDiscardedLogsPage,
   AdminChatMessageEditPage,
   AdminChatMessagesPage,
+  AdminDiscardedChatMessagesPage,
   AdminChatRoomEditPage,
   AdminChatRoomsPage,
+  AdminDiscardedChatRoomsPage,
   AdminNotificationsPage,
   AdminProductCreatePage,
   AdminProductEditPage,
@@ -48,6 +51,7 @@ import {
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRolesPage,
+  AdminDiscardedRolesPage,
   AdminUserCreatePage,
   AdminDiscardedUsersPage,
   AdminUserEditPage,
@@ -202,6 +206,10 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.ROLES}
               element={<AdminRolesPage />}
             />
+            <Route
+              path={AppRoutes.client.protected.admin.ROLES_RECYCLE_BIN}
+              element={<AdminDiscardedRolesPage />}
+            />
           </Route>
           <Route
             element={
@@ -243,6 +251,10 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.CHAT_ROOMS}
               element={<AdminChatRoomsPage />}
             />
+            <Route
+              path={AppRoutes.client.protected.admin.CHAT_ROOMS_RECYCLE_BIN}
+              element={<AdminDiscardedChatRoomsPage />}
+            />
           </Route>
           <Route
             element={
@@ -268,6 +280,10 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.CHAT_MESSAGES}
               element={<AdminChatMessagesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.CHAT_MESSAGES_RECYCLE_BIN}
+              element={<AdminDiscardedChatMessagesPage />}
             />
           </Route>
           <Route
@@ -365,7 +381,7 @@ const router = createBrowserRouter(
               element={<AdminFeedbackPage />}
             />
           </Route>
-          {/* <Route
+          <Route
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
@@ -377,7 +393,11 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.LOGS}
               element={<AdminLogsPage />}
             />
-          </Route> */}
+            <Route
+              path={AppRoutes.client.protected.admin.LOGS_RECYCLE_BIN}
+              element={<AdminDiscardedLogsPage />}
+            />
+          </Route>
         </Route>
 
         {/* 404 */}

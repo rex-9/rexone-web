@@ -60,11 +60,44 @@ class ChatController {
     };
   }
 
+  async undiscardRoom(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await ChatService.undiscardRoom(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        "Failed to restore chat room",
+      ),
+    };
+  }
+
   async deleteRoom(id: string): Promise<{
     success: boolean;
     error?: string;
   }> {
-    return this.discardRoom(id);
+    const response = await ChatService.deleteRoom(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        "Failed to destroy chat room",
+      ),
+    };
   }
 
   async getRoom(id: string): Promise<{
@@ -163,11 +196,44 @@ class ChatController {
     };
   }
 
+  async undiscardMessage(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await ChatService.undiscardMessage(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        "Failed to restore chat message",
+      ),
+    };
+  }
+
   async deleteMessage(id: string): Promise<{
     success: boolean;
     error?: string;
   }> {
-    return this.discardMessage(id);
+    const response = await ChatService.deleteMessage(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        "Failed to destroy chat message",
+      ),
+    };
   }
 
   async getMessage(id: string): Promise<{

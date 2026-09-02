@@ -1,3 +1,4 @@
 export { AdminUserCreatePage } from "./AdminUserCreatePage";
 export { AdminUserEditPage } from "./AdminUserEditPage";
-export { AdminDiscardedUsersPage, AdminUsersPage } from "./AdminUsersPage";
+export { AdminUsersPage } from "./AdminUsersPage";
+export { AdminDiscardedUsersPage } from "./AdminDiscardedUsersPage";

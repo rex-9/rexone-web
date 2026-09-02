@@ -50,11 +50,13 @@ describe("getAdminRoleResourceScope", () => {
     });
   });
 
-  it("does not grant resource scope for 'super_admin' (bypass is in can())", () => {
-    // super_admin ends with _admin, prefix = "super" — no match in prefixes
-    // Super admin bypass is handled via the isSuperAdmin flag in can()
+  it("returns all resources for 'super_admin' role", () => {
     const scope = getAdminRoleResourceScope(["super_admin"]);
-    expect(scope.size).toBe(0);
+    const allResources = Object.values(ADMIN_RESOURCES);
+    expect(scope.size).toBe(allResources.length);
+    allResources.forEach((resource) => {
+      expect(scope.has(resource)).toBe(true);
+    });
   });
 
   it("maps 'notification_admin' to notifications resource", () => {

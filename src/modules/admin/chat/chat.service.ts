@@ -45,13 +45,23 @@ class ChatService {
   }
 
   async discardRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
+    return api.post<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DISCARD, id),
+    );
+  }
+
+  async undiscardRoom(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
+    return api.post<AdminChatRoomResponse>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_UNDISCARD, id),
     );
   }
 
   async deleteRoom(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return this.discardRoom(id);
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
+    );
   }
 
   async getMessages(
@@ -84,13 +94,26 @@ class ChatService {
   }
 
   async discardMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return api.delete<null>(
-      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
+    return api.post<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DISCARD, id),
+    );
+  }
+
+  async undiscardMessage(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
+    return api.post<AdminChatMessageResponse>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.CHAT_MESSAGE_UNDISCARD,
+        id,
+      ),
     );
   }
 
   async deleteMessage(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    return this.discardMessage(id);
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
+    );
   }
 }
 
