@@ -9,6 +9,7 @@ import { AdminActionButton } from "./AdminActionButton";
 interface IAdminHeaderActionButtonProps {
   label: string;
   onClick: () => void;
+  resource?: AdminResource;
   recycle?: {
     label: string;
     onClick: () => void;
@@ -18,11 +19,11 @@ interface IAdminHeaderActionButtonProps {
 
 export const AdminHeaderActionButton: React.FC<
   IAdminHeaderActionButtonProps
-> = ({ label, onClick, recycle }) => (
+> = ({ label, onClick, resource, recycle }) => (
   <div className="flex shrink-0 items-center gap-2 self-start md:self-auto">
     {recycle && (
       <AdminActionButton
-        action={ADMIN_ACTIONS.READ}
+        action={ADMIN_ACTIONS.DELETE}
         resource={recycle.resource}
         size={ButtonSizes.SM}
         variant={ButtonVariants.SECONDARY}
@@ -35,15 +36,29 @@ export const AdminHeaderActionButton: React.FC<
       </AdminActionButton>
     )}
 
-    <Button
-      type="button"
-      onClick={onClick}
-      className="h-10 w-10 p-0"
-      aria-label={label}
-      title={label}
-    >
-      <iconsLib.plus className="h-5 w-5" />
-      <span className="sr-only">{label}</span>
-    </Button>
+    {resource ? (
+      <AdminActionButton
+        action={ADMIN_ACTIONS.CREATE}
+        resource={resource}
+        className="h-10 w-10 p-0"
+        aria-label={label}
+        title={label}
+        onClick={onClick}
+      >
+        <iconsLib.plus className="h-5 w-5" />
+        <span className="sr-only">{label}</span>
+      </AdminActionButton>
+    ) : (
+      <Button
+        type="button"
+        onClick={onClick}
+        className="h-10 w-10 p-0"
+        aria-label={label}
+        title={label}
+      >
+        <iconsLib.plus className="h-5 w-5" />
+        <span className="sr-only">{label}</span>
+      </Button>
+    )}
   </div>
 );

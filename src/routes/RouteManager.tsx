@@ -206,6 +206,16 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.ROLES}
               element={<AdminRolesPage />}
             />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.ROLES}
+                superAdminOnly
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.ROLES_RECYCLE_BIN}
               element={<AdminDiscardedRolesPage />}
@@ -251,6 +261,15 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.CHAT_ROOMS}
               element={<AdminChatRoomsPage />}
             />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.ROOMS}
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.CHAT_ROOMS_RECYCLE_BIN}
               element={<AdminDiscardedChatRoomsPage />}
@@ -281,6 +300,15 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.CHAT_MESSAGES}
               element={<AdminChatMessagesPage />}
             />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.MESSAGES}
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.CHAT_MESSAGES_RECYCLE_BIN}
               element={<AdminDiscardedChatMessagesPage />}
@@ -324,6 +352,15 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.PRODUCTS}
               element={<AdminProductsPage />}
             />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.PRODUCTS}
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN}
               element={<AdminDiscardedProductsPage />}
@@ -393,6 +430,15 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.LOGS}
               element={<AdminLogsPage />}
             />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.CLIENTS}
+              />
+            }
+          >
             <Route
               path={AppRoutes.client.protected.admin.LOGS_RECYCLE_BIN}
               element={<AdminDiscardedLogsPage />}

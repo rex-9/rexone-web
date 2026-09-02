@@ -311,37 +311,39 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           ) : null
         }
       >
-        <Tabs
-          value={view}
-          onChange={(tab) => {
-            navigate(
-              tab === ADMIN_VIEW_MODES.ACTIVE
-                ? AppRoutes.client.protected.admin.PRODUCTS
-                : AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN,
-            );
-            updateFilters({ page: 1 });
-          }}
-          items={[
-            {
-              value: ADMIN_VIEW_MODES.ACTIVE,
-              label: "Active Products",
-              icon: iconsLib.sparkles,
-              count:
-                view === ADMIN_VIEW_MODES.ACTIVE
-                  ? pagination?.total_count
-                  : undefined,
-            },
-            {
-              value: ADMIN_VIEW_MODES.DISCARDED,
-              label: "Recycle Bin",
-              icon: iconsLib.trash,
-              count:
-                view === ADMIN_VIEW_MODES.DISCARDED
-                  ? pagination?.total_count
-                  : undefined,
-            },
-          ]}
-        />
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS) && (
+          <Tabs
+            value={view}
+            onChange={(tab) => {
+              navigate(
+                tab === ADMIN_VIEW_MODES.ACTIVE
+                  ? AppRoutes.client.protected.admin.PRODUCTS
+                  : AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN,
+              );
+              updateFilters({ page: 1 });
+            }}
+            items={[
+              {
+                value: ADMIN_VIEW_MODES.ACTIVE,
+                label: "Active Products",
+                icon: iconsLib.sparkles,
+                count:
+                  view === ADMIN_VIEW_MODES.ACTIVE
+                    ? pagination?.total_count
+                    : undefined,
+              },
+              {
+                value: ADMIN_VIEW_MODES.DISCARDED,
+                label: "Recycle Bin",
+                icon: iconsLib.trash,
+                count:
+                  view === ADMIN_VIEW_MODES.DISCARDED
+                    ? pagination?.total_count
+                    : undefined,
+              },
+            ]}
+          />
+        )}
       </PageHeader>
 
       {/* Table & States */}

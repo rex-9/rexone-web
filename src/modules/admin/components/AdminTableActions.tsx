@@ -65,7 +65,7 @@ const ADMIN_TABLE_ACTION_CONFIG: Record<string, IAdminTableActionConfig> = {
     category: ADMIN_ACTION_CATEGORIES.DANGER,
   },
   [ADMIN_ACTIONS.UNDISCARD]: {
-    action: ADMIN_ACTIONS.UPDATE,
+    action: ADMIN_ACTIONS.DELETE,
     label: ADMIN_COMMON_LABELS.UNDISCARD,
     category: ADMIN_ACTION_CATEGORIES.SUCCESS,
   },

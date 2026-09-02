@@ -232,31 +232,36 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
           ) : null
         }
       >
-        <Tabs
-          value={view}
-          onChange={(tab) => {
-            navigate(
-              tab === ADMIN_VIEW_MODES.ACTIVE
-                ? AppRoutes.client.protected.admin.ROLES
-                : AppRoutes.client.protected.admin.ROLES_RECYCLE_BIN,
-            );
-          }}
-          items={[
-            {
-              value: ADMIN_VIEW_MODES.ACTIVE,
-              label: "Active Roles",
-              icon: iconsLib.shieldCheck,
-              count: view === ADMIN_VIEW_MODES.ACTIVE ? roles.length : undefined,
-            },
-            {
-              value: ADMIN_VIEW_MODES.DISCARDED,
-              label: "Recycle Bin",
-              icon: iconsLib.trash,
-              count:
-                view === ADMIN_VIEW_MODES.DISCARDED ? roles.length : undefined,
-            },
-          ]}
-        />
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ROLES) && (
+          <Tabs
+            value={view}
+            onChange={(tab) => {
+              navigate(
+                tab === ADMIN_VIEW_MODES.ACTIVE
+                  ? AppRoutes.client.protected.admin.ROLES
+                  : AppRoutes.client.protected.admin.ROLES_RECYCLE_BIN,
+              );
+            }}
+            items={[
+              {
+                value: ADMIN_VIEW_MODES.ACTIVE,
+                label: "Active Roles",
+                icon: iconsLib.shieldCheck,
+                count:
+                  view === ADMIN_VIEW_MODES.ACTIVE ? roles.length : undefined,
+              },
+              {
+                value: ADMIN_VIEW_MODES.DISCARDED,
+                label: "Recycle Bin",
+                icon: iconsLib.trash,
+                count:
+                  view === ADMIN_VIEW_MODES.DISCARDED
+                    ? roles.length
+                    : undefined,
+              },
+            ]}
+          />
+        )}
       </PageHeader>
 
       {/* Table & States */}

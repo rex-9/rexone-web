@@ -358,21 +358,23 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Tabs
-            value={view}
-            onChange={(tab) => {
-              navigate(
-                tab === ADMIN_VIEW_MODES.ACTIVE
-                  ? AppRoutes.client.protected.admin.USERS
-                  : AppRoutes.client.protected.admin.USERS_RECYCLE_BIN,
-              );
-              updateFilters({ page: 1 });
-            }}
-            items={[
-              { value: ADMIN_VIEW_MODES.ACTIVE, label: "Active Users" },
-              { value: ADMIN_VIEW_MODES.DISCARDED, label: "Recycle Bin" },
-            ]}
-          />
+          {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.USERS) && (
+            <Tabs
+              value={view}
+              onChange={(tab) => {
+                navigate(
+                  tab === ADMIN_VIEW_MODES.ACTIVE
+                    ? AppRoutes.client.protected.admin.USERS
+                    : AppRoutes.client.protected.admin.USERS_RECYCLE_BIN,
+                );
+                updateFilters({ page: 1 });
+              }}
+              items={[
+                { value: ADMIN_VIEW_MODES.ACTIVE, label: "Active Users" },
+                { value: ADMIN_VIEW_MODES.DISCARDED, label: "Recycle Bin" },
+              ]}
+            />
+          )}
           <div className="w-full sm:w-72">
             <SearchInput
               placeholder="Search by name, username or email..."

@@ -258,37 +258,39 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
         title="Chat Messages"
         description="Audit and moderate posted chat messages across all discussion rooms."
       >
-        <Tabs
-          value={view}
-          onChange={(tab) => {
-            navigate(
-              tab === ADMIN_VIEW_MODES.ACTIVE
-                ? AppRoutes.client.protected.admin.CHAT_MESSAGES
-                : AppRoutes.client.protected.admin.CHAT_MESSAGES_RECYCLE_BIN,
-            );
-            updateFilters({ page: 1 });
-          }}
-          items={[
-            {
-              value: ADMIN_VIEW_MODES.ACTIVE,
-              label: "Active Messages",
-              icon: iconsLib.feedback,
-              count:
-                view === ADMIN_VIEW_MODES.ACTIVE
-                  ? pagination?.total_count
-                  : undefined,
-            },
-            {
-              value: ADMIN_VIEW_MODES.DISCARDED,
-              label: "Recycle Bin",
-              icon: iconsLib.trash,
-              count:
-                view === ADMIN_VIEW_MODES.DISCARDED
-                  ? pagination?.total_count
-                  : undefined,
-            },
-          ]}
-        />
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.MESSAGES) && (
+          <Tabs
+            value={view}
+            onChange={(tab) => {
+              navigate(
+                tab === ADMIN_VIEW_MODES.ACTIVE
+                  ? AppRoutes.client.protected.admin.CHAT_MESSAGES
+                  : AppRoutes.client.protected.admin.CHAT_MESSAGES_RECYCLE_BIN,
+              );
+              updateFilters({ page: 1 });
+            }}
+            items={[
+              {
+                value: ADMIN_VIEW_MODES.ACTIVE,
+                label: "Active Messages",
+                icon: iconsLib.feedback,
+                count:
+                  view === ADMIN_VIEW_MODES.ACTIVE
+                    ? pagination?.total_count
+                    : undefined,
+              },
+              {
+                value: ADMIN_VIEW_MODES.DISCARDED,
+                label: "Recycle Bin",
+                icon: iconsLib.trash,
+                count:
+                  view === ADMIN_VIEW_MODES.DISCARDED
+                    ? pagination?.total_count
+                    : undefined,
+              },
+            ]}
+          />
+        )}
       </PageHeader>
 
       {/* Table & States */}

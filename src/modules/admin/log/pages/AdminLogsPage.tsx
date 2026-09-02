@@ -349,37 +349,39 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         title="Client Telemetry & Logs"
         description="Monitor client runtime exceptions, inspect stack traces, and manage crash reports across Web and Mobile."
       >
-        <Tabs
-          value={view}
-          onChange={(tab) => {
-            navigate(
-              tab === ADMIN_VIEW_MODES.ACTIVE
-                ? AppRoutes.client.protected.admin.LOGS
-                : AppRoutes.client.protected.admin.LOGS_RECYCLE_BIN,
-            );
-            updateFilters({ page: 1 });
-          }}
-          items={[
-            {
-              value: ADMIN_VIEW_MODES.ACTIVE,
-              label: "Active Logs",
-              icon: iconsLib.document,
-              count:
-                view === ADMIN_VIEW_MODES.ACTIVE
-                  ? pagination?.total_count
-                  : undefined,
-            },
-            {
-              value: ADMIN_VIEW_MODES.DISCARDED,
-              label: "Recycle Bin",
-              icon: iconsLib.trash,
-              count:
-                view === ADMIN_VIEW_MODES.DISCARDED
-                  ? pagination?.total_count
-                  : undefined,
-            },
-          ]}
-        />
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENTS) && (
+          <Tabs
+            value={view}
+            onChange={(tab) => {
+              navigate(
+                tab === ADMIN_VIEW_MODES.ACTIVE
+                  ? AppRoutes.client.protected.admin.LOGS
+                  : AppRoutes.client.protected.admin.LOGS_RECYCLE_BIN,
+              );
+              updateFilters({ page: 1 });
+            }}
+            items={[
+              {
+                value: ADMIN_VIEW_MODES.ACTIVE,
+                label: "Active Logs",
+                icon: iconsLib.document,
+                count:
+                  view === ADMIN_VIEW_MODES.ACTIVE
+                    ? pagination?.total_count
+                    : undefined,
+              },
+              {
+                value: ADMIN_VIEW_MODES.DISCARDED,
+                label: "Recycle Bin",
+                icon: iconsLib.trash,
+                count:
+                  view === ADMIN_VIEW_MODES.DISCARDED
+                    ? pagination?.total_count
+                    : undefined,
+              },
+            ]}
+          />
+        )}
       </PageHeader>
 
       {/* Dropdown Filters */}
