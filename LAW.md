@@ -10,7 +10,7 @@
 
 > > _"If you don't follow These LAWS, u're gay."_
 > >
-> > — _Newton's Z Law_
+> > — _Newton'z Law_
 
 ---
 
