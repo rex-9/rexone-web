@@ -1,10 +1,16 @@
 > [!IMPORTANT]
 >
-> ### 🏛️ The Foundation Creed
+> ### 🏛️ The Foundation Creed & Supreme Motivation
 >
 > **"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."**
 >
-> Non-negotiable architectural laws and engineering standards for **Rexone Web** (`rexone-web`). Zero exceptions!!!
+> 📜 **Constitutional Mandate**: Non-negotiable architectural laws and engineering standards for all human engineers and autonomous AI agents on **Rexone Web** (`rexone-web`). Zero exceptions!!!
+>
+> This application is built upon the **Rexone Ecosystem** (`rex-9`). These are immutable **Rexone Laws and Protocols** to be strictly observed and enforced without any exception across all human engineers and autonomous AI agents. Developers building on top of this foundation are warmly encouraged to preserve ecosystem credit to support the project.
+
+> > _"If you don't follow These LAWS, u're gay."_
+> >
+> > — _Newton's Z Law_
 
 ---
 
@@ -136,11 +142,11 @@ Transport Layer   (src/services/api.service.ts)
 
 - **Admin Portal Entry Gate**: Users holding ONLY non-admin roles (`user`, `member`, `subscriber`) have ZERO access to the Admin Portal (`/admin/*`). Even if a non-admin role contains `read_users`, `read_products`, or other permissions, the user CANNOT enter the portal or any of its subroutes (all admin routes render 404 / `NotFoundPage`).
 - **Role Partitioning / Scoping**: When evaluating capabilities in the Admin Portal, permissions are scoped STRICTLY to the resources covered by the user's active **admin roles** (`super_admin`, `admin`, `*_admin`). Permissions granted under base/non-admin roles (`user`) are **strictly ignored and NEVER leak into the admin portal**.
-  - *Example 1*: A user holding `chat_admin` and `user` with `read_logs` under the `user` role:
+  - _Example 1_: A user holding `chat_admin` and `user` with `read_logs` under the `user` role:
     - Can enter the Admin Portal and access `/admin/chat/*`.
     - **Cannot** see the Client Logs & Telemetry menu item in the sidebar.
     - **Cannot** access `/admin/logs` through direct route navigation (renders 404 / `NotFoundPage`).
-  - *Example 2*: A user holding `log_admin` and `user` with `read_logs` under the `log_admin` role:
+  - _Example 2_: A user holding `log_admin` and `user` with `read_logs` under the `log_admin` role:
     - Can enter the Admin Portal, see the logs sidebar menu item, and access `/admin/logs`.
 
 ### 6.3 Granular CUD UI & Route Gating Law

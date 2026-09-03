@@ -4,14 +4,14 @@ A unified, production-grade architectural blueprint spanning **Rexone Core** (Ba
 
 ---
 
-## 📜 The Foundation Creed
+## 📜 The Foundation Creed & Supreme Motivation
 
 Across all three repositories, the architecture adheres to one uncompromising doctrine:
 
 > [!IMPORTANT]
 > **"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."**
 >
-> 📜 **Constitutional Law**: For strict repository-specific engineering constraints and architectural rules, see **[LAW.md](LAW.md)**. All developers and agents must adhere to these rules without exception.
+> 📜 **Constitutional Law**: For strict repository-specific engineering constraints and architectural rules, see **[LAW.md](LAW.md)**. All applications and derivative products built upon the **Rexone Ecosystem** (`rex-9`) must strictly adhere to these rules and protocols without exception. Developers are warmly encouraged to preserve ecosystem credit to support the project.
 
 The Rexone platform provides a unified, battle-tested foundation where **any modern digital product** can be rapidly developed on top of ready-made capabilities: Identity & IAM, Commerce & Subscriptions, Background Queues, Asset Management, Real-Time WebSockets, Queued AI, Push Notifications, Product Analytics, Client Telemetry, In-App Upgrades, and Multi-Language Localization.
 

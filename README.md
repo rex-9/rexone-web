@@ -251,8 +251,8 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 
 - **Admin Portal Entry Gate**: Users holding only non-admin roles (e.g. `user`, `subscriber`) have ZERO access to the Admin Portal. All `/admin/*` routes render `NotFoundPage` (404), even if non-admin roles contain permissions.
 - **Strict Role Scoping & Non-Admin Isolation**: Admin capabilities are evaluated strictly against active **admin roles** (`super_admin`, `admin`, `*_admin`). Permissions granted under base/non-admin roles (`user`) are ignored and never leak into the admin portal.
-  - *Example*: A user holding `chat_admin` and `user` with `read_logs` under `user` can access `/admin/chat/*` but cannot see or access `/admin/log`.
-  - *Example*: A user holding `log_admin` with `read_logs` under `log_admin` can see and access `/admin/log`.
+  - _Example_: A user holding `chat_admin` and `user` with `read_logs` under `user` can access `/admin/chat/*` but cannot see or access `/admin/log`.
+  - _Example_: A user holding `log_admin` with `read_logs` under `log_admin` can see and access `/admin/log`.
 - **Granular CUD UI & Route Protection**:
   - **Create**: Create buttons in `<PageHeader>` and table headers are gated by `can(ADMIN_ACTIONS.CREATE, resource)`; `/admin/<resource>/new` is guarded by `AdminRootRoute(action: CREATE)`.
   - **Update**: Edit, review, and extend buttons are gated by `can(ADMIN_ACTIONS.UPDATE, resource)`; `/admin/<resource>/:id/edit` is guarded by `AdminRootRoute(action: UPDATE)`.
@@ -467,14 +467,36 @@ For production deployments:
 1. Point HTTP and WebSocket variables at the deployed Rexone Core instance.
 2. Configure the Google OAuth client for the production origin.
 3. Serve the client over TLS and use `wss://` for real-time traffic.
-4. Configure the host to return `index.html` for client-side routes.
-5. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
-6. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/test.sh` in CI.
+4. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
+5. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/test.sh` in CI.
 
-## Related foundations
+## Other Repos in Rexone Ecosystem
 
 - [Rexone Core](https://github.com/rex-9/rexone-core) — Rails API, IAM, payments, jobs, notifications, storage, AI, administration, and observability
 - [Rexone Mobile](https://github.com/rex-9/rexone_mobile) — mobile client
+
+## 🎨 Rebranding
+
+Rexone Web can be rebranded directly via the master rebranding engine in `rexone-core` or standalone:
+
+```bash
+# 1. From rexone-core (rebrands all 3 repositories):
+cd ../rexone-core && ./scripts/rebrand.sh
+
+# 2. Local variables in .env.*:
+VITE_APP_NAME="My New App Name"
+```
+
+---
+
+## 🏛️ Ecosystem Lineage & Attribution
+
+This application is built on top of the **Rexone Ecosystem** (`rex-9`). When creating derivative products or white-label applications:
+
+- Developers and creators are warmly encouraged to preserve ecosystem credit in documentation to support the project.
+- All development must strictly adhere to the constitutional engineering standards in **[LAW.md](LAW.md)** and **[ECOSYSTEM.md](ECOSYSTEM.md)**.
+
+---
 
 ## Support the project
 
@@ -484,7 +506,7 @@ If Rexone Web saves you a few weeks—or saves your users from one memorable edg
 
 ## Author
 
-Built with clarity, curiosity, and a healthy suspicion of unexamined complexity by **Rex (Rex9)**.
+Built with Clarity & Simplicity Driven Development, by **Rex (Rex9)**.
 
 A software engineer, full-stack architect, and long-time practitioner of meditation.
 
@@ -493,5 +515,7 @@ I build systems the same way I approach the path itself: **with a clear mind, de
 - GitHub: [@rex-9](https://github.com/rex-9)
 - Portfolio: [rex9.vercel.app](https://rex9.vercel.app)
 - LinkedIn: [rex9](https://www.linkedin.com/in/rex9/)
+
+_Built with ❤️ by Rex9 on Rexone Ecosystem_
 
 <p align="right"><a href="#readme-top">Back to top ↑</a></p>
