@@ -81,6 +81,7 @@ import {
   StopIcon,
   SpeakerWaveIcon,
   PlayIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -210,4 +211,5 @@ export const iconsLib = {
   stop: StopIcon,
   speaker: SpeakerWaveIcon,
   play: PlayIcon,
+  photo: PhotoIcon,
 } as const;

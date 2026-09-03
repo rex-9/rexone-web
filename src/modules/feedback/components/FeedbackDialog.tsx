@@ -1,6 +1,5 @@
-// src/modules/feedback/components/FeedbackDialog.tsx
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslate } from "../../../locales";
 import {
   Dialog,
   FormContainer,
@@ -21,7 +20,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
   isOpen,
   onClose,
 }) => {
-  const { t } = useTranslation();
+  const t = useTranslate();
   const { success, error } = useToast();
   const { isLoading, setLoading } = useLoading();
   const [content, setContent] = useState("");

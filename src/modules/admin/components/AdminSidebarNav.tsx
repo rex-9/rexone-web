@@ -109,6 +109,18 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
+    id: "media",
+    labelKey: AppLocales.Admin.Nav.Sections.Media,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Assets,
+        to: AppRoutes.client.protected.admin.ASSETS,
+        resource: ADMIN_RESOURCES.ASSETS,
+        icon: iconsLib.photo,
+      },
+    ],
+  },
+  {
     id: "support",
     labelKey: AppLocales.Admin.Nav.Sections.Support,
     items: [

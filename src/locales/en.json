@@ -263,7 +263,8 @@
         "communication": "Communication",
         "iam": "IAM",
         "support": "Support",
-        "observability": "Observability"
+        "observability": "Observability",
+        "media": "Media"
       },
       "items": {
         "analytics": "Analytics",
@@ -275,7 +276,8 @@
         "users": "Users",
         "roles": "Roles",
         "feedback": "Feedback Inbox",
-        "logs": "Client Logs & Telemetry"
+        "logs": "Client Logs & Telemetry",
+        "assets": "Assets"
       }
     },
     "common": {
@@ -872,6 +874,73 @@
       "cache": {
         "live_db": "Live DB",
         "redis_cache": "Redis Cache"
+      }
+    },
+    "assets": {
+      "title": "Assets",
+      "description": "Manage media assets",
+      "recycle_title": "Discarded Assets",
+      "recycle_description": "Manage and restore discarded media assets",
+      "edit_title": "Edit Asset",
+      "edit_description": "Update media asset metadata",
+      "upload_button": "Upload Asset",
+      "search_placeholder": "Search assets...",
+      "tabs": {
+        "active_assets": "Active Assets",
+        "recycle_bin": "Recycle Bin"
+      },
+      "filters": {
+        "all_types": "All Types",
+        "all_formats": "All Formats",
+        "all_sources": "All Sources"
+      },
+      "table": {
+        "preview": "Preview",
+        "name": "Name",
+        "type": "Type",
+        "format": "Format",
+        "size": "Size",
+        "source": "Source",
+        "created": "Created",
+        "discarded": "Discarded",
+        "actions": "Actions"
+      },
+      "upload_dialog": {
+        "title": "Upload Asset",
+        "type_label": "Asset Type",
+        "file_label": "Select File",
+        "upload_button": "Upload",
+        "uploading": "Uploading..."
+      },
+      "confirm": {
+        "discard_title": "Discard Asset",
+        "discard_message": "Are you sure you want to discard this asset? It will be moved to the recycle bin.",
+        "restore_title": "Restore Asset",
+        "restore_message": "Are you sure you want to restore this asset?",
+        "destroy_title": "Permanently Delete Asset",
+        "destroy_message": "Are you sure you want to permanently delete this asset? This action cannot be undone."
+      },
+      "toasts": {
+        "upload_success": "Asset uploaded successfully",
+        "discard_success": "Asset discarded successfully",
+        "restore_success": "Asset restored successfully",
+        "destroy_success": "Asset permanently deleted",
+        "update_success": "Asset updated successfully"
+      },
+      "errors": {
+        "load_failed": "Failed to load assets",
+        "load_one_failed": "Failed to load asset details",
+        "upload_failed": "Failed to upload asset",
+        "discard_failed": "Failed to discard asset",
+        "restore_failed": "Failed to restore asset",
+        "destroy_failed": "Failed to delete asset",
+        "update_failed": "Failed to update asset"
+      },
+      "state": {
+        "empty_title": "No Assets Found",
+        "empty_desc": "Upload an asset to get started or adjust your filters.",
+        "recycle_empty_title": "Recycle Bin Empty",
+        "recycle_empty_desc": "No discarded assets found."
       }
     }
   },

@@ -14,6 +14,7 @@ class AppRoutes {
   private static admin(path: string): string {
     return `/admin${path}`;
   }
+
   static withId(path: string, id: string): string {
     return path.replace(":id", id);
   }
@@ -55,7 +56,11 @@ class AppRoutes {
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
         PRODUCT_CREATE: AppRoutes.admin("/products/create"),
         PRODUCT_EDIT: AppRoutes.admin("/products/:id/edit"),
+        ASSETS: AppRoutes.admin("/assets"),
+        ASSETS_RECYCLE_BIN: AppRoutes.admin("/assets/bin"),
+        ASSET_EDIT: AppRoutes.admin("/assets/:id/edit"),
         ACCESSES: AppRoutes.admin("/accesses"),
+        ACCESS_EDIT: AppRoutes.admin("/accesses/:id/edit"),
         FEEDBACK: AppRoutes.admin("/feedback"),
         FEEDBACK_DETAIL: AppRoutes.admin("/feedback/:id"),
         LOGS: AppRoutes.admin("/logs"),
@@ -169,6 +174,12 @@ class AppRoutes {
         PAYMENT_PRODUCT_UNDISCARD: AppRoutes.adminApi(
           "/payment/products/:id/undiscard",
         ), // POST
+        ASSETS: AppRoutes.adminApi("/assets"), // GET
+        ASSET_DETAIL: AppRoutes.adminApi("/assets/:id"), // GET, PUT, DELETE
+        DISCARDED_ASSETS: AppRoutes.adminApi("/assets/discarded"), // GET
+        ASSET_UPLOAD: AppRoutes.adminApi("/assets/upload"), // POST
+        ASSET_DISCARD: AppRoutes.adminApi("/assets/:id/discard"), // POST
+        ASSET_UNDISCARD: AppRoutes.adminApi("/assets/:id/undiscard"), // POST
         CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
         CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PUT, DELETE
         CHAT_ROOM_DISCARD: AppRoutes.adminApi("/chat/rooms/:id/discard"), // POST

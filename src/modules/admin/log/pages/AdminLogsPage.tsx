@@ -48,7 +48,6 @@ import {
   ADMIN_LOG_TABLE_KEYS,
   type TAdminLogResolution,
 } from "../constants";
-import { AdminLogDetailDialog } from "../components/AdminLogDetailDialog";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 interface IAdminLogsPageProps {
@@ -86,7 +85,6 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
 
-  const [detailTarget, setDetailTarget] = useState<IAdminLog | null>(null);
   const [discardTarget, setDiscardTarget] = useState<IAdminLog | null>(null);
   const [destroyTarget, setDestroyTarget] = useState<IAdminLog | null>(null);
 
@@ -177,29 +175,6 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     }
   }, [loadLogs, permissionsLoading]);
 
-  const handleToggleResolve = async (
-    id: string,
-    currentlyResolved: boolean,
-  ) => {
-    setLoading(true);
-    const result = currentlyResolved
-      ? await AdminLogsController.unresolveLog(id)
-      : await AdminLogsController.resolveLog(id);
-    setLoading(false);
-
-    if (result.success) {
-      toast.success(
-        currentlyResolved
-          ? t(AppLocales.Admin.Logs.Toasts.UnresolveSuccess)
-          : t(AppLocales.Admin.Logs.Toasts.ResolveSuccess),
-      );
-      setDetailTarget(null);
-      void loadLogs();
-    } else {
-      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.UpdateStatusFailed));
-    }
-  };
-
   const handleUndiscard = async (log: IAdminLog) => {
     setLoading(true);
     const result = await AdminLogsController.undiscardLog(log.id);
@@ -209,7 +184,9 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
       toast.success(t(AppLocales.Admin.Logs.Toasts.RestoreSuccess));
       void loadLogs();
     } else {
-      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.RestoreFailed));
+      toast.error(
+        result.error || t(AppLocales.Admin.Logs.Errors.RestoreFailed),
+      );
     }
   };
 
@@ -225,7 +202,9 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
       setDiscardTarget(null);
       void loadLogs();
     } else {
-      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.DiscardFailed));
+      toast.error(
+        result.error || t(AppLocales.Admin.Logs.Errors.DiscardFailed),
+      );
     }
   };
 
@@ -241,7 +220,9 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
       setDestroyTarget(null);
       void loadLogs();
     } else {
-      toast.error(result.error || t(AppLocales.Admin.Logs.Errors.DestroyFailed));
+      toast.error(
+        result.error || t(AppLocales.Admin.Logs.Errors.DestroyFailed),
+      );
     }
   };
 
@@ -318,7 +299,13 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
                 ? [
                     {
                       type: ADMIN_ACTIONS.INSPECT,
-                      onClick: () => setDetailTarget(log),
+                      onClick: () =>
+                        navigate(
+                          AppRoutes.withId(
+                            AppRoutes.client.protected.admin.LOG_DETAIL,
+                            log.id,
+                          ),
+                        ),
                     },
                     {
                       type: ADMIN_ACTIONS.DISCARD,
@@ -328,7 +315,13 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
                 : [
                     {
                       type: ADMIN_ACTIONS.INSPECT,
-                      onClick: () => setDetailTarget(log),
+                      onClick: () =>
+                        navigate(
+                          AppRoutes.withId(
+                            AppRoutes.client.protected.admin.LOG_DETAIL,
+                            log.id,
+                          ),
+                        ),
                     },
                     {
                       type: ADMIN_ACTIONS.UNDISCARD,
@@ -404,8 +397,14 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
           value={resolutionFilter}
           onValueChange={(val) => updateFilters({ resolution: val, page: 1 })}
           options={[
-            { value: ADMIN_LOG_RESOLUTION.UNRESOLVED, label: t(AppLocales.Admin.Logs.Filters.Unresolved) },
-            { value: ADMIN_LOG_RESOLUTION.RESOLVED, label: t(AppLocales.Admin.Logs.Filters.Resolved) },
+            {
+              value: ADMIN_LOG_RESOLUTION.UNRESOLVED,
+              label: t(AppLocales.Admin.Logs.Filters.Unresolved),
+            },
+            {
+              value: ADMIN_LOG_RESOLUTION.RESOLVED,
+              label: t(AppLocales.Admin.Logs.Filters.Resolved),
+            },
             { value: ADMIN_LOG_RESOLUTION.ALL, label: "All Statuses" },
           ]}
         />
@@ -416,11 +415,20 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
           value={severityFilter}
           onValueChange={(val) => updateFilters({ severity: val, page: 1 })}
           options={[
-            { value: "", label: t(AppLocales.Admin.Logs.Filters.AllSeverities) },
+            {
+              value: "",
+              label: t(AppLocales.Admin.Logs.Filters.AllSeverities),
+            },
             { value: "error", label: t(AppLocales.Admin.Logs.Filters.Error) },
-            { value: "warning", label: t(AppLocales.Admin.Logs.Filters.Warning) },
+            {
+              value: "warning",
+              label: t(AppLocales.Admin.Logs.Filters.Warning),
+            },
             { value: "info", label: t(AppLocales.Admin.Logs.Filters.Low) },
-            { value: "critical", label: t(AppLocales.Admin.Logs.Filters.Fatal) },
+            {
+              value: "critical",
+              label: t(AppLocales.Admin.Logs.Filters.Fatal),
+            },
           ]}
         />
 
@@ -433,7 +441,10 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
             { value: "", label: t(AppLocales.Admin.Logs.Filters.AllPlatforms) },
             { value: "web", label: t(AppLocales.Admin.Logs.Filters.Web) },
             { value: "ios", label: t(AppLocales.Admin.Logs.Filters.Ios) },
-            { value: "android", label: t(AppLocales.Admin.Logs.Filters.Android) },
+            {
+              value: "android",
+              label: t(AppLocales.Admin.Logs.Filters.Android),
+            },
           ]}
         />
       </div>
@@ -472,15 +483,6 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         </>
       )}
 
-      {/* Dialogs */}
-      <AdminLogDetailDialog
-        isOpen={!!detailTarget}
-        log={detailTarget}
-        onClose={() => setDetailTarget(null)}
-        onToggleResolve={handleToggleResolve}
-        isLoading={isLoading}
-      />
-
       <ConfirmDialog
         isOpen={!!discardTarget}
         title={t(AppLocales.Admin.Common.Confirm.DiscardTitle)}
@@ -507,4 +509,3 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     </div>
   );
 };
-

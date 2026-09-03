@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export interface IImageAsset {
   src: string;
@@ -14,6 +14,7 @@ export interface IImageProps
   title?: string;
   className?: string;
   onError?: () => void;
+  fallback?: React.ReactNode;
 }
 
 export const Image: React.FC<IImageProps> = ({
@@ -23,12 +24,28 @@ export const Image: React.FC<IImageProps> = ({
   title,
   className,
   onError,
+  fallback,
   loading = "lazy",
+  referrerPolicy = "no-referrer",
   ...rest
 }) => {
+  const [hasError, setHasError] = useState(false);
   const finalSrc = asset?.src ?? src ?? "";
   const finalAlt = alt ?? asset?.alt ?? "";
   const finalTitle = title ?? asset?.title ?? finalAlt;
+
+  useEffect(() => {
+    setHasError(false);
+  }, [finalSrc]);
+
+  const handleError = () => {
+    setHasError(true);
+    onError?.();
+  };
+
+  if (hasError && fallback) {
+    return <>{fallback}</>;
+  }
 
   return (
     <img
@@ -38,7 +55,8 @@ export const Image: React.FC<IImageProps> = ({
       title={finalTitle}
       className={className}
       loading={loading}
-      onError={onError}
+      referrerPolicy={referrerPolicy}
+      onError={handleError}
       {...rest}
     />
   );

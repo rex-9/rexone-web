@@ -47,7 +47,7 @@
 ### 2.2 Distributed Centralized Dynamic Assets
 
 - **Rule**: NEVER store raw media URL strings directly on domain entities.
-- ALL media is managed through the backend distributed assets system (`type`, `storage_key`, `resource_model`, `resource_id`).
+- ALL media is managed through the backend distributed assets system (`type`, `storage_key`, `assetable_type`, `assetable_id`).
 - Display dynamic avatars via `ProfileAvatar` or `Asset`.
 
 ---

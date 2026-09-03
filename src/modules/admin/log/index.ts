@@ -8,4 +8,4 @@ export { default as AdminLogsService } from "./log.service";
 export { default as AdminLogsController } from "./log.controller";
 export * from "./pages/AdminLogsPage";
 export * from "./pages/AdminDiscardedLogsPage";
-export * from "./components/AdminLogDetailDialog";
+export * from "./pages/AdminLogDetailPage";

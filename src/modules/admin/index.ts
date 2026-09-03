@@ -21,6 +21,7 @@ export * from "./feedback";
 export * from "./log";
 export * from "./role";
 export * from "./user";
+export * from "./asset";
 export * from "./components";
 export * from "./helpers/admin.helper";
 export * from "./constants";

@@ -31,6 +31,24 @@ class AdminAccessController {
     };
   }
 
+  async getAccess(id: string): Promise<{
+    success: boolean;
+    access?: IAdminAccess;
+    error?: string;
+  }> {
+    const response = await AdminAccessService.getAccess(id);
+    const { status, data: body } = response.data || {};
+
+    if (status?.success && body) {
+      return { success: true, access: body.attributes };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to load entitlement"),
+    };
+  }
+
   async grantAccess(data: IGrantAccessPayload): Promise<{
     success: boolean;
     accesses: IAdminAccess[];

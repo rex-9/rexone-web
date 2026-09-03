@@ -21,8 +21,8 @@ export const UserPage: React.FC = () => {
     try {
       const result = await UserController.uploadImage(selectedFile, {
         type: "avatar",
-        resource_model: "user",
-        resource_id: currentUser?.id,
+        assetable_type: "User",
+        assetable_id: currentUser?.id,
       });
 
       if (result?.asset?.url && currentUser) {

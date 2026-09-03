@@ -35,9 +35,12 @@ import {
   ADMIN_RESOURCES,
   AdminAnalyticsPage,
   AdminAccessesPage,
-  AdminFeedbackPage,
+  AdminAccessEditPage,
+  AdminFeedbacksPage,
+  AdminFeedbackDetailPage,
   AdminLogsPage,
   AdminDiscardedLogsPage,
+  AdminLogDetailPage,
   AdminChatMessageEditPage,
   AdminChatMessagesPage,
   AdminDiscardedChatMessagesPage,
@@ -57,6 +60,9 @@ import {
   AdminDiscardedUsersPage,
   AdminUserEditPage,
   AdminUsersPage,
+  AdminAssetsPage,
+  AdminDiscardedAssetsPage,
+  AdminAssetEditPage,
 } from "../modules/admin";
 
 const router = createBrowserRouter(
@@ -409,6 +415,19 @@ const router = createBrowserRouter(
           <Route
             element={
               <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.ACCESSES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ACCESS_EDIT}
+              element={<AdminAccessEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
                 resource={ADMIN_RESOURCES.FEEDBACKS}
               />
@@ -416,7 +435,20 @@ const router = createBrowserRouter(
           >
             <Route
               path={AppRoutes.client.protected.admin.FEEDBACK}
-              element={<AdminFeedbackPage />}
+              element={<AdminFeedbacksPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.FEEDBACKS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.FEEDBACK_DETAIL}
+              element={<AdminFeedbackDetailPage />}
             />
           </Route>
           <Route
@@ -435,6 +467,19 @@ const router = createBrowserRouter(
           <Route
             element={
               <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.CLIENTS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.LOG_DETAIL}
+              element={<AdminLogDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
                 resource={ADMIN_RESOURCES.CLIENTS}
               />
@@ -443,6 +488,45 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.LOGS_RECYCLE_BIN}
               element={<AdminDiscardedLogsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.ASSETS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ASSETS}
+              element={<AdminAssetsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.ASSETS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ASSETS_RECYCLE_BIN}
+              element={<AdminDiscardedAssetsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.ASSETS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ASSET_EDIT}
+              element={<AdminAssetEditPage />}
             />
           </Route>
         </Route>

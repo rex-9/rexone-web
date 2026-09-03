@@ -1,10 +1,15 @@
 // src/modules/admin/feedback/pages/AdminFeedbackPage.tsx
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
-import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -37,13 +42,13 @@ import {
   ADMIN_FEEDBACK_STATUS,
   ADMIN_FEEDBACK_TABLE_KEYS,
 } from "../constants";
-import { AdminFeedbackTriageDialog } from "../components/AdminFeedbackTriageDialog";
 import { useTranslate, AppLocales } from "../../../../locales";
 
-export const AdminFeedbackPage: React.FC = () => {
+export const AdminFeedbacksPage: React.FC = () => {
   const t = useTranslate();
   useDocumentTitle(`${t(AppLocales.Admin.Feedback.Title)} | Admin`);
 
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const statusFilter = searchParams.get("status") || "";
@@ -56,14 +61,11 @@ export const AdminFeedbackPage: React.FC = () => {
   });
 
   const { isLoading, setLoading } = useLoading();
-  const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
 
   const [feedbacks, setFeedbacks] = useState<IAdminFeedback[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
-
-  const [triageTarget, setTriageTarget] = useState<IAdminFeedback | null>(null);
 
   const updateFilters = useCallback(
     (updates: {
@@ -119,34 +121,29 @@ export const AdminFeedbackPage: React.FC = () => {
       setFeedbacks(result.feedbacks);
       setPagination(result.pagination);
     } else {
-      setError(result.error || t(AppLocales.Admin.Feedback.Errors.LoadListFailed));
+      setError(
+        result.error || t(AppLocales.Admin.Feedback.Errors.LoadListFailed),
+      );
     }
 
     setLoading(false);
-  }, [can, page, statusFilter, categoryFilter, priorityFilter, setLoading, sortBy, sortOrder, t]);
+  }, [
+    can,
+    page,
+    statusFilter,
+    categoryFilter,
+    priorityFilter,
+    setLoading,
+    sortBy,
+    sortOrder,
+    t,
+  ]);
 
   useEffect(() => {
     if (!permissionsLoading) {
       void loadFeedbacks();
     }
   }, [loadFeedbacks, permissionsLoading]);
-
-  const handleUpdate = async (
-    id: string,
-    payload: { status?: string; priority?: string; admin_notes?: string },
-  ) => {
-    setLoading(true);
-    const result = await AdminFeedbackController.updateFeedback(id, payload);
-    setLoading(false);
-
-    if (result.success) {
-      toast.success(t(AppLocales.Admin.Feedback.Toasts.StatusUpdateSuccess));
-      setTriageTarget(null);
-      void loadFeedbacks();
-    } else {
-      toast.error(result.error || t(AppLocales.Admin.Feedback.Errors.UpdateStatusFailed));
-    }
-  };
 
   const columns: IAdminTableColumn<IAdminFeedback>[] = useMemo(
     () => [
@@ -234,7 +231,13 @@ export const AdminFeedbackPage: React.FC = () => {
             actions={[
               {
                 type: ADMIN_ACTIONS.REVIEW,
-                onClick: () => setTriageTarget(item),
+                onClick: () =>
+                  navigate(
+                    AppRoutes.withId(
+                      AppRoutes.client.protected.admin.FEEDBACK_DETAIL,
+                      item.id,
+                    ),
+                  ),
               },
             ]}
           />
@@ -259,11 +262,26 @@ export const AdminFeedbackPage: React.FC = () => {
           value={statusFilter}
           onValueChange={(val) => updateFilters({ status: val, page: 1 })}
           options={[
-            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllStatuses) },
-            { value: ADMIN_FEEDBACK_STATUS.NEW, label: t(AppLocales.Admin.Feedback.Filters.Open) },
-            { value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS, label: t(AppLocales.Admin.Feedback.Filters.InReview) },
-            { value: ADMIN_FEEDBACK_STATUS.RESOLVED, label: t(AppLocales.Admin.Feedback.Filters.Resolved) },
-            { value: ADMIN_FEEDBACK_STATUS.CLOSED, label: t(AppLocales.Admin.Feedback.Filters.Closed) },
+            {
+              value: "",
+              label: t(AppLocales.Admin.Feedback.Filters.AllStatuses),
+            },
+            {
+              value: ADMIN_FEEDBACK_STATUS.NEW,
+              label: t(AppLocales.Admin.Feedback.Filters.Open),
+            },
+            {
+              value: ADMIN_FEEDBACK_STATUS.IN_PROGRESS,
+              label: t(AppLocales.Admin.Feedback.Filters.InReview),
+            },
+            {
+              value: ADMIN_FEEDBACK_STATUS.RESOLVED,
+              label: t(AppLocales.Admin.Feedback.Filters.Resolved),
+            },
+            {
+              value: ADMIN_FEEDBACK_STATUS.CLOSED,
+              label: t(AppLocales.Admin.Feedback.Filters.Closed),
+            },
           ]}
         />
 
@@ -273,8 +291,14 @@ export const AdminFeedbackPage: React.FC = () => {
           value={categoryFilter}
           onValueChange={(val) => updateFilters({ category: val, page: 1 })}
           options={[
-            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllCategories) },
-            { value: ADMIN_FEEDBACK_CATEGORY.BUG, label: t(AppLocales.Admin.Feedback.Filters.Bug) },
+            {
+              value: "",
+              label: t(AppLocales.Admin.Feedback.Filters.AllCategories),
+            },
+            {
+              value: ADMIN_FEEDBACK_CATEGORY.BUG,
+              label: t(AppLocales.Admin.Feedback.Filters.Bug),
+            },
             {
               value: ADMIN_FEEDBACK_CATEGORY.FEATURE_REQUEST,
               label: t(AppLocales.Admin.Feedback.Filters.FeatureRequest),
@@ -283,7 +307,10 @@ export const AdminFeedbackPage: React.FC = () => {
               value: ADMIN_FEEDBACK_CATEGORY.IMPROVEMENT,
               label: t(AppLocales.Admin.Feedback.Filters.Improvement),
             },
-            { value: ADMIN_FEEDBACK_CATEGORY.GENERAL, label: t(AppLocales.Admin.Feedback.Filters.General) },
+            {
+              value: ADMIN_FEEDBACK_CATEGORY.GENERAL,
+              label: t(AppLocales.Admin.Feedback.Filters.General),
+            },
           ]}
         />
 
@@ -293,12 +320,30 @@ export const AdminFeedbackPage: React.FC = () => {
           value={priorityFilter}
           onValueChange={(val) => updateFilters({ priority: val, page: 1 })}
           options={[
-            { value: "", label: t(AppLocales.Admin.Feedback.Filters.AllPriorities) },
-            { value: ADMIN_FEEDBACK_PRIORITY.CRITICAL, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
-            { value: ADMIN_FEEDBACK_PRIORITY.URGENT, label: t(AppLocales.Admin.Feedback.Filters.Urgent) },
-            { value: ADMIN_FEEDBACK_PRIORITY.HIGH, label: t(AppLocales.Admin.Feedback.Filters.High) },
-            { value: ADMIN_FEEDBACK_PRIORITY.MEDIUM, label: t(AppLocales.Admin.Feedback.Filters.Normal) },
-            { value: ADMIN_FEEDBACK_PRIORITY.LOW, label: t(AppLocales.Admin.Feedback.Filters.Low) },
+            {
+              value: "",
+              label: t(AppLocales.Admin.Feedback.Filters.AllPriorities),
+            },
+            {
+              value: ADMIN_FEEDBACK_PRIORITY.CRITICAL,
+              label: t(AppLocales.Admin.Feedback.Filters.Urgent),
+            },
+            {
+              value: ADMIN_FEEDBACK_PRIORITY.URGENT,
+              label: t(AppLocales.Admin.Feedback.Filters.Urgent),
+            },
+            {
+              value: ADMIN_FEEDBACK_PRIORITY.HIGH,
+              label: t(AppLocales.Admin.Feedback.Filters.High),
+            },
+            {
+              value: ADMIN_FEEDBACK_PRIORITY.MEDIUM,
+              label: t(AppLocales.Admin.Feedback.Filters.Normal),
+            },
+            {
+              value: ADMIN_FEEDBACK_PRIORITY.LOW,
+              label: t(AppLocales.Admin.Feedback.Filters.Low),
+            },
           ]}
         />
       </div>
@@ -332,16 +377,6 @@ export const AdminFeedbackPage: React.FC = () => {
           />
         </>
       )}
-
-      {/* Dialogs */}
-      <AdminFeedbackTriageDialog
-        isOpen={!!triageTarget}
-        feedback={triageTarget}
-        onClose={() => setTriageTarget(null)}
-        onSubmit={handleUpdate}
-        isLoading={isLoading}
-      />
     </div>
   );
 };
-

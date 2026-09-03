@@ -1,10 +1,16 @@
 // src/modules/admin/access/pages/AdminAccessesPage.tsx
 
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
-import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import type { IApiPagination } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
@@ -36,7 +42,6 @@ import {
   ADMIN_ACCESS_TABLE_KEYS,
 } from "../constants";
 import { AdminAccessGrantDialog } from "../components/AdminAccessGrantDialog";
-import { AdminAccessExtendDialog } from "../components/AdminAccessExtendDialog";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 import { DropdownSizes } from "../../../../design/constants";
@@ -46,6 +51,7 @@ export const AdminAccessesPage: React.FC = () => {
   const t = useTranslate();
   useDocumentTitle(`${t(AppLocales.Admin.Accesses.Title)} | Admin`);
 
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const statusFilter = searchParams.get("status") || "";
@@ -66,7 +72,6 @@ export const AdminAccessesPage: React.FC = () => {
   const [error, setError] = useState("");
 
   const [isGrantOpen, setIsGrantOpen] = useState(false);
-  const [extendTarget, setExtendTarget] = useState<IAdminAccess | null>(null);
   const [revokeTarget, setRevokeTarget] = useState<IAdminAccess | null>(null);
 
   const updateFilters = useCallback(
@@ -129,7 +134,9 @@ export const AdminAccessesPage: React.FC = () => {
       setAccesses(result.accesses);
       setPagination(result.pagination);
     } else {
-      setError(result.error || t(AppLocales.Admin.Accesses.Errors.LoadListFailed));
+      setError(
+        result.error || t(AppLocales.Admin.Accesses.Errors.LoadListFailed),
+      );
     }
 
     setLoading(false);
@@ -151,24 +158,9 @@ export const AdminAccessesPage: React.FC = () => {
       setIsGrantOpen(false);
       void loadAccesses();
     } else {
-      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.GrantFailed));
-    }
-  };
-
-  const handleExtend = async (
-    id: string,
-    payload: { days?: number | null },
-  ) => {
-    setLoading(true);
-    const result = await AdminAccessesController.extendAccess(id, payload);
-    setLoading(false);
-
-    if (result.success) {
-      toast.success(t(AppLocales.Admin.Accesses.Toasts.ExtendSuccess));
-      setExtendTarget(null);
-      void loadAccesses();
-    } else {
-      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.ExtendFailed));
+      toast.error(
+        result.error || t(AppLocales.Admin.Accesses.Errors.GrantFailed),
+      );
     }
   };
 
@@ -184,7 +176,9 @@ export const AdminAccessesPage: React.FC = () => {
       setRevokeTarget(null);
       void loadAccesses();
     } else {
-      toast.error(result.error || t(AppLocales.Admin.Accesses.Errors.RevokeFailed));
+      toast.error(
+        result.error || t(AppLocales.Admin.Accesses.Errors.RevokeFailed),
+      );
     }
   };
 
@@ -199,7 +193,9 @@ export const AdminAccessesPage: React.FC = () => {
         return (
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-semibold text-base-content">{displayName}</span>
+              <span className="font-semibold text-base-content">
+                {displayName}
+              </span>
               {access.username && access.user_name && (
                 <span className="text-caption text-base-content opacity-50 text-xs">
                   (@{access.username})
@@ -251,7 +247,11 @@ export const AdminAccessesPage: React.FC = () => {
       sortKey: ADMIN_ACCESS_SORT_KEYS.EXPIRES_AT,
       render: (access) => {
         if (!access.expires_at)
-          return <span className="text-success font-semibold">{t(AppLocales.Admin.Common.Status.Lifetime)}</span>;
+          return (
+            <span className="text-success font-semibold">
+              {t(AppLocales.Admin.Common.Status.Lifetime)}
+            </span>
+          );
         return (
           <div>
             <div>{formatAdminDate(access.expires_at)}</div>
@@ -259,7 +259,11 @@ export const AdminAccessesPage: React.FC = () => {
               access.remaining_days !== null &&
               access.remaining_days > 0 && (
                 <span className="text-caption text-base-content opacity-60">
-                  ({t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, { days: access.remaining_days })})
+                  (
+                  {t(AppLocales.Admin.Accesses.GrantDialog.DurationDays, {
+                    days: access.remaining_days,
+                  })}
+                  )
                 </span>
               )}
           </div>
@@ -276,7 +280,13 @@ export const AdminAccessesPage: React.FC = () => {
         if (access.status !== ADMIN_ACCESS_STATUS.REVOKED) {
           actions.push({
             type: ADMIN_ACTIONS.EXTEND,
-            onClick: () => setExtendTarget(access),
+            onClick: () =>
+              navigate(
+                AppRoutes.withId(
+                  AppRoutes.client.protected.admin.ACCESS_EDIT,
+                  access.id,
+                ),
+              ),
           });
 
           actions.push({
@@ -304,13 +314,6 @@ export const AdminAccessesPage: React.FC = () => {
         isOpen={isGrantOpen}
         onClose={() => setIsGrantOpen(false)}
         onSubmit={handleGrant}
-      />
-
-      <AdminAccessExtendDialog
-        isOpen={Boolean(extendTarget)}
-        access={extendTarget}
-        onClose={() => setExtendTarget(null)}
-        onSubmit={handleExtend}
       />
 
       <ConfirmDialog
@@ -351,10 +354,22 @@ export const AdminAccessesPage: React.FC = () => {
             value={statusFilter}
             onValueChange={(val) => updateFilters({ status: val, page: 1 })}
             options={[
-              { value: "", label: t(AppLocales.Admin.Accesses.Filters.AllTypes) },
-              { value: ADMIN_ACCESS_STATUS.ACTIVE, label: t(AppLocales.Admin.Common.Status.Active) },
-              { value: ADMIN_ACCESS_STATUS.REVOKED, label: t(AppLocales.Admin.Common.Status.Revoked) },
-              { value: ADMIN_ACCESS_STATUS.EXPIRED, label: t(AppLocales.Admin.Common.Status.Expired) },
+              {
+                value: "",
+                label: t(AppLocales.Admin.Accesses.Filters.AllTypes),
+              },
+              {
+                value: ADMIN_ACCESS_STATUS.ACTIVE,
+                label: t(AppLocales.Admin.Common.Status.Active),
+              },
+              {
+                value: ADMIN_ACCESS_STATUS.REVOKED,
+                label: t(AppLocales.Admin.Common.Status.Revoked),
+              },
+              {
+                value: ADMIN_ACCESS_STATUS.EXPIRED,
+                label: t(AppLocales.Admin.Common.Status.Expired),
+              },
             ]}
           />
         </div>
@@ -402,4 +417,3 @@ export const AdminAccessesPage: React.FC = () => {
     </div>
   );
 };
-
