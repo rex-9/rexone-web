@@ -13,8 +13,10 @@ export const AppLocales = {
       IncorrectPasscode: "auth.shared.errors.incorrect_passcode",
       VerificationCodeSent: "auth.shared.errors.verification_code_sent",
       GooglePasscodeRequired: "auth.shared.errors.google_passcode_required",
-      GoogleAuthenticationFailed: "auth.shared.errors.google_authentication_failed",
-      GoogleSignInCompleteFailed: "auth.shared.errors.google_signin_complete_failed",
+      GoogleAuthenticationFailed:
+        "auth.shared.errors.google_authentication_failed",
+      GoogleSignInCompleteFailed:
+        "auth.shared.errors.google_signin_complete_failed",
     },
     Initial: {
       Title: "auth.initial.title",
@@ -63,12 +65,16 @@ export const AppLocales = {
       FieldHelper: "auth.signup_passcode_create.field.helper",
     },
     SignUpPasscodeConfirm: {
-      PasscodesMismatch: "auth.signup_passcode_confirm.validation.passcodes_mismatch",
+      PasscodesMismatch:
+        "auth.signup_passcode_confirm.validation.passcodes_mismatch",
       ResetFailed: "auth.signup_passcode_confirm.errors.reset_failed",
-      GoogleSignInFailed: "auth.signup_passcode_confirm.errors.google_signin_failed",
+      GoogleSignInFailed:
+        "auth.signup_passcode_confirm.errors.google_signin_failed",
       ResetSuccess: "auth.signup_passcode_confirm.feedback.reset_success",
-      SignInWithNewPasscode: "auth.signup_passcode_confirm.feedback.signin_with_new_passcode",
-      GoogleSignInComplete: "auth.signup_passcode_confirm.feedback.google_signin_complete",
+      SignInWithNewPasscode:
+        "auth.signup_passcode_confirm.feedback.signin_with_new_passcode",
+      GoogleSignInComplete:
+        "auth.signup_passcode_confirm.feedback.google_signin_complete",
       ResetTitle: "auth.signup_passcode_confirm.title.reset",
       SignUpTitle: "auth.signup_passcode_confirm.title.signup",
       ResetDescription: "auth.signup_passcode_confirm.description.reset",
@@ -260,9 +266,14 @@ export const AppLocales = {
         PasswordLabel: "admin.users.form.password_label",
         PasswordPlaceholder: "admin.users.form.password_placeholder",
         PasswordConfirmLabel: "admin.users.form.password_confirm_label",
-        PasswordConfirmPlaceholder: "admin.users.form.password_confirm_placeholder",
+        PasswordConfirmPlaceholder:
+          "admin.users.form.password_confirm_placeholder",
         RolesLabel: "admin.users.form.roles_label",
         ConfirmedLabel: "admin.users.form.confirmed_label",
+        AvatarLabel: "admin.users.form.avatar_label",
+        AvatarHelper: "admin.users.form.avatar_helper",
+        ChooseAvatar: "admin.users.form.choose_avatar",
+        RemoveAvatar: "admin.users.form.remove_avatar",
         SaveUser: "admin.users.form.save_user",
         CreateUser: "admin.users.form.create_user",
         Saving: "admin.users.form.saving",
@@ -378,6 +389,10 @@ export const AppLocales = {
         CycleYearly: "admin.products.form.cycle_yearly",
         CycleOneTime: "admin.products.form.cycle_one_time",
         ActiveForPurchase: "admin.products.form.active_for_purchase",
+        ThumbnailLabel: "admin.products.form.thumbnail_label",
+        ThumbnailHelper: "admin.products.form.thumbnail_helper",
+        ChooseThumbnail: "admin.products.form.choose_thumbnail",
+        RemoveThumbnail: "admin.products.form.remove_thumbnail",
         SaveProduct: "admin.products.form.save_product",
         CreateProduct: "admin.products.form.create_product",
         Saving: "admin.products.form.saving",
@@ -435,8 +450,10 @@ export const AppLocales = {
       ExtendDialog: {
         Title: "admin.accesses.extend_dialog.title",
         Description: "admin.accesses.extend_dialog.description",
-        AdditionalDaysLabel: "admin.accesses.extend_dialog.additional_days_label",
-        AdditionalDaysPlaceholder: "admin.accesses.extend_dialog.additional_days_placeholder",
+        AdditionalDaysLabel:
+          "admin.accesses.extend_dialog.additional_days_label",
+        AdditionalDaysPlaceholder:
+          "admin.accesses.extend_dialog.additional_days_placeholder",
         ExtendButton: "admin.accesses.extend_dialog.extend_button",
         Extending: "admin.accesses.extend_dialog.extending",
       },
@@ -497,7 +514,8 @@ export const AppLocales = {
         TitleLabel: "admin.chat.room_form.title_label",
         ModelLabel: "admin.chat.room_form.model_label",
         SystemPromptLabel: "admin.chat.room_form.system_prompt_label",
-        SystemPromptPlaceholder: "admin.chat.room_form.system_prompt_placeholder",
+        SystemPromptPlaceholder:
+          "admin.chat.room_form.system_prompt_placeholder",
         MaxTokensLabel: "admin.chat.room_form.max_tokens_label",
         TemperatureLabel: "admin.chat.room_form.temperature_label",
         SaveRoom: "admin.chat.room_form.save_room",
@@ -687,7 +705,8 @@ export const AppLocales = {
         EventRequired: "admin.notifications.validation.event_required",
         RoleRequired: "admin.notifications.validation.role_required",
         UserRequired: "admin.notifications.validation.user_required",
-        DeliveryChannelRequired: "admin.notifications.validation.delivery_channel_required",
+        DeliveryChannelRequired:
+          "admin.notifications.validation.delivery_channel_required",
       },
       Toasts: {
         SendSuccess: "admin.notifications.toasts.send_success",
@@ -778,8 +797,24 @@ export const AppLocales = {
         Title: "admin.assets.upload_dialog.title",
         TypeLabel: "admin.assets.upload_dialog.type_label",
         FileLabel: "admin.assets.upload_dialog.file_label",
+        ChooseFiles: "admin.assets.upload_dialog.choose_files",
         UploadButton: "admin.assets.upload_dialog.upload_button",
         Uploading: "admin.assets.upload_dialog.uploading",
+        BulkNoticeTitle: "admin.assets.upload_dialog.bulk_notice_title",
+        BulkNotice: "admin.assets.upload_dialog.bulk_notice",
+        SelectedFiles: "admin.assets.upload_dialog.selected_files",
+        ClearAll: "admin.assets.upload_dialog.clear_all",
+        UploadingStatus: "admin.assets.upload_dialog.uploading_status",
+        CompressTipTitle: "admin.assets.upload_dialog.compress_tip_title",
+        CompressTipDesc: "admin.assets.upload_dialog.compress_tip_desc",
+        CompressImages: "admin.assets.upload_dialog.compress_images",
+        CompressVideos: "admin.assets.upload_dialog.compress_videos",
+      },
+      Picker: {
+        Title: "admin.assets.picker.title",
+        SearchPlaceholder: "admin.assets.picker.search_placeholder",
+        NoAssets: "admin.assets.picker.no_assets",
+        SelectAction: "admin.assets.picker.select_action",
       },
       Confirm: {
         DiscardTitle: "admin.assets.confirm.discard_title",
@@ -791,6 +826,7 @@ export const AppLocales = {
       },
       Toasts: {
         UploadSuccess: "admin.assets.toasts.upload_success",
+        BulkUploadSuccess: "admin.assets.toasts.bulk_upload_success",
         DiscardSuccess: "admin.assets.toasts.discard_success",
         RestoreSuccess: "admin.assets.toasts.restore_success",
         DestroySuccess: "admin.assets.toasts.destroy_success",

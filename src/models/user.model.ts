@@ -10,7 +10,7 @@ export interface IUser {
   email: string;
   provider: string;
   bio?: string;
-  profile_pic_url?: string;
+  avatar_url?: string;
   role?: string;
   roles?: string[];
   role_ids?: string[];

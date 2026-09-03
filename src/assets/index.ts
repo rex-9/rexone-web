@@ -8,6 +8,8 @@
 import banner from "./images/banner.png";
 import darkBrickWall from "./design/dark-brick-wall.png";
 import spotCursor from "./design/spot48.png";
+import loadingImg from "./images/loading.png";
+import errorImg from "./images/error.png";
 
 // Social / UI SVGs
 import angellistSvg from "./design/angellist.svg";
@@ -102,6 +104,12 @@ export const images = {
     title: "Dark Brick Wall Texture",
   },
   spotCursor: { src: spotCursor, alt: "Spot Cursor", title: "Laser Cursor" },
+  loading: { src: loadingImg, alt: "Loading...", title: "Loading Media" },
+  error: {
+    src: errorImg,
+    alt: "Failed to load image",
+    title: "Image Load Failed",
+  },
 } as const;
 
 // ============================================================

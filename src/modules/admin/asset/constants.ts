@@ -17,8 +17,6 @@ export const ADMIN_ASSET_FILTERS = {
 
 export const ASSET_TYPES = {
   AVATAR: "avatar",
-  COVER: "cover",
-  CARD: "card",
   THUMBNAIL: "thumbnail",
   AUDIO: "audio",
   VIDEO: "video",
@@ -46,8 +44,6 @@ export type TAssetSource = (typeof ASSET_SOURCES)[keyof typeof ASSET_SOURCES];
 
 export const IMAGE_ASSET_TYPES: readonly string[] = [
   ASSET_TYPES.AVATAR,
-  ASSET_TYPES.COVER,
-  ASSET_TYPES.CARD,
   ASSET_TYPES.THUMBNAIL,
 ];
 
@@ -86,8 +82,6 @@ export const isImageAsset = (asset?: {
 export const ASSET_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
   { value: ASSET_TYPES.AVATAR, label: "Avatar" },
-  { value: ASSET_TYPES.COVER, label: "Cover" },
-  { value: ASSET_TYPES.CARD, label: "Card" },
   { value: ASSET_TYPES.THUMBNAIL, label: "Thumbnail" },
   { value: ASSET_TYPES.AUDIO, label: "Audio" },
   { value: ASSET_TYPES.VIDEO, label: "Video" },

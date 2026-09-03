@@ -15,9 +15,14 @@ import {
   Radio,
   TextInput,
 } from "../../components";
+import { Button, Image } from "../../../../design";
+import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
+import { iconsLib } from "../../../../assets";
 import { ADMIN_ACTIONS } from "../../constants";
 import { PRODUCT_CURRENCY, PRODUCT_CYCLE, PRODUCT_TYPE } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { AdminAssetSelectDialog } from "../../asset/components/AdminAssetSelectDialog";
+import { ASSET_TYPES } from "../../asset/constants";
 
 interface IAdminProductFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
@@ -69,6 +74,13 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   );
   const [descriptionError, setDescriptionError] = useState("");
   const [codeError, setCodeError] = useState("");
+  const [thumbnailAssetId, setThumbnailAssetId] = useState<string | null>(
+    product?.thumbnail_asset_id ?? null,
+  );
+  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(
+    product?.thumbnail_url ?? null,
+  );
+  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   const isInitiallyFree =
     mode === ADMIN_ACTIONS.EDIT &&
@@ -133,11 +145,70 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         ? PRODUCT_CYCLE.ONE_TIME
         : values.cycle || PRODUCT_CYCLE.ONE_TIME,
       active: values.active,
+      thumbnail_asset_id: thumbnailAssetId,
     });
   };
 
   return (
     <FormContainer onSubmit={handleSubmit}>
+      {/* Thumbnail Selection Card */}
+      <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl border border-base-200 bg-base-100 mb-2">
+        <div className="w-28 h-20 rounded-lg overflow-hidden border border-base-300 bg-base-200 shrink-0 flex items-center justify-center">
+          <Image
+            src={thumbnailUrl || ""}
+            alt={values.name || "Product Thumbnail"}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex-1 text-center sm:text-left space-y-1">
+          <span className="text-sm font-semibold text-base-content block">
+            {t(AppLocales.Admin.Products.Form.ThumbnailLabel, "Product Thumbnail")}
+          </span>
+          <span className="text-xs text-base-content/60 block">
+            {t(
+              AppLocales.Admin.Products.Form.ThumbnailHelper,
+              "Choose an existing uploaded thumbnail asset for this product.",
+            )}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant={ButtonVariants.SECONDARY}
+            size={ComponentSizes.SM}
+            onClick={() => setIsAssetPickerOpen(true)}
+          >
+            <iconsLib.photo className="w-4 h-4 mr-1.5" />
+            {t(AppLocales.Admin.Products.Form.ChooseThumbnail, "Choose Thumbnail")}
+          </Button>
+          {(thumbnailUrl || thumbnailAssetId) && (
+            <Button
+              type="button"
+              variant={ButtonVariants.TERTIARY}
+              size={ComponentSizes.SM}
+              className="text-error hover:bg-error/10"
+              onClick={() => {
+                setThumbnailAssetId("");
+                setThumbnailUrl(null);
+              }}
+            >
+              <iconsLib.trash className="w-4 h-4 mr-1" />
+              {t(AppLocales.Admin.Products.Form.RemoveThumbnail, "Remove")}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <AdminAssetSelectDialog
+        isOpen={isAssetPickerOpen}
+        onClose={() => setIsAssetPickerOpen(false)}
+        assetType={ASSET_TYPES.THUMBNAIL}
+        selectedAssetId={thumbnailAssetId}
+        onSelect={(asset) => {
+          setThumbnailAssetId(asset.id);
+          setThumbnailUrl(asset.url);
+        }}
+      />
       <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={t(AppLocales.Admin.Products.Form.NameLabel)}

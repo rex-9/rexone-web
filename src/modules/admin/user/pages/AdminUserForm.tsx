@@ -1,10 +1,7 @@
 // src/modules/admin/user/pages/AdminUserForm.tsx
 import React, { useMemo, useState } from "react";
 import { IAdminRole } from "../../role/types";
-import {
-  IAdminUser,
-  IAdminUserFormValues,
-} from "../types";
+import { IAdminUser, IAdminUserFormValues } from "../types";
 import {
   AdminPermissionMatrix,
   Checkbox,
@@ -13,8 +10,13 @@ import {
   IAdminPermissionMatrixItem,
   TextInput,
 } from "../../components";
+import { Button, Image } from "../../../../design";
+import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
+import { iconsLib } from "../../../../assets";
 import { ADMIN_ACTIONS } from "../../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { AdminAssetSelectDialog } from "../../asset/components/AdminAssetSelectDialog";
+import { ASSET_TYPES } from "../../asset/constants";
 
 export interface IAdminUserFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
@@ -32,16 +34,20 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   onCancel,
 }) => {
   const t = useTranslate();
-  const initialRoleIds = useMemo(
-    () => user?.role_ids ?? [],
-    [user],
-  );
+  const initialRoleIds = useMemo(() => user?.role_ids ?? [], [user]);
 
   const [username, setUsername] = useState(user?.username ?? "");
   const [name, setName] = useState(user?.name ?? "");
   const [email, setEmail] = useState(user?.email ?? "");
   const [selectedRoleIds, setSelectedRoleIds] =
     useState<string[]>(initialRoleIds);
+  const [avatarAssetId, setAvatarAssetId] = useState<string | null>(
+    user?.avatar_asset_id ?? null,
+  );
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(
+    user?.avatar_url ?? null,
+  );
+  const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -51,6 +57,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
       name: name.trim(),
       email: email.trim(),
       role_ids: selectedRoleIds,
+      avatar_asset_id: avatarAssetId,
     };
 
     await onSubmit(payload);
@@ -64,30 +71,86 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
     () => roles.filter((role) => selectedRoleIdSet.has(role.id)),
     [roles, selectedRoleIdSet],
   );
-  const selectedRolePermissions = useMemo<IAdminPermissionMatrixItem[]>(
-    () => {
-      const permissionsByKey = new Map<string, IAdminPermissionMatrixItem>();
+  const selectedRolePermissions = useMemo<IAdminPermissionMatrixItem[]>(() => {
+    const permissionsByKey = new Map<string, IAdminPermissionMatrixItem>();
 
-      selectedRoles.forEach((role) => {
-        Object.entries(role.permissions ?? {}).forEach(([resource, actions]) =>
-          (Array.isArray(actions) ? actions : []).forEach((action: string) => {
-            const key = `${resource}-${action}`;
-            permissionsByKey.set(key, {
-              id: key,
-              resource,
-              action,
-            });
-          }),
-        );
-      });
+    selectedRoles.forEach((role) => {
+      Object.entries(role.permissions ?? {}).forEach(([resource, actions]) =>
+        (Array.isArray(actions) ? actions : []).forEach((action: string) => {
+          const key = `${resource}-${action}`;
+          permissionsByKey.set(key, {
+            id: key,
+            resource,
+            action,
+          });
+        }),
+      );
+    });
 
-      return [...permissionsByKey.values()];
-    },
-    [selectedRoles],
-  );
+    return [...permissionsByKey.values()];
+  }, [selectedRoles]);
 
   return (
     <FormContainer onSubmit={handleSubmit}>
+      {/* Avatar Selection Card */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-base-200 bg-base-100 mb-2">
+        <div className="w-16 h-16 rounded-full overflow-hidden border border-base-300 bg-base-200 shrink-0">
+          <Image
+            src={avatarUrl || ""}
+            alt={name || username}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="flex-1 text-center sm:text-left space-y-1">
+          <span className="text-sm font-semibold text-base-content block">
+            {t(AppLocales.Admin.Users.Form.AvatarLabel, "Profile Avatar")}
+          </span>
+          <span className="text-xs text-base-content/60 block">
+            {t(
+              AppLocales.Admin.Users.Form.AvatarHelper,
+              "Choose an existing uploaded avatar asset for this user.",
+            )}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant={ButtonVariants.SECONDARY}
+            size={ComponentSizes.SM}
+            onClick={() => setIsAssetPickerOpen(true)}
+          >
+            <iconsLib.photo className="w-4 h-4 mr-1.5" />
+            {t(AppLocales.Admin.Users.Form.ChooseAvatar, "Choose Avatar")}
+          </Button>
+          {(avatarUrl || avatarAssetId) && (
+            <Button
+              type="button"
+              variant={ButtonVariants.TERTIARY}
+              size={ComponentSizes.SM}
+              className="text-error hover:bg-error/10"
+              onClick={() => {
+                setAvatarAssetId("");
+                setAvatarUrl(null);
+              }}
+            >
+              <iconsLib.trash className="w-4 h-4 mr-1" />
+              {t(AppLocales.Admin.Users.Form.RemoveAvatar, "Remove")}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <AdminAssetSelectDialog
+        isOpen={isAssetPickerOpen}
+        onClose={() => setIsAssetPickerOpen(false)}
+        assetType={ASSET_TYPES.AVATAR}
+        selectedAssetId={avatarAssetId}
+        onSelect={(asset) => {
+          setAvatarAssetId(asset.id);
+          setAvatarUrl(asset.url);
+        }}
+      />
+
       <div className="grid gap-4 md:grid-cols-2">
         <TextInput
           label={t(AppLocales.Admin.Users.Form.UsernameLabel)}
@@ -153,7 +216,9 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
                     {t(AppLocales.Admin.Common.Table.NoRecords)}
                   </div>
                 ) : (
-                  <AdminPermissionMatrix permissions={selectedRolePermissions} />
+                  <AdminPermissionMatrix
+                    permissions={selectedRolePermissions}
+                  />
                 )}
               </div>
             )}
@@ -173,4 +238,3 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
     </FormContainer>
   );
 };
-

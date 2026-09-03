@@ -21,6 +21,8 @@ export interface IAdminProduct {
   active: boolean;
   stripe_product_id: string;
   stripe_price_id: string;
+  thumbnail_url?: string | null;
+  thumbnail_asset_id?: string | null;
   created_at?: Date;
   updated_at?: Date;
   discarded_at?: Date | null;
@@ -35,6 +37,7 @@ export interface IAdminProductFormValues {
   currency: string;
   cycle?: AdminProductCycle;
   active: boolean;
+  thumbnail_asset_id?: string | null;
 }
 
 export interface IAdminProductListParams {

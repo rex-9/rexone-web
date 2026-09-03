@@ -91,7 +91,7 @@ class AdminAssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord(data.asset),
+        asset: parseRecord("asset" in data ? (data as any).asset : data),
         message: status.message,
       };
     }

@@ -394,6 +394,10 @@
         "password_confirm_placeholder": "Re-enter 6-digit passcode",
         "roles_label": "Assigned Roles",
         "confirmed_label": "Mark as Confirmed",
+        "avatar_label": "Profile Avatar",
+        "avatar_helper": "Assign an uploaded avatar asset to this user.",
+        "choose_avatar": "Choose Avatar",
+        "remove_avatar": "Remove Avatar",
         "save_user": "Save User",
         "create_user": "Create User",
         "saving": "Saving..."
@@ -509,6 +513,10 @@
         "cycle_yearly": "Yearly",
         "cycle_one_time": "One-Time",
         "active_for_purchase": "Active for Purchase",
+        "thumbnail_label": "Product Thumbnail",
+        "thumbnail_helper": "Assign an uploaded thumbnail asset to this product.",
+        "choose_thumbnail": "Choose Thumbnail",
+        "remove_thumbnail": "Remove Thumbnail",
         "save_product": "Save Product",
         "create_product": "Create Product",
         "saving": "Saving..."
@@ -906,11 +914,27 @@
         "actions": "Actions"
       },
       "upload_dialog": {
-        "title": "Upload Asset",
+        "title": "Upload Assets",
         "type_label": "Asset Type",
-        "file_label": "Select File",
+        "file_label": "Select Files",
+        "choose_files": "Choose Files",
         "upload_button": "Upload",
-        "uploading": "Uploading..."
+        "uploading": "Uploading...",
+        "bulk_notice_title": "Notice for Batch Uploads",
+        "bulk_notice": "All selected files in a batch will share the chosen Asset Type (e.g., all Thumbnails, all Avatars, or all Covers). Mixed types cannot be uploaded in the same batch.",
+        "selected_files": "Selected Files",
+        "clear_all": "Clear All",
+        "uploading_status": "Uploading file {{current}} of {{total}}: {{name}}",
+        "compress_tip_title": "Compression Recommended",
+        "compress_tip_desc": "Built-in media compression is not yet available. Please compress large files before uploading to optimize loading performance and reduce storage usage:",
+        "compress_images": "Compress Images (TinyPNG)",
+        "compress_videos": "Compress Videos (FreeConvert)"
+      },
+      "picker": {
+        "title": "Select Asset",
+        "search_placeholder": "Search assets by name...",
+        "no_assets": "No assets found matching criteria.",
+        "select_action": "Select Asset"
       },
       "confirm": {
         "discard_title": "Discard Asset",
@@ -922,6 +946,7 @@
       },
       "toasts": {
         "upload_success": "Asset uploaded successfully",
+        "bulk_upload_success": "Successfully uploaded {{count}} assets",
         "discard_success": "Asset discarded successfully",
         "restore_success": "Asset restored successfully",
         "destroy_success": "Asset permanently deleted",
