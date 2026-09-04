@@ -10,6 +10,7 @@ export interface IAsset {
   size_bytes?: number | null;
   duration_secs?: number | null;
   source: string;
+  status?: string | null;
   assetable_type?: string | null;
   assetable_id?: string | null;
   created_by_id?: string | null;

@@ -13,6 +13,7 @@ vi.mock("./asset.service", () => ({
     discardAsset: vi.fn(),
     restoreAsset: vi.fn(),
     destroyAsset: vi.fn(),
+    compressAsset: vi.fn(),
   },
 }));
 
@@ -110,6 +111,81 @@ describe("AdminAssetController", () => {
           folder: "admin_uploads",
         }),
       );
+    });
+  });
+
+  describe("compressAsset", () => {
+    it("calls service and returns parsed asset and message", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Compression enqueued" },
+          data: {
+            id: "a3",
+            type: "asset",
+            attributes: {
+              id: "a3",
+              name: "banner.png",
+              status: "processing",
+              size_bytes: 5000,
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a3");
+
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Compression enqueued");
+      expect(result.asset?.id).toBe("a3");
+      expect(result.asset?.status).toBe("processing");
+      expect(AdminAssetService.compressAsset).toHaveBeenCalledWith("a3");
+    });
+
+    it("handles failure response", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 422, success: false, message: "Only images and videos can be compressed" },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a4");
+
+      expect(result.success).toBe(false);
+      expect(result.isOptimal).toBe(false);
+      expect(result.error).toBe("Only images and videos can be compressed");
+    });
+
+    it("identifies optimal status when asset is already optimal or reached limit", async () => {
+      const mockResponse = {
+        data: {
+          status: { code: 422, success: false, message: "Asset is already at optimal compression size." },
+          data: {
+            asset: {
+              id: "a5",
+              name: "icon.png",
+              status: "optimal",
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.compressAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.compressAsset("a5");
+
+      expect(result.success).toBe(false);
+      expect(result.isOptimal).toBe(true);
+      expect(result.asset?.status).toBe("optimal");
     });
   });
 });

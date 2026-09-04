@@ -7,11 +7,14 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
 import { iconsLib } from "../../../../assets";
-import { Badge, Button, Image } from "../../../../design";
+import { Badge, Button, Image, StatusBadge } from "../../../../design";
 import { ButtonVariants } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AdminAssetController from "../asset.controller";
 import type { IAdminAsset } from "../types";
+import SocketService, {
+  ISocketMessage,
+} from "../../../../services/socket.service";
 import {
   AlertDialog,
   AdminState,
@@ -23,6 +26,7 @@ import {
 } from "../../components";
 import {
   ASSET_TYPE_OPTIONS,
+  ASSET_STATUSES,
   formatAssetFileSize,
   isImageAsset,
 } from "../constants";
@@ -42,6 +46,79 @@ export const AdminAssetEditPage: React.FC = () => {
   const [type, setType] = useState("general");
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
+  const [isCompressing, setIsCompressing] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const handleSocketMessage = (event: ISocketMessage) => {
+      if (event.type !== "notification") return;
+      const eventType =
+        typeof event.data?.type === "string" ? event.data.type : "";
+      if (
+        eventType !== "asset_compressed" &&
+        eventType !== "asset_compression_failed" &&
+        eventType !== "asset_compressing"
+      ) {
+        return;
+      }
+
+      const assetId =
+        typeof event.data?.asset_id === "string" ? event.data.asset_id : "";
+      if (assetId !== id) return;
+
+      const status =
+        typeof event.data?.status === "string" ? event.data.status : "";
+      const sizeBytes =
+        typeof event.data?.size_bytes === "number"
+          ? event.data.size_bytes
+          : undefined;
+      const url =
+        typeof event.data?.url === "string" ? event.data.url : undefined;
+
+      setAsset((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          status: status || prev.status,
+          size_bytes: sizeBytes !== undefined ? sizeBytes : prev.size_bytes,
+          url: url !== undefined ? url : prev.url,
+        };
+      });
+    };
+
+    SocketService.addListener(handleSocketMessage);
+    return () => {
+      SocketService.removeListener(handleSocketMessage);
+    };
+  }, [id]);
+
+  const handleCompress = async () => {
+    if (!id) return;
+    setIsCompressing(true);
+    try {
+      const result = await AdminAssetController.compressAsset(id);
+      if (result.success) {
+        if (result.asset) {
+          setAsset(result.asset);
+        } else {
+          setAsset((prev) =>
+            prev ? { ...prev, status: ASSET_STATUSES.PROCESSING } : null,
+          );
+        }
+        toast.info(result.message || "Compression enqueued successfully");
+      } else if (result.isOptimal) {
+        toast.info(result.error || t(AppLocales.Admin.Assets.Compression.AtMinSize));
+        setAsset((prev) =>
+          prev ? { ...prev, status: ASSET_STATUSES.OPTIMAL } : null,
+        );
+      } else {
+        toast.error(result.error || "Failed to trigger compression");
+      }
+    } finally {
+      setIsCompressing(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -216,6 +293,11 @@ export const AdminAssetEditPage: React.FC = () => {
               )}
 
               <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <span className="text-base-content/60">Status</span>
+                <StatusBadge status={asset.status || "pending"} />
+              </div>
+
+              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Assets.Table.Created)}
                 </span>
@@ -237,6 +319,41 @@ export const AdminAssetEditPage: React.FC = () => {
                   </Button>
                 </div>
               )}
+
+              <div className="pt-2">
+                <Button
+                  variant={ButtonVariants.SECONDARY}
+                  className="w-full"
+                  onClick={handleCompress}
+                  disabled={
+                    isCompressing ||
+                    asset.status === ASSET_STATUSES.PENDING ||
+                    asset.status === ASSET_STATUSES.PROCESSING ||
+                    asset.status === ASSET_STATUSES.OPTIMAL
+                  }
+                  title={
+                    asset.status === ASSET_STATUSES.OPTIMAL
+                      ? t(AppLocales.Admin.Assets.Compression.MinSizeTooltip)
+                      : t(AppLocales.Admin.Assets.Compression.TriggerTooltip)
+                  }
+                >
+                  <iconsLib.arrowPath
+                    className={`w-4 h-4 mr-2 ${
+                      isCompressing ||
+                      asset.status === ASSET_STATUSES.PENDING ||
+                      asset.status === ASSET_STATUSES.PROCESSING
+                        ? "animate-spin"
+                        : ""
+                    }`}
+                  />
+                  {asset.status === ASSET_STATUSES.PROCESSING ||
+                  asset.status === ASSET_STATUSES.PENDING
+                    ? t(AppLocales.Admin.Assets.Compression.Compressing)
+                    : asset.status === ASSET_STATUSES.OPTIMAL
+                      ? t(AppLocales.Admin.Assets.Compression.AtMinSize)
+                      : t(AppLocales.Admin.Assets.Compression.TriggerCompression)}
+                </Button>
+              </div>
             </div>
           </div>
 

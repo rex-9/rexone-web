@@ -34,17 +34,19 @@ flowchart TB
     subgraph Core["Rexone Core (Rails 8.1 API + Ruby 4.0.4)"]
         API["Rails API Layer (Devise, Controllers, IAM, Pagy)"]
         Waka["Waka Worker (Solid Queue: payments, ai, notifications, storage)"]
-        Services["Service Boundary (Payment, Storage, AI, Notification, Cache)"]
+        Media["Media Worker (Solid Queue: media compression via libvips / FFmpeg)"]
+        Services["Service Boundary (Payment, Storage, AI, Notification, Speech, Cache)"]
         Obs["Observability (Rails Pulse, RED Error Dashboard, Solid UI, Client Logs)"]
     end
 
     subgraph Providers["Persistence & External Providers"]
         Postgres[(PostgreSQL 18 - UUID, Discard, Audited)]
+        Garage[(Garage S3 Storage / Cloudinary / Local)]
         Stripe["Stripe (Checkout, Subscriptions, Webhooks)"]
         DeepSeek["DeepSeek AI API"]
+        Speech["Azure & Nova Speech (TTS / STT)"]
         OneSignal["OneSignal (Push & Email)"]
         Firebase["Firebase Analytics (Mobile Telemetry)"]
-        Cloudinary["Cloudinary / Local Storage"]
     end
 
     Web -->|HTTPS| API
@@ -58,11 +60,14 @@ flowchart TB
     API --> Waka
     Waka --> Postgres
     Waka --> Services
+    Media --> Postgres
+    Media --> Services
 
     Services --> Stripe
     Services --> DeepSeek
+    Services --> Speech
     Services --> OneSignal
-    Services --> Cloudinary
+    Services --> Garage
     Mobile -.-> Firebase
     Mobile -.-> OneSignal
 ```
@@ -74,10 +79,12 @@ flowchart TB
 ### 🛠️ Tech Stack & Infrastructure
 
 - **Runtime**: Ruby `4.0.4`, Rails `8.1.0` (API mode), PostgreSQL `18`.
-- **Docker Compose**: Orchestrates 3 core services:
+- **Docker Compose**: Orchestrates the 5-container ecosystem:
   - `api` (Rails API on `:3000`)
-  - `waka` (Dedicated Solid Queue background worker process)
+  - `waka` (Dedicated Solid Queue worker process for general background queues)
   - `db` (PostgreSQL `18` on `:5432`)
+  - `media` (Dedicated Solid Queue worker process for `:media` queue - image & video compression via libvips/FFmpeg)
+  - `garage` (Self-hosted S3-compatible distributed object storage on `:3900` API / `:3902` Admin)
 - **Key Gems**: `devise`, `devise-jwt`, `solid_queue`, `solid_cable`, `solid_cache`, `discard` (soft deletes), `jsonapi-serializer`, `pagy` (pagination), `rails_pulse` (performance monitoring), `rails_error_dashboard` (exception tracking), `rswag` (OpenAPI/Swagger docs), `administrate` (server-rendered back office).
 
 ### 📦 Database, Schema & Models
@@ -91,15 +98,16 @@ All tables use **UUID** primary keys (`gen_random_uuid()`), utilize **Discard** 
 | **Commerce**         | `Payment::Product`, `Payment::Subscription`, `Payment::Transaction`, `Payment::WebhookEvent` | Stripe synced products & prices, subscription lifecycle (`cancel_at_period_end`, resumption, periods), transactions with payment method details, durable webhook event queue with deduplication and retry state. |
 | **Entitlements**     | `Access`                                                                                     | Granted/revoked/expired access records tied to `User` and `Product`.                                                                                                                                             |
 | **AI / Chat**        | `Chat::Room`, `Chat::Message`                                                                | Conversational rooms, messages with roles (`user`, `assistant`), `ai_status` (`queued`, `processing`, `completed`, `failed`), system prompts, temperature, max tokens, metadata.                                 |
-| **Media**            | `Asset`                                                                                      | Unified media metadata (`storage_key` for Garage/S3/Cloudinary/Local, format, size_bytes, duration_secs, type, polymorphic `assetable_type`/`assetable_id`).                                                     |
+| **Media**            | `Asset`                                                                                      | Unified media metadata (`storage_key` for Garage/S3/Cloudinary/Local, format, size_bytes, original_size_bytes, compressed_size_bytes, compression_ratio, compression_passes, status enum: `pending`/`processing`/`ready`/`optimal`, duration_secs, type, polymorphic `assetable_type`/`assetable_id`). |
 | **Telemetry**        | `Log::Client`                                                                                | Frontend error ingest (stack traces, device, OS, browser, URL, severity, occurrences, local/session storage keys, cookies, resolution status).                                                                   |
 | **Feedback**         | `Feedback`                                                                                   | Intelligent in-place feedback (1-10 rating, auto-inferred category: `bug`/`feature_request`/`improvement`/`general`, priority: `low`/`normal`/`high`/`urgent`, status, automated device/route telemetry).        |
 
-### ⚙️ Services & Background Jobs (Solid Queue / Waka)
+### ⚙️ Services & Background Jobs (Solid Queue / Waka / Media)
 
-Heavy or external provider operations sit behind clean service interfaces and execute in dedicated background queues (`config/queue.yml`):
+Heavy or external provider operations sit behind clean service interfaces and execute in dedicated background queues (`config/queue.yml` & `config/queue.media.yml`):
 
 - **AI & Speech Queue (`ai`)**: `Ai::ProcessChatJob` communicates with DeepSeek (`AiService::Client`) for chat completion. `Speech::ProcessTtsJob` communicates with Azure/Nova (`SpeechService::Client`) to synthesize audio for chat messages, saves MP3 assets via `StorageService::Client`, and alerts the user over WebSocket (`NotificationChannel`).
+- **Media Compression Queue (`media`)**: Dedicated `media` worker process running `Media::CompressImageJob` (libvips) and `Media::CompressVideoJob` (FFmpeg). Uses an **optimal-first pipeline**: if reduction is negligible (`< 3%`) or size doesn't decrease on initial upload, the asset is immediately marked as `optimal` without touching cache. If meaningful reduction is achieved, cache counter tracks passes with a fallback safety cap of 2 passes (`MAX_COMPRESSION_PASSES = 2`). Broadcasts real-time updates over ActionCable (`NotificationChannel`). Supports uploads up to 10 MB for images/non-videos and 100 MB for videos.
 - **Payments Queue (`payments`)**: `Payment::ProcessWebhookJob` asynchronously fulfills Stripe webhooks (checkout completed, invoice paid, subscription updated/deleted) with idempotency.
 - **Notifications Queue (`notifications`)**: `NotificationService` fans out work to `Notification::DeliverJob` for Action Cable broadcasts, OneSignal push notifications, and OneSignal transactional emails.
 - **Storage Queue (`storage`)**: `Storage::DeleteJob` handles remote deletion asynchronously after DB commits.
@@ -152,7 +160,7 @@ The `/v1/admin/` namespace provides comprehensive management capabilities protec
 - **IAM Management**: `GET/PATCH/DELETE /v1/admin/iam/roles` and `GET/POST/PATCH/DELETE /v1/admin/iam/permissions` (auto-named).
 - **Chat Moderation**: `GET/PATCH/DELETE /v1/admin/chat/rooms` and `/messages`.
 - **Product Management**: `GET/POST/PATCH/DELETE /v1/admin/payment/products` (Stripe sync, discard/undiscard).
-- **Asset Management**: `GET/PUT/DELETE /v1/admin/assets` (CRUD + upload + discard/undiscard/destroy, search, filter by type/format/source).
+- **Asset Management**: `GET/PUT/DELETE /v1/admin/assets` (CRUD + upload + discard/undiscard/destroy, search, filter by type/format/source, real-time ActionCable compression status updates, secondary compression pass trigger with 2-pass safeguard).
 - **Notification Broadcasts**: `GET /v1/admin/notifications/templates` and `POST /v1/admin/notifications` (audience targeting via roles/users/all, multi-channel fanout).
 
 ---
@@ -183,7 +191,8 @@ Defined under `src/design/`:
 - **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passwords are held purely in memory and never leaked into URL params or persistent storage.
 - **Commerce & Stripe**: Fetches products, triggers Checkout Session (`/v1/payment/session`), redirects to Stripe, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations.
 - **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
-- **Telemetry & Error Logging**: Unhandled client exceptions and React Error Boundary catches are posted directly to Core at `POST /v1/log/clients` with storage keys snapshot.
+- **Speech & Audio**: Plays raw binary MP3 audio streams directly from `/v1/speech/tts` without base64 wrapper overhead, handles chat message TTS audio playback, and integrates live audio recognition.
+- **Asset Control Center**: Dedicated operational asset management under `/admin/assets`. Features a multi-file bulk upload dialog with optimistic row prepending, out-of-order socket reconciliation (`pendingSocketUpdates`), real-time compression badges (`optimal`, `ready`, `processing`, `pending`), disabled action buttons during in-flight processing, and manual secondary compression pass triggers.
 - **Client Admin Panel & RBAC Governance**: Admin UI module under `src/modules/admin/` with sidebar navigation, route guards (`AdminRootRoute`, `AdminHomeRoute`), and client-side RBAC evaluation (`usePermissions`).
   - **Non-Admin Portal Isolation**: Users with only non-admin roles (`user`) cannot access `/admin/*` under any circumstance.
   - **Admin Role Scoping**: Capabilities within `/admin/*` evaluate only permissions mapped from active admin roles (`super_admin`, `admin`, `*_admin`). Base `user` permissions never leak into the admin portal.
@@ -248,6 +257,10 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 | **Speech: Text-to-Speech (Sync & Async Binary Streaming)**                |      ✅       |          ✅          |            ✅            |
 | **Speech: Speech-to-Text (Sync Upload / URL)**                            |      ✅       |          ✅          |            ✅            |
 | **Speech: Live Audio STT Streaming (WebSocket)**                          |      ✅       |          ✅          |            ✅            |
+| **Media: Multi-Provider Storage (Garage S3, Cloudinary, Local)**          |      ✅       |          ✅          |            ✅            |
+| **Media: Silent Underground Compression (libvips / FFmpeg)**              |      ✅       |          ✅          |           N/A            |
+| **Media: Real-Time Cable Compression Updates**                            |      ✅       |          ✅          |           N/A            |
+| **Media: Bulk Upload & Optimal-First Pipeline**                           |      ✅       |          ✅          |           N/A            |
 | **Push Notifications (OneSignal)**                                        |      ✅       |         N/A          |            ✅            |
 | **Product Analytics (Firebase)**                                          |      N/A      |         N/A          |            ✅            |
 | **Client Admin Panel: User, IAM, Product, Chat, Asset, Notification Management** |      ✅       |          ✅          |           N/A            |
@@ -297,6 +310,9 @@ All three pillars of the Rexone platform are fully aligned at **100% feature par
 - **Standard Broadcast Events**:
   - `ai_response_ready`: `{ "type": "ai_response_ready", "room_id": "UUID", "message_id": "UUID" }`
   - `ai_response_failed`: `{ "type": "ai_response_failed", "room_id": "UUID", "error": "Message" }`
+  - `tts_ready`: `{ "type": "tts_ready", "message_id": "UUID", "asset_id": "UUID" }`
+  - `tts_failed`: `{ "type": "tts_failed", "message_id": "UUID", "error": "Message" }`
+  - `asset_updated`: `{ "type": "asset_updated", "id": "UUID", "status": "optimal" | "ready" | "processing", "size_bytes": 12345, "compressed_size_bytes": 12000, "compression_ratio": "2.8%", "compression_passes": 1 }`
   - `payment_success`: `{ "type": "payment_success", "product_name": "Pro Plan", "amount": "$10.00" }`
   - `subscription_created` / `subscription_canceled` / `subscription_resumed`: `{ "type": "subscription_canceled", "product_name": "...", "active_until": "ISO8601" }`
   - `welcome`: Sent upon first successful Action Cable subscription.

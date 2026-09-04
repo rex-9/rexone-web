@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, useSort, SORT_ORDERS } from "../../../../hooks";
-import type { IApiPagination } from "../../../../models";
+import type { IApiPagination, IAsset } from "../../../../models";
 import { iconsLib } from "../../../../assets";
 import {
   Badge,
@@ -13,10 +13,16 @@ import {
   Dropdown,
   Tabs,
   Image,
+  StatusBadge,
+  ButtonSizes,
+  ButtonVariants,
 } from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AdminAssetController from "../asset.controller";
 import type { IAdminAsset } from "../types";
+import SocketService, {
+  ISocketMessage,
+} from "../../../../services/socket.service";
 import {
   AdminPagination,
   AdminState,
@@ -37,6 +43,8 @@ import {
   ADMIN_ASSET_COLUMNS,
   ASSET_TYPE_OPTIONS,
   ASSET_FORMAT_OPTIONS,
+  ASSET_STATUSES,
+  ASSET_STATUS_OPTIONS,
   formatAssetFileSize,
   isImageAsset,
 } from "../constants";
@@ -68,6 +76,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const searchQuery = searchParams.get("search") || "";
   const typeFilter = searchParams.get("type") || "";
   const formatFilter = searchParams.get("format") || "";
+  const statusFilter = searchParams.get("status") || "";
 
   const { sortBy, sortOrder, handleSort } = useSort({
     defaultSortBy: isActive
@@ -90,6 +99,10 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     null,
   );
   const [isDiscarding, setIsDiscarding] = useState(false);
+  const [compressingId, setCompressingId] = useState<string | null>(null);
+  const pendingSocketUpdates = useRef<
+    Map<string, { status: string; size_bytes?: number; url?: string }>
+  >(new Map());
 
   // Discarded view state
   const [isRestoreOpen, setIsRestoreOpen] = useState(false);
@@ -116,6 +129,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       if (searchQuery) params.search = searchQuery;
       if (typeFilter) params.type = typeFilter;
       if (formatFilter) params.format = formatFilter;
+      if (statusFilter) params.status = statusFilter;
 
       const result = isActive
         ? await AdminAssetController.getAssets(params)
@@ -140,6 +154,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     searchQuery,
     typeFilter,
     formatFilter,
+    statusFilter,
     isActive,
     setLoading,
     toast,
@@ -149,6 +164,66 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   useEffect(() => {
     fetchAssets();
   }, [fetchAssets]);
+
+  useEffect(() => {
+    const handleSocketMessage = (event: ISocketMessage) => {
+      if (event.type !== "notification") return;
+      const eventType =
+        typeof event.data?.type === "string" ? event.data.type : "";
+      if (
+        eventType !== "asset_compressed" &&
+        eventType !== "asset_compression_failed" &&
+        eventType !== "asset_compressing"
+      ) {
+        return;
+      }
+
+      const assetId =
+        typeof event.data?.asset_id === "string" ? event.data.asset_id : "";
+      if (!assetId) return;
+
+      const status =
+        typeof event.data?.status === "string" ? event.data.status : "";
+      const sizeBytes =
+        typeof event.data?.size_bytes === "number"
+          ? event.data.size_bytes
+          : undefined;
+      const url =
+        typeof event.data?.url === "string" ? event.data.url : undefined;
+
+      setAssets((prevAssets) => {
+        let matched = false;
+        const next = prevAssets.map((a) => {
+          if (a.id === assetId) {
+            matched = true;
+            return {
+              ...a,
+              status: (status as IAsset["status"]) || a.status,
+              size_bytes: sizeBytes !== undefined ? sizeBytes : a.size_bytes,
+              url: url !== undefined ? url : a.url,
+            };
+          }
+          return a;
+        });
+
+        if (!matched) {
+          pendingSocketUpdates.current.set(assetId, {
+            status,
+            size_bytes: sizeBytes,
+            url,
+          });
+          return prevAssets;
+        }
+
+        return next;
+      });
+    };
+
+    SocketService.addListener(handleSocketMessage);
+    return () => {
+      SocketService.removeListener(handleSocketMessage);
+    };
+  }, []);
 
   const updateSearchParams = useCallback(
     (updates: Record<string, string | null>) => {
@@ -172,6 +247,62 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const handlePageChange = (newPage: number) => {
     updateSearchParams({ page: newPage.toString() });
   };
+
+  const handleAssetUploaded = useCallback((asset: IAsset) => {
+    setAssets((prev) => {
+      const buffered = pendingSocketUpdates.current.get(asset.id);
+      let assetToAdd: IAdminAsset = asset as IAdminAsset;
+      if (buffered) {
+        pendingSocketUpdates.current.delete(asset.id);
+        assetToAdd = {
+          ...assetToAdd,
+          status: (buffered.status as IAsset["status"]) || assetToAdd.status,
+          size_bytes: buffered.size_bytes ?? assetToAdd.size_bytes,
+          url: buffered.url || assetToAdd.url,
+        };
+      }
+      if (prev.some((a) => a.id === asset.id)) {
+        return prev.map((a) => (a.id === asset.id ? assetToAdd : a));
+      }
+      return [assetToAdd, ...prev];
+    });
+  }, []);
+
+  const handleUploadSuccess = useCallback(
+    (newAssets?: IAsset[]) => {
+      if (newAssets && newAssets.length > 0) {
+        setAssets((prev) => {
+          const newIds = new Set(newAssets.map((a) => a.id));
+          const mergedNewAssets = newAssets.map((asset) => {
+            const buffered = pendingSocketUpdates.current.get(asset.id);
+            if (buffered) {
+              pendingSocketUpdates.current.delete(asset.id);
+              return {
+                ...asset,
+                status: (buffered.status as IAsset["status"]) || asset.status,
+                size_bytes: buffered.size_bytes ?? asset.size_bytes,
+                url: buffered.url || asset.url,
+              } as IAdminAsset;
+            }
+            const existing = prev.find((a) => a.id === asset.id);
+            if (existing && existing.status !== ASSET_STATUSES.PENDING) {
+              return {
+                ...asset,
+                status: existing.status,
+                size_bytes: existing.size_bytes ?? asset.size_bytes,
+                url: existing.url || asset.url,
+              } as IAdminAsset;
+            }
+            return asset as IAdminAsset;
+          });
+          return [...mergedNewAssets, ...prev.filter((a) => !newIds.has(a.id))];
+        });
+      } else {
+        fetchAssets();
+      }
+    },
+    [fetchAssets],
+  );
 
   // Active view actions
   const handleDiscard = async () => {
@@ -246,6 +377,39 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     }
   };
 
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ASSETS);
+  const canUpdate = can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.ASSETS);
+
+  const handleCompress = async (asset: IAdminAsset) => {
+    setCompressingId(asset.id);
+    try {
+      const result = await AdminAssetController.compressAsset(asset.id);
+      if (result.success) {
+        toast.info(result.message || "Compression enqueued successfully");
+        setAssets((prevAssets) =>
+          prevAssets.map((a) =>
+            a.id === asset.id
+              ? { ...a, status: ASSET_STATUSES.PROCESSING }
+              : a,
+          ),
+        );
+      } else if (result.isOptimal) {
+        toast.info(result.error || t(AppLocales.Admin.Assets.Compression.AtMinSize));
+        setAssets((prevAssets) =>
+          prevAssets.map((a) =>
+            a.id === asset.id
+              ? { ...a, status: ASSET_STATUSES.OPTIMAL }
+              : a,
+          ),
+        );
+      } else {
+        toast.error(result.error || "Failed to trigger compression");
+      }
+    } finally {
+      setCompressingId(null);
+    }
+  };
+
   const columns: IAdminTableColumn<IAdminAsset>[] = useMemo(() => {
     const base: IAdminTableColumn<IAdminAsset>[] = [
       {
@@ -303,6 +467,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           ),
         },
         {
+          key: ADMIN_ASSET_COLUMNS.STATUS,
+          header: "Status",
+          sortKey: ADMIN_ASSET_COLUMNS.STATUS,
+          render: (asset) => <StatusBadge status={asset.status || "pending"} />,
+        },
+        {
           key: ADMIN_ASSET_COLUMNS.SIZE,
           header: t(AppLocales.Admin.Assets.Table.Size),
           sortKey: ADMIN_ASSET_COLUMNS.SIZE,
@@ -326,29 +496,62 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           key: "actions",
           header: "",
           render: (asset) => (
-            <AdminTableActions
-              resource={ADMIN_RESOURCES.ASSETS}
-              actions={[
-                {
-                  type: ADMIN_ACTIONS.EDIT,
-                  onClick: () => {
-                    navigate(
-                      AppRoutes.withId(
-                        AppRoutes.client.protected.admin.ASSET_EDIT,
-                        asset.id,
-                      ),
-                    );
+            <div className="flex items-center gap-1 justify-end">
+              {canUpdate && (
+                <Button
+                  size={ButtonSizes.XS}
+                  variant={ButtonVariants.SECONDARY}
+                  onClick={() => handleCompress(asset)}
+                  disabled={
+                    compressingId === asset.id ||
+                    asset.status === ASSET_STATUSES.PENDING ||
+                    asset.status === ASSET_STATUSES.PROCESSING ||
+                    asset.status === ASSET_STATUSES.OPTIMAL
+                  }
+                  title={
+                    asset.status === ASSET_STATUSES.OPTIMAL
+                      ? t(AppLocales.Admin.Assets.Compression.MinSizeTooltip)
+                      : t(AppLocales.Admin.Assets.Compression.TriggerTooltip)
+                  }
+                >
+                  <iconsLib.arrowPath
+                    className={`w-3.5 h-3.5 ${
+                      compressingId === asset.id ||
+                      asset.status === ASSET_STATUSES.PENDING ||
+                      asset.status === ASSET_STATUSES.PROCESSING
+                        ? "animate-spin"
+                        : ""
+                    }`}
+                  />
+                  {asset.status === ASSET_STATUSES.OPTIMAL
+                    ? t(AppLocales.Admin.Assets.Compression.MinSize)
+                    : t(AppLocales.Admin.Assets.Compression.Compress)}
+                </Button>
+              )}
+              <AdminTableActions
+                resource={ADMIN_RESOURCES.ASSETS}
+                actions={[
+                  {
+                    type: ADMIN_ACTIONS.EDIT,
+                    onClick: () => {
+                      navigate(
+                        AppRoutes.withId(
+                          AppRoutes.client.protected.admin.ASSET_EDIT,
+                          asset.id,
+                        ),
+                      );
+                    },
                   },
-                },
-                {
-                  type: ADMIN_ACTIONS.DISCARD,
-                  onClick: () => {
-                    setAssetToDiscard(asset);
-                    setIsDiscardOpen(true);
+                  {
+                    type: ADMIN_ACTIONS.DISCARD,
+                    onClick: () => {
+                      setAssetToDiscard(asset);
+                      setIsDiscardOpen(true);
+                    },
                   },
-                },
-              ]}
-            />
+                ]}
+              />
+            </div>
           ),
         },
       );
@@ -393,9 +596,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     }
 
     return base;
-  }, [isActive, navigate, t]);
-
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ASSETS);
+  }, [isActive, navigate, t, canUpdate, compressingId]);
 
   return (
     <div className="space-y-6">
@@ -477,6 +678,18 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               }
             />
           </div>
+          <div className="w-full sm:w-48">
+            <Dropdown
+              value={statusFilter}
+              options={ASSET_STATUS_OPTIONS.map((o) => ({
+                value: o.value,
+                label: o.label,
+              }))}
+              onValueChange={(val) =>
+                updateSearchParams({ status: val || null, page: "1" })
+              }
+            />
+          </div>
         </div>
       )}
 
@@ -531,7 +744,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           <AdminAssetUploadDialog
             isOpen={isUploadOpen}
             onClose={() => setIsUploadOpen(false)}
-            onSuccess={fetchAssets}
+            onSuccess={handleUploadSuccess}
+            onAssetUploaded={handleAssetUploaded}
           />
 
           <ConfirmDialog

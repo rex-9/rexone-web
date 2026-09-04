@@ -180,6 +180,7 @@ class AppRoutes {
         ASSET_UPLOAD: AppRoutes.adminApi("/assets/upload"), // POST
         ASSET_DISCARD: AppRoutes.adminApi("/assets/:id/discard"), // POST
         ASSET_UNDISCARD: AppRoutes.adminApi("/assets/:id/undiscard"), // POST
+        ASSET_COMPRESS: AppRoutes.adminApi("/assets/:id/compress"), // POST
         CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
         CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PUT, DELETE
         CHAT_ROOM_DISCARD: AppRoutes.adminApi("/chat/rooms/:id/discard"), // POST

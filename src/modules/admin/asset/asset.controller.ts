@@ -5,6 +5,7 @@ import {
   parseRecord,
 } from "../../../services/api.service";
 import AdminAssetService from "./asset.service";
+import { ASSET_STATUSES } from "./constants";
 import { IAdminAsset } from "./types";
 
 class AdminAssetController {
@@ -188,6 +189,43 @@ class AdminAssetController {
     return {
       success: false,
       error: getApiError(response, "Failed to destroy asset"),
+    };
+  }
+
+  async compressAsset(id: string): Promise<{
+    success: boolean;
+    asset?: IAdminAsset;
+    isOptimal?: boolean;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.compressAsset(id);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      const asset = parseRecord("asset" in data ? data.asset : data);
+      return {
+        success: true,
+        asset,
+        isOptimal: asset.status === ASSET_STATUSES.OPTIMAL,
+        message: status.message,
+      };
+    }
+
+    const err = getApiError(response, "Failed to compress asset");
+    const rawAsset = data ? ("asset" in data ? data.asset : data) : undefined;
+    const parsedAsset = rawAsset ? parseRecord(rawAsset) : undefined;
+    const isOptimal =
+      parsedAsset?.status === ASSET_STATUSES.OPTIMAL ||
+      err?.toLowerCase().includes("optimal") ||
+      err?.toLowerCase().includes("minimum") ||
+      err?.toLowerCase().includes("max");
+
+    return {
+      success: false,
+      isOptimal,
+      asset: parsedAsset,
+      error: err,
     };
   }
 }

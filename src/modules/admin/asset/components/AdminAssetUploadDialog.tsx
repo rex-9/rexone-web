@@ -24,11 +24,13 @@ import {
   formatAssetFileSize,
 } from "../constants";
 import { useToast } from "../../../../contexts/ToastContext";
+import { IAsset } from "../../../../models/asset.model";
 
 interface IAdminAssetUploadDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (newAssets?: IAsset[]) => void;
+  onAssetUploaded?: (asset: IAsset) => void;
 }
 
 interface IFileItem {
@@ -40,6 +42,7 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  onAssetUploaded,
 }) => {
   const t = useTranslate();
   const toast = useToast();
@@ -81,17 +84,30 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
     setHasOversizedFiles(false);
     if (!newFiles || newFiles.length === 0) return;
 
+    if (fileItems.length + newFiles.length > UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT) {
+      setError(
+        t(AppLocales.Admin.Assets.UploadDialog.MaxFilesExceeded, {
+          count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
+          defaultValue: `Maximum ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT} files allowed per batch upload.`,
+        }),
+      );
+      return;
+    }
+
     const validatedItems: IFileItem[] = [];
     const oversizedFiles: string[] = [];
 
     for (const f of newFiles) {
       const isVideo = f.type.startsWith("video/");
       const sizeLimit = isVideo
-        ? UPLOAD_SIZE_LIMITS.UNCOMPRESSED_VIDEO_BYTES
-        : UPLOAD_SIZE_LIMITS.UNCOMPRESSED_NON_VIDEO_BYTES;
+        ? UPLOAD_SIZE_LIMITS.MAX_VIDEO_BYTES
+        : UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_BYTES;
+      const limitMb = isVideo
+        ? UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB
+        : UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB;
 
       if (f.size > sizeLimit) {
-        oversizedFiles.push(f.name);
+        oversizedFiles.push(`${f.name} (>${limitMb}MB)`);
       } else {
         const previewUrl = f.type.startsWith("image/")
           ? URL.createObjectURL(f)
@@ -103,7 +119,10 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
     if (oversizedFiles.length > 0) {
       setHasOversizedFiles(true);
       setError(
-        `Some files exceed maximum size limit: ${oversizedFiles.join(", ")}`,
+        t(AppLocales.Admin.Assets.UploadDialog.FileSizeExceeded, {
+          names: oversizedFiles.join(", "),
+          defaultValue: `Some files exceed maximum size limit: ${oversizedFiles.join(", ")}`,
+        }),
       );
     }
 
@@ -137,6 +156,7 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
     setProgress(0);
 
     const total = fileItems.length;
+    const uploadedAssets: IAsset[] = [];
 
     try {
       for (let i = 0; i < total; i++) {
@@ -152,7 +172,6 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
 
         const response = await AdminAssetController.uploadAsset(item.file, {
           type,
-          folder: "admin_uploads",
         });
 
         if (!response.success) {
@@ -160,6 +179,11 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
             response.error ||
               `${t(AppLocales.Admin.Assets.Errors.UploadFailed)} (${item.file.name})`,
           );
+        }
+
+        if (response.asset) {
+          uploadedAssets.push(response.asset);
+          onAssetUploaded?.(response.asset);
         }
 
         setProgress(Math.round(((i + 1) / total) * 100));
@@ -177,9 +201,9 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
       }
 
       setTimeout(() => {
-        onSuccess();
+        onSuccess(uploadedAssets);
         handleClose();
-      }, 300);
+      }, 150);
     } catch (err: any) {
       setError(err.message || t(AppLocales.Admin.Assets.Errors.UploadFailed));
     } finally {
@@ -214,7 +238,12 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
             <p className="text-base-content/80 leading-relaxed">
               {t(
                 AppLocales.Admin.Assets.UploadDialog.BulkNotice,
-                "All selected files in a batch will share the chosen Asset Type (e.g., all Thumbnails, all Avatars, or all Covers). Mixed types cannot be uploaded in the same batch.",
+                {
+                  count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
+                  imageLimit: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
+                  videoLimit: UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB,
+                  defaultValue: `You can choose up to ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT} files per batch (Max ${UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB}MB per image, ${UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB}MB per video). All selected files in a batch will share the chosen Asset Type (e.g., all Thumbnails, all Avatars, or all Covers). Mixed types cannot be uploaded in the same batch.`,
+                },
               )}
             </p>
           </div>
@@ -308,12 +337,24 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
           )}
           buttonText={t(
             AppLocales.Admin.Assets.UploadDialog.ChooseFiles,
-            "Choose Files (Multiple)",
+            {
+              count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
+              defaultValue: `Choose Files (Up to ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT})`,
+            },
           )}
           multiple
           onFilesChange={handleFilesSelected}
           disabled={isUploading}
           error={error || undefined}
+          helperText={t(
+            AppLocales.Admin.Assets.UploadDialog.FileLimitHint,
+            {
+              count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
+              imageLimit: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
+              videoLimit: UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB,
+              defaultValue: `You can choose up to ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT} files per batch (Max ${UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB}MB per image, ${UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB}MB per video).`,
+            },
+          )}
         />
 
         {/* Selected Files Tray */}
@@ -325,7 +366,7 @@ export const AdminAssetUploadDialog: React.FC<IAdminAssetUploadDialogProps> = ({
                   AppLocales.Admin.Assets.UploadDialog.SelectedFiles,
                   "Selected Files",
                 )}{" "}
-                ({fileItems.length}) • {formatAssetFileSize(totalSize)}
+                ({fileItems.length} / {UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT}) • {formatAssetFileSize(totalSize)}
               </span>
               {!isUploading && (
                 <Button

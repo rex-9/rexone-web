@@ -3,6 +3,7 @@ export const ADMIN_ASSET_COLUMNS = {
   NAME: "name",
   TYPE: "type",
   FORMAT: "format",
+  STATUS: "status",
   SIZE: "size_bytes",
   SOURCE: "source",
   CREATED_AT: "created_at",
@@ -13,6 +14,7 @@ export const ADMIN_ASSET_FILTERS = {
   TYPE: "type",
   FORMAT: "format",
   SOURCE: "source",
+  STATUS: "status",
 } as const;
 
 export const ASSET_TYPES = {
@@ -42,6 +44,16 @@ export const ASSET_SOURCES = {
 
 export type TAssetSource = (typeof ASSET_SOURCES)[keyof typeof ASSET_SOURCES];
 
+export const ASSET_STATUSES = {
+  PENDING: "pending",
+  PROCESSING: "processing",
+  READY: "ready",
+  OPTIMAL: "optimal",
+  FAILED: "failed",
+} as const;
+
+export type TAssetStatus = (typeof ASSET_STATUSES)[keyof typeof ASSET_STATUSES];
+
 export const IMAGE_ASSET_TYPES: readonly string[] = [
   ASSET_TYPES.AVATAR,
   ASSET_TYPES.THUMBNAIL,
@@ -61,11 +73,13 @@ export const formatAssetFileSize = (bytes?: number | null): string => {
   );
 };
 
-export const isImageAsset = (asset?: {
-  format?: string | null;
-  type?: string | null;
-  url?: string | null;
-} | null): boolean => {
+export const isImageAsset = (
+  asset?: {
+    format?: string | null;
+    type?: string | null;
+    url?: string | null;
+  } | null,
+): boolean => {
   if (!asset) return false;
   if (asset.format === ASSET_FORMATS.IMAGE) return true;
   if (asset.type && IMAGE_ASSET_TYPES.includes(asset.type)) return true;
@@ -101,4 +115,13 @@ export const ASSET_SOURCE_OPTIONS = [
   { value: "", label: "All Sources" },
   { value: ASSET_SOURCES.UPLOAD, label: "Upload" },
   { value: ASSET_SOURCES.GOOGLE, label: "Google" },
+] as const;
+
+export const ASSET_STATUS_OPTIONS = [
+  { value: "", label: "All Statuses" },
+  { value: ASSET_STATUSES.PENDING, label: "Pending" },
+  { value: ASSET_STATUSES.PROCESSING, label: "Processing" },
+  { value: ASSET_STATUSES.READY, label: "Ready" },
+  { value: ASSET_STATUSES.OPTIMAL, label: "Optimal" },
+  { value: ASSET_STATUSES.FAILED, label: "Failed" },
 ] as const;

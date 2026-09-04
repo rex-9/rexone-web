@@ -66,12 +66,13 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography            | [Design system](#design-system)                        |
 | State         | React contexts, Jotai atoms, and deliberate browser persistence                       | [State & application flow](#state--application-flow)   |
 | Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows           | [Payments & entitlements](#payments--entitlements)     |
-| Media         | Authenticated upload requests and reusable image/video presentation                   | [Media & assets](#media--assets)                       |
+| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, optimal badges      | [Media & assets](#media--assets)                       |
+| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition | [Speech & audio](#speech--audio)                       |
 | AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities)                    |
 | Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                    | [Real-time delivery](#real-time-delivery)              |
 | Localization  | English, Spanish, and Burmese resources with organized typed keys                     | [Localization](#localization)                          |
 | Observability | React boundary, global browser capture, structured context, and Core API delivery     | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, and notification management with RBAC guards   | [Administration](#administration)                      |
+| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC   | [Administration](#administration)                      |
 | Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model       | [End-to-End Testing](#end-to-end-testing-playwright)   |
 | Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview      | [Quality toolchain](#quality-toolchain)                |
 | Delivery      | Vite production output and a Docker-based development environment                     | [Delivery](#delivery)                                  |
@@ -158,6 +159,7 @@ The client admin panel architecture provides a protected workspace for managing 
   - **Roles**: Role and permission management with an interactive permission matrix.
   - **Products**: Product and pricing management synchronized with Stripe.
   - **Chat**: Moderation tools for chat rooms and messages.
+  - **Assets**: Asset Control Center with multi-file upload queue, real-time WebSocket compression status badges, manual secondary compression pass, and recycle bin.
   - **Notifications**: Broadcast notification dispatch targeting audiences by roles, users, or all.
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
@@ -201,9 +203,23 @@ This gives product modules a real-time path without coupling components directly
 
 ### Media & assets
 
-The client exposes the authenticated `/v1/media/upload` contract and reusable media presentation components. Provider selection, durable metadata, remote deletion, and Cloudinary/local storage behavior remain responsibilities of Rexone Core.
+The client provides comprehensive media upload, presentation, and compression management integrated with Rexone Core:
 
-That boundary keeps storage credentials and provider rules out of the browser.
+- **Bulk Upload Dialog (`AdminAssetUploadDialog`)**: Multi-file selection queue supporting uploads up to **10 MB** for images/non-videos and **100 MB** for videos when the media container is enabled.
+- **Optimistic Table Prepending**: Previews and newly uploaded asset records appear immediately in the asset table upon upload completion rather than blocking until the entire batch completes.
+- **Real-Time Cable Compression Sync**: Listens to ActionCable `asset_updated` events over `NotificationChannel`, automatically reflecting status transitions (`pending` $\rightarrow$ `processing` $\rightarrow$ `ready` or `optimal`), updated file sizes, and reduction percentages in real-time.
+- **Race-Condition Safeguard (`pendingSocketUpdates`)**: An in-memory buffer catches any socket completion events that arrive before an asset is registered in the table state, merging updates deterministically without dropping events or requiring manual page refreshes.
+- **Action Guards**: Action buttons (compress, edit, delete) are dynamically disabled while an asset is in `pending` or `processing` states to prevent race conditions and duplicate jobs.
+- **Optimal & Pass Badging**: Renders color-coded status badges (`optimal`, `ready`, `processing`, `pending`) and allows an admin to trigger a manual secondary compression pass (safeguarded by a 2-pass cap).
+- **Presentation Primitives**: Standardized `Asset`, `Image`, and `Video` components prevent raw `<img>` or `<video>` tags and handle loading skeletons, fallbacks, and aspect ratios cleanly.
+
+### Speech & audio
+
+The speech integration provides audio playback and streaming communication with Rexone Core's speech engine:
+
+- **Binary MP3 Audio Streaming**: Direct playback of synthesized audio from `POST /v1/speech/tts` returning raw binary MP3 streams without base64 wrapper overhead.
+- **Chat TTS Synthesis**: Asynchronous text-to-speech generation for conversational messages, receiving `tts_ready` notifications via ActionCable and playing attached audio assets.
+- **Live Audio Streaming**: Infrastructure ready for WebSocket-based live audio capture and streaming transcription (`SpeechLiveChannel`).
 
 ### AI capabilities
 
@@ -417,6 +433,8 @@ Only variables prefixed with `VITE_` are exposed to browser code. Never place pr
 | Protected | `/admin/products`      | Product and pricing management          |
 | Protected | `/admin/chat/rooms`    | Chat room moderation                    |
 | Protected | `/admin/chat/messages` | Chat message moderation                 |
+| Protected | `/admin/assets`        | Asset control center & upload manager   |
+| Protected | `/admin/assets/discarded` | Asset recycle bin (soft-deleted)     |
 | Protected | `/admin/notifications` | Broadcast notification dispatch         |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.

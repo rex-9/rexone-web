@@ -48,13 +48,16 @@ export const useSocket = () => {
           case "subscription_resumed":
           case "welcome":
           case "ai_response_ready":
+          case "asset_compressed":
             success(notif.message);
             break;
           case "payment_failed":
           case "subscription_canceled":
           case "ai_response_failed":
+          case "asset_compression_failed":
             error(notif.message);
             break;
+          case "asset_compressing":
           case "sign_in_alert":
           default:
             info(notif.message);

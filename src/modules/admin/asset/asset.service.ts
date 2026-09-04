@@ -81,6 +81,14 @@ class AdminAssetService {
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_DETAIL, id),
     );
   }
+
+  async compressAsset(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
+    return api.post<{ asset: IAdminAsset }>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_COMPRESS, id),
+    );
+  }
 }
 
 export default new AdminAssetService();
