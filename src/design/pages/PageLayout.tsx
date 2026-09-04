@@ -1,7 +1,6 @@
 import React from "react";
 import { HeadNavbar, HeadNavbarBrand } from "../components";
 import { cn } from "../helpers";
-import { useSocket } from "../../hooks/useSocket";
 
 export interface IPageLayoutProps {
   children: React.ReactNode;
@@ -10,7 +9,9 @@ export interface IPageLayoutProps {
   headerLeading?: React.ReactNode;
   headNavbar?: React.ReactNode;
   isAdmin?: boolean;
+  notificationSlot?: React.ReactNode;
   showHeadNavbar?: boolean;
+  showNotifications?: boolean;
 }
 
 export const PageLayout: React.FC<IPageLayoutProps> = ({
@@ -20,10 +21,10 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
   headerLeading,
   headNavbar,
   isAdmin = false,
+  notificationSlot,
   showHeadNavbar = true,
+  showNotifications = true,
 }) => {
-  useSocket();
-
   return (
     <div
       className={cn(
@@ -38,6 +39,8 @@ export const PageLayout: React.FC<IPageLayoutProps> = ({
               className={isAdmin ? "left-16 lg:left-72" : undefined}
               isAdmin={isAdmin}
               leading={headerLeading ?? (!isAdmin ? <HeadNavbarBrand /> : null)}
+              notificationSlot={notificationSlot}
+              showNotifications={showNotifications}
             />
           ))
         : null}

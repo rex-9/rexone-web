@@ -17,6 +17,7 @@ export interface HeadNavbarProps {
   isAdmin?: boolean;
   leading?: React.ReactNode;
   actions?: React.ReactNode;
+  notificationSlot?: React.ReactNode;
   showNotifications?: boolean;
   showFeedback?: boolean;
 }
@@ -77,6 +78,7 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   children,
   className,
   leading,
+  notificationSlot,
   showNotifications = true,
   showFeedback = true,
 }) => {
@@ -110,16 +112,18 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
                 </Button>
               )}
               {showNotifications && (
-                <Button
-                  type={ButtonTypes.BUTTON}
-                  variant={ButtonVariants.TERTIARY}
-                  size={ComponentSizes.SM}
-                  className="hidden h-10 w-10 p-0 md:inline-flex items-center justify-center"
-                  aria-label="Notifications"
-                  title="Notifications"
-                >
-                  <iconsLib.bell className="h-5 w-5" />
-                </Button>
+                notificationSlot ?? (
+                  <Button
+                    type={ButtonTypes.BUTTON}
+                    variant={ButtonVariants.TERTIARY}
+                    size={ComponentSizes.SM}
+                    className="hidden h-10 w-10 p-0 md:inline-flex items-center justify-center"
+                    aria-label="Notifications"
+                    title="Notifications"
+                  >
+                    <iconsLib.bell className="h-5 w-5" />
+                  </Button>
+                )
               )}
               <ThemeToggle />
               <div className="hidden sm:block">

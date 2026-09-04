@@ -54,6 +54,8 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
             "min-w-0 flex-1",
             isSidebarOpen ? "flex" : "hidden lg:flex",
           )}
+          showFeedback={false}
+          showNotifications={false}
         />
         <Button
           type={ButtonTypes.BUTTON}

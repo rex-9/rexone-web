@@ -146,6 +146,11 @@ class AppRoutes {
       // Feedback
       FEEDBACKS: AppRoutes.api("/feedbacks"), // GET
 
+      // Notifications
+      NOTIFICATIONS: AppRoutes.api("/notifications"), // GET
+      NOTIFICATION_READ: AppRoutes.api("/notifications/:id/read"), // PUT
+      NOTIFICATIONS_READ_ALL: AppRoutes.api("/notifications/read_all"), // PUT
+
       // API for Client Admin Dashboard
       admin: {
         USERS: AppRoutes.adminApi("/users"), // GET, POST

@@ -1,9 +1,12 @@
 import AppConfig from "../AppConfig";
 
 export type ISocketMessage = {
+  id?: string;
   type: string;
+  title?: string;
   message?: string;
   data?: Record<string, unknown>;
+  read?: boolean;
   created_at?: string;
 };
 

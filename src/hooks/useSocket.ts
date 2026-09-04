@@ -5,8 +5,10 @@ import SocketService, { ISocketMessage } from "../services/socket.service";
 
 export interface INotification {
   id: string;
+  title?: string;
   message: string;
   data: Record<string, unknown>;
+  read?: boolean;
   created_at: string;
 }
 
@@ -29,9 +31,13 @@ export const useSocket = () => {
         }
 
         const notif: INotification = {
-          id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+          id:
+            data.id ||
+            `${data.created_at || new Date().toISOString()}-${data.message}`,
+          title: data.title,
           message: data.message,
           data: data.data || {},
+          read: false,
           created_at: data.created_at || new Date().toISOString(),
         };
         setNotifications((prev) => {
