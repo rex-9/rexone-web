@@ -215,11 +215,8 @@ export const AdminFeedbacksPage: React.FC = () => {
         key: ADMIN_FEEDBACK_TABLE_KEYS.CREATED_AT,
         header: t(AppLocales.Admin.Common.Table.CreatedAt),
         sortKey: ADMIN_FEEDBACK_SORT_KEYS.CREATED_AT,
-        render: (item) => (
-          <div className="text-caption text-base-content opacity-70">
-            {formatAdminDate(item.created_at)}
-          </div>
-        ),
+        className: "text-center",
+        render: (item) => formatAdminDate(item.created_at),
       },
       {
         key: ADMIN_FEEDBACK_TABLE_KEYS.ACTIONS,

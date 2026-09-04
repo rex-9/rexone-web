@@ -6,7 +6,7 @@ import {
 } from "../../../services/api.service";
 import AdminAssetService from "./asset.service";
 import { ASSET_STATUSES } from "./constants";
-import { IAdminAsset } from "./types";
+import { IAdminAsset, IStorageStats } from "./types";
 
 class AdminAssetController {
   async getAssets(params?: Record<string, string | number>): Promise<{
@@ -19,7 +19,9 @@ class AdminAssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(response as any);
+      const { records, pagination } = parsePagyList<IAdminAsset>(
+        response as any,
+      );
       return { success: true, assets: records, pagination };
     }
 
@@ -65,7 +67,9 @@ class AdminAssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(response as any);
+      const { records, pagination } = parsePagyList<IAdminAsset>(
+        response as any,
+      );
       return { success: true, assets: records, pagination };
     }
 
@@ -79,7 +83,12 @@ class AdminAssetController {
 
   async uploadAsset(
     file: File,
-    options?: { type?: string; assetable_type?: string; assetable_id?: string; folder?: string },
+    options?: {
+      type?: string;
+      assetable_type?: string;
+      assetable_id?: string;
+      folder?: string;
+    },
   ): Promise<{
     success: boolean;
     asset?: IAsset;
@@ -105,7 +114,9 @@ class AdminAssetController {
 
   async updateAsset(
     id: string,
-    values: Partial<Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">>,
+    values: Partial<
+      Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">
+    >,
   ): Promise<{
     success: boolean;
     asset?: IAdminAsset;
@@ -226,6 +237,122 @@ class AdminAssetController {
       isOptimal,
       asset: parsedAsset,
       error: err,
+    };
+  }
+
+  async getStorageStats(): Promise<{
+    success: boolean;
+    stats?: IStorageStats;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.getStorageStats();
+    const { status, data } = response.data || {};
+
+    if (status?.success && data?.stats) {
+      return {
+        success: true,
+        stats: data.stats,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to load storage statistics"),
+    };
+  }
+
+  async emptyRecycleBin(): Promise<{
+    success: boolean;
+    count?: number;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.emptyRecycleBin();
+    const { status, data } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        count: data?.count ?? 0,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to empty recycle bin"),
+    };
+  }
+
+  async discardBatch(ids: string[]): Promise<{
+    success: boolean;
+    count?: number;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.discardBatch(ids);
+    const { status, data } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        count: data?.count ?? 0,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to discard selected assets"),
+    };
+  }
+
+  async undiscardBatch(ids: string[]): Promise<{
+    success: boolean;
+    count?: number;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.undiscardBatch(ids);
+    const { status, data } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        count: data?.count ?? 0,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to restore selected assets"),
+    };
+  }
+
+  async destroyBatch(ids: string[]): Promise<{
+    success: boolean;
+    count?: number;
+    message?: string;
+    error?: string;
+  }> {
+    const response = await AdminAssetService.destroyBatch(ids);
+    const { status, data } = response.data || {};
+
+    if (status?.success) {
+      return {
+        success: true,
+        count: data?.count ?? 0,
+        message: status.message,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        "Failed to permanently delete selected assets",
+      ),
     };
   }
 }

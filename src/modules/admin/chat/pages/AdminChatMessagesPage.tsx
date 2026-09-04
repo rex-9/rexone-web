@@ -172,6 +172,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
         key: ADMIN_CHAT_MESSAGE_TABLE_KEYS.CREATED,
         header: t(AppLocales.Admin.Common.Table.CreatedAt),
         sortKey: ADMIN_CHAT_MESSAGE_SORT_KEYS.CREATED_AT,
+        className: "text-center",
         render: (message) => formatAdminDate(message.created_at),
       },
       {

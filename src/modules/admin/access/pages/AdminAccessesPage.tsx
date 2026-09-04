@@ -239,12 +239,14 @@ export const AdminAccessesPage: React.FC = () => {
       key: ADMIN_ACCESS_TABLE_KEYS.GRANTED_AT,
       header: t(AppLocales.Admin.Accesses.Table.GrantedAt),
       sortKey: ADMIN_ACCESS_SORT_KEYS.CREATED_AT,
+      className: "text-center",
       render: (access) => formatAdminDate(access.granted_at),
     },
     {
       key: ADMIN_ACCESS_TABLE_KEYS.EXPIRES_AT,
       header: t(AppLocales.Admin.Accesses.Table.ExpiresAt),
       sortKey: ADMIN_ACCESS_SORT_KEYS.EXPIRES_AT,
+      className: "text-center",
       render: (access) => {
         if (!access.expires_at)
           return (
@@ -253,8 +255,8 @@ export const AdminAccessesPage: React.FC = () => {
             </span>
           );
         return (
-          <div>
-            <div>{formatAdminDate(access.expires_at)}</div>
+          <div className="flex flex-col items-center justify-center text-center">
+            {formatAdminDate(access.expires_at)}
             {access.remaining_days !== undefined &&
               access.remaining_days !== null &&
               access.remaining_days > 0 && (

@@ -239,6 +239,7 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
           view === ADMIN_VIEW_MODES.ACTIVE
             ? ADMIN_USER_SORT_KEYS.CREATED_AT
             : ADMIN_USER_SORT_KEYS.DISCARDED_AT,
+        className: "text-center",
         render: (user) =>
           formatAdminDate(
             view === ADMIN_VIEW_MODES.ACTIVE

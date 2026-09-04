@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -28,6 +34,8 @@ import {
   AdminState,
   AdminTableActions,
   AdminTable,
+  AdminEmptyRecycleBinButton,
+  AdminBatchActionBar,
   ConfirmDialog,
   PageHeader,
   type IAdminTableColumn,
@@ -50,7 +58,7 @@ import {
 } from "../constants";
 import { formatAdminDate } from "../../../../helpers";
 import { usePermissions } from "../../../../hooks/usePermissions";
-import { AdminAssetUploadDialog } from "../components/AdminAssetUploadDialog";
+import { AdminAssetUploadDialog, AdminAssetStorageStats } from "../components";
 
 interface IAdminAssetsPageProps {
   view?: TAdminViewMode;
@@ -115,6 +123,15 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     null,
   );
   const [isDestroying, setIsDestroying] = useState(false);
+
+  // Selection & Batch state
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isBatchDiscardOpen, setIsBatchDiscardOpen] = useState(false);
+  const [isBatchDiscarding, setIsBatchDiscarding] = useState(false);
+  const [isBatchRestoreOpen, setIsBatchRestoreOpen] = useState(false);
+  const [isBatchRestoring, setIsBatchRestoring] = useState(false);
+  const [isBatchDestroyOpen, setIsBatchDestroyOpen] = useState(false);
+  const [isBatchDestroying, setIsBatchDestroying] = useState(false);
 
   const fetchAssets = useCallback(async () => {
     setLoading(true);
@@ -227,6 +244,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   const updateSearchParams = useCallback(
     (updates: Record<string, string | null>) => {
+      setSelectedIds([]);
       const newParams = new URLSearchParams(searchParams);
       Object.entries(updates).forEach(([key, value]) => {
         if (value === null) {
@@ -379,6 +397,127 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ASSETS);
   const canUpdate = can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.ASSETS);
+  const canDelete = can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ASSETS);
+
+  const handleBatchDiscard = async () => {
+    if (selectedIds.length === 0) return;
+    setIsBatchDiscarding(true);
+    try {
+      const result = await AdminAssetController.discardBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchDiscardSuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchDiscardOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.DiscardFailed),
+        );
+      }
+    } finally {
+      setIsBatchDiscarding(false);
+    }
+  };
+
+  const handleBatchRestore = async () => {
+    if (selectedIds.length === 0) return;
+    setIsBatchRestoring(true);
+    try {
+      const result = await AdminAssetController.undiscardBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchRestoreSuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchRestoreOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.RestoreFailed),
+        );
+      }
+    } finally {
+      setIsBatchRestoring(false);
+    }
+  };
+
+  const handleBatchDestroy = async () => {
+    if (selectedIds.length === 0) return;
+    setIsBatchDestroying(true);
+    try {
+      const result = await AdminAssetController.destroyBatch(selectedIds);
+      if (result.success) {
+        toast.success(
+          result.message ||
+            t(AppLocales.Admin.Assets.Toasts.BatchDestroySuccess, {
+              count: String(result.count ?? selectedIds.length),
+            }),
+        );
+        setIsBatchDestroyOpen(false);
+        setSelectedIds([]);
+        fetchAssets();
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.DestroyFailed),
+        );
+      }
+    } finally {
+      setIsBatchDestroying(false);
+    }
+  };
+
+  const handleEmptyRecycleBin = async () => {
+    const result = await AdminAssetController.emptyRecycleBin();
+    if (result.success) {
+      toast.success(
+        result.message || t(AppLocales.Admin.Assets.Toasts.RecycleBinEmptied),
+      );
+      setSelectedIds([]);
+      fetchAssets();
+    } else {
+      toast.error(
+        result.error || t(AppLocales.Admin.Assets.Errors.DestroyFailed),
+      );
+    }
+  };
+
+  const batchActions = useMemo(() => {
+    if (isActive) {
+      return [
+        {
+          key: "batch-discard",
+          label: t(AppLocales.Admin.Common.Batch.DiscardSelected),
+          icon: iconsLib.trash,
+          isDestructive: true,
+          onClick: () => setIsBatchDiscardOpen(true),
+        },
+      ];
+    }
+    return [
+      {
+        key: "batch-restore",
+        label: t(AppLocales.Admin.Common.Batch.RestoreSelected),
+        icon: iconsLib.arrowPath,
+        variant: ButtonVariants.SECONDARY,
+        onClick: () => setIsBatchRestoreOpen(true),
+      },
+      {
+        key: "batch-destroy",
+        label: t(AppLocales.Admin.Common.Batch.DestroySelected),
+        icon: iconsLib.trash,
+        isDestructive: true,
+        onClick: () => setIsBatchDestroyOpen(true),
+      },
+    ];
+  }, [isActive, t]);
 
   const handleCompress = async (asset: IAdminAsset) => {
     setCompressingId(asset.id);
@@ -388,18 +527,16 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         toast.info(result.message || "Compression enqueued successfully");
         setAssets((prevAssets) =>
           prevAssets.map((a) =>
-            a.id === asset.id
-              ? { ...a, status: ASSET_STATUSES.PROCESSING }
-              : a,
+            a.id === asset.id ? { ...a, status: ASSET_STATUSES.PROCESSING } : a,
           ),
         );
       } else if (result.isOptimal) {
-        toast.info(result.error || t(AppLocales.Admin.Assets.Compression.AtMinSize));
+        toast.info(
+          result.error || t(AppLocales.Admin.Assets.Compression.AtMinSize),
+        );
         setAssets((prevAssets) =>
           prevAssets.map((a) =>
-            a.id === asset.id
-              ? { ...a, status: ASSET_STATUSES.OPTIMAL }
-              : a,
+            a.id === asset.id ? { ...a, status: ASSET_STATUSES.OPTIMAL } : a,
           ),
         );
       } else {
@@ -415,6 +552,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       {
         key: ADMIN_ASSET_COLUMNS.PREVIEW,
         header: t(AppLocales.Admin.Assets.Table.Preview),
+        className: "w-14",
         render: (asset) => {
           const isImg = isImageAsset(asset);
 
@@ -441,10 +579,21 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         key: ADMIN_ASSET_COLUMNS.NAME,
         header: t(AppLocales.Admin.Assets.Table.Name),
         sortKey: ADMIN_ASSET_COLUMNS.NAME,
+        className: "w-56 max-w-[220px] sm:max-w-[260px]",
         render: (asset) => (
-          <div className="flex flex-col">
-            <span className="font-medium text-base-content">{asset.name}</span>
-            <span className="text-xs text-base-content/60">{asset.id}</span>
+          <div className="flex flex-col min-w-0 max-w-[220px] sm:max-w-[260px]">
+            <span
+              className="font-medium text-base-content truncate"
+              title={asset.name}
+            >
+              {asset.name}
+            </span>
+            <span
+              className="text-xs text-base-content/60 font-mono truncate"
+              title={asset.id}
+            >
+              {asset.id}
+            </span>
           </div>
         ),
       },
@@ -486,15 +635,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           key: ADMIN_ASSET_COLUMNS.CREATED_AT,
           header: t(AppLocales.Admin.Assets.Table.Created),
           sortKey: ADMIN_ASSET_COLUMNS.CREATED_AT,
-          render: (asset) => (
-            <span className="text-sm text-base-content/70">
-              {formatAdminDate(asset.created_at)}
-            </span>
-          ),
+          className: "text-center",
+          render: (asset) => formatAdminDate(asset.created_at),
         },
         {
           key: "actions",
           header: "",
+          className: "text-right whitespace-nowrap",
           render: (asset) => (
             <div className="flex items-center gap-1 justify-end">
               {canUpdate && (
@@ -561,15 +708,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           key: ADMIN_ASSET_COLUMNS.DISCARDED_AT,
           header: t(AppLocales.Admin.Assets.Table.Discarded),
           sortKey: ADMIN_ASSET_COLUMNS.DISCARDED_AT,
-          render: (asset) => (
-            <span className="text-sm text-base-content/70">
-              {formatAdminDate(asset.discarded_at)}
-            </span>
-          ),
+          className: "text-center",
+          render: (asset) => formatAdminDate(asset.discarded_at),
         },
         {
           key: "actions",
           header: "",
+          className: "text-right whitespace-nowrap",
           render: (asset) => (
             <AdminTableActions
               resource={ADMIN_RESOURCES.ASSETS}
@@ -617,6 +762,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               <iconsLib.plus className="w-5 h-5 mr-2" />
               {t(AppLocales.Admin.Assets.UploadButton)}
             </Button>
+          ) : !isActive && canDelete ? (
+            <AdminEmptyRecycleBinButton
+              onConfirm={handleEmptyRecycleBin}
+              count={pagination?.total_count}
+              disabled={assets.length === 0}
+            />
           ) : null
         }
       >
@@ -624,6 +775,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           <Tabs
             value={view}
             onChange={(tab) => {
+              setSelectedIds([]);
               navigate(
                 tab === ADMIN_VIEW_MODES.ACTIVE
                   ? AppRoutes.client.protected.admin.ASSETS
@@ -644,6 +796,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           />
         )}
       </PageHeader>
+
+      {isActive && <AdminAssetStorageStats />}
 
       {isActive && (
         <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
@@ -693,6 +847,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         </div>
       )}
 
+      {selectedIds.length > 0 && (
+        <AdminBatchActionBar
+          selectedCount={selectedIds.length}
+          onClearSelection={() => setSelectedIds([])}
+          actions={batchActions}
+        />
+      )}
+
       <div className="bg-base-100 rounded-xl border border-base-200 overflow-hidden">
         {assets.length > 0 ? (
           <>
@@ -703,6 +865,16 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               sortBy={sortBy}
               sortOrder={sortOrder}
               onSort={handleSort}
+              selectable={canDelete}
+              selectedRowKeys={selectedIds}
+              onSelectRow={(id, selected) => {
+                setSelectedIds((prev) =>
+                  selected ? [...prev, id] : prev.filter((item) => item !== id),
+                );
+              }}
+              onSelectAll={(selected) => {
+                setSelectedIds(selected ? assets.map((a) => a.id) : []);
+              }}
             />
             {pagination && (
               <AdminPagination
@@ -798,6 +970,48 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           />
         </>
       )}
+
+      {/* Batch Confirm Dialogs */}
+      <ConfirmDialog
+        isOpen={isBatchDiscardOpen}
+        title={t(AppLocales.Admin.Common.Batch.ConfirmDiscardTitle)}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmDiscardMessage, {
+          count: String(selectedIds.length),
+        })}
+        confirmLabel={t(AppLocales.Admin.Common.Batch.DiscardSelected)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        onConfirm={handleBatchDiscard}
+        onClose={() => setIsBatchDiscardOpen(false)}
+        isLoading={isBatchDiscarding}
+        isDestructive
+      />
+
+      <ConfirmDialog
+        isOpen={isBatchRestoreOpen}
+        title={t(AppLocales.Admin.Common.Batch.ConfirmRestoreTitle)}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmRestoreMessage, {
+          count: String(selectedIds.length),
+        })}
+        confirmLabel={t(AppLocales.Admin.Common.Batch.RestoreSelected)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        onConfirm={handleBatchRestore}
+        onClose={() => setIsBatchRestoreOpen(false)}
+        isLoading={isBatchRestoring}
+      />
+
+      <ConfirmDialog
+        isOpen={isBatchDestroyOpen}
+        title={t(AppLocales.Admin.Common.Batch.ConfirmDestroyTitle)}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmDestroyMessage, {
+          count: String(selectedIds.length),
+        })}
+        confirmLabel={t(AppLocales.Admin.Common.Batch.DestroySelected)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        onConfirm={handleBatchDestroy}
+        onClose={() => setIsBatchDestroyOpen(false)}
+        isLoading={isBatchDestroying}
+        isDestructive
+      />
     </div>
   );
 };

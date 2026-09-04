@@ -304,6 +304,25 @@
         "reset_filter": "Reset Filter",
         "open_recycle_bin": "Open recycle bin"
       },
+      "recycle_bin": {
+        "empty_button": "Empty Recycle Bin",
+        "empty_title": "Empty all items in the recycle bin",
+        "confirm_empty_title": "Empty Recycle Bin",
+        "confirm_empty_message": "Are you sure you want to empty the recycle bin? This action cannot be undone and will permanently delete all {{count}} discarded item(s) from storage."
+      },
+      "batch": {
+        "selected_count": "{{count}} item(s) selected",
+        "clear_selection": "Clear selection",
+        "discard_selected": "Discard Selected",
+        "restore_selected": "Restore Selected",
+        "destroy_selected": "Delete Permanently",
+        "confirm_discard_title": "Discard Selected Items",
+        "confirm_discard_message": "Are you sure you want to discard {{count}} selected item(s)? They will be moved to the recycle bin.",
+        "confirm_restore_title": "Restore Selected Items",
+        "confirm_restore_message": "Are you sure you want to restore {{count}} selected item(s)?",
+        "confirm_destroy_title": "Permanently Delete Selected Items",
+        "confirm_destroy_message": "Are you sure you want to permanently delete {{count}} selected item(s)? This action cannot be undone and will purge all files from storage."
+      },
       "tabs": {
         "active": "Active",
         "recycle_bin": "Recycle Bin",
@@ -962,7 +981,11 @@
         "discard_success": "Asset discarded successfully",
         "restore_success": "Asset restored successfully",
         "destroy_success": "Asset permanently deleted",
-        "update_success": "Asset updated successfully"
+        "update_success": "Asset updated successfully",
+        "recycle_bin_emptied": "Recycle bin emptied successfully",
+        "batch_discard_success": "Successfully discarded {{count}} assets",
+        "batch_restore_success": "Successfully restored {{count}} assets",
+        "batch_destroy_success": "Successfully deleted {{count}} assets permanently"
       },
       "errors": {
         "load_failed": "Failed to load assets",
@@ -978,6 +1001,20 @@
         "empty_desc": "Upload an asset to get started or adjust your filters.",
         "recycle_empty_title": "Recycle Bin Empty",
         "recycle_empty_desc": "No discarded assets found."
+      },
+      "storage_stats": {
+        "title": "Storage & VPS Capacity",
+        "provider": "Storage Provider",
+        "occupied": "Garage Storage Occupied",
+        "objects": "objects",
+        "vps_disk": "VPS Host Disk Space",
+        "vps_available": "Free",
+        "vps_total": "Total",
+        "vps_used": "Used",
+        "vps_low_warning": "Warning: VPS disk space is critically low (<15% free). Consider upgrading VPS disk capacity soon.",
+        "db_assets": "Tracked Assets",
+        "refresh": "Refresh Stats",
+        "refreshing": "Refreshing..."
       }
     }
   },

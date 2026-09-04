@@ -181,6 +181,11 @@ class AppRoutes {
         ASSET_DISCARD: AppRoutes.adminApi("/assets/:id/discard"), // POST
         ASSET_UNDISCARD: AppRoutes.adminApi("/assets/:id/undiscard"), // POST
         ASSET_COMPRESS: AppRoutes.adminApi("/assets/:id/compress"), // POST
+        ASSET_STORAGE_STATS: AppRoutes.adminApi("/assets/storage_stats"), // GET
+        ASSET_EMPTY_RECYCLE_BIN: AppRoutes.adminApi("/assets/bin"), // DELETE
+        ASSETS_BATCH_DISCARD: AppRoutes.adminApi("/assets/discard_batch"), // POST
+        ASSETS_BATCH_UNDISCARD: AppRoutes.adminApi("/assets/undiscard_batch"), // POST
+        ASSETS_BATCH_DESTROY: AppRoutes.adminApi("/assets/destroy_batch"), // POST
         CHAT_ROOMS: AppRoutes.adminApi("/chat/rooms"), // GET
         CHAT_ROOM_DETAIL: AppRoutes.adminApi("/chat/rooms/:id"), // GET, PUT, DELETE
         CHAT_ROOM_DISCARD: AppRoutes.adminApi("/chat/rooms/:id/discard"), // POST

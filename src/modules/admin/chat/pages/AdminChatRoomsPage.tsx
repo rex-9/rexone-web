@@ -159,6 +159,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
         key: ADMIN_CHAT_ROOM_TABLE_KEYS.CREATED,
         header: t(AppLocales.Admin.Common.Table.CreatedAt),
         sortKey: ADMIN_CHAT_ROOM_SORT_KEYS.CREATED_AT,
+        className: "text-center",
         render: (room) => formatAdminDate(room.created_at),
       },
       {

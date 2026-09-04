@@ -281,11 +281,9 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         key: ADMIN_LOG_TABLE_KEYS.LAST_OCCURRED,
         header: t(AppLocales.Admin.Logs.Table.Timestamp),
         sortKey: ADMIN_LOG_SORT_KEYS.CREATED_AT,
-        render: (log) => (
-          <div className="text-caption text-base-content opacity-70">
-            {formatAdminDate(log.last_occurred_at || log.created_at)}
-          </div>
-        ),
+        className: "text-center",
+        render: (log) =>
+          formatAdminDate(log.last_occurred_at || log.created_at),
       },
       {
         key: ADMIN_LOG_TABLE_KEYS.ACTIONS,

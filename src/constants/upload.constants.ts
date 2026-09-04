@@ -1,14 +1,12 @@
+import AppConfig from "../AppConfig";
+
 export const UPLOAD_LIMITS = {
   /** Maximum upload size for non-video files in MB (configurable via VITE_MEDIA_MAX_NON_VIDEO_SIZE_MB) */
-  MAX_NON_VIDEO_SIZE_MB: Number(
-    import.meta.env.VITE_MEDIA_MAX_NON_VIDEO_SIZE_MB || 10,
-  ),
+  MAX_NON_VIDEO_SIZE_MB: AppConfig.MEDIA_MAX_NON_VIDEO_SIZE_MB,
   /** Maximum upload size for video files in MB (configurable via VITE_MEDIA_MAX_VIDEO_SIZE_MB) */
-  MAX_VIDEO_SIZE_MB: Number(
-    import.meta.env.VITE_MEDIA_MAX_VIDEO_SIZE_MB || 100,
-  ),
+  MAX_VIDEO_SIZE_MB: AppConfig.MEDIA_MAX_VIDEO_SIZE_MB,
   /** Maximum number of files per batch upload (configurable via VITE_MEDIA_MAX_FILE_COUNT) */
-  MAX_FILE_COUNT: Number(import.meta.env.VITE_MEDIA_MAX_FILE_COUNT || 20),
+  MAX_FILE_COUNT: AppConfig.MEDIA_MAX_FILE_COUNT,
 } as const;
 
 export const UPLOAD_SIZE_LIMITS = {

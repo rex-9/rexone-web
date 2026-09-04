@@ -202,6 +202,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
           view === ADMIN_VIEW_MODES.ACTIVE
             ? ADMIN_PRODUCT_SORT_KEYS.CREATED_AT
             : ADMIN_PRODUCT_SORT_KEYS.DISCARDED_AT,
+        className: "text-center",
         render: (product) =>
           formatAdminDate(
             view === ADMIN_VIEW_MODES.ACTIVE

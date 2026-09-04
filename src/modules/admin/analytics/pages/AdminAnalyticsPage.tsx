@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useDocumentTitle } from "../../../../hooks";
 import { ANALYTICS_PERIODS, ANALYTICS_PERIOD_LABELS } from "../../constants";
-import { AdminState, PageHeader } from "../../components";
+import { AdminKpiCard, AdminState, PageHeader } from "../../components";
 import {
-  AnalyticsKpiCard,
   AnalyticsPeriodSelector,
   CacheSourceBadge,
   ChatActivityChart,
@@ -125,7 +124,7 @@ export const AdminAnalyticsPage: React.FC = () => {
 
       {/* Main KPI Cards Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <AnalyticsKpiCard
+        <AdminKpiCard
           title={t(AppLocales.Admin.Analytics.Kpis.TotalRevenue)}
           value={`$${kpis.period_revenue.toLocaleString(undefined, {
             minimumFractionDigits: 2,
@@ -136,7 +135,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           subtitle={`All-time: $${kpis.total_revenue.toLocaleString()}`}
         />
 
-        <AnalyticsKpiCard
+        <AdminKpiCard
           title={t(AppLocales.Admin.Analytics.Kpis.ActiveUsers)}
           value={kpis.new_users.toLocaleString()}
           deltaPct={kpis.users_delta_pct}
@@ -144,14 +143,14 @@ export const AdminAnalyticsPage: React.FC = () => {
           subtitle={`Total: ${kpis.total_users.toLocaleString()}`}
         />
 
-        <AnalyticsKpiCard
+        <AdminKpiCard
           title={t(AppLocales.Admin.Nav.Items.Products)}
           value={kpis.active_subscriptions.toLocaleString()}
           icon={iconsLib.cube}
           subtitle={`${kpis.period_transactions} ${t(AppLocales.Admin.Analytics.Kpis.ThisMonth)}`}
         />
 
-        <AnalyticsKpiCard
+        <AdminKpiCard
           title={t(AppLocales.Admin.Analytics.Kpis.ChatInteractions)}
           value={kpis.total_messages.toLocaleString()}
           deltaPct={kpis.messages_delta_pct}
@@ -219,4 +218,3 @@ export const AdminAnalyticsPage: React.FC = () => {
 };
 
 export default AdminAnalyticsPage;
-
