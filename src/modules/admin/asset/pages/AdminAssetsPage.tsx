@@ -24,7 +24,6 @@ import {
   ButtonVariants,
 } from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
-import AdminAssetController from "../asset.controller";
 import type { IAdminAsset } from "../types";
 import SocketService, {
   ISocketMessage,
@@ -58,7 +57,8 @@ import {
 } from "../constants";
 import { formatAdminDate } from "../../../../helpers";
 import { usePermissions } from "../../../../hooks/usePermissions";
-import { AdminAssetUploadDialog, AdminAssetStorageStats } from "../components";
+import { AdminAssetStorageStats } from "../components";
+import { Admin } from "../..";
 
 interface IAdminAssetsPageProps {
   view?: TAdminViewMode;
@@ -101,7 +101,6 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
 
   // Active view state
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
   const [assetToDiscard, setAssetToDiscard] = useState<IAdminAsset | null>(
     null,
@@ -149,8 +148,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       if (statusFilter) params.status = statusFilter;
 
       const result = isActive
-        ? await AdminAssetController.getAssets(params)
-        : await AdminAssetController.getDiscardedAssets(params);
+        ? await Admin.AssetController.getAssets(params)
+        : await Admin.AssetController.getDiscardedAssets(params);
 
       if (result.success) {
         setAssets(result.assets);
@@ -266,69 +265,15 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     updateSearchParams({ page: newPage.toString() });
   };
 
-  const handleAssetUploaded = useCallback((asset: IAsset) => {
-    setAssets((prev) => {
-      const buffered = pendingSocketUpdates.current.get(asset.id);
-      let assetToAdd: IAdminAsset = asset as IAdminAsset;
-      if (buffered) {
-        pendingSocketUpdates.current.delete(asset.id);
-        assetToAdd = {
-          ...assetToAdd,
-          status: (buffered.status as IAsset["status"]) || assetToAdd.status,
-          size_bytes: buffered.size_bytes ?? assetToAdd.size_bytes,
-          url: buffered.url || assetToAdd.url,
-        };
-      }
-      if (prev.some((a) => a.id === asset.id)) {
-        return prev.map((a) => (a.id === asset.id ? assetToAdd : a));
-      }
-      return [assetToAdd, ...prev];
-    });
-  }, []);
-
-  const handleUploadSuccess = useCallback(
-    (newAssets?: IAsset[]) => {
-      if (newAssets && newAssets.length > 0) {
-        setAssets((prev) => {
-          const newIds = new Set(newAssets.map((a) => a.id));
-          const mergedNewAssets = newAssets.map((asset) => {
-            const buffered = pendingSocketUpdates.current.get(asset.id);
-            if (buffered) {
-              pendingSocketUpdates.current.delete(asset.id);
-              return {
-                ...asset,
-                status: (buffered.status as IAsset["status"]) || asset.status,
-                size_bytes: buffered.size_bytes ?? asset.size_bytes,
-                url: buffered.url || asset.url,
-              } as IAdminAsset;
-            }
-            const existing = prev.find((a) => a.id === asset.id);
-            if (existing && existing.status !== ASSET_STATUSES.PENDING) {
-              return {
-                ...asset,
-                status: existing.status,
-                size_bytes: existing.size_bytes ?? asset.size_bytes,
-                url: existing.url || asset.url,
-              } as IAdminAsset;
-            }
-            return asset as IAdminAsset;
-          });
-          return [...mergedNewAssets, ...prev.filter((a) => !newIds.has(a.id))];
-        });
-      } else {
-        fetchAssets();
-      }
-    },
-    [fetchAssets],
-  );
-
   // Active view actions
   const handleDiscard = async () => {
     if (!assetToDiscard) return;
 
     setIsDiscarding(true);
     try {
-      const result = await AdminAssetController.discardAsset(assetToDiscard.id);
+      const result = await Admin.AssetController.discardAsset(
+        assetToDiscard.id,
+      );
       if (result.success) {
         toast.success(
           result.message || t(AppLocales.Admin.Assets.Toasts.DiscardSuccess),
@@ -352,7 +297,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
     setIsRestoring(true);
     try {
-      const result = await AdminAssetController.undiscardAsset(
+      const result = await Admin.AssetController.undiscardAsset(
         assetToRestore.id,
       );
       if (result.success) {
@@ -377,7 +322,9 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
     setIsDestroying(true);
     try {
-      const result = await AdminAssetController.destroyAsset(assetToDestroy.id);
+      const result = await Admin.AssetController.destroyAsset(
+        assetToDestroy.id,
+      );
       if (result.success) {
         toast.success(
           result.message || t(AppLocales.Admin.Assets.Toasts.DestroySuccess),
@@ -403,7 +350,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     if (selectedIds.length === 0) return;
     setIsBatchDiscarding(true);
     try {
-      const result = await AdminAssetController.discardBatch(selectedIds);
+      const result = await Admin.AssetController.discardBatch(selectedIds);
       if (result.success) {
         toast.success(
           result.message ||
@@ -428,7 +375,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     if (selectedIds.length === 0) return;
     setIsBatchRestoring(true);
     try {
-      const result = await AdminAssetController.undiscardBatch(selectedIds);
+      const result = await Admin.AssetController.undiscardBatch(selectedIds);
       if (result.success) {
         toast.success(
           result.message ||
@@ -453,7 +400,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     if (selectedIds.length === 0) return;
     setIsBatchDestroying(true);
     try {
-      const result = await AdminAssetController.destroyBatch(selectedIds);
+      const result = await Admin.AssetController.destroyBatch(selectedIds);
       if (result.success) {
         toast.success(
           result.message ||
@@ -475,7 +422,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   };
 
   const handleEmptyRecycleBin = async () => {
-    const result = await AdminAssetController.emptyRecycleBin();
+    const result = await Admin.AssetController.emptyRecycleBin();
     if (result.success) {
       toast.success(
         result.message || t(AppLocales.Admin.Assets.Toasts.RecycleBinEmptied),
@@ -522,7 +469,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const handleCompress = async (asset: IAdminAsset) => {
     setCompressingId(asset.id);
     try {
-      const result = await AdminAssetController.compressAsset(asset.id);
+      const result = await Admin.AssetController.compressAsset(asset.id);
       if (result.success) {
         toast.info(result.message || "Compression enqueued successfully");
         setAssets((prevAssets) =>
@@ -758,7 +705,11 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         }
         action={
           isActive && canCreate ? (
-            <Button onClick={() => setIsUploadOpen(true)}>
+            <Button
+              onClick={() =>
+                navigate(AppRoutes.client.protected.admin.ASSET_CREATE)
+              }
+            >
               <iconsLib.plus className="w-5 h-5 mr-2" />
               {t(AppLocales.Admin.Assets.UploadButton)}
             </Button>
@@ -913,13 +864,6 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       {/* Active view dialogs */}
       {isActive && (
         <>
-          <AdminAssetUploadDialog
-            isOpen={isUploadOpen}
-            onClose={() => setIsUploadOpen(false)}
-            onSuccess={handleUploadSuccess}
-            onAssetUploaded={handleAssetUploaded}
-          />
-
           <ConfirmDialog
             isOpen={isDiscardOpen}
             title={t(AppLocales.Admin.Assets.Confirm.DiscardTitle)}

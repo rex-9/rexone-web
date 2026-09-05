@@ -5,10 +5,10 @@ import { Dialog, Button, SearchInput, Image, Badge } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
-import AdminAssetController from "../asset.controller";
 import type { IAdminAsset } from "../types";
 import { formatAssetFileSize } from "../constants";
 import type { IApiPagination } from "../../../../models";
+import { Admin } from "../..";
 
 export interface IAdminAssetSelectDialogProps {
   isOpen: boolean;
@@ -53,7 +53,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         params.search = searchTerm.trim();
       }
 
-      const result = await AdminAssetController.getAssets(params);
+      const result = await Admin.AssetController.getAssets(params);
       setIsLoading(false);
 
       if (result.success) {
@@ -87,7 +87,9 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
     }
   };
 
-  const totalPages = pagination?.total_pages ?? (pagination?.total_count ? Math.ceil(pagination.total_count / limit) : 1);
+  const totalPages =
+    pagination?.total_pages ??
+    (pagination?.total_count ? Math.ceil(pagination.total_count / limit) : 1);
 
   return (
     <Dialog
@@ -155,7 +157,6 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                 return (
                   <Button
                     key={asset.id}
-                    type="button"
                     variant={ButtonVariants.TERTIARY}
                     onClick={() => setSelectedAsset(asset)}
                     className={`flex flex-col text-left p-2 h-auto rounded-xl border transition-all duration-200 ${
@@ -177,11 +178,16 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                       )}
                     </div>
                     <div className="w-full min-w-0">
-                      <span className="block truncate text-xs font-semibold text-base-content" title={asset.name}>
+                      <span
+                        className="block truncate text-xs font-semibold text-base-content"
+                        title={asset.name}
+                      >
                         {asset.name}
                       </span>
                       <div className="flex justify-between items-center text-[10px] text-base-content/60 mt-0.5">
-                        <span className="uppercase font-medium">{asset.format || "Media"}</span>
+                        <span className="uppercase font-medium">
+                          {asset.format || "Media"}
+                        </span>
                         <span>{formatAssetFileSize(asset.size_bytes)}</span>
                       </div>
                     </div>
@@ -196,9 +202,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-2 border-t border-base-200">
           <div className="text-xs text-base-content/70">
             {pagination?.total_count !== undefined && (
-              <span>
-                Total: {pagination.total_count} assets
-              </span>
+              <span>Total: {pagination.total_count} assets</span>
             )}
           </div>
 
@@ -229,10 +233,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
 
         {/* Dialog Actions */}
         <div className="flex justify-end gap-2 pt-2">
-          <Button
-            variant={ButtonVariants.SECONDARY}
-            onClick={onClose}
-          >
+          <Button variant={ButtonVariants.SECONDARY} onClick={onClose}>
             {t(AppLocales.Admin.Common.Actions.Cancel, "Cancel")}
           </Button>
           <Button

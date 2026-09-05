@@ -59,23 +59,23 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 
 ## Feature map
 
-| Foundation    | What is ready                                                                         | Details                                                |
-| ------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry          | [Authentication & security](#authentication--security) |
-| Navigation    | Public and protected routes with centralized route definitions                        | [Routing & access](#routing--access)                   |
-| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography            | [Design system](#design-system)                        |
-| State         | React contexts, Jotai atoms, and deliberate browser persistence                       | [State & application flow](#state--application-flow)   |
-| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows           | [Payments & entitlements](#payments--entitlements)     |
-| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, optimal badges      | [Media & assets](#media--assets)                       |
+| Foundation    | What is ready                                                                          | Details                                                |
+| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry           | [Authentication & security](#authentication--security) |
+| Navigation    | Public and protected routes with centralized route definitions                         | [Routing & access](#routing--access)                   |
+| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography             | [Design system](#design-system)                        |
+| State         | React contexts, Jotai atoms, and deliberate browser persistence                        | [State & application flow](#state--application-flow)   |
+| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows            | [Payments & entitlements](#payments--entitlements)     |
+| Media         | Real-time compression tracking, 10MB image / 100MB video uploads, optimal badges       | [Media & assets](#media--assets)                       |
 | Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition | [Speech & audio](#speech--audio)                       |
-| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools | [AI capabilities](#ai-capabilities)                    |
-| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                    | [Real-time delivery](#real-time-delivery)              |
-| Localization  | English, Spanish, and Burmese resources with organized typed keys                     | [Localization](#localization)                          |
-| Observability | React boundary, global browser capture, structured context, and Core API delivery     | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC   | [Administration](#administration)                      |
-| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model       | [End-to-End Testing](#end-to-end-testing-playwright)   |
-| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview      | [Quality toolchain](#quality-toolchain)                |
-| Delivery      | Vite production output and a Docker-based development environment                     | [Delivery](#delivery)                                  |
+| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools  | [AI capabilities](#ai-capabilities)                    |
+| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                     | [Real-time delivery](#real-time-delivery)              |
+| Localization  | English, Spanish, and Burmese resources with organized typed keys                      | [Localization](#localization)                          |
+| Observability | React boundary, global browser capture, structured context, and Core API delivery      | [Client observability](#client-observability)          |
+| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC    | [Administration](#administration)                      |
+| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model        | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview       | [Quality toolchain](#quality-toolchain)                |
+| Delivery      | Vite production output and a Docker-based development environment                      | [Delivery](#delivery)                                  |
 
 ## Architecture
 
@@ -154,13 +154,17 @@ The client admin panel architecture provides a protected workspace for managing 
 
 - **Architecture**: Sidebar navigation, permission-based visibility, and strict route guards (`AdminRootRoute`, `AdminHomeRoute`).
 - **Client-Side RBAC**: The `usePermissions` hook evaluates the current user's role and permission matrix to determine access and UI state dynamically.
-- **Admin Modules**:
-  - **Users**: User management, reserved for super admins.
-  - **Roles**: Role and permission management with an interactive permission matrix.
-  - **Products**: Product and pricing management synchronized with Stripe.
+- **Admin Modules & Dedicated Create/Edit Consoles**:
+  - **Users**: User management (`/admin/users`), user creation (`/admin/users/create`), and user edit (`/admin/users/:id/edit`) powered by `AdminUserForm`.
+  - **Roles**: Role and permission management (`/admin/roles`), role creation (`/admin/roles/create`), and role edit (`/admin/roles/:id/edit`) powered by `AdminRoleForm`.
+  - **Products**: Product and pricing management (`/admin/products`), product creation (`/admin/products/create`), and product edit (`/admin/products/:id/edit`) powered by `AdminProductForm`.
+  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), and template edit (`/admin/notifications/:id/edit`) powered by `AdminNotificationForm`.
+  - **Accesses**: Entitlements and access management (`/admin/accesses`), access grant console (`/admin/accesses/create`), and validity extension console (`/admin/accesses/:id/edit`) powered by `AdminAccessForm`.
+  - **Assets**: Asset control center (`/admin/assets`), batch upload console (`/admin/assets/create`), and asset edit console (`/admin/assets/:id/edit`) powered by `AdminAssetForm`.
   - **Chat**: Moderation tools for chat rooms and messages.
-  - **Assets**: Asset Control Center with multi-file upload queue, real-time WebSocket compression status badges, manual secondary compression pass, and recycle bin.
-  - **Notifications**: Broadcast notification dispatch targeting audiences by roles, users, or all.
+  - **Feedbacks & Logs**: User feedback review and client runtime error telemetry.
+- **Form Component Unification**: Every admin module featuring Create and Edit shares a single, reusable `Admin[Entity]Form` component (`mode: CREATE | EDIT`) between its dedicated create and edit route pages. Modals and dialogs are retired in favor of full pages.
+- **Table Compactness**: `AdminTableActions` uses compact square icon action buttons (pencil for edit, red bin for delete/discard/revoke, arrow path for restore) to optimize horizontal table space.
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
@@ -361,27 +365,35 @@ e2e/
         └── sso.spec.ts            # Google SSO authentication & challenge token setup
 ```
 
-### Running E2E Tests
+### Running Tests
 
-Rexone Web provides a unified test runner script at [`scripts/test.sh`](scripts/test.sh):
+Rexone Web provides specialized and unified test runner scripts in [`scripts/`](scripts/):
 
 ```bash
-# Run all 19 E2E tests (default)
+# 1. Run FULL test suite (Unit + E2E)
 ./scripts/test.sh
-# or: npm run test:e2e:all
+# or: npm run test:all
 
-# Run specific flows
-./scripts/test.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
-./scripts/test.sh sign-up        # Registration & input validations
-./scripts/test.sh password       # Password matching & retries
-./scripts/test.sh password-reset # Reset request & cooldowns
-./scripts/test.sh sso            # Google SSO authentication
-./scripts/test.sh sign-out       # Sign-out & session termination
+# 2. Run ONLY Unit tests (Vitest) - fast feedback loop
+./scripts/test_unit.sh
+# or: npm run test:unit
+
+# 3. Run ONLY E2E tests (Playwright)
+./scripts/test_e2e.sh
+# or: npm run test:e2e
+
+# Run specific E2E flows
+./scripts/test_e2e.sh sign-in        # Sign-in flow, attempt limits, unconfirmed recovery
+./scripts/test_e2e.sh sign-up        # Registration & input validations
+./scripts/test_e2e.sh password       # Password matching & retries
+./scripts/test_e2e.sh password-reset # Reset request & cooldowns
+./scripts/test_e2e.sh sso            # Google SSO authentication
+./scripts/test_e2e.sh sign-out       # Sign-out & session termination
 
 # Interactive & Debugging Modes
-./scripts/test.sh --headed       # Watch tests in a real browser window
-./scripts/test.sh --ui           # Open Playwright's interactive visual UI
-./scripts/test.sh --debug        # Launch Playwright step-by-step inspector
+./scripts/test_e2e.sh --headed       # Watch tests in a real browser window
+./scripts/test_e2e.sh --ui           # Open Playwright's interactive visual UI
+./scripts/test_e2e.sh --debug        # Launch Playwright step-by-step inspector
 ```
 
 ### Test Guarantees
@@ -419,31 +431,45 @@ All frontend environment variables are centralized through [`src/AppConfig.tsx`]
 
 ## Client route surface
 
-| Access    | Route                  | Purpose                                 |
-| --------- | ---------------------- | --------------------------------------- |
-| Public    | `/`                    | Root experience                         |
-| Public    | `/signin`              | Open the authentication dialog          |
-| Public    | `/signup`              | Enter the account creation flow         |
-| Public    | `/email/confirm`       | Handle confirmation links or code entry |
-| Public    | `/password/forgot`     | Request account recovery                |
-| Public    | `/password/reset`      | Complete password reset links           |
-| Public    | `/anapana`             | Anapana interval reminder               |
-| Protected | `/home`                | Authenticated home                      |
-| Protected | `/profile`             | Current-user profile                    |
-| Protected | `/payment`             | Products and checkout                   |
-| Protected | `/payment/success`     | Checkout success return                 |
-| Protected | `/payment/cancel`      | Checkout cancellation return            |
-| Protected | `/ai`                  | AI workspace                            |
-| Protected | `/signout`             | Sign out and provider cleanup           |
-| Protected | `/admin`               | Admin panel entry with smart redirect   |
-| Protected | `/admin/users`         | User management (super admin only)      |
-| Protected | `/admin/roles`         | Role and permission management          |
-| Protected | `/admin/products`      | Product and pricing management          |
-| Protected | `/admin/chat/rooms`    | Chat room moderation                    |
-| Protected | `/admin/chat/messages` | Chat message moderation                 |
-| Protected | `/admin/assets`        | Asset control center & upload manager   |
-| Protected | `/admin/assets/discarded` | Asset recycle bin (soft-deleted)     |
-| Protected | `/admin/notifications` | Broadcast notification dispatch         |
+| Access    | Route                  | Purpose                                     |
+| --------- | ---------------------- | ------------------------------------------- |
+| Public    | `/`                    | Root experience                             |
+| Public    | `/signin`              | Open the authentication dialog              |
+| Public    | `/signup`              | Enter the account creation flow             |
+| Public    | `/email/confirm`       | Handle confirmation links or code entry     |
+| Public    | `/password/forgot`     | Request account recovery                    |
+| Public    | `/password/reset`      | Complete password reset links               |
+| Public    | `/anapana`             | Anapana interval reminder                   |
+| Protected | `/home`                | Authenticated home                          |
+| Protected | `/profile`             | Current-user profile                        |
+| Protected | `/payment`             | Products and checkout                       |
+| Protected | `/payment/success`     | Checkout success return                     |
+| Protected | `/payment/cancel`      | Checkout cancellation return                |
+| Protected | `/ai`                  | AI workspace                                |
+| Protected | `/signout`             | Sign out and provider cleanup               |
+| Protected | `/admin`                       | Admin panel entry with smart redirect           |
+| Protected | `/admin/users`                 | User management (super admin only)              |
+| Protected | `/admin/users/create`          | User creation console                           |
+| Protected | `/admin/users/:id/edit`        | User edit console                               |
+| Protected | `/admin/roles`                 | Role and permission management                  |
+| Protected | `/admin/roles/create`          | Role creation console                           |
+| Protected | `/admin/roles/:id/edit`        | Role edit console                               |
+| Protected | `/admin/products`              | Product and pricing management                  |
+| Protected | `/admin/products/create`       | Product creation console                        |
+| Protected | `/admin/products/:id/edit`     | Product edit console                            |
+| Protected | `/admin/accesses`              | Entitlements and user access management         |
+| Protected | `/admin/accesses/create`       | Access grant console                            |
+| Protected | `/admin/accesses/:id/edit`     | Access validity extension console               |
+| Protected | `/admin/assets`                | Asset control center & storage overview         |
+| Protected | `/admin/assets/create`         | Asset upload console                            |
+| Protected | `/admin/assets/:id/edit`       | Asset edit and compression console              |
+| Protected | `/admin/notifications`         | Broadcast notification dispatch & templates     |
+| Protected | `/admin/notifications/create`  | Notification template creation console          |
+| Protected | `/admin/notifications/:id/edit`| Notification template edit console              |
+| Protected | `/admin/chat/rooms`            | Chat room moderation                            |
+| Protected | `/admin/chat/messages`         | Chat message moderation                         |
+| Protected | `/admin/feedback`              | User feedback management                        |
+| Protected | `/admin/logs`                  | Client error and telemetry logs                 |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 
@@ -457,8 +483,10 @@ rexone-web/
 │   ├── pages/           # Page Object Model (POM) classes
 │   └── specs/           # User journey test specifications
 ├── scripts/             # Development & test automation scripts
-│   ├── dev.sh       # Docker compose dev environment starter
-│   └── test.sh       # Playwright E2E runner CLI
+│   ├── dev.sh           # Local Vite development server
+│   ├── test.sh          # Full test suite runner (Unit + E2E)
+│   ├── test_unit.sh     # Vitest unit test runner
+│   └── test_e2e.sh      # Playwright E2E runner CLI
 ├── src/
 │   ├── assets/          # Static application media
 │   ├── constants/       # Storage keys, dialog steps, and route parameter constants

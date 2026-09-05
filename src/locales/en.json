@@ -819,8 +819,8 @@
         "delivery": "Delivery Channels",
         "email": "Email",
         "event": "Notification Event",
-        "in_app": "In-App Sockets",
-        "push": "Push Notifications",
+        "in_app": "In-App",
+        "push": "Push",
         "recipients": "Recipients",
         "selected_roles": "Selected roles",
         "selected_users": "Selected users"
@@ -855,6 +855,78 @@
         "load_templates": "Unable to load notification events",
         "search_users": "User search is unavailable in the current API.",
         "send": "Unable to send notification"
+      },
+      "tabs": {
+        "broadcast": "Send Broadcast",
+        "templates": "Notification Templates"
+      },
+      "templates": {
+        "title": "Notification Templates",
+        "description": "Configure delivery copy and templates across In-App, Push, and Email channels.",
+        "new_template": "Create Template",
+        "search_placeholder": "Search templates by name or event...",
+        "all_categories": "All Categories",
+        "empty_title": "No notification templates found",
+        "empty_desc": "Create a custom template for broadcast and marketing messages.",
+        "loading": "Loading notification templates...",
+        "delete_title": "Delete Notification Template",
+        "delete_message": "Are you sure you want to delete \"{{name}}\"? Dispatched user receipts will not be affected.",
+        "delete_confirm": "Delete Template",
+        "columns": {
+          "template_event": "Template / Event",
+          "category": "Category",
+          "channels": "Configured Channels",
+          "target_link": "Target Link",
+          "sent_read": "Sent / Read",
+          "actions": "Actions"
+        },
+        "toasts": {
+          "create_success": "Template created successfully",
+          "update_success": "Template updated successfully",
+          "delete_success": "Template deleted successfully"
+        },
+        "dialog": {
+          "new_title": "Create Notification Template",
+          "edit_title": "Edit Notification Template",
+          "general_info": "General Information",
+          "event_label": "Event Key",
+          "event_placeholder": "e.g. promotional_campaign_fall",
+          "name_label": "Display Name",
+          "name_placeholder": "e.g. Fall Discount Campaign",
+          "desc_label": "Description (Internal)",
+          "desc_placeholder": "Brief context on who receives this and when",
+          "category_label": "Category",
+          "link_label": "Redirect Link (Optional)",
+          "link_placeholder": "/payment or https://...",
+          "admin_only": "Admin Broadcast Only",
+          "channel_content": "Channel Content & Templates",
+          "variables_hint": "Variables: {{user_name}}, {{user_email}}",
+          "in_app_tab": "In-App (Socket)",
+          "push_tab": "Push Notification",
+          "email_tab": "Email",
+          "in_app_title": "In-App Notification Title",
+          "in_app_title_placeholder": "e.g. Announcement: {{title}}",
+          "in_app_body": "In-App Message Body",
+          "in_app_body_placeholder": "e.g. Hello {{user_name}}, we have a special announcement...",
+          "push_title": "Push Notification Title",
+          "push_title_placeholder": "e.g. New Announcement",
+          "push_body": "Push Notification Body",
+          "push_body_placeholder": "e.g. Check out our latest features...",
+          "push_template_id": "Provider Push Template ID (Optional)",
+          "push_template_id_placeholder": "e.g. push_template_uuid",
+          "push_template_id_helper": "If using an external provider-managed push layout",
+          "email_subject": "Email Subject Line",
+          "email_subject_placeholder": "e.g. Important news for {{user_name}}",
+          "email_body": "Email Body (HTML / Text)",
+          "email_body_placeholder": "<p>Dear {{user_name}},</p><p>We are excited to share...</p>",
+          "email_template_id": "Provider Email Template ID (Optional)",
+          "email_template_id_placeholder": "e.g. d-1234567890abcdef",
+          "cancel": "Cancel",
+          "save": "Save Changes",
+          "create": "Create Template",
+          "event_required": "Event identifier is required",
+          "name_required": "Template name is required"
+        }
       }
     },
     "analytics": {
@@ -1033,5 +1105,21 @@
     "timer_hours": "Hours",
     "welcome_donations": "If this is helpful for you to find your inner peace, you may support its maintenance and future development with some loving kindness collecting some merits!",
     "timer_start_message": "Let's start the training of mindfulness!"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "filter_all": "All",
+    "filter_unread": "Unread",
+    "filter_read": "Read",
+    "mark_all_read": "Mark all as read",
+    "empty_all": "No notifications yet",
+    "empty_unread": "You're all caught up!",
+    "empty_read": "No read notifications",
+    "empty_desc": "We'll let you know when something important arrives.",
+    "load_more": "Load More",
+    "loading": "Loading notifications...",
+    "delete": "Delete notification",
+    "delete_success": "Notification deleted",
+    "mark_read_success": "Marked as read"
   }
 }

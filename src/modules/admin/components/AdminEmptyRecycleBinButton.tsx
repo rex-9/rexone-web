@@ -37,7 +37,6 @@ export const AdminEmptyRecycleBinButton: React.FC<
   return (
     <>
       <Button
-        type="button"
         variant={ButtonVariants.PRIMARY}
         size={ButtonSizes.SM}
         disabled={disabled || isBusy || (count !== undefined && count <= 0)}

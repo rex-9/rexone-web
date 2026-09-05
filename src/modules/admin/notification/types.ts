@@ -15,11 +15,55 @@ export interface IAdminNotificationFormValues {
 }
 
 export interface IAdminNotificationTemplate {
+  id?: string;
   event: string;
-  label: string;
+  name: string;
+  label?: string;
+  description?: string | null;
   category: NotificationEventCategory | string;
-  admin_available: boolean;
+  link?: string | null;
+  admin?: boolean;
   unavailable_reason?: string;
+  in_app_title?: string | null;
+  in_app_body?: string | null;
+  in_app_data?: Record<string, unknown>;
+  push_title?: string | null;
+  push_body?: string | null;
+  push_template_id?: string | null;
+  email_subject?: string | null;
+  email_body?: string | null;
+  email_template_id?: string | null;
+  sent_count?: number;
+  read_count?: number;
+  discarded_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface IAdminNotificationTemplateFormValues {
+  event: string;
+  name: string;
+  description?: string;
+  category: string;
+  link?: string;
+  admin: boolean;
+  in_app_title?: string;
+  in_app_body?: string;
+  in_app_data?: Record<string, unknown>;
+  push_title?: string;
+  push_body?: string;
+  push_template_id?: string;
+  email_subject?: string;
+  email_body?: string;
+  email_template_id?: string;
+}
+
+export interface IAdminTemplateListParams {
+  [key: string]: unknown;
+  page?: number;
+  limit?: number;
+  category?: string;
+  search?: string;
 }
 
 export interface IAdminNotificationDelivery {

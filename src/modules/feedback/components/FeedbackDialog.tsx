@@ -64,7 +64,10 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
       onClose={onClose}
       title={t("feedback.title", "Share Your Feedback")}
     >
-      <FormContainer onSubmit={handleSubmit} className="p-0 bg-transparent gap-4">
+      <FormContainer
+        onSubmit={handleSubmit}
+        className="p-0 bg-transparent gap-4"
+      >
         <RatingSlider
           value={rating}
           onChange={setRating}
@@ -90,7 +93,6 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
 
         <div className="flex justify-end gap-2 pt-2">
           <Button
-            type="button"
             variant="tertiary"
             size="sm"
             onClick={onClose}

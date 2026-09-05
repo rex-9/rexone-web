@@ -1,10 +1,14 @@
+// src/modules/admin/notification/notification.service.ts
+
 import AppRoutes from "../../../AppRoutes";
-import { IApiEnvelope, IApiResponse } from "../../../models";
+import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../../models";
 import { api } from "../../../services";
 import {
   IAdminNotificationDelivery,
   IAdminNotificationFormValues,
   IAdminNotificationTemplate,
+  IAdminNotificationTemplateFormValues,
+  IAdminTemplateListParams,
 } from "./types";
 import {
   NOTIFICATION_AUDIENCE_TYPES,
@@ -13,11 +17,75 @@ import {
 import type { NotificationDeliveryChannel } from "./constants";
 
 class NotificationService {
-  async getTemplates(): Promise<
-    IApiResponse<IApiEnvelope<IAdminNotificationTemplate[]>>
+  async getTemplates(
+    params?: IAdminTemplateListParams,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminNotificationTemplate>[]>>
   > {
-    return api.get<IAdminNotificationTemplate[]>(
-      AppRoutes.server.protected.admin.NOTIFICATION_TEMPLATES,
+    return api.get<IJsonApiResource<IAdminNotificationTemplate>[]>(
+      AppRoutes.server.protected.admin.NOTIFICATIONS,
+      params,
+    );
+  }
+
+  async getTemplate(
+    id: string,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminNotificationTemplate>>>
+  > {
+    return api.get<IJsonApiResource<IAdminNotificationTemplate>>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.NOTIFICATION_DETAIL,
+        id,
+      ),
+    );
+  }
+
+  async createTemplate(
+    values: IAdminNotificationTemplateFormValues,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminNotificationTemplate>>>
+  > {
+    return api.post<IJsonApiResource<IAdminNotificationTemplate>>(
+      AppRoutes.server.protected.admin.NOTIFICATIONS,
+      { notification: values },
+    );
+  }
+
+  async updateTemplate(
+    id: string,
+    values: Partial<IAdminNotificationTemplateFormValues>,
+  ): Promise<
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminNotificationTemplate>>>
+  > {
+    return api.put<IJsonApiResource<IAdminNotificationTemplate>>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.NOTIFICATION_DETAIL,
+        id,
+      ),
+      { notification: values },
+    );
+  }
+
+  async discardTemplate(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.delete<null>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.NOTIFICATION_DETAIL,
+        id,
+      ),
+    );
+  }
+
+  async undiscardTemplate(
+    id: string,
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.post<null>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.admin.NOTIFICATION_UNDISCARD,
+        id,
+      ),
     );
   }
 
@@ -33,7 +101,7 @@ class NotificationService {
     );
 
     return api.post<IAdminNotificationDelivery>(
-      AppRoutes.server.protected.admin.NOTIFICATIONS,
+      AppRoutes.server.protected.admin.NOTIFICATION_DISPATCH,
       {
         audience: this.buildAudience(values),
         channels,

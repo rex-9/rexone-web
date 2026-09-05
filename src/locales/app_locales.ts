@@ -735,6 +735,94 @@ export const AppLocales = {
         SearchUsers: "admin.notifications.errors.search_users",
         Send: "admin.notifications.errors.send",
       },
+      Tabs: {
+        Broadcast: "admin.notifications.tabs.broadcast",
+        Templates: "admin.notifications.tabs.templates",
+      },
+      Templates: {
+        Title: "admin.notifications.templates.title",
+        Description: "admin.notifications.templates.description",
+        NewTemplate: "admin.notifications.templates.new_template",
+        SearchPlaceholder: "admin.notifications.templates.search_placeholder",
+        AllCategories: "admin.notifications.templates.all_categories",
+        EmptyTitle: "admin.notifications.templates.empty_title",
+        EmptyDesc: "admin.notifications.templates.empty_desc",
+        Loading: "admin.notifications.templates.loading",
+        DeleteTitle: "admin.notifications.templates.delete_title",
+        DeleteMessage: "admin.notifications.templates.delete_message",
+        DeleteConfirm: "admin.notifications.templates.delete_confirm",
+        Columns: {
+          TemplateEvent: "admin.notifications.templates.columns.template_event",
+          Category: "admin.notifications.templates.columns.category",
+          Channels: "admin.notifications.templates.columns.channels",
+          TargetLink: "admin.notifications.templates.columns.target_link",
+          SentRead: "admin.notifications.templates.columns.sent_read",
+          Actions: "admin.notifications.templates.columns.actions",
+        },
+        Toasts: {
+          CreateSuccess: "admin.notifications.templates.toasts.create_success",
+          UpdateSuccess: "admin.notifications.templates.toasts.update_success",
+          DeleteSuccess: "admin.notifications.templates.toasts.delete_success",
+        },
+        Dialog: {
+          NewTitle: "admin.notifications.templates.dialog.new_title",
+          EditTitle: "admin.notifications.templates.dialog.edit_title",
+          GeneralInfo: "admin.notifications.templates.dialog.general_info",
+          EventLabel: "admin.notifications.templates.dialog.event_label",
+          EventPlaceholder:
+            "admin.notifications.templates.dialog.event_placeholder",
+          NameLabel: "admin.notifications.templates.dialog.name_label",
+          NamePlaceholder:
+            "admin.notifications.templates.dialog.name_placeholder",
+          DescLabel: "admin.notifications.templates.dialog.desc_label",
+          DescPlaceholder:
+            "admin.notifications.templates.dialog.desc_placeholder",
+          CategoryLabel: "admin.notifications.templates.dialog.category_label",
+          LinkLabel: "admin.notifications.templates.dialog.link_label",
+          LinkPlaceholder:
+            "admin.notifications.templates.dialog.link_placeholder",
+          AdminOnly: "admin.notifications.templates.dialog.admin_only",
+          ChannelContent:
+            "admin.notifications.templates.dialog.channel_content",
+          VariablesHint: "admin.notifications.templates.dialog.variables_hint",
+          InAppTab: "admin.notifications.templates.dialog.in_app_tab",
+          PushTab: "admin.notifications.templates.dialog.push_tab",
+          EmailTab: "admin.notifications.templates.dialog.email_tab",
+          InAppTitle: "admin.notifications.templates.dialog.in_app_title",
+          InAppTitlePlaceholder:
+            "admin.notifications.templates.dialog.in_app_title_placeholder",
+          InAppBody: "admin.notifications.templates.dialog.in_app_body",
+          InAppBodyPlaceholder:
+            "admin.notifications.templates.dialog.in_app_body_placeholder",
+          PushTitle: "admin.notifications.templates.dialog.push_title",
+          PushTitlePlaceholder:
+            "admin.notifications.templates.dialog.push_title_placeholder",
+          PushBody: "admin.notifications.templates.dialog.push_body",
+          PushBodyPlaceholder:
+            "admin.notifications.templates.dialog.push_body_placeholder",
+          PushTemplateId:
+            "admin.notifications.templates.dialog.push_template_id",
+          PushTemplateIdPlaceholder:
+            "admin.notifications.templates.dialog.push_template_id_placeholder",
+          PushTemplateIdHelper:
+            "admin.notifications.templates.dialog.push_template_id_helper",
+          EmailSubject: "admin.notifications.templates.dialog.email_subject",
+          EmailSubjectPlaceholder:
+            "admin.notifications.templates.dialog.email_subject_placeholder",
+          EmailBody: "admin.notifications.templates.dialog.email_body",
+          EmailBodyPlaceholder:
+            "admin.notifications.templates.dialog.email_body_placeholder",
+          EmailTemplateId:
+            "admin.notifications.templates.dialog.email_template_id",
+          EmailTemplateIdPlaceholder:
+            "admin.notifications.templates.dialog.email_template_id_placeholder",
+          Cancel: "admin.notifications.templates.dialog.cancel",
+          Save: "admin.notifications.templates.dialog.save",
+          Create: "admin.notifications.templates.dialog.create",
+          EventRequired: "admin.notifications.templates.dialog.event_required",
+          NameRequired: "admin.notifications.templates.dialog.name_required",
+        },
+      },
     },
     Analytics: {
       Title: "admin.analytics.title",
@@ -992,5 +1080,21 @@ export const AppLocales = {
     Hours: "anapana.timer_hours",
     WelcomeDonations: "anapana.welcome_donations",
     StartMessage: "anapana.timer_start_message",
+  },
+  Notifications: {
+    Title: "notifications.title",
+    FilterAll: "notifications.filter_all",
+    FilterUnread: "notifications.filter_unread",
+    FilterRead: "notifications.filter_read",
+    MarkAllRead: "notifications.mark_all_read",
+    EmptyAll: "notifications.empty_all",
+    EmptyUnread: "notifications.empty_unread",
+    EmptyRead: "notifications.empty_read",
+    EmptyDesc: "notifications.empty_desc",
+    LoadMore: "notifications.load_more",
+    Loading: "notifications.loading",
+    Delete: "notifications.delete",
+    DeleteSuccess: "notifications.delete_success",
+    MarkReadSuccess: "notifications.mark_read_success",
   },
 } as const;

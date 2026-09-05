@@ -13,7 +13,7 @@ import type {
   IExtendAccessPayload,
 } from "./types";
 
-class AdminAccessesService {
+class AdminAccessService {
   async getAccesses(
     params?: IAdminAccessFilters,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAccess>[]>>> {
@@ -59,4 +59,4 @@ class AdminAccessesService {
   }
 }
 
-export default new AdminAccessesService();
+export default new AdminAccessService();

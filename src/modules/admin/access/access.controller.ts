@@ -1,4 +1,3 @@
-import AdminAccessService from "./access.service";
 import { parsePagyList, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type {
@@ -7,15 +6,16 @@ import type {
   IGrantAccessPayload,
   IExtendAccessPayload,
 } from "./types";
+import { Admin } from "..";
 
-class AdminAccessController {
+class AccessController {
   async getAccesses(params?: IAdminAccessFilters): Promise<{
     success: boolean;
     accesses: IAdminAccess[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await AdminAccessService.getAccesses(params);
+    const response = await Admin.AccessService.getAccesses(params);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -36,7 +36,7 @@ class AdminAccessController {
     access?: IAdminAccess;
     error?: string;
   }> {
-    const response = await AdminAccessService.getAccess(id);
+    const response = await Admin.AccessService.getAccess(id);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -54,7 +54,7 @@ class AdminAccessController {
     accesses: IAdminAccess[];
     error?: string;
   }> {
-    const response = await AdminAccessService.grantAccess(data);
+    const response = await Admin.AccessService.grantAccess(data);
     const { status, data: body } = response.data || {};
 
     if (status?.success && Array.isArray(body)) {
@@ -79,7 +79,7 @@ class AdminAccessController {
     access?: IAdminAccess;
     error?: string;
   }> {
-    const response = await AdminAccessService.extendAccess(id, data);
+    const response = await Admin.AccessService.extendAccess(id, data);
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
@@ -96,7 +96,7 @@ class AdminAccessController {
     success: boolean;
     error?: string;
   }> {
-    const response = await AdminAccessService.revokeAccess(id);
+    const response = await Admin.AccessService.revokeAccess(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -110,4 +110,4 @@ class AdminAccessController {
   }
 }
 
-export default new AdminAccessController();
+export default new AccessController();

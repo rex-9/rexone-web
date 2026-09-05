@@ -24,7 +24,6 @@ import {
 } from "../../../../design";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminLog } from "../types";
-import AdminLogsController from "../log.controller";
 import {
   AdminPagination,
   AdminState,
@@ -49,6 +48,7 @@ import {
   type TAdminLogResolution,
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { Admin } from "../..";
 
 interface IAdminLogsPageProps {
   view?: TAdminViewMode;
@@ -132,7 +132,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     setLoading(true);
     setError("");
 
-    const result = await AdminLogsController.getLogs({
+    const result = await Admin.LogController.getLogs({
       page,
       limit: ADMIN_PAGE_SIZE,
       severity: severityFilter || undefined,
@@ -177,7 +177,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
 
   const handleUndiscard = async (log: IAdminLog) => {
     setLoading(true);
-    const result = await AdminLogsController.undiscardLog(log.id);
+    const result = await Admin.LogController.undiscardLog(log.id);
     setLoading(false);
 
     if (result.success) {
@@ -194,7 +194,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     if (!discardTarget) return;
 
     setLoading(true);
-    const result = await AdminLogsController.discardLog(discardTarget.id);
+    const result = await Admin.LogController.discardLog(discardTarget.id);
     setLoading(false);
 
     if (result.success) {
@@ -212,7 +212,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     if (!destroyTarget) return;
 
     setLoading(true);
-    const result = await AdminLogsController.deleteLog(destroyTarget.id);
+    const result = await Admin.LogController.deleteLog(destroyTarget.id);
     setLoading(false);
 
     if (result.success) {

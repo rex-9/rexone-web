@@ -855,6 +855,78 @@
         "load_templates": "အဖြစ်အပျက်များ မရပါ",
         "search_users": "အသုံးပြုသူ ရှာဖွေမှု မရနိုင်သေးပါ",
         "send": "အသိပေးချက် ပို့၍ မရပါ"
+      },
+      "tabs": {
+        "broadcast": "အသိပေးချက် ပို့ရန်",
+        "templates": "အသိပေးချက် ပုံစံခွက်များ"
+      },
+      "templates": {
+        "title": "အသိပေးချက် ပုံစံခွက်များ",
+        "description": "အက်ပ်တွင်း၊ ပုရှ် နှင့် အီးမေးလ် ပုံစံခွက် စာသားများကို ပြင်ဆင်သတ်မှတ်ပါ။",
+        "new_template": "ပုံစံခွက်အသစ် ပြုလုပ်မည်",
+        "search_placeholder": "ပုံစံခွက် ရှာဖွေရန်...",
+        "all_categories": "အမျိုးအစား အားလုံး",
+        "empty_title": "အသိပေးချက် ပုံစံခွက် မရှိသေးပါ",
+        "empty_desc": "အသိပေးချက် ထုတ်လွှင့်ရန်နှင့် ကြော်ငြာရန် ပုံစံခွက်အသစ် ဖန်တီးပါ။",
+        "loading": "ပုံစံခွက်များ ရယူနေဆဲ...",
+        "delete_title": "ပုံစံခွက် ပယ်ဖျက်မည်",
+        "delete_message": "\"{{name}}\" ပုံစံခွက်ကို ပယ်ဖျက်ရန် သေချာပါသလား?",
+        "delete_confirm": "ပယ်ဖျက်မည်",
+        "columns": {
+          "template_event": "ပုံစံခွက် / အဖြစ်အပျက်",
+          "category": "အမျိုးအစား",
+          "channels": "သတ်မှတ်ထားသော နည်းလမ်းများ",
+          "target_link": "လင့်ခ်",
+          "sent_read": "ပေးပို့မှု / ဖတ်ရှုမှု",
+          "actions": "လုပ်ဆောင်ချက်များ"
+        },
+        "toasts": {
+          "create_success": "ပုံစံခွက် ဖန်တီးပြီးပါပြီ",
+          "update_success": "ပုံစံခွက် ပြင်ဆင်ပြီးပါပြီ",
+          "delete_success": "ပုံစံခွက် ပယ်ဖျက်ပြီးပါပြီ"
+        },
+        "dialog": {
+          "new_title": "ပုံစံခွက်အသစ် ဖန်တီးမည်",
+          "edit_title": "ပုံစံခွက် ပြင်ဆင်မည်",
+          "general_info": "အထွေထွေ အချက်အလက်များ",
+          "event_label": "အဖြစ်အပျက် အမည်",
+          "event_placeholder": "ဥပမာ - promotion_campaign",
+          "name_label": "ဖော်ပြမည့် အမည်",
+          "name_placeholder": "ဥပမာ - အထူးလျှော့စျေး",
+          "desc_label": "အသေးစိတ် ဖော်ပြချက်",
+          "desc_placeholder": "ဤအသိပေးချက်နှင့် ပတ်သက်သည့် အကြောင်းအရာ",
+          "category_label": "အမျိုးအစား",
+          "link_label": "ညွှန်းမည့် လင့်ခ် (ရှိလျှင်)",
+          "link_placeholder": "/payment သို့မဟုတ် https://...",
+          "admin_only": "စီမံခန့်ခွဲသူသာ ထုတ်လွှင့်နိုင်သည်",
+          "channel_content": "နည်းလမ်းအလိုက် စာသားများ",
+          "variables_hint": "အသုံးပြုနိုင်သော စကားလုံးများ: {{user_name}}, {{user_email}}",
+          "in_app_tab": "အက်ပ်တွင်း (Socket)",
+          "push_tab": "ပုရှ် အသိပေးချက်",
+          "email_tab": "အီးမေးလ်",
+          "in_app_title": "အက်ပ်တွင်း ခေါင်းစဉ်",
+          "in_app_title_placeholder": "ဥပမာ - ကြေညာချက်: {{title}}",
+          "in_app_body": "အက်ပ်တွင်း စာသား",
+          "in_app_body_placeholder": "ဥပမာ - မင်္ဂလာပါ {{user_name}}...",
+          "push_title": "ပုရှ် ခေါင်းစဉ်",
+          "push_title_placeholder": "ဥပမာ - သတင်းအသစ်",
+          "push_body": "ပုရှ် စာသား",
+          "push_body_placeholder": "ဥပမာ - ဝန်ဆောင်မှုအသစ်များကို စမ်းသပ်ကြည့်ပါ...",
+          "push_template_id": "ပုရှ် ပုံစံခွက် ID (ရှိလျှင်)",
+          "push_template_id_placeholder": "ဥပမာ - push_template_uuid",
+          "push_template_id_helper": "ပြင်ပ ဝန်ဆောင်မှု ပုံစံခွက် အသုံးပြုလိုလျှင်",
+          "email_subject": "အီးမေးလ် ခေါင်းစဉ်",
+          "email_subject_placeholder": "ဥပမာ - {{user_name}} အတွက် အရေးကြီး သတင်းစကား",
+          "email_body": "အီးမေးလ် စာသား (HTML / Text)",
+          "email_body_placeholder": "<p>မင်္ဂလာပါ {{user_name}}၊</p>",
+          "email_template_id": "အီးမေးလ် ပုံစံခွက် ID (ရှိလျှင်)",
+          "email_template_id_placeholder": "ဥပမာ - d-1234567890abcdef",
+          "cancel": "မလုပ်တော့ပါ",
+          "save": "သိမ်းဆည်းမည်",
+          "create": "ဖန်တီးမည်",
+          "event_required": "အဖြစ်အပျက် အမည် ထည့်သွင်းရန် လိုအပ်သည်",
+          "name_required": "ပုံစံခွက် အမည် ထည့်သွင်းရန် လိုအပ်သည်"
+        }
       }
     },
     "analytics": {
@@ -1034,5 +1106,21 @@
     "timer_hours": "နာရီ",
     "welcome_donations": "စိတ်၏ အေးချမ်းမှုကို ရှာဖွေရာတွင် အထောက်အကူဖြစ်ပါက နောင်အနာဂတ် ဖွံ့ဖြိုးတိုးတက်ရေးအတွက် မေတ္တာစေတနာဖြင့် ကုသိုလ်ယူ ပါဝင်လှူဒါန်းနိုင်ပါသည်!",
     "timer_start_message": "သတိပဋ္ဌာန် လေ့ကျင့်မှုကို စတင်ကြပါစို့!"
+  },
+  "notifications": {
+    "title": "အသိပေးချက်များ",
+    "filter_all": "အားလုံး",
+    "filter_unread": "မဖတ်ရသေး",
+    "filter_read": "ဖတ်ပြီး",
+    "mark_all_read": "အားလုံးဖတ်ပြီးအဖြစ်မှတ်မည်",
+    "empty_all": "အသိပေးချက် မရှိသေးပါ",
+    "empty_unread": "ဖတ်ရန် မကျန်တော့ပါ",
+    "empty_read": "ဖတ်ပြီးသော အသိပေးချက် မရှိပါ",
+    "empty_desc": "အရေးကြီးသော သတင်းအချက်အလက်များ ရှိပါက အသိပေးပါမည်။",
+    "load_more": "နောက်ထပ်ရယူရန်",
+    "loading": "အသိပေးချက်များကို ရယူနေပါသည်...",
+    "delete": "အသိပေးချက် ပယ်ဖျက်ရန်",
+    "delete_success": "အသိပေးချက်ကို ပယ်ဖျက်ပြီးပါပြီ",
+    "mark_read_success": "ဖတ်ပြီးအဖြစ် သတ်မှတ်ပြီးပါပြီ"
   }
 }

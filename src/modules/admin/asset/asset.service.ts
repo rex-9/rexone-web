@@ -8,7 +8,7 @@ import {
 import { api } from "../../../services";
 import type { IAdminAsset, IStorageStats } from "./types";
 
-class AdminAssetService {
+class AssetService {
   async getAssets(
     params?: Record<string, string | number>,
   ): Promise<IApiResponse<IApiEnvelope<{ assets: IAdminAsset[] }>>> {
@@ -146,4 +146,4 @@ class AdminAssetService {
   }
 }
 
-export default new AdminAssetService();
+export default new AssetService();

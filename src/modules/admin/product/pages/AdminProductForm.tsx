@@ -162,7 +162,10 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         </div>
         <div className="flex-1 text-center sm:text-left space-y-1">
           <span className="text-sm font-semibold text-base-content block">
-            {t(AppLocales.Admin.Products.Form.ThumbnailLabel, "Product Thumbnail")}
+            {t(
+              AppLocales.Admin.Products.Form.ThumbnailLabel,
+              "Product Thumbnail",
+            )}
           </span>
           <span className="text-xs text-base-content/60 block">
             {t(
@@ -173,17 +176,18 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Button
-            type="button"
             variant={ButtonVariants.SECONDARY}
             size={ComponentSizes.SM}
             onClick={() => setIsAssetPickerOpen(true)}
           >
             <iconsLib.photo className="w-4 h-4 mr-1.5" />
-            {t(AppLocales.Admin.Products.Form.ChooseThumbnail, "Choose Thumbnail")}
+            {t(
+              AppLocales.Admin.Products.Form.ChooseThumbnail,
+              "Choose Thumbnail",
+            )}
           </Button>
           {(thumbnailUrl || thumbnailAssetId) && (
             <Button
-              type="button"
               variant={ButtonVariants.TERTIARY}
               size={ComponentSizes.SM}
               className="text-error hover:bg-error/10"
@@ -362,4 +366,3 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     </FormContainer>
   );
 };
-

@@ -1,5 +1,5 @@
-export { default as AdminAssetController } from "./asset.controller";
-export { default as AdminAssetService } from "./asset.service";
+export { default as AssetController } from "./asset.controller";
+export { default as AssetService } from "./asset.service";
 export * from "./types";
 export * from "./constants";
 export * from "./components";

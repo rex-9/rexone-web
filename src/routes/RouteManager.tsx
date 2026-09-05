@@ -35,6 +35,7 @@ import {
   ADMIN_RESOURCES,
   AdminAnalyticsPage,
   AdminAccessesPage,
+  AdminAccessCreatePage,
   AdminAccessEditPage,
   AdminFeedbacksPage,
   AdminFeedbackDetailPage,
@@ -48,6 +49,8 @@ import {
   AdminChatRoomsPage,
   AdminDiscardedChatRoomsPage,
   AdminNotificationsPage,
+  AdminNotificationCreatePage,
+  AdminNotificationEditPage,
   AdminProductCreatePage,
   AdminProductEditPage,
   AdminDiscardedProductsPage,
@@ -62,6 +65,7 @@ import {
   AdminUsersPage,
   AdminAssetsPage,
   AdminDiscardedAssetsPage,
+  AdminAssetCreatePage,
   AdminAssetEditPage,
 } from "../modules/admin";
 
@@ -350,6 +354,32 @@ const router = createBrowserRouter(
           <Route
             element={
               <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.NOTIFICATION_CREATE}
+              element={<AdminNotificationCreatePage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.NOTIFICATION_EDIT}
+              element={<AdminNotificationEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
                 resource={ADMIN_RESOURCES.PRODUCTS}
               />
@@ -410,6 +440,19 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.ACCESSES}
               element={<AdminAccessesPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.ACCESSES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ACCESS_CREATE}
+              element={<AdminAccessCreatePage />}
             />
           </Route>
           <Route
@@ -514,6 +557,19 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.ASSETS_RECYCLE_BIN}
               element={<AdminDiscardedAssetsPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.ASSETS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.ASSET_CREATE}
+              element={<AdminAssetCreatePage />}
             />
           </Route>
           <Route

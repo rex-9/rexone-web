@@ -21,7 +21,6 @@ import {
 } from "../../../../design";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback } from "../types";
-import AdminFeedbackController from "../feedback.controller";
 import {
   AdminPagination,
   AdminState,
@@ -43,6 +42,7 @@ import {
   ADMIN_FEEDBACK_TABLE_KEYS,
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { Admin } from "../..";
 
 export const AdminFeedbacksPage: React.FC = () => {
   const t = useTranslate();
@@ -107,7 +107,7 @@ export const AdminFeedbacksPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    const result = await AdminFeedbackController.getFeedbacks({
+    const result = await Admin.FeedbackController.getFeedbacks({
       page,
       limit: ADMIN_PAGE_SIZE,
       status: statusFilter || undefined,

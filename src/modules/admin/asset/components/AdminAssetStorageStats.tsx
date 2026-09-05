@@ -1,12 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { iconsLib } from "../../../../assets";
-import { Badge, Button, ButtonSizes, ButtonVariants, ProgressBar } from "../../../../design";
-import { ProgressBarSizes, ProgressBarVariants } from "../../../../design/constants";
+import {
+  Badge,
+  Button,
+  ButtonSizes,
+  ButtonVariants,
+  ProgressBar,
+} from "../../../../design";
+import {
+  ProgressBarSizes,
+  ProgressBarVariants,
+} from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import { AdminKpiCard } from "../../components";
-import AdminAssetController from "../asset.controller";
 import { formatAssetFileSize } from "../constants";
 import type { IStorageStats } from "../types";
+import { Admin } from "../..";
 
 interface IAdminAssetStorageStatsProps {
   className?: string;
@@ -29,7 +38,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
     }
     setError(null);
 
-    const result = await AdminAssetController.getStorageStats();
+    const result = await Admin.AssetController.getStorageStats();
     if (result.success && result.stats) {
       setStats(result.stats);
     } else {
@@ -111,7 +120,9 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
             {providerLabel}
           </Badge>
           {stats.bucket && (
-            <span className="font-mono text-xs opacity-60">({stats.bucket})</span>
+            <span className="font-mono text-xs opacity-60">
+              ({stats.bucket})
+            </span>
           )}
         </div>
 
@@ -169,8 +180,8 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
             hasDiskData
               ? `${formatAssetFileSize(stats.disk_available_bytes)} ${t(AppLocales.Admin.Assets.StorageStats.VpsAvailable).toLowerCase()} / ${formatAssetFileSize(stats.disk_total_bytes)} ${t(AppLocales.Admin.Assets.StorageStats.VpsTotal).toLowerCase()}`
               : stats.provider === "garage"
-              ? "Host disk unmetered"
-              : "Unmetered / Cloud"
+                ? "Host disk unmetered"
+                : "Unmetered / Cloud"
           }
         />
 

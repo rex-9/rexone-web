@@ -20,7 +20,6 @@ import {
 } from "../../../../design/constants";
 import { formatAdminDate } from "../../../../helpers";
 import type { IAdminFeedback } from "../types";
-import AdminFeedbackController from "../feedback.controller";
 import {
   AlertDialog,
   AdminState,
@@ -30,6 +29,7 @@ import {
 } from "../../components";
 import { ADMIN_FEEDBACK_PRIORITY, ADMIN_FEEDBACK_STATUS } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { Admin } from "../..";
 
 export const AdminFeedbackDetailPage: React.FC = () => {
   const t = useTranslate();
@@ -102,7 +102,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
 
     const loadFeedback = async () => {
       setLoading(true);
-      const result = await AdminFeedbackController.getFeedback(id);
+      const result = await Admin.FeedbackController.getFeedback(id);
       setLoading(false);
 
       if (result.success && result.feedback) {
@@ -126,7 +126,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
 
     setLoading(true, { overlay: false });
 
-    const result = await AdminFeedbackController.updateFeedback(id, {
+    const result = await Admin.FeedbackController.updateFeedback(id, {
       status,
       priority,
       admin_notes: adminNotes,

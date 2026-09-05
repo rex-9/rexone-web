@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "../contexts/ToastContext";
 import SocketService, { ISocketMessage } from "../services/socket.service";
+import { NOTIFICATION_SOCKET_TYPES } from "../modules/notification/constants";
 
 export interface INotification {
   id: string;
@@ -43,22 +44,24 @@ export const useSocket = () => {
         const type = typeof notif.data.type === "string" ? notif.data.type : "general";
 
         switch (type) {
-          case "payment_success":
-          case "subscription_created":
-          case "subscription_resumed":
-          case "welcome":
-          case "ai_response_ready":
-          case "asset_compressed":
+          case NOTIFICATION_SOCKET_TYPES.PAYMENT_SUCCESS:
+          case NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CREATED:
+          case NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_RESUMED:
+          case NOTIFICATION_SOCKET_TYPES.WELCOME:
+          case NOTIFICATION_SOCKET_TYPES.AI_RESPONSE_READY:
+          case NOTIFICATION_SOCKET_TYPES.TTS_READY:
+          case NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSED:
             success(notif.message);
             break;
-          case "payment_failed":
-          case "subscription_canceled":
-          case "ai_response_failed":
-          case "asset_compression_failed":
+          case NOTIFICATION_SOCKET_TYPES.PAYMENT_FAILED:
+          case NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CANCELED:
+          case NOTIFICATION_SOCKET_TYPES.AI_RESPONSE_FAILED:
+          case NOTIFICATION_SOCKET_TYPES.TTS_FAILED:
+          case NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSION_FAILED:
             error(notif.message);
             break;
-          case "asset_compressing":
-          case "sign_in_alert":
+          case NOTIFICATION_SOCKET_TYPES.ASSET_COMPRESSING:
+          case NOTIFICATION_SOCKET_TYPES.SIGN_IN_ALERT:
           default:
             info(notif.message);
             break;

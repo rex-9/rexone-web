@@ -114,7 +114,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <Button
-            type="button"
             variant={ButtonVariants.SECONDARY}
             size={ComponentSizes.SM}
             onClick={() => setIsAssetPickerOpen(true)}
@@ -124,7 +123,6 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
           </Button>
           {(avatarUrl || avatarAssetId) && (
             <Button
-              type="button"
               variant={ButtonVariants.TERTIARY}
               size={ComponentSizes.SM}
               className="text-error hover:bg-error/10"

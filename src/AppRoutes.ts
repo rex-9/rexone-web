@@ -52,14 +52,18 @@ class AppRoutes {
         ROLE_CREATE: AppRoutes.admin("/roles/create"),
         ROLE_EDIT: AppRoutes.admin("/roles/:id/edit"),
         NOTIFICATIONS: AppRoutes.admin("/notifications"),
+        NOTIFICATION_CREATE: AppRoutes.admin("/notifications/create"),
+        NOTIFICATION_EDIT: AppRoutes.admin("/notifications/:id/edit"),
         PRODUCTS: AppRoutes.admin("/products"),
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
         PRODUCT_CREATE: AppRoutes.admin("/products/create"),
         PRODUCT_EDIT: AppRoutes.admin("/products/:id/edit"),
         ASSETS: AppRoutes.admin("/assets"),
         ASSETS_RECYCLE_BIN: AppRoutes.admin("/assets/bin"),
+        ASSET_CREATE: AppRoutes.admin("/assets/create"),
         ASSET_EDIT: AppRoutes.admin("/assets/:id/edit"),
         ACCESSES: AppRoutes.admin("/accesses"),
+        ACCESS_CREATE: AppRoutes.admin("/accesses/create"),
         ACCESS_EDIT: AppRoutes.admin("/accesses/:id/edit"),
         FEEDBACK: AppRoutes.admin("/feedback"),
         FEEDBACK_DETAIL: AppRoutes.admin("/feedback/:id"),
@@ -146,6 +150,13 @@ class AppRoutes {
       // Feedback
       FEEDBACKS: AppRoutes.api("/feedbacks"), // GET
 
+      // Notifications
+      NOTIFICATIONS: AppRoutes.api("/notifications"), // GET
+      NOTIFICATIONS_UNREAD_COUNT: AppRoutes.api("/notifications/unread_count"), // GET
+      NOTIFICATION_READ: AppRoutes.api("/notifications/:id/read"), // PUT
+      NOTIFICATIONS_READ_ALL: AppRoutes.api("/notifications/read_all"), // PUT
+      NOTIFICATION_DELETE: AppRoutes.api("/notifications/:id"), // DELETE
+
       // API for Client Admin Dashboard
       admin: {
         USERS: AppRoutes.adminApi("/users"), // GET, POST
@@ -161,8 +172,14 @@ class AppRoutes {
         IAM_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET, POST
         IAM_PERMISSION_DETAIL: AppRoutes.adminApi("/iam/permissions/:id"), // GET, PUT, DELETE
         IAM_ROLE_PERMISSIONS: AppRoutes.adminApi("/iam/permissions"), // GET
-        NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // POST
-        NOTIFICATION_TEMPLATES: AppRoutes.adminApi("/notifications/templates"), // GET
+        NOTIFICATIONS: AppRoutes.adminApi("/notifications"), // GET, POST
+        NOTIFICATION_DETAIL: AppRoutes.adminApi("/notifications/:id"), // GET, PUT, DELETE
+        NOTIFICATION_UNDISCARD: AppRoutes.adminApi("/notifications/:id/undiscard"), // POST
+        NOTIFICATION_DISPATCH: AppRoutes.adminApi("/notifications/dispatch"), // POST
+        NOTIFICATION_TEMPLATES: AppRoutes.adminApi("/notifications"), // GET, POST
+        NOTIFICATION_TEMPLATE_DETAIL: AppRoutes.adminApi("/notifications/:id"), // GET, PUT, DELETE
+        NOTIFICATION_TEMPLATE_DISCARD: AppRoutes.adminApi("/notifications/:id"), // DELETE
+        NOTIFICATION_TEMPLATE_UNDISCARD: AppRoutes.adminApi("/notifications/:id/undiscard"), // POST
         PAYMENT_PRODUCTS: AppRoutes.adminApi("/payment/products"), // GET, POST
         DISCARDED_PAYMENT_PRODUCTS: AppRoutes.adminApi(
           "/payment/products/discarded",

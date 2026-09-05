@@ -19,8 +19,8 @@ import {
   SearchInput,
   StatusBadge,
 } from "../../../../design/components";
-import type { IAdminAccess, IGrantAccessPayload } from "../types";
-import AdminAccessesController from "../access.controller";
+import type { IAdminAccess } from "../types";
+import AccessController from "../access.controller";
 import {
   AdminPagination,
   AdminState,
@@ -41,7 +41,6 @@ import {
   ADMIN_ACCESS_STATUS,
   ADMIN_ACCESS_TABLE_KEYS,
 } from "../constants";
-import { AdminAccessGrantDialog } from "../components/AdminAccessGrantDialog";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 import { DropdownSizes } from "../../../../design/constants";
@@ -71,7 +70,6 @@ export const AdminAccessesPage: React.FC = () => {
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
 
-  const [isGrantOpen, setIsGrantOpen] = useState(false);
   const [revokeTarget, setRevokeTarget] = useState<IAdminAccess | null>(null);
 
   const updateFilters = useCallback(
@@ -121,7 +119,7 @@ export const AdminAccessesPage: React.FC = () => {
     setLoading(true);
     setError("");
 
-    const result = await AdminAccessesController.getAccesses({
+    const result = await AccessController.getAccesses({
       page,
       limit: ADMIN_PAGE_SIZE,
       status: statusFilter || undefined,
@@ -148,27 +146,11 @@ export const AdminAccessesPage: React.FC = () => {
     }
   }, [loadAccesses, permissionsLoading]);
 
-  const handleGrant = async (payload: IGrantAccessPayload) => {
-    setLoading(true);
-    const result = await AdminAccessesController.grantAccess(payload);
-    setLoading(false);
-
-    if (result.success) {
-      toast.success(t(AppLocales.Admin.Accesses.Toasts.GrantSuccess));
-      setIsGrantOpen(false);
-      void loadAccesses();
-    } else {
-      toast.error(
-        result.error || t(AppLocales.Admin.Accesses.Errors.GrantFailed),
-      );
-    }
-  };
-
   const handleRevoke = async () => {
     if (!revokeTarget) return;
 
     setLoading(true);
-    const result = await AdminAccessesController.revokeAccess(revokeTarget.id);
+    const result = await AccessController.revokeAccess(revokeTarget.id);
     setLoading(false);
 
     if (result.success) {
@@ -311,13 +293,6 @@ export const AdminAccessesPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Modals & Dialogs */}
-      <AdminAccessGrantDialog
-        isOpen={isGrantOpen}
-        onClose={() => setIsGrantOpen(false)}
-        onSubmit={handleGrant}
-      />
-
       <ConfirmDialog
         isOpen={Boolean(revokeTarget)}
         title={t(AppLocales.Admin.Common.Confirm.RevokeTitle)}
@@ -337,7 +312,9 @@ export const AdminAccessesPage: React.FC = () => {
           can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ACCESSES) ? (
             <Button
               variant="primary"
-              onClick={() => setIsGrantOpen(true)}
+              onClick={() =>
+                navigate(AppRoutes.client.protected.admin.ACCESS_CREATE)
+              }
               className="flex items-center gap-1.5"
             >
               <iconsLib.plus className="h-4 w-4" />

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import AdminLogsController from "./log.controller";
-import AdminLogsService from "./log.service";
+import AdminLogController from "./log.controller";
+import AdminLogService from "./log.service";
 
 vi.mock("./log.service", () => ({
   default: {
@@ -14,7 +14,7 @@ vi.mock("./log.service", () => ({
   },
 }));
 
-describe("AdminLogsController", () => {
+describe("AdminLogController", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -50,11 +50,11 @@ describe("AdminLogsController", () => {
         },
       };
 
-      vi.mocked(AdminLogsService.getLogs).mockResolvedValue(
+      vi.mocked(AdminLogService.getLogs).mockResolvedValue(
         mockResponse as never,
       );
 
-      const result = await AdminLogsController.getLogs();
+      const result = await AdminLogController.getLogs();
 
       expect(result.success).toBe(true);
       expect(result.logs.length).toBe(1);
@@ -64,7 +64,7 @@ describe("AdminLogsController", () => {
 
   describe("resolveLog", () => {
     it("marks log as resolved", async () => {
-      vi.mocked(AdminLogsService.resolveLog).mockResolvedValue({
+      vi.mocked(AdminLogService.resolveLog).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Resolved" },
           data: {
@@ -78,7 +78,7 @@ describe("AdminLogsController", () => {
         },
       } as never);
 
-      const result = await AdminLogsController.resolveLog("log_1");
+      const result = await AdminLogController.resolveLog("log_1");
 
       expect(result.success).toBe(true);
       expect(result.log?.resolved_at).toBeDefined();
@@ -87,23 +87,23 @@ describe("AdminLogsController", () => {
 
   describe("discardLog", () => {
     it("discards log successfully", async () => {
-      vi.mocked(AdminLogsService.discardLog).mockResolvedValue({
+      vi.mocked(AdminLogService.discardLog).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Discarded" },
           data: {},
         },
       } as never);
 
-      const result = await AdminLogsController.discardLog("log_1");
+      const result = await AdminLogController.discardLog("log_1");
 
       expect(result.success).toBe(true);
-      expect(AdminLogsService.discardLog).toHaveBeenCalledWith("log_1");
+      expect(AdminLogService.discardLog).toHaveBeenCalledWith("log_1");
     });
   });
 
   describe("undiscardLog", () => {
     it("restores log successfully", async () => {
-      vi.mocked(AdminLogsService.undiscardLog).mockResolvedValue({
+      vi.mocked(AdminLogService.undiscardLog).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Restored" },
           data: {
@@ -114,10 +114,10 @@ describe("AdminLogsController", () => {
         },
       } as never);
 
-      const result = await AdminLogsController.undiscardLog("log_1");
+      const result = await AdminLogController.undiscardLog("log_1");
 
       expect(result.success).toBe(true);
-      expect(AdminLogsService.undiscardLog).toHaveBeenCalledWith("log_1");
+      expect(AdminLogService.undiscardLog).toHaveBeenCalledWith("log_1");
     });
   });
 });

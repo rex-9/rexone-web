@@ -76,7 +76,6 @@ export const FileInput: React.FC<IFileInputProps> = ({
       />
 
       <Button
-        type="button"
         variant={ButtonVariants.SECONDARY}
         size={ComponentSizes.MD}
         disabled={disabled}

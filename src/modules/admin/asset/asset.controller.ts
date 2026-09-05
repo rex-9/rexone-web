@@ -1,21 +1,21 @@
+import { Admin } from "..";
 import { IApiPagination, IAsset } from "../../../models";
 import {
   getApiError,
   parsePagyList,
   parseRecord,
 } from "../../../services/api.service";
-import AdminAssetService from "./asset.service";
 import { ASSET_STATUSES } from "./constants";
 import { IAdminAsset, IStorageStats } from "./types";
 
-class AdminAssetController {
+class AssetController {
   async getAssets(params?: Record<string, string | number>): Promise<{
     success: boolean;
     assets: IAdminAsset[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await AdminAssetService.getAssets(params);
+    const response = await Admin.AssetService.getAssets(params);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -41,7 +41,7 @@ class AdminAssetController {
     asset?: IAdminAsset;
     error?: string;
   }> {
-    const response = await AdminAssetService.getAsset(id);
+    const response = await Admin.AssetService.getAsset(id);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -63,7 +63,7 @@ class AdminAssetController {
     pagination: IApiPagination | null;
     error?: string;
   }> {
-    const response = await AdminAssetService.getDiscardedAssets(params);
+    const response = await Admin.AssetService.getDiscardedAssets(params);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -95,7 +95,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.uploadAsset(file, options);
+    const response = await Admin.AssetService.uploadAsset(file, options);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -123,7 +123,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.updateAsset(id, values);
+    const response = await Admin.AssetService.updateAsset(id, values);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -145,7 +145,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.discardAsset(id);
+    const response = await Admin.AssetService.discardAsset(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -166,7 +166,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.undiscardAsset(id);
+    const response = await Admin.AssetService.undiscardAsset(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -187,7 +187,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.destroyAsset(id);
+    const response = await Admin.AssetService.destroyAsset(id);
     const { status } = response.data || {};
 
     if (status?.success) {
@@ -210,7 +210,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.compressAsset(id);
+    const response = await Admin.AssetService.compressAsset(id);
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
@@ -245,7 +245,7 @@ class AdminAssetController {
     stats?: IStorageStats;
     error?: string;
   }> {
-    const response = await AdminAssetService.getStorageStats();
+    const response = await Admin.AssetService.getStorageStats();
     const { status, data } = response.data || {};
 
     if (status?.success && data?.stats) {
@@ -267,7 +267,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.emptyRecycleBin();
+    const response = await Admin.AssetService.emptyRecycleBin();
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -290,7 +290,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.discardBatch(ids);
+    const response = await Admin.AssetService.discardBatch(ids);
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -313,7 +313,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.undiscardBatch(ids);
+    const response = await Admin.AssetService.undiscardBatch(ids);
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -336,7 +336,7 @@ class AdminAssetController {
     message?: string;
     error?: string;
   }> {
-    const response = await AdminAssetService.destroyBatch(ids);
+    const response = await Admin.AssetService.destroyBatch(ids);
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -357,4 +357,4 @@ class AdminAssetController {
   }
 }
 
-export default new AdminAssetController();
+export default new AssetController();

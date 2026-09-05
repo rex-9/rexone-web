@@ -8,7 +8,7 @@ import type {
 } from "../../../models";
 import type { IAdminLog, IAdminLogFilters } from "./types";
 
-class AdminLogsService {
+class LogService {
   async getLogs(
     params?: IAdminLogFilters,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminLog>[]>>> {
@@ -67,4 +67,4 @@ class AdminLogsService {
   }
 }
 
-export default new AdminLogsService();
+export default new LogService();
