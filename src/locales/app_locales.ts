@@ -1049,6 +1049,8 @@ export const AppLocales = {
         Status: "admin.assets.detail.status",
         Duration: "admin.assets.detail.duration",
         StorageKey: "admin.assets.detail.storage_key",
+        Children: "admin.assets.detail.children",
+        NoChildren: "admin.assets.detail.no_children",
       },
       UploadButton: "admin.assets.upload_button",
       SearchPlaceholder: "admin.assets.search_placeholder",

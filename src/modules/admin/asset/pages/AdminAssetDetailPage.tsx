@@ -13,8 +13,10 @@ import {
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AssetController from "../asset.controller";
-import { formatAssetFileSize } from "../constants";
+import { formatAssetFileSize, getAssetChildren, getAssetThumbnail } from "../constants";
+import { AdminAssetChildrenTable } from "../components";
 import type { IAdminAsset } from "../types";
+import type { IAssetChild } from "../../../../models";
 
 const loadAsset = async (id: string) => {
   const result = await AssetController.getAsset(id);
@@ -28,7 +30,18 @@ export const AdminAssetDetailPage: React.FC = () => {
   const preview =
     asset?.format?.toLowerCase() === "image"
       ? asset.url
-      : asset?.thumbnail?.url;
+      : getAssetThumbnail(asset)?.url;
+
+  const handleDownload = async (target: IAdminAsset | IAssetChild) => {
+    const result = await AssetController.getDownloadUrl(target.id);
+    if (!result.success || !result.url) return;
+
+    const link = document.createElement("a");
+    link.href = result.url;
+    link.rel = "noopener";
+    link.click();
+  };
+
   return (
     <div className="space-y-6">
       <AdminDetailHeader
@@ -57,6 +70,16 @@ export const AdminAssetDetailPage: React.FC = () => {
                 <iconsLib.photo className="h-12 w-12 text-base-content/30" />
               </div>
             )}
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={() => void handleDownload(asset)}
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary px-3 py-2 text-sm font-semibold text-base-content transition hover:bg-primary/10"
+              >
+                <iconsLib.download className="h-4 w-4" />
+                {t(AppLocales.Admin.Assets.Download.Action)}
+              </button>
+            </div>
           </AdminDetailSection>
           <AdminDetailSection
             title={t(AppLocales.Admin.Assets.Detail.Metadata)}
@@ -92,6 +115,16 @@ export const AdminAssetDetailPage: React.FC = () => {
                 className="sm:col-span-2 xl:col-span-3"
               />
             </AdminDetailGrid>
+          </AdminDetailSection>
+          <AdminDetailSection
+            title={t(AppLocales.Admin.Assets.Detail.Children)}
+            icon={iconsLib.document}
+            className="lg:col-span-3"
+          >
+            <AdminAssetChildrenTable
+              assets={getAssetChildren(asset)}
+              onDownload={handleDownload}
+            />
           </AdminDetailSection>
         </div>
       ) : null}

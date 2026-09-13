@@ -1,3 +1,5 @@
+import type { IAssetChild } from "../../../models";
+
 export const ADMIN_ASSET_COLUMNS = {
   PREVIEW: "preview",
   NAME: "name",
@@ -20,6 +22,7 @@ export const ADMIN_ASSET_FILTERS = {
 export const ASSET_TYPES = {
   AVATAR: "avatar",
   THUMBNAIL: "thumbnail",
+  SUBTITLE: "subtitle",
   TTS: "tts",
   ATTACHMENT: "attachment",
   GENERAL: "general",
@@ -32,6 +35,8 @@ export const ASSET_FORMATS = {
   AUDIO: "audio",
   VIDEO: "video",
   DOC: "doc",
+  ZIP: "zip",
+  SUBTITLE: "subtitle",
 } as const;
 
 export type TAssetFormat = (typeof ASSET_FORMATS)[keyof typeof ASSET_FORMATS];
@@ -103,10 +108,31 @@ export const isImageAsset = (
   return false;
 };
 
+export const getAssetThumbnail = <
+  T extends { children?: { thumbnail?: { url?: string | null } | null } },
+>(
+  asset?: T | null,
+) => asset?.children?.thumbnail ?? null;
+
+export const getAssetChildren = <
+  T extends {
+    children?: {
+      thumbnail?: IAssetChild | null;
+      subtitles?: IAssetChild[];
+    };
+  },
+>(
+  asset?: T | null,
+) => [
+  ...(asset?.children?.thumbnail ? [asset.children.thumbnail] : []),
+  ...(asset?.children?.subtitles ?? []),
+];
+
 export const ASSET_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
   { value: ASSET_TYPES.AVATAR, label: "Avatar" },
   { value: ASSET_TYPES.THUMBNAIL, label: "Thumbnail" },
+  { value: ASSET_TYPES.SUBTITLE, label: "Subtitle" },
   { value: ASSET_TYPES.TTS, label: "TTS" },
   { value: ASSET_TYPES.ATTACHMENT, label: "Attachment" },
   { value: ASSET_TYPES.GENERAL, label: "General" },
@@ -118,6 +144,8 @@ export const ASSET_FORMAT_OPTIONS = [
   { value: ASSET_FORMATS.AUDIO, label: "Audio" },
   { value: ASSET_FORMATS.VIDEO, label: "Video" },
   { value: ASSET_FORMATS.DOC, label: "Document" },
+  { value: ASSET_FORMATS.ZIP, label: "Zip" },
+  { value: ASSET_FORMATS.SUBTITLE, label: "Subtitle" },
 ] as const;
 
 export const ASSET_SOURCE_OPTIONS = [

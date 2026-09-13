@@ -10,6 +10,8 @@ import {
   ASSET_FORMATS,
   ASSET_STATUSES,
   formatAssetFileSize,
+  getAssetChildren,
+  getAssetThumbnail,
   isImageAsset,
 } from "../constants";
 import {
@@ -19,6 +21,7 @@ import {
   FormContainer,
   TextInput,
 } from "../../components";
+import { AdminAssetChildrenTable } from "../components";
 import {
   Badge,
   Button,
@@ -577,9 +580,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
             </h3>
 
             <div className="w-full aspect-video rounded-lg overflow-hidden bg-base-200 flex items-center justify-center border border-base-300">
-              {isImageAsset(asset) || asset.thumbnail?.url ? (
+              {isImageAsset(asset) || getAssetThumbnail(asset)?.url ? (
                 <Image
-                  src={asset.thumbnail?.url || asset.url}
+                  src={getAssetThumbnail(asset)?.url || asset.url}
                   alt={asset.name}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-contain"
@@ -718,6 +721,16 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
           {/* Edit Form */}
           <div className="lg:col-span-2">
+            <div className="mb-6 rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm">
+              <div className="mb-4 flex items-center gap-2 border-b border-base-200 pb-3">
+                <iconsLib.document className="h-5 w-5 text-primary" />
+                <h3 className="text-body-m font-bold text-base-content">
+                  {t(AppLocales.Admin.Assets.Detail.Children)}
+                </h3>
+              </div>
+              <AdminAssetChildrenTable assets={getAssetChildren(asset)} />
+            </div>
+
             <FormContainer onSubmit={handleEditSubmit}>
               <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm space-y-5">
                 <div className="flex items-center gap-2 border-b border-base-200 pb-3">

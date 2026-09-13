@@ -1152,7 +1152,9 @@
         "metadata": "Asset metadata",
         "status": "Status",
         "duration": "Duration",
-        "storage_key": "Storage key"
+        "storage_key": "Storage key",
+        "children": "Child assets",
+        "no_children": "No child assets attached."
       },
       "title": "Assets",
       "description": "Manage media assets",

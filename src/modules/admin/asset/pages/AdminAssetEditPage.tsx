@@ -74,14 +74,17 @@ export const AdminAssetEditPage: React.FC = () => {
         const thumbnail =
           eventType === NOTIFICATION_SOCKET_TYPES.ASSET_THUMBNAIL_GENERATED &&
           event.data?.thumbnail
-            ? (event.data.thumbnail as IAdminAsset["thumbnail"])
-            : prev.thumbnail;
+            ? (event.data.thumbnail as NonNullable<IAdminAsset["children"]>["thumbnail"])
+            : prev.children?.thumbnail;
         return {
           ...prev,
           status: status || prev.status,
           size_bytes: sizeBytes !== undefined ? sizeBytes : prev.size_bytes,
           url: url !== undefined ? url : prev.url,
-          thumbnail,
+          children: {
+            subtitles: prev.children?.subtitles ?? [],
+            thumbnail,
+          },
         };
       });
       if (eventType.startsWith("asset_thumbnail_")) {

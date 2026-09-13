@@ -53,6 +53,7 @@ import {
   ASSET_STATUSES,
   ASSET_STATUS_OPTIONS,
   formatAssetFileSize,
+  getAssetThumbnail,
   isImageAsset,
 } from "../constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
@@ -115,7 +116,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         status: string;
         size_bytes?: number;
         url?: string;
-        thumbnail?: IAsset["thumbnail"];
+        thumbnail?: NonNullable<IAsset["children"]>["thumbnail"];
       }
     >
   >(new Map());
@@ -223,7 +224,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         typeof event.data?.url === "string" ? event.data.url : undefined;
       const thumbnail =
         event.data?.thumbnail && typeof event.data.thumbnail === "object"
-          ? (event.data.thumbnail as IAsset["thumbnail"])
+          ? (event.data.thumbnail as NonNullable<IAsset["children"]>["thumbnail"])
           : undefined;
 
       setAssets((prevAssets) => {
@@ -236,7 +237,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               status: (status as IAsset["status"]) || a.status,
               size_bytes: sizeBytes !== undefined ? sizeBytes : a.size_bytes,
               url: url !== undefined ? url : a.url,
-              thumbnail: thumbnail !== undefined ? thumbnail : a.thumbnail,
+              children: {
+                subtitles: a.children?.subtitles ?? [],
+                thumbnail:
+                  thumbnail !== undefined
+                    ? thumbnail
+                    : a.children?.thumbnail,
+              },
             };
           }
           return a;
@@ -523,7 +530,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         className: "w-14",
         render: (asset) => {
           const isImg = isImageAsset(asset);
-          const previewUrl = asset.thumbnail?.url || (isImg ? asset.url : null);
+          const previewUrl = getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
 
           return (
             <div className="w-10 h-10 rounded overflow-hidden bg-base-200 flex items-center justify-center">
