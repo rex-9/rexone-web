@@ -4,24 +4,36 @@ import { Button, Image, StatusBadge } from "../../../../design";
 import { ButtonSizes, ButtonVariants } from "../../../../design/constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
 import type { IAssetChild } from "../../../../models";
-import { AdminTable, type IAdminTableColumn } from "../../components/AdminTable";
-import { formatAssetFileSize, isImageAsset } from "../constants";
+import {
+  AdminTable,
+  AdminTableActions,
+  type IAdminTableColumn,
+} from "../../components";
+import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
+import {
+  ADMIN_ASSET_COLUMNS,
+  ASSET_STATUSES,
+  formatAssetFileSize,
+  isImageAsset,
+} from "../constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 
 export interface IAdminAssetChildrenTableProps {
   assets?: IAssetChild[];
   onDownload?: (asset: IAssetChild) => void | Promise<void>;
+  onEdit?: (asset: IAssetChild) => void;
 }
 
 export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = ({
   assets = [],
   onDownload,
+  onEdit,
 }) => {
   const t = useTranslate();
 
   const columns: IAdminTableColumn<IAssetChild>[] = [
     {
-      key: "preview",
+      key: ADMIN_ASSET_COLUMNS.PREVIEW,
       header: t(AppLocales.Admin.Assets.Table.Preview),
       className: "w-14",
       render: (asset) => {
@@ -46,7 +58,7 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
       },
     },
     {
-      key: "name",
+      key: ADMIN_ASSET_COLUMNS.NAME,
       header: t(AppLocales.Admin.Assets.Table.Name),
       className: "min-w-56 max-w-72",
       render: (asset) => (
@@ -61,31 +73,33 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
       ),
     },
     {
-      key: "type",
+      key: ADMIN_ASSET_COLUMNS.TYPE,
       header: t(AppLocales.Admin.Assets.Table.Type),
       render: (asset) => <span className="text-sm">{asset.type}</span>,
     },
     {
-      key: "format",
+      key: ADMIN_ASSET_COLUMNS.FORMAT,
       header: t(AppLocales.Admin.Assets.Table.Format),
       render: (asset) => (
-        <span className="text-sm uppercase">{asset.format || "N/A"}</span>
+        <span className="text-sm uppercase">
+          {asset.format || t(AppLocales.Common.NotAvailable)}
+        </span>
       ),
     },
     {
-      key: "status",
-      header: "Status",
-      render: (asset) => <StatusBadge status={asset.status || "ready"} />,
+      key: ADMIN_ASSET_COLUMNS.STATUS,
+      header: t(AppLocales.Admin.Assets.Detail.Status),
+      render: (asset) => <StatusBadge status={asset.status || ASSET_STATUSES.READY} />,
     },
     {
-      key: "size",
+      key: ADMIN_ASSET_COLUMNS.SIZE,
       header: t(AppLocales.Admin.Assets.Table.Size),
       render: (asset) => (
         <span className="text-sm">{formatAssetFileSize(asset.size_bytes)}</span>
       ),
     },
     {
-      key: "created",
+      key: ADMIN_ASSET_COLUMNS.CREATED_AT,
       header: t(AppLocales.Admin.Assets.Table.Created),
       render: (asset) =>
         asset.created_at ? (
@@ -96,21 +110,36 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
     },
   ];
 
-  if (onDownload) {
+  if (onDownload || onEdit) {
     columns.push({
-      key: "actions",
-      header: "",
+      key: ADMIN_ASSET_COLUMNS.ACTIONS,
+      header: t(AppLocales.Admin.Assets.Table.Actions),
       className: "text-right",
       render: (asset) => (
-        <Button
-          size={ButtonSizes.XS}
-          variant={ButtonVariants.SECONDARY}
-          onClick={() => void onDownload(asset)}
-          className="inline-flex items-center gap-1.5"
-        >
-          <iconsLib.download className="h-4 w-4" />
-          {t(AppLocales.Admin.Assets.Download.Action)}
-        </Button>
+        <div className="flex items-center justify-end gap-1.5">
+          {onDownload && (
+            <Button
+              size={ButtonSizes.XS}
+              variant={ButtonVariants.SECONDARY}
+              onClick={() => void onDownload(asset)}
+              className="inline-flex items-center gap-1.5"
+            >
+              <iconsLib.download className="h-4 w-4" />
+              {t(AppLocales.Admin.Assets.Download.Action)}
+            </Button>
+          )}
+          {onEdit && (
+            <AdminTableActions
+              resource={ADMIN_RESOURCES.ASSETS}
+              actions={[
+                {
+                  type: ADMIN_ACTIONS.EDIT,
+                  onClick: () => onEdit(asset),
+                },
+              ]}
+            />
+          )}
+        </div>
       ),
     });
   }

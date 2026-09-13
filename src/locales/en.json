@@ -1171,7 +1171,10 @@
       "filters": {
         "all_types": "All Types",
         "all_formats": "All Formats",
-        "all_sources": "All Sources"
+        "all_sources": "All Sources",
+        "parent_assets": "Parent Assets",
+        "child_assets": "Child Assets",
+        "all_assets": "All Assets"
       },
       "table": {
         "preview": "Preview",

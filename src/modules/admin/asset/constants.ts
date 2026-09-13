@@ -1,6 +1,8 @@
 import type { IAssetChild } from "../../../models";
+import { AppLocales } from "../../../locales";
 
 export const ADMIN_ASSET_COLUMNS = {
+  ACTIONS: "actions",
   PREVIEW: "preview",
   NAME: "name",
   TYPE: "type",
@@ -13,11 +15,21 @@ export const ADMIN_ASSET_COLUMNS = {
 } as const;
 
 export const ADMIN_ASSET_FILTERS = {
+  RECORD_SCOPE: "record_scope",
   TYPE: "type",
   FORMAT: "format",
   SOURCE: "source",
   STATUS: "status",
 } as const;
+
+export const ASSET_RECORD_SCOPES = {
+  PARENTS: "parents",
+  CHILDREN: "children",
+  ALL: "all",
+} as const;
+
+export type TAssetRecordScope =
+  (typeof ASSET_RECORD_SCOPES)[keyof typeof ASSET_RECORD_SCOPES];
 
 export const ASSET_TYPES = {
   AVATAR: "avatar",
@@ -136,6 +148,21 @@ export const ASSET_TYPE_OPTIONS = [
   { value: ASSET_TYPES.TTS, label: "TTS" },
   { value: ASSET_TYPES.ATTACHMENT, label: "Attachment" },
   { value: ASSET_TYPES.GENERAL, label: "General" },
+] as const;
+
+export const ASSET_RECORD_SCOPE_OPTIONS = [
+  {
+    value: ASSET_RECORD_SCOPES.PARENTS,
+    labelKey: AppLocales.Admin.Assets.Filters.ParentAssets,
+  },
+  {
+    value: ASSET_RECORD_SCOPES.CHILDREN,
+    labelKey: AppLocales.Admin.Assets.Filters.ChildAssets,
+  },
+  {
+    value: ASSET_RECORD_SCOPES.ALL,
+    labelKey: AppLocales.Admin.Assets.Filters.AllAssets,
+  },
 ] as const;
 
 export const ASSET_FORMAT_OPTIONS = [

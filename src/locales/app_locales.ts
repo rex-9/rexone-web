@@ -1062,6 +1062,9 @@ export const AppLocales = {
         AllTypes: "admin.assets.filters.all_types",
         AllFormats: "admin.assets.filters.all_formats",
         AllSources: "admin.assets.filters.all_sources",
+        ParentAssets: "admin.assets.filters.parent_assets",
+        ChildAssets: "admin.assets.filters.child_assets",
+        AllAssets: "admin.assets.filters.all_assets",
       },
       Table: {
         Preview: "admin.assets.table.preview",

@@ -11,6 +11,7 @@ import { Button } from "../../../../design";
 import { ButtonVariants, ButtonSizes } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import type { IAdminAsset } from "../types";
+import type { IAssetChild } from "../../../../models";
 import SocketService, {
   ISocketMessage,
 } from "../../../../services/socket.service";
@@ -174,9 +175,8 @@ export const AdminAssetEditPage: React.FC = () => {
     navigate(AppRoutes.client.protected.admin.ASSETS);
   };
 
-  const handleDownload = async () => {
-    if (!id) return;
-    const result = await Admin.AssetController.getDownloadUrl(id);
+  const downloadAsset = async (assetId: string) => {
+    const result = await Admin.AssetController.getDownloadUrl(assetId);
     if (!result.success || !result.url) {
       toast.error(result.error || t(AppLocales.Admin.Assets.Download.Failed));
       return;
@@ -185,6 +185,21 @@ export const AdminAssetEditPage: React.FC = () => {
     link.href = result.url;
     link.rel = "noopener";
     link.click();
+  };
+
+  const handleDownload = async () => {
+    if (!id) return;
+    await downloadAsset(id);
+  };
+
+  const handleDownloadChild = async (child: IAssetChild) => {
+    await downloadAsset(child.id);
+  };
+
+  const handleEditChild = (child: IAssetChild) => {
+    navigate(
+      AppRoutes.withId(AppRoutes.client.protected.admin.ASSET_EDIT, child.id),
+    );
   };
 
   const handleRegenerateThumbnail = async () => {
@@ -250,6 +265,8 @@ export const AdminAssetEditPage: React.FC = () => {
           onSubmitEdit={handleSubmitEdit}
           onCompress={handleCompress}
           onDownload={handleDownload}
+          onDownloadChild={handleDownloadChild}
+          onEditChild={handleEditChild}
           onRegenerateThumbnail={handleRegenerateThumbnail}
           onUploadThumbnail={handleUploadThumbnail}
           isCompressing={isCompressing}

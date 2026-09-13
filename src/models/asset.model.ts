@@ -23,21 +23,20 @@ export interface IAsset {
   updated_at: string;
 }
 
-export type IAssetChild = Pick<
-  IAsset,
-  | "id"
-  | "name"
-  | "url"
-  | "type"
-  | "format"
-  | "extension"
-  | "status"
-  | "size_bytes"
-  | "duration_secs"
-  | "parent_asset_id"
-  | "created_at"
-  | "updated_at"
->;
+export interface IAssetChild {
+  id: IAsset["id"];
+  name: IAsset["name"];
+  url: IAsset["url"];
+  type: IAsset["type"];
+  format?: IAsset["format"];
+  extension?: IAsset["extension"];
+  status?: IAsset["status"];
+  size_bytes?: IAsset["size_bytes"];
+  duration_secs?: IAsset["duration_secs"];
+  parent_asset_id?: IAsset["parent_asset_id"];
+  created_at: IAsset["created_at"];
+  updated_at: IAsset["updated_at"];
+}
 
 export interface IAssetUploadResponse {
   asset: IAsset;
