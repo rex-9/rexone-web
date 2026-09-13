@@ -694,85 +694,77 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
               </FormContainer>
 
-              <div className="rounded-xl border border-base-300 bg-base-100 p-4 shadow-sm">
-                <div className="flex items-center gap-2 mb-4">
-                  <iconsLib.sparkles className="h-5 w-5 text-primary" />
-                  <h3 className="text-body-m font-bold text-base-content">
-                    {t(AppLocales.Admin.Common.Table.Actions)}
-                  </h3>
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-4">
-                    {onDownload && (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-4">
+                  {onDownload && (
+                    <Button
+                      variant={ButtonVariants.SECONDARY}
+                      size={ComponentSizes.SM}
+                      className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                      onClick={onDownload}
+                    >
+                      <iconsLib.download className="w-4 h-4" />
+                      {t(AppLocales.Admin.Assets.Download.Action)}
+                    </Button>
+                  )}
+
+                  {asset.format === ASSET_FORMATS.VIDEO &&
+                    onRegenerateThumbnail && (
                       <Button
                         variant={ButtonVariants.SECONDARY}
                         size={ComponentSizes.SM}
                         className="flex items-center justify-center gap-1.5 whitespace-nowrap"
-                        onClick={onDownload}
+                        onClick={onRegenerateThumbnail}
+                        isLoading={isUpdatingThumbnail}
+                        disabled={isUpdatingThumbnail}
                       >
-                        <iconsLib.download className="w-4 h-4" />
-                        {t(AppLocales.Admin.Assets.Download.Action)}
+                        <iconsLib.arrowPath className="w-4 h-4" />
+                        {t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}
                       </Button>
                     )}
 
-                    {asset.format === ASSET_FORMATS.VIDEO &&
-                      onRegenerateThumbnail && (
-                        <Button
-                          variant={ButtonVariants.SECONDARY}
-                          size={ComponentSizes.SM}
-                          className="flex items-center justify-center gap-1.5 whitespace-nowrap"
-                          onClick={onRegenerateThumbnail}
-                          isLoading={isUpdatingThumbnail}
-                          disabled={isUpdatingThumbnail}
-                        >
-                          <iconsLib.arrowPath className="w-4 h-4" />
-                          {t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}
-                        </Button>
-                      )}
-
-                    {(asset.format === ASSET_FORMATS.VIDEO ||
-                      asset.format === ASSET_FORMATS.AUDIO) &&
-                      onUploadThumbnail && (
-                        <FileInput
-                          accept="image/*"
-                          disabled={isUpdatingThumbnail}
-                          onChange={(file) => {
-                            if (file) void onUploadThumbnail(file);
-                          }}
-                          buttonText={
-                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                              <iconsLib.upload className="w-4 h-4" />
-                              {t(
-                                isUpdatingThumbnail
-                                  ? AppLocales.Admin.Assets.Thumbnail.Uploading
-                                  : AppLocales.Admin.Assets.Thumbnail.Upload,
-                              )}
-                            </span>
-                          }
-                        />
-                      )}
-
-                    {onCompress &&
-                      asset.status !== ASSET_STATUSES.OPTIMAL &&
-                      asset.status !== ASSET_STATUSES.PROCESSING && (
-                        <Button
-                          variant={ButtonVariants.SECONDARY}
-                          size={ComponentSizes.SM}
-                          className="flex items-center justify-center gap-1.5 whitespace-nowrap"
-                          onClick={onCompress}
-                          isLoading={isCompressing}
-                          disabled={isCompressing}
-                        >
-                          <iconsLib.sparkles className="w-4 h-4 text-primary" />
-                          <span>
+                  {(asset.format === ASSET_FORMATS.VIDEO ||
+                    asset.format === ASSET_FORMATS.AUDIO) &&
+                    onUploadThumbnail && (
+                      <FileInput
+                        accept="image/*"
+                        disabled={isUpdatingThumbnail}
+                        onChange={(file) => {
+                          if (file) void onUploadThumbnail(file);
+                        }}
+                        buttonText={
+                          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                            <iconsLib.upload className="w-4 h-4" />
                             {t(
-                              AppLocales.Admin.Assets.Compression.Compress,
-                              "Compress Media",
+                              isUpdatingThumbnail
+                                ? AppLocales.Admin.Assets.Thumbnail.Uploading
+                                : AppLocales.Admin.Assets.Thumbnail.Upload,
                             )}
                           </span>
-                        </Button>
-                      )}
-                  </div>
+                        }
+                      />
+                    )}
+
+                  {onCompress &&
+                    asset.status !== ASSET_STATUSES.OPTIMAL &&
+                    asset.status !== ASSET_STATUSES.PROCESSING && (
+                      <Button
+                        variant={ButtonVariants.SECONDARY}
+                        size={ComponentSizes.SM}
+                        className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        onClick={onCompress}
+                        isLoading={isCompressing}
+                        disabled={isCompressing}
+                      >
+                        <iconsLib.sparkles className="w-4 h-4 text-primary" />
+                        <span>
+                          {t(
+                            AppLocales.Admin.Assets.Compression.Compress,
+                            "Compress Media",
+                          )}
+                        </span>
+                      </Button>
+                    )}
                 </div>
               </div>
             </div>
