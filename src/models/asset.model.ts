@@ -47,6 +47,27 @@ export interface IAssetUploadResponse {
   };
 }
 
+export interface IAssetPlaybackDelivery {
+  type: "progressive";
+  url: string;
+  expires_at: string;
+}
+
+export interface IAssetPlaybackMedia {
+  content_type: string;
+  format?: string | null;
+  size_bytes?: number | null;
+  duration_secs?: number | null;
+  thumbnail?: IAssetChild | null;
+  subtitles: IAssetChild[];
+}
+
+export interface IAssetPlaybackResponse {
+  asset_id: string;
+  delivery: IAssetPlaybackDelivery;
+  media: IAssetPlaybackMedia;
+}
+
 export interface IAssetUploadOptions {
   type?: string;
   assetable_type?: string;

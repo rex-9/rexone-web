@@ -12,7 +12,13 @@ import { AdminHomeRoute } from "./AdminHomeRoute";
 import { AdminRootRoute } from "./AdminRootRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
-import { HomePage, NotFoundPage, PageLayout, RootPage } from "../design/pages";
+import {
+  HomePage,
+  NotFoundPage,
+  PageLayout,
+  RootPage,
+  TestPage,
+} from "../design/pages";
 import { UserPage } from "../modules/user";
 import { AnapanaRoute } from "../modules/anapana/pages";
 import {
@@ -133,6 +139,10 @@ const router = createBrowserRouter(
           <Route
             path={AppRoutes.client.protected.HOME}
             element={<HomePage />}
+          />
+          <Route
+            path={AppRoutes.client.protected.TEST}
+            element={<TestPage />}
           />
           <Route
             path={AppRoutes.client.protected.PROFILE}

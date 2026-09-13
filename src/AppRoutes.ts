@@ -33,6 +33,7 @@ class AppRoutes {
     protected: {
       SIGN_OUT: "/signout",
       HOME: "/home",
+      TEST: "/test",
       PROFILE: "/profile",
       PAYMENT: "/payment",
       PAYMENT_SUCCESS: "/payment/success",
@@ -133,7 +134,8 @@ class AppRoutes {
       IAM_ROLES: AppRoutes.api("/iam/roles/current"), // GET
 
       // Media
-      UPLOAD_ASSET: AppRoutes.api("/media/upload"), // POST
+      UPLOAD_ASSET: AppRoutes.api("/assets/upload"), // POST
+      ASSET_PLAYBACK: AppRoutes.api("/assets/:id/playback"), // GET
 
       // Accesses
       ACCESSES: AppRoutes.api("/accesses"), // GET

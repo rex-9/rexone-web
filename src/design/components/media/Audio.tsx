@@ -1,19 +1,15 @@
 import React from "react";
 
-export interface IVideoAsset {
+export interface IAudioAsset {
   src: string;
-  alt: string;
   title?: string;
   type?: string;
 }
 
-export interface IVideoProps extends Omit<
-  React.VideoHTMLAttributes<HTMLVideoElement>,
-  "src"
-> {
-  asset?: IVideoAsset;
+export interface IAudioProps
+  extends Omit<React.AudioHTMLAttributes<HTMLAudioElement>, "src"> {
+  asset?: IAudioAsset;
   src?: string;
-  alt?: string;
   title?: string;
   type?: string;
   controls?: boolean;
@@ -23,10 +19,9 @@ export interface IVideoProps extends Omit<
   className?: string;
 }
 
-export const Video: React.FC<IVideoProps> = ({
+export const Audio: React.FC<IAudioProps> = ({
   asset,
   src,
-  alt,
   title,
   type,
   controls = true,
@@ -37,25 +32,23 @@ export const Video: React.FC<IVideoProps> = ({
   ...rest
 }) => {
   const finalSrc = asset?.src ?? src ?? "";
-  const finalAlt = alt ?? asset?.alt ?? "";
-  const finalTitle = title ?? asset?.title ?? finalAlt;
-  const finalType = type ?? asset?.type ?? "video/mp4";
+  const finalTitle = title ?? asset?.title;
+  const finalType = type ?? asset?.type ?? "audio/mpeg";
 
   return (
-    <video
+    <audio
       className={className}
       controls={controls}
       autoPlay={autoplay}
       loop={loop}
       muted={muted}
-      aria-label={finalAlt}
       title={finalTitle}
       {...rest}
     >
       <source src={finalSrc} type={finalType} />
-      Your browser does not support the video tag.
-    </video>
+      Your browser does not support the audio tag.
+    </audio>
   );
 };
 
-export default Video;
+export default Audio;
