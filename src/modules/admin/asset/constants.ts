@@ -20,8 +20,7 @@ export const ADMIN_ASSET_FILTERS = {
 export const ASSET_TYPES = {
   AVATAR: "avatar",
   THUMBNAIL: "thumbnail",
-  AUDIO: "audio",
-  VIDEO: "video",
+  TTS: "tts",
   ATTACHMENT: "attachment",
   GENERAL: "general",
 } as const;
@@ -108,8 +107,7 @@ export const ASSET_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
   { value: ASSET_TYPES.AVATAR, label: "Avatar" },
   { value: ASSET_TYPES.THUMBNAIL, label: "Thumbnail" },
-  { value: ASSET_TYPES.AUDIO, label: "Audio" },
-  { value: ASSET_TYPES.VIDEO, label: "Video" },
+  { value: ASSET_TYPES.TTS, label: "TTS" },
   { value: ASSET_TYPES.ATTACHMENT, label: "Attachment" },
   { value: ASSET_TYPES.GENERAL, label: "General" },
 ] as const;
