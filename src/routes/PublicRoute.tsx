@@ -8,7 +8,7 @@ export const PublicRoute: React.FC = () => {
   const { isAuthenticated } = useAuth();
 
   return isAuthenticated ? (
-    <Navigate to={AppRoutes.client.protected.HOME} />
+    <Navigate to={AppRoutes.client.protected.HOME} replace />
   ) : (
     <PageLayout>
       <Outlet />

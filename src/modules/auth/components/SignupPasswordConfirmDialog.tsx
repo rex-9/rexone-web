@@ -87,6 +87,7 @@ export const SignupPasswordConfirmDialog: React.FC<
               AppLocales.Auth.SignUpPasscodeConfirm.SignInWithNewPasscode,
             ),
           }),
+          { replace: true },
         );
       } else {
         setError(
@@ -114,7 +115,7 @@ export const SignupPasswordConfirmDialog: React.FC<
             t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInComplete),
           );
           setGoogleChallengeToken(null);
-          navigate(AppRoutes.client.protected.HOME);
+          navigate(AppRoutes.client.protected.HOME, { replace: true });
         } else {
           setError(
             result.errorMessage ||
