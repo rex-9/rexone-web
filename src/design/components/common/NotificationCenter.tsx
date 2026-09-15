@@ -6,6 +6,9 @@ import { iconsLib } from "../../../assets";
 import { AppLocales, translate } from "../../../locales";
 import {
   type IUserNotification,
+  type INotificationMetadata,
+  type TAsyncOperationStatus,
+  type TAsyncOperationType,
   NotificationController,
   type NotificationFilter,
   NOTIFICATION_FILTERS,
@@ -162,18 +165,31 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
             NOTIFICATION_CLIENTS.WEB,
             NOTIFICATION_CLIENTS.MOBILE,
           ],
-          data: envelope.data || {},
+          metadata: (envelope.data as INotificationMetadata) || {},
           operation_id:
-            envelope.operation_id || envelope.data?.operation_id || null,
+            typeof envelope.operation_id === "string"
+              ? envelope.operation_id
+              : typeof envelope.data?.operation_id === "string"
+                ? envelope.data.operation_id
+                : null,
           operation_type:
-            envelope.operation_type || envelope.data?.operation_type || null,
+            (envelope.operation_type as TAsyncOperationType | undefined) ||
+            (envelope.data?.operation_type as
+              | TAsyncOperationType
+              | undefined) ||
+            null,
           operation_status:
-            envelope.operation_status ||
-            envelope.data?.operation_status ||
+            (envelope.operation_status as TAsyncOperationStatus | undefined) ||
+            (envelope.data?.operation_status as
+              | TAsyncOperationStatus
+              | undefined) ||
             null,
           read: false,
           read_at: null,
-          notification_id: envelope.notification_id || null,
+          notification_id:
+            typeof envelope.notification_id === "string"
+              ? envelope.notification_id
+              : null,
           created_at: envelope.created_at || getUtcNowIso(),
         };
 
@@ -229,7 +245,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       }
     }
 
-    if (item.data.type === NOTIFICATION_SOCKET_TYPES.IAM_UPDATED) {
+    if (item.metadata?.type === NOTIFICATION_SOCKET_TYPES.IAM_UPDATED) {
       const refreshedUser = await refreshCurrentUser();
       setIsOpen(false);
 

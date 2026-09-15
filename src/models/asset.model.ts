@@ -3,6 +3,9 @@
 export interface IAsset {
   id: string;
   name: string;
+  display_name?: string | null;
+  description?: string | null;
+  metadata?: Record<string, unknown>;
   url: string;
   type: string;
   format?: string | null;
@@ -26,6 +29,9 @@ export interface IAsset {
 export interface IAssetChild {
   id: IAsset["id"];
   name: IAsset["name"];
+  display_name?: string | null;
+  description?: string | null;
+  metadata?: Record<string, unknown>;
   url: IAsset["url"];
   type: IAsset["type"];
   format?: IAsset["format"];

@@ -212,13 +212,13 @@ describe("AiController", () => {
       vi.mocked(AiService.chat).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { message: mockMessage, room_id: "room-1" } as any,
+          data: { messages: [mockMessage], room_id: "room-1" } as any,
         },
       });
 
       const result = await AiController.chat("Hello AI", "room-1");
       expect(result.success).toBe(true);
-      expect(result.message).toEqual(mockMessage);
+      expect(result.messages).toEqual([mockMessage]);
       expect(result.roomId).toBe("room-1");
     });
   });
@@ -371,7 +371,7 @@ describe("AiController", () => {
 
       const result = await AiController.chat("Hello AI");
       expect(result.success).toBe(true);
-      expect(result.message?.id).toBe("msg-queued");
+      expect(result.messages[0]?.id).toBe("msg-queued");
       expect(result.roomId).toBe("room-meta-1");
       expect(AiController.getCurrentRoomId()).toBe("room-meta-1");
     });

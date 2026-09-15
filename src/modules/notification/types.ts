@@ -14,7 +14,7 @@ export interface IUserNotification {
   message: string;
   link: string | null;
   clients: string[];
-  data: INotificationData;
+  metadata: INotificationMetadata;
   operation_id?: string | null;
   operation_type?: TAsyncOperationType | null;
   operation_status?: TAsyncOperationStatus | null;
@@ -25,7 +25,7 @@ export interface IUserNotification {
   updated_at?: string;
 }
 
-export interface INotificationData extends Record<string, unknown> {
+export interface INotificationMetadata extends Record<string, unknown> {
   type?: string;
   operation_id?: string;
   operation_type?: TAsyncOperationType;

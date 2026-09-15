@@ -5,7 +5,7 @@ import {
   parsePagyList,
   parseRecord,
 } from "../../services/api.service";
-import { IMessage, IRoom } from "./types";
+import { IChatRequest, IChatResult, IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
 import {
   IApiEnvelope,
@@ -190,54 +190,33 @@ class AiController {
   async chat(
     message: string,
     roomId: string | null = null,
-  ): Promise<{
-    success: boolean;
-    message?: IMessage;
-    roomId?: string;
-    notice?: string;
-    error?: string;
-  }> {
-    const request: { message: string; room_id?: string } = {
-      message,
-    };
+  ): Promise<IChatResult> {
+    const request: IChatRequest = { message };
     const activeRoomId = roomId || this.currentRoomId;
     if (activeRoomId) {
       request.room_id = activeRoomId;
     }
 
     const response = await AiService.chat(request);
-    const { status, data, meta } = response.data || {};
+    const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      let parsedMessage: IMessage | undefined;
-      const dataAny = data as unknown as Record<string, unknown>;
-      const metaAny = meta as unknown as Record<string, unknown> | undefined;
+      const rawList = data.messages || data.meta?.messages;
+      let parsedMessages: IMessage[] = [];
 
-      if (dataAny.attributes) {
-        parsedMessage = parseRecord<IMessage>(
-          data as unknown as IJsonApiResource<IMessage>,
-        );
-      } else if (dataAny.message && typeof dataAny.message === "object") {
-        parsedMessage = parseRecord<IMessage>(
-          dataAny.message as IJsonApiResource<IMessage> | IMessage,
-        );
-      } else if (dataAny.data && typeof dataAny.data === "object") {
-        parsedMessage = parseRecord<IMessage>(
-          dataAny.data as IJsonApiResource<IMessage> | IMessage,
-        );
-      } else if (dataAny.content) {
-        parsedMessage = parseRecord<IMessage>(
-          data as unknown as IJsonApiResource<IMessage> | IMessage,
-        );
+      if (rawList && rawList.length > 0) {
+        parsedMessages = rawList.map((m) => parseRecord<IMessage>(m));
+      } else if (data.data) {
+        const single = parseRecord<IMessage>(data.data);
+        if (single) {
+          parsedMessages = [single];
+        }
       }
 
       const resolvedRoomId =
-        (typeof dataAny.room_id === "string" && dataAny.room_id) ||
-        (typeof (dataAny.meta as Record<string, unknown> | undefined)
-          ?.room_id === "string" &&
-          ((dataAny.meta as Record<string, unknown>).room_id as string)) ||
-        (typeof metaAny?.room_id === "string" && (metaAny.room_id as string)) ||
-        (typeof parsedMessage?.room_id === "string" && parsedMessage.room_id) ||
+        data.meta?.room_id ||
+        data.room_id ||
+        parsedMessages[0]?.room_id ||
         roomId ||
         this.currentRoomId ||
         "";
@@ -246,10 +225,10 @@ class AiController {
         this.currentRoomId = resolvedRoomId;
       }
 
-      if (parsedMessage) {
+      if (parsedMessages.length > 0) {
         return {
           success: true,
-          message: parsedMessage,
+          messages: parsedMessages,
           roomId: resolvedRoomId,
           notice: status.message || undefined,
         };
@@ -258,6 +237,7 @@ class AiController {
 
     return {
       success: false,
+      messages: [],
       error: getApiError(response, translate(AppLocales.Ai.Errors.GetResponse)),
     };
   }

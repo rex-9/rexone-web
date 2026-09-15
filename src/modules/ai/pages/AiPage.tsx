@@ -6,7 +6,6 @@ import {
   ConfirmDialog,
   DateTime,
   DateTimeFormats,
-  TextArea,
 } from "../../../design/components";
 import { useToast, useLoading } from "../../../contexts";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -46,7 +45,10 @@ export const AiPage: React.FC = () => {
   const greeting = t(AppLocales.Ai.DefaultGreeting);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
   };
 
   const loadHistory = useCallback(async () => {
@@ -230,7 +232,10 @@ export const AiPage: React.FC = () => {
 
     if (isQueued) {
       return (
-        <span className="loading loading-spinner loading-xs mt-2" aria-hidden />
+        <span
+          className="loading loading-spinner loading-xs text-base-content/50"
+          aria-hidden
+        />
       );
     }
 
@@ -245,13 +250,13 @@ export const AiPage: React.FC = () => {
       <Button
         variant={ButtonVariants.TERTIARY}
         size={ButtonSizes.SM}
-        className="mt-2 min-h-0 h-8 w-8 p-0"
+        className="min-h-0 h-6 w-6 p-0 rounded-full text-base-content/50 hover:text-base-content hover:bg-base-300/40"
         onClick={() => void handleTtsTap(message)}
         disabled={disabled}
         aria-label={t(AppLocales.Ai.Listen)}
         title={t(AppLocales.Ai.Listen)}
       >
-        <Icon className="h-4 w-4" />
+        <Icon className="h-3.5 w-3.5" />
       </Button>
     );
   };
@@ -267,10 +272,10 @@ export const AiPage: React.FC = () => {
 
     const result = await AiController.chat(content, null);
 
-    if (result.success && result.message) {
+    if (result.success && result.messages.length > 0) {
       setMessages((prev) => [
         ...prev.filter((message) => message.id !== "welcome"),
-        result.message!,
+        ...result.messages,
       ]);
       setIsProcessing(true);
       info(result.notice || t(AppLocales.Ai.Processing));
@@ -318,65 +323,124 @@ export const AiPage: React.FC = () => {
 
   const canListen = !isLoading && !isProcessing && !isListenSessionActive;
 
+  const isOnlyWelcome = messages.length === 1 && messages[0].id === "welcome";
+
   return (
     <>
-      <div className="flex flex-col h-[calc(100vh-12rem)] max-w-3xl mx-auto w-full">
-        <div className="flex items-center justify-between py-4 border-b border-base-200">
-          <div className="w-24" />
-          <div className="text-center flex-1">
-            <h1 className="text-h2 font-semibold">{t(AppLocales.Ai.Title)}</h1>
+      <div className="fixed inset-x-0 top-16 bottom-0 z-10 flex flex-col bg-base-200">
+        <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full px-3 sm:px-4 min-h-0 overflow-hidden">
+          {/* Sleek Minimalist Top Header */}
+          <div className="flex items-center justify-between py-3 border-b border-base-200/70 shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <iconsLib.sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h1 className="text-base font-semibold tracking-tight text-base-content leading-tight">
+                {t(AppLocales.Ai.Title)}
+              </h1>
+            </div>
           </div>
-          <div className="w-24 flex justify-end">
+          <div>
             {messages.length > 1 && (
               <Button
                 variant={ButtonVariants.TERTIARY}
                 size={ButtonSizes.SM}
                 onClick={() => setIsClearDialogOpen(true)}
+                className="text-xs text-base-content/60 hover:text-error h-8 min-h-0 px-2.5"
               >
+                <iconsLib.trash className="h-3.5 w-3.5 mr-1.5" />
                 {t(AppLocales.Ai.ClearHistory)}
               </Button>
             )}
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${
-                message.role === ADMIN_CHAT_ROLES.USER
-                  ? "justify-end"
-                  : "justify-start"
-              }`}
-            >
+        {/* Messages Stream */}
+        <div className="flex-1 min-h-0 overflow-y-auto py-4 space-y-5">
+          {isOnlyWelcome ? (
+            <div className="h-full min-h-70 flex flex-col items-center justify-center text-center px-4">
+              <div className="w-12 h-12 rounded-2xl bg-linear-to-tr from-primary/20 via-primary/10 to-transparent flex items-center justify-center text-primary mb-3 shadow-xs">
+                <iconsLib.sparkles className="w-6 h-6" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-semibold text-base-content tracking-tight mb-2">
+                {greeting}
+              </h2>
+              <p className="text-sm text-base-content/60 max-w-md leading-relaxed">
+                Ask questions, explore mindfulness, meditate on deep concepts,
+                or discuss anything you need.
+              </p>
+            </div>
+          ) : (
+            messages.map((message) => (
               <div
-                className={`max-w-[80%] rounded-md p-3 ${
+                key={message.id}
+                className={`flex ${
                   message.role === ADMIN_CHAT_ROLES.USER
-                    ? "bg-primary text-primary-content"
-                    : "bg-base-200"
+                    ? "justify-end"
+                    : "justify-start gap-3"
                 }`}
               >
-                <p className="text-body-m whitespace-pre-wrap">
-                  {message.content}
-                </p>
-                <span className="text-caption opacity-50 mt-1 block">
-                  <DateTime value={message.created_at} format={DateTimeFormats.TIME} />
-                </span>
-                {message.metadata?.status === "failed" && (
-                  <span className="text-caption text-error mt-1 block">
-                    {t(AppLocales.Ai.Errors.GetResponse)}
-                  </span>
+                {message.role !== ADMIN_CHAT_ROLES.USER && (
+                  <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-1">
+                    <iconsLib.sparkles className="w-3.5 h-3.5" />
+                  </div>
                 )}
-                {renderTtsControl(message)}
+                <div
+                  className={
+                    message.role === ADMIN_CHAT_ROLES.USER
+                      ? "max-w-[82%] rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-content shadow-xs"
+                      : "max-w-[85%] space-y-1.5"
+                  }
+                >
+                  {message.role === ADMIN_CHAT_ROLES.USER ? (
+                    <>
+                      <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap selection:bg-primary-focus">
+                        {message.content}
+                      </p>
+                      <span className="text-[11px] opacity-70 mt-1.5 block text-right">
+                        <DateTime
+                          value={message.created_at}
+                          format={DateTimeFormats.TIME}
+                        />
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="rounded-2xl rounded-tl-sm px-4 py-3.5 bg-base-200/60 border border-base-200/80 text-base-content">
+                        <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
+                          {message.content}
+                        </p>
+                        {message.metadata?.status === "failed" && (
+                          <span className="text-xs text-error mt-2 block font-medium">
+                            {t(AppLocales.Ai.Errors.GetResponse)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 px-1">
+                        <span className="text-[11px] text-base-content/50">
+                          <DateTime
+                            value={message.created_at}
+                            format={DateTimeFormats.TIME}
+                          />
+                        </span>
+                        {renderTtsControl(message)}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
 
           {isProcessing && (
-            <div className="flex justify-start">
-              <div className="max-w-[80%] rounded-md p-3 bg-base-200">
-                <p className="text-body-m">{t(AppLocales.Ai.Thinking)}</p>
-                <span className="loading loading-dots loading-sm mt-1" />
+            <div className="flex justify-start gap-3">
+              <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-1">
+                <iconsLib.sparkles className="w-3.5 h-3.5 animate-pulse" />
+              </div>
+              <div className="rounded-2xl rounded-tl-sm px-4 py-3 bg-base-200/50 border border-base-200/60 flex items-center gap-2 text-sm text-base-content/70">
+                <span>{t(AppLocales.Ai.Thinking)}</span>
+                <span className="loading loading-dots loading-xs" />
               </div>
             </div>
           )}
@@ -384,9 +448,10 @@ export const AiPage: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="border-t border-base-200 p-4">
-          <div className="flex gap-2">
-            <TextArea
+        {/* Docked Bottom Input Box */}
+        <div className="pt-2 pb-4 bg-transparent shrink-0">
+          <div className="relative rounded-2xl border border-base-300 bg-base-100/90 shadow-sm focus-within:border-primary/70 focus-within:shadow-md transition-all p-3">
+            <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -395,80 +460,102 @@ export const AiPage: React.FC = () => {
                   ? t(AppLocales.Ai.Processing)
                   : t(AppLocales.Ai.TypeMessage)
               }
-              rows={3}
-              className="flex-1"
+              rows={Math.min(5, Math.max(2, input.split("\n").length))}
+              className="w-full resize-none border-0 bg-transparent text-sm sm:text-base text-base-content placeholder:text-base-content/40 focus:outline-none focus:ring-0 px-1 py-1"
               disabled={isLoading || isProcessing}
               readOnly={isListenSessionActive}
-              showCounter
-              maxLength={2000}
+              maxLength={20000}
             />
-            <div className="flex flex-col gap-2 self-end">
-              {isListenSessionActive ? (
-                <>
-                  <Button
-                    variant={ButtonVariants.SECONDARY}
-                    size={ButtonSizes.SM}
-                    onClick={() => void handleStopListening()}
-                    aria-label={t(AppLocales.Ai.Listen)}
-                    title={t(AppLocales.Ai.Listen)}
-                  >
-                    <iconsLib.stop className="h-5 w-5" />
-                  </Button>
+
+            {isListenSessionActive && (
+              <div
+                className="my-2 flex h-5 items-end justify-center gap-1"
+                aria-hidden
+              >
+                {[0.3, 0.55, 1, 0.55, 0.3].map((weight, index) => (
+                  <span
+                    key={index}
+                    className="w-1 rounded-sm bg-primary transition-[height] duration-100 ease-out"
+                    style={{
+                      height: `${2 + Math.round(voiceLevel * weight * 18)}px`,
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className="flex items-center justify-between pt-2 border-t border-base-200/60 mt-1">
+              <div className="flex items-center gap-1.5">
+                {isListenSessionActive ? (
+                  <>
+                    <Button
+                      variant={ButtonVariants.SECONDARY}
+                      size={ButtonSizes.SM}
+                      onClick={() => void handleStopListening()}
+                      aria-label={t(AppLocales.Ai.Listen)}
+                      title={t(AppLocales.Ai.Listen)}
+                      className="h-8 w-8 min-h-0 p-0 rounded-full"
+                    >
+                      <iconsLib.stop className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={ButtonVariants.TERTIARY}
+                      size={ButtonSizes.SM}
+                      onClick={() => void handleCancelListening()}
+                      aria-label={t(AppLocales.Ai.CancelListening)}
+                      title={t(AppLocales.Ai.CancelListening)}
+                      className="h-8 w-8 min-h-0 p-0 rounded-full"
+                    >
+                      <iconsLib.close className="h-4 w-4" />
+                    </Button>
+                  </>
+                ) : (
                   <Button
                     variant={ButtonVariants.TERTIARY}
                     size={ButtonSizes.SM}
-                    onClick={() => void handleCancelListening()}
-                    aria-label={t(AppLocales.Ai.CancelListening)}
-                    title={t(AppLocales.Ai.CancelListening)}
+                    onClick={() => void handleStartListening()}
+                    disabled={!canListen}
+                    aria-label={t(AppLocales.Ai.Listen)}
+                    title={t(AppLocales.Ai.Listen)}
+                    className="h-8 w-8 min-h-0 p-0 rounded-full text-base-content/60 hover:text-base-content"
                   >
-                    <iconsLib.close className="h-5 w-5" />
+                    <iconsLib.microphone className="h-4 w-4" />
                   </Button>
-                </>
-              ) : (
+                )}
+
+                {input.length > 2000 && (
+                  <span className="text-xs font-medium text-primary ml-2">
+                    {Math.ceil(input.length / 2000)} messages
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <span className="text-[11px] text-base-content/40">
+                  {input.length.toLocaleString()} / 20,000
+                </span>
+
                 <Button
-                  variant={ButtonVariants.TERTIARY}
+                  variant={ButtonVariants.PRIMARY}
                   size={ButtonSizes.SM}
-                  onClick={() => void handleStartListening()}
-                  disabled={!canListen}
-                  aria-label={t(AppLocales.Ai.Listen)}
-                  title={t(AppLocales.Ai.Listen)}
+                  onClick={() => void handleSend()}
+                  isLoading={isLoading}
+                  disabled={
+                    isLoading ||
+                    isProcessing ||
+                    isListenSessionActive ||
+                    !input.trim()
+                  }
+                  className="h-8 px-4 min-h-0 rounded-xl"
                 >
-                  <iconsLib.microphone className="h-5 w-5" />
+                  {t(AppLocales.Ai.Send)}
                 </Button>
-              )}
-              <Button
-                variant={ButtonVariants.PRIMARY}
-                onClick={() => void handleSend()}
-                isLoading={isLoading}
-                disabled={
-                  isLoading ||
-                  isProcessing ||
-                  isListenSessionActive ||
-                  !input.trim()
-                }
-              >
-                {t(AppLocales.Ai.Send)}
-              </Button>
+              </div>
             </div>
           </div>
-          {isListenSessionActive && (
-            <div
-              className="mt-2 flex h-6 items-end justify-center gap-1"
-              aria-hidden
-            >
-              {[0.3, 0.55, 1, 0.55, 0.3].map((weight, index) => (
-                <span
-                  key={index}
-                  className="w-1 rounded-sm bg-primary transition-[height] duration-100 ease-out"
-                  style={{
-                    height: `${2 + Math.round(voiceLevel * weight * 22)}px`,
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
+    </div>
 
       <ConfirmDialog
         isOpen={isClearDialogOpen}

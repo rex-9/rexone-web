@@ -1,6 +1,8 @@
 import type { IAsset } from "../../models/asset.model";
 import type { TAiChatRole, TAiMessageStatus } from "./constants";
 
+import type { IJsonApiResource } from "../../models";
+
 export interface IChatRequest {
   message: string;
   room_id?: string;
@@ -8,10 +10,26 @@ export interface IChatRequest {
 }
 
 export interface IChatResponse {
-  message: IMessage;
-  room_id: string;
-  status: TAiMessageStatus;
-  job_id: string;
+  data?: IJsonApiResource<IMessage>;
+  messages?: (IJsonApiResource<IMessage> | IMessage)[];
+  meta?: {
+    room_id: string;
+    status: TAiMessageStatus;
+    operation_id?: string;
+    operation_type?: string;
+    link?: string;
+    job_id?: string;
+    messages?: (IJsonApiResource<IMessage> | IMessage)[];
+  };
+  room_id?: string;
+}
+
+export interface IChatResult {
+  success: boolean;
+  messages: IMessage[];
+  roomId?: string;
+  notice?: string;
+  error?: string;
 }
 
 export interface IMessage {
@@ -30,6 +48,9 @@ export interface IMessage {
     assistant_message_id?: string;
     usage?: Record<string, number>;
     model?: string;
+    split_id?: string;
+    chunk_index?: number;
+    total_chunks?: number;
   };
   created_at: string;
 }
