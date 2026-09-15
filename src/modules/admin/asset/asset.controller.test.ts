@@ -225,11 +225,20 @@ describe("AdminAssetController", () => {
               name: "lesson.mp4",
               type: "video",
               format: "video",
-              subtitle: {
-                id: "a-sub",
-                url: "https://example.com/captions.srt",
-                status: "ready",
-                size_bytes: 128,
+              children: {
+                subtitles: [
+                  {
+                    id: "a-sub",
+                    name: "captions.srt",
+                    url: "https://example.com/captions.srt",
+                    type: "subtitle",
+                    format: "subtitle",
+                    status: "ready",
+                    size_bytes: 128,
+                    created_at: "2026-09-15T00:00:00Z",
+                    updated_at: "2026-09-15T00:00:00Z",
+                  },
+                ],
               },
             },
           },
@@ -245,12 +254,19 @@ describe("AdminAssetController", () => {
       expect(result.success).toBe(true);
       expect(result.message).toBe("Subtitle uploaded");
       expect(result.asset?.id).toBe("a-video");
-      expect(result.asset?.subtitle).toEqual({
-        id: "a-sub",
-        url: "https://example.com/captions.srt",
-        status: "ready",
-        size_bytes: 128,
-      });
+      expect(result.asset?.children?.subtitles).toEqual([
+        {
+          id: "a-sub",
+          name: "captions.srt",
+          url: "https://example.com/captions.srt",
+          type: "subtitle",
+          format: "subtitle",
+          status: "ready",
+          size_bytes: 128,
+          created_at: "2026-09-15T00:00:00Z",
+          updated_at: "2026-09-15T00:00:00Z",
+        },
+      ]);
       expect(AdminAssetService.uploadSubtitle).toHaveBeenCalledWith(
         "a-video",
         file,
