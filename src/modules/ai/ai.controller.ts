@@ -1,15 +1,20 @@
 // src/controllers/ai.controller.ts
 import AiService from "./ai.service";
-import { getApiError, parsePagyList } from "../../services/api.service";
+import {
+  getApiError,
+  parsePagyList,
+  parseRecord,
+} from "../../services/api.service";
 import { IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
-import { IApiPagination } from "../../models";
-import { AppLocales, translate } from "../../locales";
 import {
-  AI_DEFAULTS,
-  AI_MESSAGE_STATUS,
-  AI_SOCKET_EVENTS,
-} from "./constants";
+  IApiEnvelope,
+  IApiPagination,
+  IApiResponse,
+  IJsonApiResource,
+} from "../../models";
+import { AppLocales, translate } from "../../locales";
+import { AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
 import { SpeechController } from "../speech";
 
 const AI_SOCKET_EVENT_TYPES: readonly string[] = [
@@ -36,9 +41,7 @@ class AiController {
     return this.currentRoomId;
   }
 
-  subscribeToAiMessages(
-    callback: (eventType: string) => void,
-  ): () => void {
+  subscribeToAiMessages(callback: (eventType: string) => void): () => void {
     const handleAiMessage = (event: ISocketMessage) => {
       const eventType =
         typeof event.data?.type === "string" ? event.data.type : "";
@@ -80,11 +83,27 @@ class AiController {
     const response = await AiService.getRooms(params);
     const { status, data, meta } = response.data || {};
 
-    if (status?.success && data?.rooms) {
+    if (status?.success) {
+      if (
+        data &&
+        "rooms" in data &&
+        Array.isArray((data as { rooms: IRoom[] }).rooms)
+      ) {
+        return {
+          success: true,
+          rooms: (data as { rooms: IRoom[] }).rooms,
+          pagination: meta?.pagination,
+        };
+      }
+      const { records, pagination } = parsePagyList<IRoom>(
+        response as unknown as IApiResponse<
+          IApiEnvelope<IJsonApiResource<IRoom>[]>
+        >,
+      );
       return {
         success: true,
-        rooms: data.rooms,
-        pagination: meta?.pagination,
+        rooms: records,
+        pagination: pagination ?? meta?.pagination,
       };
     }
 
@@ -104,11 +123,18 @@ class AiController {
     const response = await AiService.createRoom(title);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.room) {
-      this.currentRoomId = data.room.id;
+    if (status?.success && data) {
+      const roomRaw =
+        "room" in data && typeof data.room === "object" && data.room !== null
+          ? data.room
+          : data;
+      const parsedRoom = parseRecord<IRoom>(
+        roomRaw as IJsonApiResource<IRoom> | IRoom,
+      );
+      this.currentRoomId = parsedRoom.id;
       return {
         success: true,
-        room: data.room,
+        room: parsedRoom,
       };
     }
 
@@ -168,24 +194,66 @@ class AiController {
     success: boolean;
     message?: IMessage;
     roomId?: string;
+    notice?: string;
     error?: string;
   }> {
-    const response = await AiService.chat({
+    const request: { message: string; room_id?: string } = {
       message,
-      room_id: roomId || this.currentRoomId || undefined,
-      temperature: AI_DEFAULTS.TEMPERATURE,
-      max_tokens: AI_DEFAULTS.MAX_TOKENS,
-    });
+    };
+    const activeRoomId = roomId || this.currentRoomId;
+    if (activeRoomId) {
+      request.room_id = activeRoomId;
+    }
 
-    const { status, data } = response.data || {};
+    const response = await AiService.chat(request);
+    const { status, data, meta } = response.data || {};
 
-    if (status?.success && data?.message) {
-      this.currentRoomId = data.room_id;
-      return {
-        success: true,
-        message: data.message,
-        roomId: data.room_id,
-      };
+    if (status?.success && data) {
+      let parsedMessage: IMessage | undefined;
+      const dataAny = data as unknown as Record<string, unknown>;
+      const metaAny = meta as unknown as Record<string, unknown> | undefined;
+
+      if (dataAny.attributes) {
+        parsedMessage = parseRecord<IMessage>(
+          data as unknown as IJsonApiResource<IMessage>,
+        );
+      } else if (dataAny.message && typeof dataAny.message === "object") {
+        parsedMessage = parseRecord<IMessage>(
+          dataAny.message as IJsonApiResource<IMessage> | IMessage,
+        );
+      } else if (dataAny.data && typeof dataAny.data === "object") {
+        parsedMessage = parseRecord<IMessage>(
+          dataAny.data as IJsonApiResource<IMessage> | IMessage,
+        );
+      } else if (dataAny.content) {
+        parsedMessage = parseRecord<IMessage>(
+          data as unknown as IJsonApiResource<IMessage> | IMessage,
+        );
+      }
+
+      const resolvedRoomId =
+        (typeof dataAny.room_id === "string" && dataAny.room_id) ||
+        (typeof (dataAny.meta as Record<string, unknown> | undefined)
+          ?.room_id === "string" &&
+          ((dataAny.meta as Record<string, unknown>).room_id as string)) ||
+        (typeof metaAny?.room_id === "string" && (metaAny.room_id as string)) ||
+        (typeof parsedMessage?.room_id === "string" && parsedMessage.room_id) ||
+        roomId ||
+        this.currentRoomId ||
+        "";
+
+      if (resolvedRoomId) {
+        this.currentRoomId = resolvedRoomId;
+      }
+
+      if (parsedMessage) {
+        return {
+          success: true,
+          message: parsedMessage,
+          roomId: resolvedRoomId,
+          notice: status.message || undefined,
+        };
+      }
     }
 
     return {
@@ -209,7 +277,10 @@ class AiController {
 
     return {
       success: false,
-      error: getApiError(response, translate(AppLocales.Ai.Errors.ClearHistory)),
+      error: getApiError(
+        response,
+        translate(AppLocales.Ai.Errors.ClearHistory),
+      ),
     };
   }
 
@@ -224,10 +295,18 @@ class AiController {
     const response = await AiService.renameRoom(roomId, title);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.title) {
+    if (status?.success && data) {
+      const dataAny = data as Record<string, unknown>;
+      const resolvedTitle =
+        typeof dataAny.title === "string"
+          ? dataAny.title
+          : typeof (dataAny.attributes as Record<string, unknown> | undefined)
+                ?.title === "string"
+            ? ((dataAny.attributes as Record<string, unknown>).title as string)
+            : title;
       return {
         success: true,
-        title: data.title,
+        title: resolvedTitle,
       };
     }
 

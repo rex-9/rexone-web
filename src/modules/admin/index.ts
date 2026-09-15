@@ -11,6 +11,7 @@ import { AccessController, AccessService } from "./access";
 import { AssetController, AssetService } from "./asset";
 import { VersionController, VersionService } from "./version";
 import { PaymentController, PaymentService } from "./payment";
+import { AiController, AiService } from "./ai";
 
 export * from "./analytics";
 export * from "./chat";
@@ -24,6 +25,7 @@ export * from "./user";
 export * from "./asset";
 export * from "./version";
 export * from "./payment";
+export * from "./ai";
 export * from "./components";
 export * from "./helpers/admin.helper";
 export * from "./constants";
@@ -53,4 +55,6 @@ export const Admin = {
   VersionService,
   PaymentController,
   PaymentService,
+  AiController,
+  AiService,
 };

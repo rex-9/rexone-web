@@ -21,6 +21,7 @@ import twitterSvg from "./design/twitter.svg";
 import instagramIcon from "./icons/instagram.svg";
 import googleIcon from "./icons/google.svg";
 import rexoneLogoSvg from "./icons/rexone-logo.svg";
+import quoteIcon from "./icons/quote.svg";
 
 // Projects Images (RexOne Repos Only)
 import rexoneCoreImg from "./images/rexone-core.jpg";
@@ -86,6 +87,7 @@ import {
   PhotoIcon,
   TagIcon,
   DevicePhoneMobileIcon,
+  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -143,6 +145,7 @@ export const icons = {
   medium: { src: mediumSvg, alt: "Medium", title: "Medium" },
   twitter: { src: twitterSvg, alt: "Twitter / X", title: "Twitter / X" },
   facebook: { src: facebookSvg, alt: "Facebook", title: "Facebook" },
+  quote: { src: quoteIcon, alt: "Quote", title: "Quote" },
 } as const;
 
 // ============================================================
@@ -224,4 +227,5 @@ export const iconsLib = {
   photo: PhotoIcon,
   tag: TagIcon,
   devicePhoneMobile: DevicePhoneMobileIcon,
+  externalLink: ArrowTopRightOnSquareIcon,
 } as const;

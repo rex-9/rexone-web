@@ -59,14 +59,17 @@ class AiService {
     title: string,
   ): Promise<IApiResponse<IApiEnvelope<{ title: string }>>> {
     const response = await api.put<{ title: string }>(
-      AppRoutes.server.protected.AI_RENAME,
-      { room_id: roomId, title },
+      AppRoutes.withId(AppRoutes.server.protected.AI_ROOM, roomId),
+      { title },
     );
     return response;
   }
 
   // Rooms
-  async getRooms(params?: { page?: number; limit?: number }): Promise<IApiResponse<IApiEnvelope<IRoomsResponse>>> {
+  async getRooms(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<IApiResponse<IApiEnvelope<IRoomsResponse>>> {
     const response = await api.get<IRoomsResponse>(
       AppRoutes.server.protected.AI_ROOMS,
       params,

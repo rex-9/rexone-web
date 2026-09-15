@@ -40,21 +40,44 @@ export type TAdminActionsType =
   (typeof ADMIN_ACTIONS)[keyof typeof ADMIN_ACTIONS];
 
 export const ADMIN_RESOURCES = {
+  // Top-level domain resources
   USERS: "users",
-  ROLES: "roles",
-  PRODUCTS: "products",
-  TRANSACTIONS: "transactions",
-  SUBSCRIPTIONS: "subscriptions",
   ACCESSES: "accesses",
-  NOTIFICATIONS: "notifications",
-  ROOMS: "rooms",
-  MESSAGES: "messages",
-  ANALYTICS: "analytics",
-  FEEDBACKS: "feedbacks",
-  CLIENTS: "clients",
   ASSETS: "assets",
-  VERSIONS: "versions",
-  USER_VERSIONS: "user_versions",
+  NOTIFICATIONS: "notifications",
+  FEEDBACKS: "feedbacks",
+  ANALYTICS: "analytics",
+  SPEECH: "speech",
+
+  // Module-namespaced resources
+  CHAT_ROOMS: "chat_rooms",
+  CHAT_MESSAGES: "chat_messages",
+  AI_PROFILES: "ai_profiles",
+  AI_RUNS: "ai_runs",
+  CLIENT_LOGS: "client_logs",
+  CLIENT_VERSIONS: "client_versions",
+  CLIENT_USER_VERSIONS: "client_user_versions",
+  IAM_ROLES: "iam_roles",
+  IAM_PERMISSIONS: "iam_permissions",
+  IAM_USER_ROLES: "iam_user_roles",
+  PAYMENT_PRODUCTS: "payment_products",
+  PAYMENT_PAYMENTS: "payment_payments",
+  PAYMENT_SUBSCRIPTIONS: "payment_subscriptions",
+  PAYMENT_TRANSACTIONS: "payment_transactions",
+
+  // Aliases for seamless component compatibility
+  ROOMS: "chat_rooms",
+  MESSAGES: "chat_messages",
+  LOGS: "client_logs",
+  CLIENTS: "client_logs",
+  VERSIONS: "client_versions",
+  USER_VERSIONS: "client_user_versions",
+  ROLES: "iam_roles",
+  PERMISSIONS: "iam_permissions",
+  PRODUCTS: "payment_products",
+  PAYMENTS: "payment_payments",
+  SUBSCRIPTIONS: "payment_subscriptions",
+  TRANSACTIONS: "payment_transactions",
 } as const;
 
 export type TAdminResourceName =
@@ -85,6 +108,7 @@ export const ADMIN_NAV_SECTION_LABELS = {
   OVERVIEW: "Overview",
   IAM: "IAM",
   CHAT: "Chat",
+  AI: "AI Control Panel",
   COMMERCE: "Commerce",
   COMMUNICATION: "Communication",
   SUPPORT: "Support",
@@ -95,6 +119,8 @@ export const ADMIN_NAV_SECTION_LABELS = {
 
 export const ADMIN_NAV_LABELS = {
   ANALYTICS: "Analytics",
+  AI_PROFILES: "AI Profiles",
+  AI_RUNS: "AI Runs",
   CHAT_MESSAGES: "Chat Messages",
   CHAT_ROOMS: "Chat Rooms",
   NOTIFICATIONS: "Notifications",

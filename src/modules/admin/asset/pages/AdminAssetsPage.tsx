@@ -113,7 +113,6 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const [assetToDiscard, setAssetToDiscard] = useState<IAdminAsset | null>(
     null,
   );
-  const [isDiscarding, setIsDiscarding] = useState(false);
   const [compressingId, setCompressingId] = useState<string | null>(null);
   const pendingSocketUpdates = useRef<
     Map<
@@ -128,29 +127,24 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   >(new Map());
 
   // Discarded view state
-  const [isRestoreOpen, setIsRestoreOpen] = useState(false);
-  const [assetToRestore, setAssetToRestore] = useState<IAdminAsset | null>(
+  const [isUndiscardOpen, setIsUndiscardOpen] = useState(false);
+  const [assetToUndiscard, setAssetToUndiscard] = useState<IAdminAsset | null>(
     null,
   );
-  const [isRestoring, setIsRestoring] = useState(false);
   const [isDestroyOpen, setIsDestroyOpen] = useState(false);
   const [assetToDestroy, setAssetToDestroy] = useState<IAdminAsset | null>(
     null,
   );
-  const [isDestroying, setIsDestroying] = useState(false);
 
   // Selection & Batch state
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isBatchDiscardOpen, setIsBatchDiscardOpen] = useState(false);
-  const [isBatchDiscarding, setIsBatchDiscarding] = useState(false);
-  const [isBatchRestoreOpen, setIsBatchRestoreOpen] = useState(false);
-  const [isBatchRestoring, setIsBatchRestoring] = useState(false);
+  const [isBatchUndiscardOpen, setIsBatchUndiscardOpen] = useState(false);
   const [isBatchDestroyOpen, setIsBatchDestroyOpen] = useState(false);
-  const [isBatchDestroying, setIsBatchDestroying] = useState(false);
 
   const fetchAssets = useCallback(async (options?: { silent?: boolean }) => {
     const silent = Boolean(options?.silent);
-    if (!silent) setLoading(true);
+    if (!silent) setLoading(true, { overlay: true });
     try {
       const params: Record<string, string | number> = {
         page,
@@ -178,7 +172,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      if (!silent) setLoading(false);
+      if (!silent) setLoading(false, { overlay: true });
       setHasLoadedOnce(true);
     }
   }, [
@@ -305,7 +299,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const handleDiscard = async () => {
     if (!assetToDiscard) return;
 
-    setIsDiscarding(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.discardAsset(
         assetToDiscard.id,
@@ -323,25 +317,25 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsDiscarding(false);
+      setLoading(false, { overlay: false });
     }
   };
 
   // Discarded view actions
-  const handleRestore = async () => {
-    if (!assetToRestore) return;
+  const handleUndiscard = async () => {
+    if (!assetToUndiscard) return;
 
-    setIsRestoring(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.undiscardAsset(
-        assetToRestore.id,
+        assetToUndiscard.id,
       );
       if (result.success) {
         toast.success(
           result.message || t(AppLocales.Admin.Assets.Toasts.RestoreSuccess),
         );
-        setIsRestoreOpen(false);
-        setAssetToRestore(null);
+        setIsUndiscardOpen(false);
+        setAssetToUndiscard(null);
         fetchAssets();
       } else {
         toast.error(
@@ -349,14 +343,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsRestoring(false);
+      setLoading(false, { overlay: false });
     }
   };
 
   const handleDestroy = async () => {
     if (!assetToDestroy) return;
 
-    setIsDestroying(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.destroyAsset(
         assetToDestroy.id,
@@ -374,7 +368,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsDestroying(false);
+      setLoading(false, { overlay: false });
     }
   };
 
@@ -384,7 +378,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   const handleBatchDiscard = async () => {
     if (selectedIds.length === 0) return;
-    setIsBatchDiscarding(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.discardBatch(selectedIds);
       if (result.success) {
@@ -403,13 +397,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsBatchDiscarding(false);
+      setLoading(false, { overlay: false });
     }
   };
 
-  const handleBatchRestore = async () => {
+  const handleBatchUndiscard = async () => {
     if (selectedIds.length === 0) return;
-    setIsBatchRestoring(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.undiscardBatch(selectedIds);
       if (result.success) {
@@ -419,7 +413,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               count: String(result.count ?? selectedIds.length),
             }),
         );
-        setIsBatchRestoreOpen(false);
+        setIsBatchUndiscardOpen(false);
         setSelectedIds([]);
         fetchAssets();
       } else {
@@ -428,13 +422,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsBatchRestoring(false);
+      setLoading(false, { overlay: false });
     }
   };
 
   const handleBatchDestroy = async () => {
     if (selectedIds.length === 0) return;
-    setIsBatchDestroying(true);
+    setLoading(true, { overlay: false });
     try {
       const result = await Admin.AssetController.destroyBatch(selectedIds);
       if (result.success) {
@@ -453,7 +447,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         );
       }
     } finally {
-      setIsBatchDestroying(false);
+      setLoading(false, { overlay: false });
     }
   };
 
@@ -490,7 +484,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         label: t(AppLocales.Admin.Common.Batch.RestoreSelected),
         icon: iconsLib.arrowPath,
         variant: ButtonVariants.SECONDARY,
-        onClick: () => setIsBatchRestoreOpen(true),
+        onClick: () => setIsBatchUndiscardOpen(true),
       },
       {
         key: "batch-destroy",
@@ -563,7 +557,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         key: ADMIN_ASSET_COLUMNS.NAME,
         header: t(AppLocales.Admin.Assets.Table.Name),
         sortKey: ADMIN_ASSET_COLUMNS.NAME,
-        className: "w-56 max-w-[220px] sm:max-w-[260px]",
+        className: "w-56 max-w-55 sm:max-w-65",
         render: (asset) => (
           <div className="flex flex-col min-w-0 max-w-55 sm:max-w-65">
             <span
@@ -708,8 +702,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 {
                   type: ADMIN_ACTIONS.UNDISCARD,
                   onClick: () => {
-                    setAssetToRestore(asset);
-                    setIsRestoreOpen(true);
+                    setAssetToUndiscard(asset);
+                    setIsUndiscardOpen(true);
                   },
                 },
                 {
@@ -950,7 +944,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               setIsDiscardOpen(false);
               setAssetToDiscard(null);
             }}
-            isLoading={isDiscarding}
+            isLoading={isLoading}
             isDestructive
           />
         </>
@@ -960,17 +954,17 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       {!isActive && (
         <>
           <ConfirmDialog
-            isOpen={isRestoreOpen}
+            isOpen={isUndiscardOpen}
             title={t(AppLocales.Admin.Assets.Confirm.RestoreTitle)}
             message={t(AppLocales.Admin.Assets.Confirm.RestoreMessage)}
             confirmLabel={t(AppLocales.Admin.Common.Actions.Restore)}
             cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
-            onConfirm={handleRestore}
+            onConfirm={handleUndiscard}
             onClose={() => {
-              setIsRestoreOpen(false);
-              setAssetToRestore(null);
+              setIsUndiscardOpen(false);
+              setAssetToUndiscard(null);
             }}
-            isLoading={isRestoring}
+            isLoading={isLoading}
           />
 
           <ConfirmDialog
@@ -984,7 +978,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               setIsDestroyOpen(false);
               setAssetToDestroy(null);
             }}
-            isLoading={isDestroying}
+            isLoading={isLoading}
             isDestructive
           />
         </>
@@ -1001,21 +995,21 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchDiscard}
         onClose={() => setIsBatchDiscardOpen(false)}
-        isLoading={isBatchDiscarding}
+        isLoading={isLoading}
         isDestructive
       />
 
       <ConfirmDialog
-        isOpen={isBatchRestoreOpen}
+        isOpen={isBatchUndiscardOpen}
         title={t(AppLocales.Admin.Common.Batch.ConfirmRestoreTitle)}
         message={t(AppLocales.Admin.Common.Batch.ConfirmRestoreMessage, {
           count: String(selectedIds.length),
         })}
         confirmLabel={t(AppLocales.Admin.Common.Batch.RestoreSelected)}
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
-        onConfirm={handleBatchRestore}
-        onClose={() => setIsBatchRestoreOpen(false)}
-        isLoading={isBatchRestoring}
+        onConfirm={handleBatchUndiscard}
+        onClose={() => setIsBatchUndiscardOpen(false)}
+        isLoading={isLoading}
       />
 
       <ConfirmDialog
@@ -1028,7 +1022,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchDestroy}
         onClose={() => setIsBatchDestroyOpen(false)}
-        isLoading={isBatchDestroying}
+        isLoading={isLoading}
         isDestructive
       />
     </div>

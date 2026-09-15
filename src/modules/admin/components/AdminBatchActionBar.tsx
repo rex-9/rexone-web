@@ -57,13 +57,15 @@ export const AdminBatchActionBar: React.FC<IAdminBatchActionBarProps> = ({
             count: String(selectedCount),
           })}
         </span>
-        <button
+        <Button
           type="button"
+          variant={ButtonVariants.TERTIARY}
+          size={ButtonSizes.XS}
           onClick={onClearSelection}
-          className="text-xs text-base-content/60 hover:text-base-content underline cursor-pointer ml-1"
+          className="p-0! min-h-0! text-xs text-base-content/60 hover:text-base-content underline cursor-pointer ml-1"
         >
           {t(AppLocales.Admin.Common.Batch.ClearSelection)}
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
@@ -82,7 +84,7 @@ export const AdminBatchActionBar: React.FC<IAdminBatchActionBarProps> = ({
               variant={variant}
               className={
                 action.isDestructive
-                  ? "!bg-error !text-white hover:!bg-error/90 border-transparent"
+                  ? "bg-error! text-white! hover:bg-error/90! border-transparent"
                   : ""
               }
               disabled={action.disabled || isLoading}

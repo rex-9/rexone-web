@@ -24,6 +24,8 @@ import {
   TextArea,
   TextInput,
 } from "../../components";
+import { Button } from "../../../../design";
+import { ButtonVariants } from "../../../../design/constants";
 import { ADMIN_ACTIONS } from "../../constants";
 
 export interface IAdminNotificationFormProps {
@@ -337,42 +339,45 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
 
           {/* Channel Tabs */}
           <div className="flex gap-2 border-b border-base-200 pb-2">
-            <button
+            <Button
               type="button"
+              variant={ButtonVariants.TERTIARY}
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.IN_APP)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.IN_APP
-                  ? "bg-primary text-white shadow-sm"
+                  ? "!bg-primary !text-white shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
               <iconsLib.chat className="w-4 h-4" />
               {t(AppLocales.Admin.Notifications.Templates.Dialog.InAppTab)}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant={ButtonVariants.TERTIARY}
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.PUSH)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.PUSH
-                  ? "bg-primary text-white shadow-sm"
+                  ? "!bg-primary !text-white shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
               <iconsLib.bell className="w-4 h-4" />
               {t(AppLocales.Admin.Notifications.Templates.Dialog.PushTab)}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant={ButtonVariants.TERTIARY}
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.EMAIL)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.EMAIL
-                  ? "bg-primary text-white shadow-sm"
+                  ? "!bg-primary !text-white shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
               <iconsLib.mail className="w-4 h-4" />
               {t(AppLocales.Admin.Notifications.Templates.Dialog.EmailTab)}
-            </button>
+            </Button>
           </div>
 
           {/* Tab Contents */}

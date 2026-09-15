@@ -17,15 +17,16 @@ import { useTranslate, AppLocales } from "../../../../locales";
 import NotificationController from "../notification.controller";
 import type { IAdminNotificationTemplate } from "../types";
 import { useToast } from "../../../../contexts/ToastContext";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { NOTIFICATION_CATEGORIES } from "../constants";
 
 export const AdminNotificationTemplatesTab: React.FC = () => {
   const t = useTranslate();
   const toast = useToast();
   const navigate = useNavigate();
+  const { isLoading, setLoading } = useLoading();
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
   const [pagination, setPagination] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,11 +34,10 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
   // Discard confirm state
   const [discardTarget, setDiscardTarget] =
     useState<IAdminNotificationTemplate | null>(null);
-  const [isDiscarding, setIsDiscarding] = useState(false);
 
   const fetchTemplates = useCallback(
     async (page = 1, searchQuery = search, category = categoryFilter) => {
-      setIsLoading(true);
+      setLoading(true, { overlay: true });
       try {
         const res = await NotificationController.getTemplates({
           page,
@@ -56,10 +56,10 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
       } catch (err: any) {
         toast.error(err.message || "Failed to load templates");
       } finally {
-        setIsLoading(false);
+        setLoading(false, { overlay: true });
       }
     },
-    [search, categoryFilter, toast],
+    [search, categoryFilter, toast, setLoading],
   );
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
 
   const handleConfirmDiscard = async () => {
     if (!discardTarget?.id) return;
-    setIsDiscarding(true);
+    setLoading(true, { overlay: false });
     try {
       const res = await NotificationController.discardTemplate(
         discardTarget.id,
@@ -86,7 +86,7 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
     } catch (err: any) {
       toast.error(err.message || "Failed to delete template");
     } finally {
-      setIsDiscarding(false);
+      setLoading(false, { overlay: false });
     }
   };
 
@@ -357,7 +357,7 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
           AppLocales.Admin.Notifications.Templates.DeleteConfirm,
         )}
         isDestructive={true}
-        isLoading={isDiscarding}
+        isLoading={isLoading}
       />
     </div>
   );

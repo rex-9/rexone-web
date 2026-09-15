@@ -2,7 +2,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Image, StatusBadge } from "../../../../design";
+import { Button, Image, StatusBadge } from "../../../../design";
+import { ButtonVariants } from "../../../../design/constants";
 import {
   AdminDetailField,
   AdminDetailGrid,
@@ -71,14 +72,15 @@ export const AdminAssetDetailPage: React.FC = () => {
               </div>
             )}
             <div className="pt-4">
-              <button
-                type="button"
+              <Button
+                variant={ButtonVariants.SECONDARY}
+                fullWidth
                 onClick={() => void handleDownload(asset)}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-primary px-3 py-2 text-sm font-semibold text-base-content transition hover:bg-primary/10"
+                className="gap-1.5"
               >
                 <iconsLib.download className="h-4 w-4" />
                 {t(AppLocales.Admin.Assets.Download.Action)}
-              </button>
+              </Button>
             </div>
           </AdminDetailSection>
           <AdminDetailSection

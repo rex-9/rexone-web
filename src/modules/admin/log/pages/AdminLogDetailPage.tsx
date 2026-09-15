@@ -29,11 +29,10 @@ export const AdminLogDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { setLoading } = useLoading();
+  const { isLoading, setLoading } = useLoading();
   const { can } = usePermissions();
 
   const [log, setLog] = useState<IAdminLog | null>(null);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
 
@@ -43,14 +42,16 @@ export const AdminLogDetailPage: React.FC = () => {
     if (!id) return;
 
     const loadLog = async () => {
-      setLoading(true);
-      const result = await AdminLogController.getLog(id);
-      setLoading(false);
-
-      if (result.success && result.log) {
-        setLog(result.log);
-      } else {
-        setError(result.error || t(AppLocales.Admin.Logs.Detail.LoadFailed));
+      setLoading(true, { overlay: true });
+      try {
+        const result = await AdminLogController.getLog(id);
+        if (result.success && result.log) {
+          setLog(result.log);
+        } else {
+          setError(result.error || t(AppLocales.Admin.Logs.Detail.LoadFailed));
+        }
+      } finally {
+        setLoading(false, { overlay: true });
       }
     };
 
@@ -61,23 +62,25 @@ export const AdminLogDetailPage: React.FC = () => {
     if (!id || !log) return;
 
     const isResolved = Boolean(log.resolved_at);
-    setIsUpdating(true);
+    setLoading(true, { overlay: false });
 
-    const result = isResolved
-      ? await AdminLogController.unresolveLog(id)
-      : await AdminLogController.resolveLog(id);
+    try {
+      const result = isResolved
+        ? await AdminLogController.unresolveLog(id)
+        : await AdminLogController.resolveLog(id);
 
-    setIsUpdating(false);
-
-    if (result.success && result.log) {
-      setLog(result.log);
-      toast.success(
-        isResolved
-          ? t(AppLocales.Admin.Logs.Toasts.UnresolveSuccess)
-          : t(AppLocales.Admin.Logs.Toasts.ResolveSuccess),
-      );
-    } else {
-      setAlertMessage(result.error || t(AppLocales.Admin.Logs.Detail.UpdateFailed));
+      if (result.success && result.log) {
+        setLog(result.log);
+        toast.success(
+          isResolved
+            ? t(AppLocales.Admin.Logs.Toasts.UnresolveSuccess)
+            : t(AppLocales.Admin.Logs.Toasts.ResolveSuccess),
+        );
+      } else {
+        setAlertMessage(result.error || t(AppLocales.Admin.Logs.Detail.UpdateFailed));
+      }
+    } finally {
+      setLoading(false, { overlay: false });
     }
   };
 
@@ -110,7 +113,7 @@ export const AdminLogDetailPage: React.FC = () => {
                 isResolved ? ButtonVariants.SECONDARY : ButtonVariants.PRIMARY
               }
               onClick={handleToggleResolve}
-              isLoading={isUpdating}
+              isLoading={isLoading}
             >
               {isResolved
                 ? t(AppLocales.Admin.Logs.Drawer.MarkUnresolved)

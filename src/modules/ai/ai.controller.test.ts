@@ -61,9 +61,11 @@ describe("AiController", () => {
   describe("subscribeToAiMessages", () => {
     it("subscribes listener and handles relevant socket notifications", () => {
       let registeredListener: ((event: any) => void) | undefined;
-      vi.mocked(SocketService.addListener).mockImplementation((listener: any) => {
-        registeredListener = listener;
-      });
+      vi.mocked(SocketService.addListener).mockImplementation(
+        (listener: any) => {
+          registeredListener = listener;
+        },
+      );
 
       const callback = vi.fn();
       AiController.setRoomId("room-1");
@@ -103,7 +105,14 @@ describe("AiController", () => {
         data: {
           status: { code: 200, success: true, message: "OK" },
           data: { rooms: [mockRoom] },
-          meta: { pagination: { current_page: 1, total_pages: 1, total_count: 1, limit: 10 } } as any,
+          meta: {
+            pagination: {
+              current_page: 1,
+              total_pages: 1,
+              total_count: 1,
+              limit: 10,
+            },
+          } as any,
         },
       });
 
@@ -152,10 +161,20 @@ describe("AiController", () => {
             {
               id: "msg-1",
               type: "message",
-              attributes: { ...mockMessage, metadata: { status: AI_MESSAGE_STATUS.COMPLETED } },
+              attributes: {
+                ...mockMessage,
+                metadata: { status: AI_MESSAGE_STATUS.COMPLETED },
+              },
             },
           ] as any,
-          meta: { pagination: { current_page: 1, total_pages: 1, total_count: 1, limit: 10 } } as any,
+          meta: {
+            pagination: {
+              current_page: 1,
+              total_pages: 1,
+              total_count: 1,
+              limit: 10,
+            },
+          } as any,
         },
       });
 
@@ -173,7 +192,10 @@ describe("AiController", () => {
             {
               id: "msg-1",
               type: "message",
-              attributes: { ...mockMessage, metadata: { status: AI_MESSAGE_STATUS.PROCESSING } },
+              attributes: {
+                ...mockMessage,
+                metadata: { status: AI_MESSAGE_STATUS.PROCESSING },
+              },
             },
           ] as any,
         },
@@ -271,6 +293,87 @@ describe("AiController", () => {
         success: false,
         error: "Failed to queue TTS",
       });
+    });
+  });
+
+  describe("JSON:API payload compatibility", () => {
+    it("handles JSON:API array for getRooms", async () => {
+      vi.mocked(AiService.getRooms).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "OK" },
+          data: [
+            {
+              id: "room-2",
+              type: "room",
+              attributes: { id: "room-2", title: "JSON:API Room" },
+            },
+          ] as any,
+          meta: {
+            pagination: {
+              current_page: 1,
+              limit: 10,
+              total_count: 1,
+              total_pages: 1,
+              next_page: null,
+              prev_page: null,
+            },
+          },
+        },
+      });
+
+      const result = await AiController.getRooms();
+      expect(result.success).toBe(true);
+      expect(result.rooms[0].id).toBe("room-2");
+      expect(result.rooms[0].title).toBe("JSON:API Room");
+    });
+
+    it("handles JSON:API single resource for createRoom", async () => {
+      vi.mocked(AiService.createRoom).mockResolvedValue({
+        data: {
+          status: { code: 201, success: true, message: "Created" },
+          data: {
+            id: "room-3",
+            type: "room",
+            attributes: { id: "room-3", title: "Created JSON:API Room" },
+          } as any,
+        },
+      });
+
+      const result = await AiController.createRoom("Created JSON:API Room");
+      expect(result.success).toBe(true);
+      expect(result.room?.id).toBe("room-3");
+      expect(result.room?.title).toBe("Created JSON:API Room");
+      expect(AiController.getCurrentRoomId()).toBe("room-3");
+    });
+
+    it("handles JSON:API single resource with meta for chat", async () => {
+      vi.mocked(AiService.chat).mockResolvedValue({
+        data: {
+          status: { code: 202, success: true, message: "Queued" },
+          data: {
+            data: {
+              id: "msg-queued",
+              type: "message",
+              attributes: {
+                id: "msg-queued",
+                content: "Hello AI",
+                role: "user",
+                status: "queued",
+              },
+            },
+            meta: {
+              room_id: "room-meta-1",
+              status: "queued",
+            },
+          } as any,
+        },
+      });
+
+      const result = await AiController.chat("Hello AI");
+      expect(result.success).toBe(true);
+      expect(result.message?.id).toBe("msg-queued");
+      expect(result.roomId).toBe("room-meta-1");
+      expect(AiController.getCurrentRoomId()).toBe("room-meta-1");
     });
   });
 });
