@@ -8,7 +8,6 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import {
   Badge,
-  Button,
   DateTime,
   DateTimeFormats,
   Dropdown,
@@ -17,12 +16,15 @@ import {
 } from "../../../../design";
 import {
   BadgeVariants,
-  ButtonSizes,
-  ButtonTypes,
   ButtonVariants,
   DropdownSizes,
 } from "../../../../design/constants";
-import { useDocumentTitle, usePermissions, useSort, SORT_ORDERS } from "../../../../hooks";
+import {
+  useDocumentTitle,
+  usePermissions,
+  useSort,
+  SORT_ORDERS,
+} from "../../../../hooks";
 import { AppLocales, useTranslate } from "../../../../locales";
 import type { IApiPagination } from "../../../../models";
 import {
@@ -154,8 +156,7 @@ export const AdminUserNotificationsPage: React.FC<
         setPagination(res.pagination);
       } else {
         toast.error(
-          res.error ||
-            t(AppLocales.Admin.Notifications.Errors.LoadTemplates),
+          res.error || t(AppLocales.Admin.Notifications.Errors.LoadTemplates),
         );
       }
     } finally {
@@ -396,7 +397,10 @@ export const AdminUserNotificationsPage: React.FC<
         className: "w-48",
         render: (item) => (
           <div className="flex flex-col min-w-0">
-            <span className="font-medium text-base-content truncate" title={item.user_email}>
+            <span
+              className="font-medium text-base-content truncate"
+              title={item.user_email}
+            >
               {item.user_email || item.user_id}
             </span>
             {item.user_name && (
@@ -415,10 +419,16 @@ export const AdminUserNotificationsPage: React.FC<
         className: "min-w-64 max-w-sm",
         render: (item) => (
           <div className="flex flex-col min-w-0">
-            <span className="font-semibold text-base-content truncate" title={item.title}>
+            <span
+              className="font-semibold text-base-content truncate"
+              title={item.title}
+            >
               {item.title}
             </span>
-            <span className="text-xs text-base-content/70 line-clamp-1 mt-0.5" title={item.message}>
+            <span
+              className="text-xs text-base-content/70 line-clamp-1 mt-0.5"
+              title={item.message}
+            >
               {item.message}
             </span>
           </div>
@@ -453,9 +463,7 @@ export const AdminUserNotificationsPage: React.FC<
         className: "w-32",
         render: (item) => (
           <Badge
-            variant={
-              item.read ? BadgeVariants.SUCCESS : BadgeVariants.WARNING
-            }
+            variant={item.read ? BadgeVariants.SUCCESS : BadgeVariants.WARNING}
           >
             {item.read ? "Read" : "Unread"}
           </Badge>
@@ -475,7 +483,9 @@ export const AdminUserNotificationsPage: React.FC<
         className: "w-40",
         render: (item) => (
           <DateTime
-            value={isActive ? item.created_at : item.discarded_at || item.created_at}
+            value={
+              isActive ? item.created_at : item.discarded_at || item.created_at
+            }
             format={DateTimeFormats.ADMIN}
             className="text-xs text-base-content/70"
           />
@@ -489,23 +499,6 @@ export const AdminUserNotificationsPage: React.FC<
         className: "w-28 text-right",
         render: (item) => (
           <div className="flex items-center justify-end gap-1">
-            <Button
-              type={ButtonTypes.BUTTON}
-              size={ButtonSizes.SM}
-              className="btn-ghost btn-square"
-              title="View Details"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(
-                  AppRoutes.withId(
-                    AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL,
-                    item.id,
-                  ),
-                );
-              }}
-            >
-              <iconsLib.eye className="h-4 w-4" />
-            </Button>
             <AdminTableActions
               resource={ADMIN_RESOURCES.USER_NOTIFICATIONS}
               actions={
@@ -587,7 +580,9 @@ export const AdminUserNotificationsPage: React.FC<
                 .SearchPlaceholder,
             )}
             value={searchQuery}
-            onChange={(e) => updateSearchParams({ search: e.target.value, page: "1" })}
+            onChange={(e) =>
+              updateSearchParams({ search: e.target.value, page: "1" })
+            }
             onClear={() => updateSearchParams({ search: null, page: "1" })}
           />
         </div>
@@ -595,7 +590,7 @@ export const AdminUserNotificationsPage: React.FC<
         <div className="w-full sm:w-44">
           <Dropdown
             value={clientFilter}
-            size={DropdownSizes.SM}
+            size={DropdownSizes.MD}
             options={[
               {
                 value: "",
@@ -622,7 +617,7 @@ export const AdminUserNotificationsPage: React.FC<
         <div className="w-full sm:w-44">
           <Dropdown
             value={statusFilter}
-            size={DropdownSizes.SM}
+            size={DropdownSizes.MD}
             options={[
               {
                 value: "",
@@ -694,9 +689,7 @@ export const AdminUserNotificationsPage: React.FC<
               selectedRowKeys={selectedIds}
               onSelectRow={(id, selected) => {
                 setSelectedIds((prev) =>
-                  selected
-                    ? [...prev, id]
-                    : prev.filter((item) => item !== id),
+                  selected ? [...prev, id] : prev.filter((item) => item !== id),
                 );
               }}
               onSelectAll={(selected) => {
@@ -730,9 +723,7 @@ export const AdminUserNotificationsPage: React.FC<
       {/* Discard Confirmation Dialog */}
       <ConfirmDialog
         isOpen={Boolean(discardTarget)}
-        title={t(
-          AppLocales.Admin.Notifications.UserNotifications.DiscardTitle,
-        )}
+        title={t(AppLocales.Admin.Notifications.UserNotifications.DiscardTitle)}
         message={t(
           AppLocales.Admin.Notifications.UserNotifications.DiscardMessage,
         )}
@@ -747,9 +738,7 @@ export const AdminUserNotificationsPage: React.FC<
       {/* Undiscard Confirmation Dialog */}
       <ConfirmDialog
         isOpen={Boolean(undiscardTarget)}
-        title={t(
-          AppLocales.Admin.Notifications.UserNotifications.RestoreTitle,
-        )}
+        title={t(AppLocales.Admin.Notifications.UserNotifications.RestoreTitle)}
         message={t(
           AppLocales.Admin.Notifications.UserNotifications.RestoreMessage,
         )}
@@ -778,13 +767,10 @@ export const AdminUserNotificationsPage: React.FC<
       {/* Batch Discard Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isBatchDiscardOpen}
-        title={t(
-          AppLocales.Admin.Common.Batch.ConfirmDiscardTitle,
-        )}
-        message={t(
-          AppLocales.Admin.Common.Batch.ConfirmDiscardMessage,
-          { count: String(selectedIds.length) },
-        )}
+        title={t(AppLocales.Admin.Common.Batch.ConfirmDiscardTitle)}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmDiscardMessage, {
+          count: String(selectedIds.length),
+        })}
         confirmLabel={t(AppLocales.Admin.Common.Batch.DiscardSelected)}
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchDiscard}
@@ -796,13 +782,10 @@ export const AdminUserNotificationsPage: React.FC<
       {/* Batch Undiscard Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isBatchUndiscardOpen}
-        title={t(
-          AppLocales.Admin.Common.Batch.ConfirmRestoreTitle,
-        )}
-        message={t(
-          AppLocales.Admin.Common.Batch.ConfirmRestoreMessage,
-          { count: String(selectedIds.length) },
-        )}
+        title={t(AppLocales.Admin.Common.Batch.ConfirmRestoreTitle)}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmRestoreMessage, {
+          count: String(selectedIds.length),
+        })}
         confirmLabel={t(AppLocales.Admin.Common.Batch.RestoreSelected)}
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         onConfirm={handleBatchUndiscard}
@@ -814,10 +797,9 @@ export const AdminUserNotificationsPage: React.FC<
       <ConfirmDialog
         isOpen={isBatchDestroyOpen}
         title={t(AppLocales.Admin.Common.Batch.ConfirmDestroyTitle)}
-        message={t(
-          AppLocales.Admin.Common.Batch.ConfirmDestroyMessage,
-          { count: String(selectedIds.length) },
-        )}
+        message={t(AppLocales.Admin.Common.Batch.ConfirmDestroyMessage, {
+          count: String(selectedIds.length),
+        })}
         confirmLabel={t(AppLocales.Admin.Common.Batch.DestroySelected)}
         cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
         isDestructive
