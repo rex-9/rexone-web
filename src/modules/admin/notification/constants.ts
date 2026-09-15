@@ -92,6 +92,7 @@ export const ADMIN_USER_NOTIFICATION_SORT_KEYS = {
   READ_AT: "read_at",
   TITLE: "title",
   DISCARDED_AT: "discarded_at",
+  RECIPIENT: "user_email",
 } as const;
 
 export const ADMIN_USER_NOTIFICATION_STATUS_FILTERS = {

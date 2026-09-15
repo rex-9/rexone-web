@@ -399,6 +399,11 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
           <div className="w-full sm:w-72">
             <SearchInput
               placeholder={t(AppLocales.Admin.Users.SearchPlaceholder)}
+              searchableKeys={[
+                t(AppLocales.Admin.Common.Detail.Name),
+                t(AppLocales.Admin.Users.Table.Username),
+                t(AppLocales.Admin.Users.Table.Email),
+              ]}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onClear={() => setSearchInput("")}

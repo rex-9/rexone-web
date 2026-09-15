@@ -318,38 +318,54 @@ export const AdminAiRunsPage: React.FC = () => {
         description={t(AppLocales.Admin.Ai.RunsDescription)}
       />
 
-      <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        <Dropdown
-          value={providerFilter}
-          onValueChange={(val) =>
-            updateFilters({ provider: val, model: "", page: 1 })
-          }
-          options={providerFilterOptions}
-        />
-        <Dropdown
-          value={modelFilter}
-          onValueChange={(val) => updateFilters({ model: val, page: 1 })}
-          options={modelFilterOptions}
-        />
-        <Dropdown
-          value={statusFilter}
-          onValueChange={(val) => updateFilters({ status: val, page: 1 })}
-          options={statusFilterOptions}
-        />
-        <Dropdown
-          value={featureFilter}
-          onValueChange={(val) => updateFilters({ feature: val, page: 1 })}
-          options={featureFilterOptions}
-        />
-        <SearchInput
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          onClear={() => setSearchInput("")}
-          placeholder={
-            t(AppLocales.Admin.Ai.Filters.SearchRuns) ||
-            "Search runs..."
-          }
-        />
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
+          <SearchInput
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onClear={() => setSearchInput("")}
+            placeholder={
+              t(AppLocales.Admin.Ai.Filters.SearchRuns) ||
+              "Search runs..."
+            }
+            searchableKeys={[
+              t(AppLocales.Admin.Ai.RunsTable.Feature),
+              t(AppLocales.Admin.Ai.RunsTable.Provider),
+              t(AppLocales.Admin.Ai.RunsTable.Model),
+              t(AppLocales.Admin.Ai.RunsTable.Profile),
+            ]}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={providerFilter}
+            onValueChange={(val) =>
+              updateFilters({ provider: val, model: "", page: 1 })
+            }
+            options={providerFilterOptions}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={modelFilter}
+            onValueChange={(val) => updateFilters({ model: val, page: 1 })}
+            options={modelFilterOptions}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={statusFilter}
+            onValueChange={(val) => updateFilters({ status: val, page: 1 })}
+            options={statusFilterOptions}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={featureFilter}
+            onValueChange={(val) => updateFilters({ feature: val, page: 1 })}
+            options={featureFilterOptions}
+          />
+        </div>
       </div>
 
       {error ? (

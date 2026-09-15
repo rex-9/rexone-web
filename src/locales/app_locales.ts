@@ -273,6 +273,7 @@ export const AppLocales = {
         Format: "admin.common.detail.format",
         Size: "admin.common.detail.size",
       },
+      SearchBy: "admin.common.search_by",
     },
     Users: {
       Title: "admin.users.title",

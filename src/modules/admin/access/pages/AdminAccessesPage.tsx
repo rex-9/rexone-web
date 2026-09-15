@@ -325,11 +325,23 @@ export const AdminAccessesPage: React.FC = () => {
       />
 
       {/* Filters & Search Controls */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
+          <SearchInput
+            placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}
+            searchableKeys={[
+              t(AppLocales.Admin.Accesses.Table.User),
+              t(AppLocales.Admin.Accesses.Table.Product),
+              t(AppLocales.Admin.Common.Detail.Email),
+            ]}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onClear={() => setSearchInput("")}
+          />
+        </div>
+        <div className="w-full sm:w-48">
           <Dropdown
             size={DropdownSizes.MD}
-            containerClassName="w-auto min-w-44"
             value={statusFilter}
             onValueChange={(val) => updateFilters({ status: val, page: 1 })}
             options={[
@@ -350,16 +362,6 @@ export const AdminAccessesPage: React.FC = () => {
                 label: t(AppLocales.Admin.Common.Status.Expired),
               },
             ]}
-          />
-        </div>
-
-        {/* Search */}
-        <div className="w-full sm:w-72">
-          <SearchInput
-            placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onClear={() => setSearchInput("")}
           />
         </div>
       </div>

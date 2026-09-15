@@ -798,6 +798,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           <div className="w-full sm:w-64">
             <SearchInput
               placeholder={t(AppLocales.Admin.Assets.SearchPlaceholder)}
+              searchableKeys={[
+                t(AppLocales.Admin.Common.Detail.Name),
+                t(AppLocales.Admin.Common.Detail.Type),
+                t(AppLocales.Admin.Common.Detail.Format),
+                t(AppLocales.Admin.Common.Detail.Source),
+              ]}
               value={searchQuery}
               onChange={handleSearch}
             />

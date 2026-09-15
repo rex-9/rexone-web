@@ -111,6 +111,11 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                 AppLocales.Admin.Assets.Picker.SearchPlaceholder,
                 "Search assets by name...",
               )}
+              searchableKeys={[
+                t(AppLocales.Admin.Common.Detail.Name),
+                t(AppLocales.Admin.Common.Detail.Type),
+                t(AppLocales.Admin.Common.Detail.Format),
+              ]}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);

@@ -173,26 +173,33 @@ export const AdminTransactionsPage: React.FC = () => {
         title={t(AppLocales.Admin.Transactions.Title)}
         description={t(AppLocales.Admin.Transactions.Description)}
       />
-      <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
-        <Dropdown
-          size={DropdownSizes.MD}
-          containerClassName="sm:w-56"
-          value={status}
-          onValueChange={(value) => update({ status: value, page: 1 })}
-          options={[
-            { value: "", label: t(AppLocales.Admin.Transactions.Filters.All) },
-            ...Object.values(TRANSACTION_STATUS).map((value) => ({
-              value,
-              label: value.replace(/_/g, " "),
-            })),
-          ]}
-        />
-        <div className="w-full sm:w-80">
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
           <SearchInput
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
             onClear={() => setSearchInput("")}
             placeholder={t(AppLocales.Admin.Transactions.Search)}
+            searchableKeys={[
+              t(AppLocales.Admin.Transactions.Table.User),
+              t(AppLocales.Admin.Transactions.Detail.Product),
+              t(AppLocales.Admin.Transactions.Detail.PaymentIntent),
+              t(AppLocales.Admin.Transactions.Detail.Charge),
+            ]}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            size={DropdownSizes.MD}
+            value={status}
+            onValueChange={(value) => update({ status: value, page: 1 })}
+            options={[
+              { value: "", label: t(AppLocales.Admin.Transactions.Filters.All) },
+              ...Object.values(TRANSACTION_STATUS).map((value) => ({
+                value,
+                label: value.replace(/_/g, " "),
+              })),
+            ]}
           />
         </div>
       </div>

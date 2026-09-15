@@ -622,6 +622,11 @@ export const AdminNotificationsPage: React.FC = () => {
                         <SearchInput
                           value={recipientQuery}
                           placeholder="Search users by name, email, or username..."
+                          searchableKeys={[
+                            t(AppLocales.Admin.Common.Detail.Name),
+                            t(AppLocales.Admin.Common.Detail.Email),
+                            t(AppLocales.Admin.Users.Table.Username),
+                          ]}
                           onChange={(e) => setRecipientQuery(e.target.value)}
                           onClear={() => setRecipientQuery("")}
                           onFocus={() => setIsRecipientFocused(true)}

@@ -105,9 +105,7 @@ export interface IAdminUserNotificationListParams {
   user_id?: string;
   client?: string;
   status?: string;
-  filter?: string;
-  view?: string;
   discarded?: boolean | string;
-  sort?: string;
-  order?: string;
+  sort_by?: string;
+  sort_order?: string;
 }

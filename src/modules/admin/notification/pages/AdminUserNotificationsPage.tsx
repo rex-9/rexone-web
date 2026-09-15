@@ -87,6 +87,7 @@ export const AdminUserNotificationsPage: React.FC<
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const searchQuery = searchParams.get("search") || "";
+  const [searchInput, setSearchInput] = useState(searchQuery);
   const clientFilter = searchParams.get("client") || "";
   const statusFilter = searchParams.get("status") || "";
 
@@ -102,6 +103,12 @@ export const AdminUserNotificationsPage: React.FC<
   );
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+  // Keep local search input in sync if URL search param changes externally
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setSearchInput(searchQuery), 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   // Dialog targets
   const [discardTarget, setDiscardTarget] =
@@ -136,6 +143,16 @@ export const AdminUserNotificationsPage: React.FC<
     [setSearchParams],
   );
 
+  // Debounce search input by 300ms before updating URL and querying API
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput.trim() !== searchQuery) {
+        updateSearchParams({ search: searchInput.trim() || null, page: "1" });
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput, searchQuery, updateSearchParams]);
+
   const fetchNotifications = useCallback(async () => {
     setLoading(true, { overlay: false });
     try {
@@ -145,10 +162,10 @@ export const AdminUserNotificationsPage: React.FC<
         search: searchQuery.trim() || undefined,
         client: clientFilter || undefined,
         status: statusFilter || undefined,
-        view: currentView,
-        discarded: currentView === ADMIN_VIEW_MODES.DISCARDED,
-        sort: sortBy,
-        order: sortOrder,
+        discarded:
+          currentView === ADMIN_VIEW_MODES.DISCARDED ? "true" : undefined,
+        sort_by: sortBy,
+        sort_order: sortOrder,
       });
 
       if (res.success) {
@@ -394,6 +411,7 @@ export const AdminUserNotificationsPage: React.FC<
         header: t(
           AppLocales.Admin.Notifications.UserNotifications.Columns.Recipient,
         ),
+        sortKey: ADMIN_USER_NOTIFICATION_SORT_KEYS.RECIPIENT,
         className: "w-48",
         render: (item) => (
           <div className="flex flex-col min-w-0">
@@ -416,6 +434,7 @@ export const AdminUserNotificationsPage: React.FC<
         header: t(
           AppLocales.Admin.Notifications.UserNotifications.Columns.Notification,
         ),
+        sortKey: ADMIN_USER_NOTIFICATION_SORT_KEYS.TITLE,
         className: "min-w-64 max-w-sm",
         render: (item) => (
           <div className="flex flex-col min-w-0">
@@ -459,7 +478,6 @@ export const AdminUserNotificationsPage: React.FC<
         header: t(
           AppLocales.Admin.Notifications.UserNotifications.Columns.Status,
         ),
-        sortKey: ADMIN_USER_NOTIFICATION_SORT_KEYS.READ_AT,
         className: "w-32",
         render: (item) => (
           <Badge
@@ -572,22 +590,40 @@ export const AdminUserNotificationsPage: React.FC<
       )}
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center gap-3">
-        <div className="w-full sm:flex-1">
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
           <SearchInput
             placeholder={t(
               AppLocales.Admin.Notifications.UserNotifications
                 .SearchPlaceholder,
             )}
-            value={searchQuery}
-            onChange={(e) =>
-              updateSearchParams({ search: e.target.value, page: "1" })
-            }
-            onClear={() => updateSearchParams({ search: null, page: "1" })}
+            searchableKeys={[
+              t(
+                AppLocales.Admin.Notifications.UserNotifications.Columns
+                  .Notification,
+              ),
+              t(
+                AppLocales.Admin.Notifications.UserNotifications.Columns
+                  .Recipient,
+              ),
+              t(AppLocales.Admin.Common.Detail.Name),
+              t(AppLocales.Admin.Users.Table.Username),
+              t(AppLocales.Admin.Users.Table.Email),
+              t(
+                AppLocales.Admin.Notifications.UserNotifications.Detail
+                  .TargetLink,
+              ),
+            ]}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            onClear={() => {
+              setSearchInput("");
+              updateSearchParams({ search: null, page: "1" });
+            }}
           />
         </div>
 
-        <div className="w-full sm:w-44">
+        <div className="w-full sm:w-48">
           <Dropdown
             value={clientFilter}
             size={DropdownSizes.MD}
@@ -614,7 +650,7 @@ export const AdminUserNotificationsPage: React.FC<
           />
         </div>
 
-        <div className="w-full sm:w-44">
+        <div className="w-full sm:w-48">
           <Dropdown
             value={statusFilter}
             size={DropdownSizes.MD}
@@ -647,7 +683,7 @@ export const AdminUserNotificationsPage: React.FC<
         </div>
 
         {!isActive && canDelete && (
-          <div className="w-full sm:w-auto">
+          <div className="w-full sm:w-auto sm:ml-auto">
             <AdminEmptyRecycleBinButton
               onConfirm={handleEmptyRecycleBin}
               count={pagination?.total_count}

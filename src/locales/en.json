@@ -334,6 +334,7 @@
       }
     },
     "common": {
+      "search_by": "Search by {{keys}}",
       "detail": {
         "admin": "Admin",
         "details": "Details",

@@ -178,41 +178,52 @@ export const AdminSubscriptionsPage: React.FC = () => {
         title={t(AppLocales.Admin.Subscriptions.Title)}
         description={t(AppLocales.Admin.Subscriptions.Description)}
       />
-      <div className="grid gap-3 sm:grid-cols-[14rem_14rem_1fr]">
-        <Dropdown
-          value={status}
-          onValueChange={(value) => update({ status: value, page: 1 })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Subscriptions.Filters.AllStatuses),
-            },
-            ...Object.values(SUBSCRIPTION_STATUS).map((value) => ({
-              value,
-              label: value.replace(/_/g, " "),
-            })),
-          ]}
-        />
-        <Dropdown
-          value={interval}
-          onValueChange={(value) => update({ interval: value, page: 1 })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Subscriptions.Filters.AllIntervals),
-            },
-            ...Object.values(BILLING_INTERVALS).map((value) => ({
-              value,
-              label: value,
-            })),
-          ]}
-        />
-        <SearchInput
-          value={searchInput}
-          onChange={(event) => setSearchInput(event.target.value)}
-          onClear={() => setSearchInput("")}
-          placeholder={t(AppLocales.Admin.Subscriptions.Search)}
-        />
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="w-full sm:w-64">
+          <SearchInput
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            onClear={() => setSearchInput("")}
+            placeholder={t(AppLocales.Admin.Subscriptions.Search)}
+            searchableKeys={[
+              t(AppLocales.Admin.Subscriptions.Table.User),
+              t(AppLocales.Admin.Subscriptions.Detail.Product),
+              t(AppLocales.Admin.Subscriptions.Detail.SubscriptionId),
+            ]}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={status}
+            onValueChange={(value) => update({ status: value, page: 1 })}
+            options={[
+              {
+                value: "",
+                label: t(AppLocales.Admin.Subscriptions.Filters.AllStatuses),
+              },
+              ...Object.values(SUBSCRIPTION_STATUS).map((value) => ({
+                value,
+                label: value.replace(/_/g, " "),
+              })),
+            ]}
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <Dropdown
+            value={interval}
+            onValueChange={(value) => update({ interval: value, page: 1 })}
+            options={[
+              {
+                value: "",
+                label: t(AppLocales.Admin.Subscriptions.Filters.AllIntervals),
+              },
+              ...Object.values(BILLING_INTERVALS).map((value) => ({
+                value,
+                label: value,
+              })),
+            ]}
+          />
+        </div>
       </div>
       {error ? (
         <AdminState

@@ -5,12 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { useToast } from "../../../../contexts/ToastContext";
-import {
-  Badge,
-  Button,
-  DateTime,
-  DateTimeFormats,
-} from "../../../../design";
+import { Badge, Button, DateTime, DateTimeFormats } from "../../../../design";
 import {
   BadgeVariants,
   ButtonSizes,
@@ -179,8 +174,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
             : []),
           {
             label:
-              notification?.title ||
-              t(AppLocales.Admin.Common.Detail.Details),
+              notification?.title || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
         title={t(AppLocales.Admin.Notifications.UserNotifications.Detail.Title)}
@@ -196,331 +190,317 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
           message={error}
         />
       ) : notification ? (
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Main Info Column (Left 2 cols) */}
-          <div className="space-y-6 lg:col-span-2">
-            {/* Notification Content Section */}
-            <AdminDetailSection
-              title={t(
-                AppLocales.Admin.Notifications.UserNotifications.Detail
-                  .ContentSection,
-              )}
-              icon={iconsLib.bell}
-            >
-              <div className="space-y-4">
-                <div>
-                  <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60">
-                    {t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .NotificationTitle,
-                    )}
-                  </span>
-                  <h3 className="mt-1 text-title-3 font-semibold text-base-content">
-                    {notification.title}
-                  </h3>
-                </div>
-
-                <div>
-                  <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60">
-                    {t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .NotificationMessage,
-                    )}
-                  </span>
-                  <p className="mt-1 whitespace-pre-wrap text-body-s text-base-content/90 rounded-lg bg-base-200/40 p-4 border border-base-300">
-                    {notification.message}
-                  </p>
-                </div>
-
-                {notification.link && (
-                  <div>
-                    <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60 block mb-1">
-                      {t(
-                        AppLocales.Admin.Notifications.UserNotifications.Detail
-                          .TargetLink,
-                      )}
-                    </span>
-                    <a
-                      href={notification.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline break-all"
-                    >
-                      <iconsLib.externalLink className="w-3.5 h-3.5 shrink-0" />
-                      {notification.link}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </AdminDetailSection>
-
-            {/* Recipient & Delivery Section */}
-            <AdminDetailSection
-              title={t(
-                AppLocales.Admin.Notifications.UserNotifications.Detail
-                  .RecipientSection,
-              )}
-              icon={iconsLib.user}
-            >
-              <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
-                <AdminDetailField
-                  label={t(
-                    AppLocales.Admin.Notifications.UserNotifications.Detail
-                      .Recipient,
-                  )}
-                  value={
-                    <div className="flex flex-col">
-                      <span className="font-medium text-base-content break-all">
-                        {notification.user_email || notification.user_id}
-                      </span>
-                      {notification.user_id && (
-                        <span className="font-mono text-xs text-base-content/50">
-                          ID: {notification.user_id}
-                        </span>
-                      )}
-                    </div>
-                  }
-                />
-
-                <AdminDetailField
-                  label={t(
-                    AppLocales.Admin.Notifications.UserNotifications.Detail
-                      .RecipientName,
-                  )}
-                  value={
-                    notification.user_name || (
-                      <span className="text-base-content/40 italic">
-                        Not available
-                      </span>
-                    )
-                  }
-                />
-
-                <AdminDetailField
-                  label={t(
-                    AppLocales.Admin.Notifications.UserNotifications.Detail
-                      .ReadStatus,
-                  )}
-                  value={
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant={
-                          notification.read
-                            ? BadgeVariants.SUCCESS
-                            : BadgeVariants.WARNING
-                        }
-                      >
-                        {notification.read ? "Read" : "Unread"}
-                      </Badge>
-                      {notification.read_at && (
-                        <DateTime
-                          value={notification.read_at}
-                          format={DateTimeFormats.ADMIN}
-                          className="text-xs text-base-content/60"
-                        />
-                      )}
-                    </div>
-                  }
-                />
-
-                <AdminDetailField
-                  label={t(
-                    AppLocales.Admin.Notifications.UserNotifications.Detail
-                      .Platforms,
-                  )}
-                  value={
-                    <div className="flex flex-wrap gap-1">
-                      {notification.clients && notification.clients.length > 0 ? (
-                        notification.clients.map((client) => (
-                          <Badge
-                            key={client}
-                            variant={BadgeVariants.SECONDARY}
-                            className="capitalize text-xs"
-                          >
-                            {client}
-                          </Badge>
-                        ))
-                      ) : (
-                        <span className="text-base-content/40 italic text-xs">
-                          All platforms
-                        </span>
-                      )}
-                    </div>
-                  }
-                />
-
-                <AdminDetailField
-                  label={t(
-                    AppLocales.Admin.Notifications.UserNotifications.Detail
-                      .SentAt,
-                  )}
-                  value={
-                    <DateTime
-                      value={notification.created_at}
-                      format={DateTimeFormats.ADMIN}
-                    />
-                  }
-                />
-
-                {notification.discarded_at && (
-                  <AdminDetailField
-                    label={t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .DiscardedAt,
-                    )}
-                    value={
-                      <DateTime
-                        value={notification.discarded_at}
-                        format={DateTimeFormats.ADMIN}
-                        className="text-error"
-                      />
-                    }
-                  />
-                )}
-              </AdminDetailGrid>
-            </AdminDetailSection>
-
-            {/* Async Operation Section if present */}
-            {notification.operation_id && (
-              <AdminDetailSection
-                title={t(
-                  AppLocales.Admin.Notifications.UserNotifications.Detail
-                    .OperationSection,
-                )}
-                icon={iconsLib.cube}
-              >
-                <AdminDetailGrid className="grid-cols-1 sm:grid-cols-3">
-                  <AdminDetailField
-                    label={t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .OperationId,
-                    )}
-                    value={
-                      <span className="font-mono text-xs text-base-content">
-                        {notification.operation_id}
-                      </span>
-                    }
-                  />
-                  <AdminDetailField
-                    label={t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .OperationType,
-                    )}
-                    value={
-                      <Badge variant={BadgeVariants.SECONDARY}>
-                        {notification.operation_type || "N/A"}
-                      </Badge>
-                    }
-                  />
-                  <AdminDetailField
-                    label={t(
-                      AppLocales.Admin.Notifications.UserNotifications.Detail
-                        .OperationStatus,
-                    )}
-                    value={
-                      <Badge
-                        variant={
-                          notification.operation_status === "completed" ||
-                          notification.operation_status === "ready"
-                            ? BadgeVariants.SUCCESS
-                            : notification.operation_status === "failed"
-                              ? BadgeVariants.ERROR
-                              : BadgeVariants.INFO
-                        }
-                      >
-                        {notification.operation_status || "N/A"}
-                      </Badge>
-                    }
-                  />
-                </AdminDetailGrid>
-              </AdminDetailSection>
+        <div className="space-y-6">
+          {/* Notification Content Section */}
+          <AdminDetailSection
+            title={t(
+              AppLocales.Admin.Notifications.UserNotifications.Detail
+                .ContentSection,
             )}
+            icon={iconsLib.bell}
+          >
+            <div className="space-y-4">
+              <div>
+                <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60">
+                  {t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .NotificationTitle,
+                  )}
+                </span>
+                <h3 className="mt-1 text-title-3 font-semibold text-base-content">
+                  {notification.title}
+                </h3>
+              </div>
 
-            {/* Metadata Section */}
-            <AdminDetailSection
-              title={t(
-                AppLocales.Admin.Notifications.UserNotifications.Detail
-                  .MetadataSection,
-              )}
-              icon={iconsLib.document}
-            >
-              <pre className="max-h-72 overflow-auto rounded-lg bg-base-300/60 p-4 font-mono text-xs text-base-content border border-base-300">
-                {hasMetadata
-                  ? JSON.stringify(notification.metadata, null, 2)
-                  : "{}"}
-              </pre>
-            </AdminDetailSection>
-          </div>
+              <div>
+                <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60">
+                  {t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .NotificationMessage,
+                  )}
+                </span>
+                <p className="mt-1 whitespace-pre-wrap text-body-s text-base-content/90 rounded-lg bg-base-200/40 p-4 border border-base-300">
+                  {notification.message}
+                </p>
+              </div>
 
-          {/* Actions & Lifecycle Column (Right 1 col) */}
-          <div className="space-y-6">
-            <AdminDetailSection
-              title={t(AppLocales.Admin.Common.Table.Actions)}
-              icon={iconsLib.filter}
-            >
-              <div className="space-y-3">
-                {notification.link && (
-                  <Button
-                    type={ButtonTypes.BUTTON}
-                    variant={ButtonVariants.SECONDARY}
-                    size={ButtonSizes.MD}
-                    fullWidth
-                    onClick={() => {
-                      if (notification.link) {
-                        window.open(notification.link, "_blank");
-                      }
-                    }}
-                  >
-                    <iconsLib.externalLink className="w-4 h-4 mr-2" />
+              {notification.link && (
+                <div>
+                  <span className="text-caption text-xs font-semibold uppercase tracking-wider text-base-content/60 block mb-1">
                     {t(
                       AppLocales.Admin.Notifications.UserNotifications.Detail
                         .TargetLink,
                     )}
-                  </Button>
-                )}
-
-                {canDelete && !isDiscarded && (
-                  <Button
-                    type={ButtonTypes.BUTTON}
-                    variant={ButtonVariants.SECONDARY}
-                    size={ButtonSizes.MD}
-                    className="btn-error"
-                    fullWidth
-                    onClick={() => setIsDiscardOpen(true)}
+                  </span>
+                  <a
+                    href={notification.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:underline break-all"
                   >
-                    <iconsLib.trash className="w-4 h-4 mr-2" />
-                    {t(AppLocales.Admin.Common.Actions.Discard)}
-                  </Button>
-                )}
+                    <iconsLib.externalLink className="w-3.5 h-3.5 shrink-0" />
+                    {notification.link}
+                  </a>
+                </div>
+              )}
+            </div>
+          </AdminDetailSection>
 
-                {canDelete && isDiscarded && (
-                  <>
-                    <Button
-                      type={ButtonTypes.BUTTON}
-                      variant={ButtonVariants.SECONDARY}
-                      size={ButtonSizes.MD}
-                      fullWidth
-                      onClick={() => setIsUndiscardOpen(true)}
-                    >
-                      <iconsLib.arrowPath className="w-4 h-4 mr-2" />
-                      {t(AppLocales.Admin.Common.Actions.Restore)}
-                    </Button>
-
-                    <Button
-                      type={ButtonTypes.BUTTON}
-                      variant={ButtonVariants.SECONDARY}
-                      size={ButtonSizes.MD}
-                      className="btn-error"
-                      fullWidth
-                      onClick={() => setIsDestroyOpen(true)}
-                    >
-                      <iconsLib.trash className="w-4 h-4 mr-2" />
-                      {t(AppLocales.Admin.Common.Actions.Destroy)}
-                    </Button>
-                  </>
+          {/* Recipient & Delivery Section */}
+          <AdminDetailSection
+            title={t(
+              AppLocales.Admin.Notifications.UserNotifications.Detail
+                .RecipientSection,
+            )}
+            icon={iconsLib.user}
+          >
+            <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
+              <AdminDetailField
+                label={t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .Recipient,
                 )}
-              </div>
+                value={
+                  <div className="flex flex-col">
+                    <span className="font-medium text-base-content break-all">
+                      {notification.user_email || notification.user_id}
+                    </span>
+                    {notification.user_id && (
+                      <span className="font-mono text-xs text-base-content/50">
+                        ID: {notification.user_id}
+                      </span>
+                    )}
+                  </div>
+                }
+              />
+
+              <AdminDetailField
+                label={t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .RecipientName,
+                )}
+                value={
+                  notification.user_name || (
+                    <span className="text-base-content/40 italic">
+                      Not available
+                    </span>
+                  )
+                }
+              />
+
+              <AdminDetailField
+                label={t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .ReadStatus,
+                )}
+                value={
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant={
+                        notification.read
+                          ? BadgeVariants.SUCCESS
+                          : BadgeVariants.WARNING
+                      }
+                    >
+                      {notification.read ? "Read" : "Unread"}
+                    </Badge>
+                    {notification.read_at && (
+                      <DateTime
+                        value={notification.read_at}
+                        format={DateTimeFormats.ADMIN}
+                        className="text-xs text-base-content/60"
+                      />
+                    )}
+                  </div>
+                }
+              />
+
+              <AdminDetailField
+                label={t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .Platforms,
+                )}
+                value={
+                  <div className="flex flex-wrap gap-1">
+                    {notification.clients && notification.clients.length > 0 ? (
+                      notification.clients.map((client) => (
+                        <Badge
+                          key={client}
+                          variant={BadgeVariants.SECONDARY}
+                          className="capitalize text-xs"
+                        >
+                          {client}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-base-content/40 italic text-xs">
+                        All platforms
+                      </span>
+                    )}
+                  </div>
+                }
+              />
+
+              <AdminDetailField
+                label={t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .SentAt,
+                )}
+                value={
+                  <DateTime
+                    value={notification.created_at}
+                    format={DateTimeFormats.ADMIN}
+                  />
+                }
+              />
+
+              {notification.discarded_at && (
+                <AdminDetailField
+                  label={t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .DiscardedAt,
+                  )}
+                  value={
+                    <DateTime
+                      value={notification.discarded_at}
+                      format={DateTimeFormats.ADMIN}
+                      className="text-error"
+                    />
+                  }
+                />
+              )}
+            </AdminDetailGrid>
+          </AdminDetailSection>
+
+          {/* Async Operation Section if present */}
+          {notification.operation_id && (
+            <AdminDetailSection
+              title={t(
+                AppLocales.Admin.Notifications.UserNotifications.Detail
+                  .OperationSection,
+              )}
+              icon={iconsLib.cube}
+            >
+              <AdminDetailGrid className="grid-cols-1 sm:grid-cols-3">
+                <AdminDetailField
+                  label={t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .OperationId,
+                  )}
+                  value={
+                    <span className="font-mono text-xs text-base-content">
+                      {notification.operation_id}
+                    </span>
+                  }
+                />
+                <AdminDetailField
+                  label={t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .OperationType,
+                  )}
+                  value={
+                    <Badge variant={BadgeVariants.SECONDARY}>
+                      {notification.operation_type || "N/A"}
+                    </Badge>
+                  }
+                />
+                <AdminDetailField
+                  label={t(
+                    AppLocales.Admin.Notifications.UserNotifications.Detail
+                      .OperationStatus,
+                  )}
+                  value={
+                    <Badge
+                      variant={
+                        notification.operation_status === "completed" ||
+                        notification.operation_status === "ready"
+                          ? BadgeVariants.SUCCESS
+                          : notification.operation_status === "failed"
+                            ? BadgeVariants.ERROR
+                            : BadgeVariants.INFO
+                      }
+                    >
+                      {notification.operation_status || "N/A"}
+                    </Badge>
+                  }
+                />
+              </AdminDetailGrid>
             </AdminDetailSection>
+          )}
+
+          {/* Metadata Section */}
+          <AdminDetailSection
+            title={t(
+              AppLocales.Admin.Notifications.UserNotifications.Detail
+                .MetadataSection,
+            )}
+            icon={iconsLib.document}
+          >
+            <pre className="max-h-72 overflow-auto rounded-lg bg-base-300/60 p-4 font-mono text-xs text-base-content border border-base-300">
+              {hasMetadata
+                ? JSON.stringify(notification.metadata, null, 2)
+                : "{}"}
+            </pre>
+          </AdminDetailSection>
+
+          {/* Actions Bar at the bottom in a row side by side right aligned */}
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+            {notification.link && (
+              <Button
+                type={ButtonTypes.BUTTON}
+                variant={ButtonVariants.SECONDARY}
+                size={ButtonSizes.MD}
+                onClick={() => {
+                  if (notification.link) {
+                    window.open(notification.link, "_blank");
+                  }
+                }}
+              >
+                <iconsLib.externalLink className="w-4 h-4 mr-2" />
+                {t(
+                  AppLocales.Admin.Notifications.UserNotifications.Detail
+                    .TargetLink,
+                )}
+              </Button>
+            )}
+
+            {canDelete && !isDiscarded && (
+              <Button
+                type={ButtonTypes.BUTTON}
+                variant={ButtonVariants.SECONDARY}
+                size={ButtonSizes.MD}
+                className="btn-error"
+                onClick={() => setIsDiscardOpen(true)}
+              >
+                <iconsLib.trash className="w-4 h-4 mr-2" />
+                {t(AppLocales.Admin.Common.Actions.Discard)}
+              </Button>
+            )}
+
+            {canDelete && isDiscarded && (
+              <>
+                <Button
+                  type={ButtonTypes.BUTTON}
+                  variant={ButtonVariants.SECONDARY}
+                  size={ButtonSizes.MD}
+                  onClick={() => setIsUndiscardOpen(true)}
+                >
+                  <iconsLib.arrowPath className="w-4 h-4 mr-2" />
+                  {t(AppLocales.Admin.Common.Actions.Restore)}
+                </Button>
+
+                <Button
+                  type={ButtonTypes.BUTTON}
+                  variant={ButtonVariants.SECONDARY}
+                  size={ButtonSizes.MD}
+                  className="btn-error"
+                  onClick={() => setIsDestroyOpen(true)}
+                >
+                  <iconsLib.trash className="w-4 h-4 mr-2" />
+                  {t(AppLocales.Admin.Common.Actions.Destroy)}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       ) : null}
@@ -528,9 +508,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
       {/* Discard Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isDiscardOpen}
-        title={t(
-          AppLocales.Admin.Notifications.UserNotifications.DiscardTitle,
-        )}
+        title={t(AppLocales.Admin.Notifications.UserNotifications.DiscardTitle)}
         message={t(
           AppLocales.Admin.Notifications.UserNotifications.DiscardMessage,
         )}
@@ -545,9 +523,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
       {/* Restore Confirmation Dialog */}
       <ConfirmDialog
         isOpen={isUndiscardOpen}
-        title={t(
-          AppLocales.Admin.Notifications.UserNotifications.RestoreTitle,
-        )}
+        title={t(AppLocales.Admin.Notifications.UserNotifications.RestoreTitle)}
         message={t(
           AppLocales.Admin.Notifications.UserNotifications.RestoreMessage,
         )}

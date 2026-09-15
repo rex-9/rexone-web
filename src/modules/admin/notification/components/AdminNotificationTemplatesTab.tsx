@@ -4,7 +4,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Button, StatusBadge, SearchInput, Dropdown } from "../../../../design/components";
+import {
+  Button,
+  StatusBadge,
+  SearchInput,
+  Dropdown,
+} from "../../../../design/components";
 import {
   AdminTable,
   AdminTableActions,
@@ -12,7 +17,12 @@ import {
   type IAdminTableColumn,
 } from "../../components";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
-import { BadgeVariants, ButtonSizes, ButtonTypes, ButtonVariants } from "../../../../design/constants";
+import {
+  BadgeVariants,
+  ButtonSizes,
+  ButtonTypes,
+  ButtonVariants,
+} from "../../../../design/constants";
 import { useTranslate, AppLocales } from "../../../../locales";
 import NotificationController from "../notification.controller";
 import type { IAdminNotificationTemplate } from "../types";
@@ -65,7 +75,6 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
   useEffect(() => {
     fetchTemplates(1, search, categoryFilter);
   }, [fetchTemplates, search, categoryFilter]);
-
 
   const handleConfirmDiscard = async () => {
     if (!discardTarget?.id) return;
@@ -143,16 +152,12 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
       key: "channels",
       header: t(AppLocales.Admin.Notifications.Templates.Columns.Channels),
       render: (record) => {
-        const hasSocket = Boolean(
-          record.in_app_title || record.in_app_body,
-        );
+        const hasSocket = Boolean(record.in_app_title || record.in_app_body);
         const hasPush = Boolean(
           record.push_title || record.push_body || record.push_template_id,
         );
         const hasEmail = Boolean(
-          record.email_subject ||
-            record.email_body ||
-            record.email_template_id,
+          record.email_subject || record.email_body || record.email_template_id,
         );
 
         return (
@@ -255,6 +260,13 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
             placeholder={t(
               AppLocales.Admin.Notifications.Templates.SearchPlaceholder,
             )}
+            searchableKeys={[
+              t(AppLocales.Admin.Notifications.Labels.Event),
+              t(
+                AppLocales.Admin.Notifications.UserNotifications.Columns
+                  .Notification,
+              ),
+            ]}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onClear={() => setSearch("")}
@@ -353,9 +365,7 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
         message={t(AppLocales.Admin.Notifications.Templates.DeleteMessage, {
           name: discardTarget?.name || "",
         })}
-        confirmLabel={t(
-          AppLocales.Admin.Notifications.Templates.DeleteConfirm,
-        )}
+        confirmLabel={t(AppLocales.Admin.Notifications.Templates.DeleteConfirm)}
         isDestructive={true}
         isLoading={isLoading}
       />
