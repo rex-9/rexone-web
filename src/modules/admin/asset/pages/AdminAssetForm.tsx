@@ -13,6 +13,7 @@ import {
   getAssetChildren,
   getAssetThumbnail,
   isImageAsset,
+  isSrtSubtitleFile,
 } from "../constants";
 import {
   AlertDialog,
@@ -59,10 +60,12 @@ export interface IAdminAssetFormProps {
   onDownload?: () => Promise<void>;
   onRegenerateThumbnail?: () => Promise<void>;
   onUploadThumbnail?: (file: File) => Promise<void>;
+  onUploadSubtitle?: (file: File) => Promise<void>;
   onDownloadChild?: (asset: IAssetChild) => Promise<void>;
   onEditChild?: (asset: IAssetChild) => void;
   isCompressing?: boolean;
   isUpdatingThumbnail?: boolean;
+  isUpdatingSubtitle?: boolean;
   onCancel: () => void;
 }
 
@@ -75,10 +78,12 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   onDownload,
   onRegenerateThumbnail,
   onUploadThumbnail,
+  onUploadSubtitle,
   onDownloadChild,
   onEditChild,
   isCompressing = false,
   isUpdatingThumbnail = false,
+  isUpdatingSubtitle = false,
   onCancel,
 }) => {
   const t = useTranslate();
@@ -694,7 +699,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               </FormContainer>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-4">
+                <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-5">
                   {onDownload && (
                     <Button
                       variant={ButtonVariants.SECONDARY}
@@ -738,6 +743,45 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                               isUpdatingThumbnail
                                 ? AppLocales.Admin.Assets.Thumbnail.Uploading
                                 : AppLocales.Admin.Assets.Thumbnail.Upload,
+                            )}
+                          </span>
+                        }
+                      />
+                    )}
+
+                  {(asset.format === ASSET_FORMATS.VIDEO ||
+                    asset.format === ASSET_FORMATS.AUDIO) &&
+                    onUploadSubtitle && (
+                      <FileInput
+                        accept=".srt"
+                        disabled={isUpdatingSubtitle}
+                        onChange={(file) => {
+                          if (!file) return;
+                          if (!isSrtSubtitleFile(file)) {
+                            setAlertMessage(
+                              t(AppLocales.Admin.Assets.Subtitle.InvalidType),
+                            );
+                            return;
+                          }
+                          if (
+                            file.size > UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_BYTES
+                          ) {
+                            setAlertMessage(
+                              t(AppLocales.Admin.Assets.Subtitle.TooLarge, {
+                                size: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
+                              }),
+                            );
+                            return;
+                          }
+                          void onUploadSubtitle(file);
+                        }}
+                        buttonText={
+                          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                            <iconsLib.upload className="w-4 h-4" />
+                            {t(
+                              isUpdatingSubtitle
+                                ? AppLocales.Admin.Assets.Subtitle.Uploading
+                                : AppLocales.Admin.Assets.Subtitle.Upload,
                             )}
                           </span>
                         }

@@ -23,7 +23,7 @@ export const HomePage: React.FC = () => {
       )}
 
       <Button
-        variant={ButtonVariants.PRIMARY}
+        variant={ButtonVariants.SECONDARY}
         fullWidth
         onClick={() => navigate(AppRoutes.client.protected.PAYMENT)}
       >
@@ -31,7 +31,7 @@ export const HomePage: React.FC = () => {
       </Button>
 
       <Button
-        variant={ButtonVariants.PRIMARY}
+        variant={ButtonVariants.SECONDARY}
         fullWidth
         onClick={() => navigate(AppRoutes.client.protected.AI)}
       >

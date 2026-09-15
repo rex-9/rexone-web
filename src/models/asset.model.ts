@@ -1,5 +1,12 @@
 // src/models/asset.model.ts
 
+export interface IChildAsset {
+  id: string;
+  url: string;
+  status: string;
+  size_bytes?: number | null;
+}
+
 export interface IAsset {
   id: string;
   name: string;

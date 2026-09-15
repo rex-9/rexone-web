@@ -39,6 +39,7 @@ export const AdminAssetEditPage: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompressing, setIsCompressing] = useState(false);
   const [isUpdatingThumbnail, setIsUpdatingThumbnail] = useState(false);
+  const [isUpdatingSubtitle, setIsUpdatingSubtitle] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -230,6 +231,21 @@ export const AdminAssetEditPage: React.FC = () => {
     }
   };
 
+  const handleUploadSubtitle = async (file: File) => {
+    if (!id) return;
+    setIsUpdatingSubtitle(true);
+    const result = await Admin.AssetController.uploadSubtitle(id, file);
+    setIsUpdatingSubtitle(false);
+    if (result.success) {
+      if (result.asset) setAsset(result.asset);
+      toast.success(
+        result.message || t(AppLocales.Admin.Assets.Subtitle.Replaced),
+      );
+    } else {
+      toast.error(result.error || t(AppLocales.Admin.Assets.Subtitle.Failed));
+    }
+  };
+
   return (
     <div className="space-y-6">
       <AlertDialog
@@ -269,8 +285,10 @@ export const AdminAssetEditPage: React.FC = () => {
           onEditChild={handleEditChild}
           onRegenerateThumbnail={handleRegenerateThumbnail}
           onUploadThumbnail={handleUploadThumbnail}
+          onUploadSubtitle={handleUploadSubtitle}
           isCompressing={isCompressing}
           isUpdatingThumbnail={isUpdatingThumbnail}
+          isUpdatingSubtitle={isUpdatingSubtitle}
           onCancel={handleCancel}
         />
       ) : null}

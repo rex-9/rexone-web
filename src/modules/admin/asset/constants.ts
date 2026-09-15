@@ -86,6 +86,9 @@ export const IMAGE_ASSET_TYPES: readonly string[] = [
   ASSET_TYPES.THUMBNAIL,
 ];
 
+export const isSrtSubtitleFile = (file: File): boolean =>
+  /\.srt$/i.test(file.name);
+
 export const FILE_SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
 
 export const formatAssetFileSize = (bytes?: number | null): string => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Audio, Button, TextInput, Video } from "../components";
+import { Button, Player, TextInput } from "../components";
 import { ButtonVariants } from "../constants";
 import { AssetController } from "../../modules/asset";
 import type { IAssetPlaybackResponse } from "../../models";
@@ -87,11 +87,20 @@ export const TestPage: React.FC = () => {
           </div>
           {videoPlayback && (
             <div className="mt-5 space-y-2">
-              <Video
+              <Player
+                view="video"
                 src={videoPlayback.delivery.url}
                 type={videoPlayback.media.content_type}
                 alt="Test video playback"
                 className="aspect-video w-full rounded-lg border border-base-300 bg-black object-contain"
+                tracks={videoPlayback.media.subtitles
+                  .filter((s) => Boolean(s.url))
+                  .map((s, i) => ({
+                    src: s.url,
+                    kind: "subtitles",
+                    label: s.name || "Subtitle",
+                    default: i === 0,
+                  }))}
               />
               <p className="break-all text-xs text-base-content/60">
                 Expires: {videoPlayback.delivery.expires_at}
@@ -124,10 +133,20 @@ export const TestPage: React.FC = () => {
           </div>
           {audioPlayback && (
             <div className="mt-5 space-y-2">
-              <Audio
+              <Player
+                view="audio"
                 src={audioPlayback.delivery.url}
                 type={audioPlayback.media.content_type}
-                className="w-full"
+                title="Test audio playback"
+                className="w-full rounded-lg border border-base-300"
+                tracks={audioPlayback.media.subtitles
+                  .filter((s) => Boolean(s.url))
+                  .map((s, i) => ({
+                    src: s.url,
+                    kind: "subtitles",
+                    label: s.name || "Subtitle",
+                    default: i === 0,
+                  }))}
               />
               <p className="break-all text-xs text-base-content/60">
                 Expires: {audioPlayback.delivery.expires_at}
