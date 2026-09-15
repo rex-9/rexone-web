@@ -10,6 +10,7 @@ import {
   ProjectCard,
   TestimonialCard,
   ContactForm,
+  SponsorCard,
 } from "../components";
 import { Button } from "../../../design/components/button";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
@@ -76,6 +77,7 @@ export const LandingPage: React.FC = () => {
         "Skills",
         "Projects",
         "Testimonials",
+        "Sponsor",
         "Contact",
       ];
       const scrollPosition = window.scrollY + 200;
@@ -178,7 +180,7 @@ export const LandingPage: React.FC = () => {
             variant={ButtonVariants.TERTIARY}
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
-            className="!w-10 !h-10 !p-0 rounded-full border border-primary text-primary hover:!text-white hover:!border-primary-light hover:!shadow-neon transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
+            className="w-10! h-10! p-0! rounded-full border border-primary text-primary hover:text-white! hover:border-primary-light! hover:shadow-neon! transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
           >
             <iconsLib.chevronDown className="w-5 h-5" />
           </Button>
@@ -205,10 +207,53 @@ export const LandingPage: React.FC = () => {
 
         {/* 5. Projects Section */}
         <section id="Projects" className="py-12 scroll-mt-20">
-          <div className="text-center mb-9">
+          <div className="text-center mb-8">
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
               Forged Realms & Masterworks
             </h2>
+          </div>
+
+          {/* The Sovereign Creed Banner - The Heart of RexOne */}
+          <div className="relative rounded-3xl bg-glass-card/85 backdrop-blur-xl border border-glass-border p-6 sm:p-10 mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] text-center overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(255,34,56,0.3)]">
+            {/* Ambient Background Glows */}
+            <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-primary-dark/25 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary-light text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-[0_0_12px_rgba(255,34,56,0.25)]">
+                <iconsLib.sparkles className="w-4 h-4 text-primary" />
+                <span>The Sovereign Doctrine</span>
+              </div>
+
+              <blockquote className="font-display text-2xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_12px_var(--color-glow-white),0_0_25px_var(--color-primary),0_0_50px_var(--color-primary-dark)] py-1">
+                “Start from One. Not from Zero.”
+              </blockquote>
+
+              <div className="w-24 h-0.5 mx-auto bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]" />
+
+              <p className="text-sm sm:text-base text-white/80 leading-relaxed font-primary">
+                Every new endeavor shouldn&apos;t mean burning money
+                repetitively by wasting AI tokens on weak architecture or
+                rebuilding foundation from scratch. RexOne unifies backend, web,
+                and mobile into an immutable, battle-tested trinity—forged under
+                Constitutional Law with zero technical debt.
+              </p>
+
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  RexOne Core • Rails 8 API
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  RexOne Web • React 19 Client
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  RexOne Mobile • Flutter Vanguard
+                </span>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
@@ -233,7 +278,7 @@ export const LandingPage: React.FC = () => {
               variant={ButtonVariants.TERTIARY}
               aria-label="Previous Testimonial"
               onClick={handlePrevTestimonial}
-              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 !w-11 !h-11 !p-0 !rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronLeft className="w-5 h-5 stroke-[2.5]" />
             </Button>
@@ -255,7 +300,7 @@ export const LandingPage: React.FC = () => {
               variant={ButtonVariants.TERTIARY}
               aria-label="Next Testimonial"
               onClick={handleNextTestimonial}
-              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 !w-11 !h-11 !p-0 !rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronRight className="w-5 h-5 stroke-[2.5]" />
             </Button>
@@ -270,17 +315,35 @@ export const LandingPage: React.FC = () => {
                 variant={ButtonVariants.TERTIARY}
                 aria-label={`Go to testimonial ${i + 1}`}
                 onClick={() => handleTestimonialDotClick(i)}
-                className={`!h-2 !min-h-0 !p-0 !rounded-full transition-all duration-300 cursor-pointer ${
+                className={`h-2! min-h-0! p-0! rounded-full! transition-all duration-300 cursor-pointer ${
                   activeTestimonialIdx === i
-                    ? "!w-6 bg-primary shadow-[0_0_10px_var(--color-primary)] scale-110"
-                    : "!w-2 bg-primary/25 hover:bg-primary/50"
+                    ? "w-6! bg-primary shadow-[0_0_10px_var(--color-primary)] scale-110"
+                    : "w-2! bg-primary/25 hover:bg-primary/50"
                 }`}
               />
             ))}
           </div>
         </section>
 
-        {/* 7. Contact & Resume Section */}
+        {/* 7. Sponsor & Support Section */}
+        <section id="Sponsor" className="py-12 scroll-mt-20 text-center">
+          <div className="mb-8 space-y-3">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
+              Support & Sponsor
+            </h2>
+            <p className="text-body-m text-white/70 max-w-2xl mx-auto">
+              Fuel the evolution of sovereign open-source engineering. Sponsoring
+              sustains the development of RexOne—keeping foundations pristine,
+              battle-tested, and freely accessible to developers worldwide.
+            </p>
+          </div>
+
+          <div className="flex justify-center items-center px-4">
+            <SponsorCard />
+          </div>
+        </section>
+
+        {/* 8. Contact & Resume Section */}
         <section id="Contact" className="py-12 scroll-mt-20">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-9">
             {/* Left Contact Text & Resume Button */}
@@ -300,7 +363,7 @@ export const LandingPage: React.FC = () => {
                   rel="noopener noreferrer"
                   variant={ButtonVariants.NEON}
                   size={ComponentSizes.LG}
-                  className="!py-3 !px-7 !text-lg tracking-wide font-bold"
+                  className="py-3! px-7! text-lg! tracking-wide font-bold"
                 >
                   View / Download my Resume 📄
                 </Button>
@@ -314,7 +377,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* Divider matching Rex9 */}
-          <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(255,94,98,0.3)]" />
+          <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(255,94,98,0.3)]" />
 
           {/* Footer Social Profiles */}
           <footer className="text-center">

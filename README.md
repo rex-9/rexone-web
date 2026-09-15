@@ -2,19 +2,20 @@
 
 <div align="center">
 
-# Rexone Web
+# RexOne Web
 
-### A disciplined React client, built to turn a powerful foundation into a clear product experience.
+### Start from One. Not from Zero. A disciplined React client, built to turn a powerful foundation into a clear product experience.
 
 A production-minded web foundation for authenticated products. Identity, payments, access control, media, AI, real-time delivery, localization, client telemetry, and reusable interface primitives meet here—not as isolated demos, but as one coherent browser application.
 
-Built under the same creed as Rexone Core: **clear in thought, exact in structure, simple in use, and strong enough to endure what comes after launch.**
+Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clear in thought, exact in structure, simple in use, and strong enough to endure what comes after launch.**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Sponsor rex-9](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rex-9)
 [![CI](https://github.com/rex-9/rexone-web/actions/workflows/test.yml/badge.svg)](https://github.com/rex-9/rexone-web/actions/workflows/test.yml)
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
@@ -30,11 +31,17 @@ Built under the same creed as Rexone Core: **clear in thought, exact in structur
 >
 > **📜 Constitutional Law**: All development must strictly adhere to the architecture, design system, and state laws in **[LAW.md](LAW.md)**. Zero exceptions.
 
-## Why Rexone Web?
+## Why RexOne Web?
 
 A capable backend is only half a product. The browser still has to manage identity, expired sessions, protected navigation, asynchronous failures, payment handoffs, live connections, loading states, localization, and the thousand small interactions that decide whether a system feels dependable.
 
-Rexone Web exists so that work does not have to be improvised for every product built on Rexone Core.
+RexOne Web exists so that work does not have to be improvised or rebuilt from scratch for every product.
+
+### The Purpose: Start from One. Not from Zero.
+
+Instead of burning money and compute wasting AI tokens on weak, inconsistent frontend scaffolding or rebuilding foundational authentication, RBAC dialogs, and real-time state machines again and again for every product, RexOne Web provides a sovereign, production-grade starting point.
+
+**Start from One. Not from Zero.**
 
 This is not a gallery of components pretending to be an application architecture. Routes, contexts, controllers, services, models, modules, and design primitives have distinct responsibilities. Authentication flows preserve only appropriate state in the URL. API interceptors coordinate credentials and session expiry. Errors leave the browser as structured telemetry. Product capabilities remain grouped by domain instead of dissolving into a global collection of requests and screens.
 
@@ -46,9 +53,9 @@ And no—the interface was not assembled by stacking dependencies until a demo a
 
 Authentication edge cases were traced. Sensitive passcodes were kept out of URLs. Session replacement and expiry were handled centrally. Runtime and React failures were made observable. Translation keys were organized by domain. Real user journeys are verified by automated Playwright E2E suites. The client is built to remain understandable after the first release, not merely attractive before it.
 
-## Who Rexone Web is for
+## Who RexOne Web is for
 
-Rexone Web is built for React teams, founder-engineers, and agencies creating authenticated browser products on Rexone Core that need both a customer-facing application foundation and a permission-aware operational portal.
+RexOne Web is built for React teams, founder-engineers, and agencies creating authenticated browser products on RexOne Core that need both a customer-facing application foundation and a permission-aware operational portal.
 
 It is a particularly good fit when a web product needs several of these concerns to behave consistently:
 
@@ -59,7 +66,7 @@ It is a particularly good fit when a web product needs several of these concerns
 - Centralized localization, browser-local date and time presentation, analytics, and client telemetry.
 - Reusable responsive design primitives instead of one-off page implementations.
 
-Rexone Web is not a generic component showcase or an independent mock frontend. It is the reference browser client for the Rexone ecosystem, and its transport and domain contracts are designed to follow Rexone Core.
+RexOne Web is not a generic component showcase or an independent mock frontend. It is the reference browser client for the RexOne ecosystem, and its transport and domain contracts are designed to follow RexOne Core.
 
 ## What you get
 
@@ -67,11 +74,11 @@ Rexone Web is not a generic component showcase or an independent mock frontend. 
 - **A serious admin client:** granular IAM controls navigation and actions across operational resource modules.
 - **Centralized infrastructure:** API interception, socket lifecycle, localization, analytics, telemetry, persistence, and timezone handling stay out of individual pages.
 - **Reusable interface foundations:** forms, dialogs, tables, detail layouts, feedback states, and responsive behavior are shared deliberately.
-- **Real ecosystem integration:** the application consumes Rexone Core's versioned JSON contracts and real-time operation lifecycle.
+- **Real ecosystem integration:** the application consumes RexOne Core's versioned JSON contracts and real-time operation lifecycle.
 
 ## The philosophy
 
-Rexone Web follows the same doctrine as the core it serves:
+RexOne Web follows the same doctrine as the core it serves:
 
 > **Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle.**
 
@@ -83,27 +90,27 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 
 ## Feature map
 
-| Foundation    | What is ready                                                                          | Details                                                |
-| ------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry           | [Authentication & security](#authentication--security) |
-| Navigation    | Public and protected routes with centralized route definitions                         | [Routing & access](#routing--access)                   |
-| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography             | [Design system](#design-system)                        |
-| State         | React contexts, Jotai atoms, and deliberate browser persistence                        | [State & application flow](#state--application-flow)   |
-| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows            | [Payments & entitlements](#payments--entitlements)     |
+| Foundation    | What is ready                                                                                               | Details                                                |
+| ------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry                                | [Authentication & security](#authentication--security) |
+| Navigation    | Public and protected routes with centralized route definitions                                              | [Routing & access](#routing--access)                   |
+| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography                                  | [Design system](#design-system)                        |
+| State         | React contexts, Jotai atoms, and deliberate browser persistence                                             | [State & application flow](#state--application-flow)   |
+| Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows                                 | [Payments & entitlements](#payments--entitlements)     |
 | Media         | Real-time compression tracking, 10MB image / 100MB video uploads, thumbnails, SRT subtitles, optimal badges | [Media & assets](#media--assets)                       |
-| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition | [Speech & audio](#speech--audio)                       |
-| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools  | [AI capabilities](#ai-capabilities)                    |
-| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                     | [Real-time delivery](#real-time-delivery)              |
-| Localization  | English, Spanish, and Burmese resources with organized typed keys                      | [Localization](#localization)                          |
-| Observability | React boundary, global browser capture, structured context, and Core API delivery      | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC    | [Administration](#administration)                      |
-| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model        | [End-to-End Testing](#end-to-end-testing-playwright)   |
-| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview       | [Quality toolchain](#quality-toolchain)                |
-| Delivery      | Vite production output and a Docker-based development environment                      | [Delivery](#delivery)                                  |
+| Speech        | Binary MP3 streaming playback (`/v1/speech/tts`), chat TTS, and live audio recognition                      | [Speech & audio](#speech--audio)                       |
+| AI            | Non-blocking queued chat, durable history, live completion alerts, and language tools                       | [AI capabilities](#ai-capabilities)                    |
+| Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                                          | [Real-time delivery](#real-time-delivery)              |
+| Localization  | English, Spanish, and Burmese resources with organized typed keys                                           | [Localization](#localization)                          |
+| Observability | React boundary, global browser capture, structured context, and Core API delivery                           | [Client observability](#client-observability)          |
+| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC                         | [Administration](#administration)                      |
+| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model                             | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview                            | [Quality toolchain](#quality-toolchain)                |
+| Delivery      | Vite production output and a Docker-based development environment                                           | [Delivery](#delivery)                                  |
 
 ## Architecture
 
-Rexone Web keeps browser concerns explicit and domain behavior grouped.
+RexOne Web keeps browser concerns explicit and domain behavior grouped.
 
 ```mermaid
 flowchart LR
@@ -112,7 +119,7 @@ flowchart LR
     UI --> Controllers[Controllers]
     Controllers --> Services[Domain services]
     Services --> API[Axios API client]
-    API --> Core[Rexone Core]
+    API --> Core[RexOne Core]
 
     Core <-->|Action Cable| Socket[Socket services & hooks]
     Socket --> UI
@@ -152,13 +159,13 @@ The UI does not need to know how Axios is configured, and transport code does no
 - Protected and public route boundaries.
 - Google logout coordination for Google-backed accounts.
 
-Authentication delegates identity rules and token authority to Rexone Core while keeping browser behavior, navigation, and feedback cohesive.
+Authentication delegates identity rules and token authority to RexOne Core while keeping browser behavior, navigation, and feedback cohesive.
 
 ### Product analytics
 
-- Firebase Analytics uses the Web stream from the shared Rexone GA4 property.
+- Firebase Analytics uses the Web stream from the shared RexOne GA4 property.
 - Route changes emit `view_page` centrally without query strings, while successful authentication, onboarding, product, purchase, and notification interactions use the shared `action_noun` event contract.
-- Every event includes `platform: web`; authenticated sessions use only the opaque Rexone user ID and never send email or other personal data to Analytics.
+- Every event includes `platform: web`; authenticated sessions use only the opaque RexOne user ID and never send email or other personal data to Analytics.
 - Firebase client identifiers are configured through the `VITE_FIREBASE_*` variables in [`.env.example`](.env.example).
 
 ### Routing & access
@@ -220,7 +227,7 @@ Browser persistence is used selectively. For example, sign-in cooldown timing su
 
 ### Payments & entitlements
 
-The payment module communicates with Rexone Core for:
+The payment module communicates with RexOne Core for:
 
 - Available product retrieval with pagination.
 - Stripe Checkout Session creation.
@@ -233,13 +240,13 @@ Stripe secrets and webhook processing remain on the backend. The browser owns pr
 
 ### Real-time delivery
 
-The socket service provides an Action Cable-compatible connection to Rexone Core with authenticated connection setup, message handling, reconnection, and teardown. Shared hooks expose connection state and lifecycle behavior to React features.
+The socket service provides an Action Cable-compatible connection to RexOne Core with authenticated connection setup, message handling, reconnection, and teardown. Shared hooks expose connection state and lifecycle behavior to React features.
 
 This gives product modules a real-time path without coupling components directly to WebSocket protocol details.
 
 ### Media & assets
 
-The client provides comprehensive media upload, presentation, and compression management integrated with Rexone Core:
+The client provides comprehensive media upload, presentation, and compression management integrated with RexOne Core:
 
 - **Bulk Upload Dialog (`AdminAssetUploadDialog`)**: Multi-file selection queue supporting uploads up to **10 MB** for images/non-videos and **100 MB** for videos when the media container is enabled.
 - **Optimistic Table Prepending**: Previews and newly uploaded asset records appear immediately in the asset table upon upload completion rather than blocking until the entire batch completes.
@@ -255,10 +262,10 @@ The client provides comprehensive media upload, presentation, and compression ma
 
 ### Speech & audio
 
-The speech integration provides audio playback and streaming communication with Rexone Core's speech engine:
+The speech integration provides audio playback and streaming communication with RexOne Core's speech engine:
 
 - **Live Audio Streaming & Recognition (`SpeechLiveChannel`)**:
-  - Direct microphone streaming to Rexone Core using Action Cable over WebSockets (`SpeechLiveChannel`).
+  - Direct microphone streaming to RexOne Core using Action Cable over WebSockets (`SpeechLiveChannel`).
   - High-performance audio ingestion via `AudioWorklet` (`pcm-processor.js`) with automatic fallback to `ScriptProcessorNode`.
   - Client-side downsampling from native sample rates (e.g. 44.1kHz / 48kHz) down to 16kHz mono linear PCM 16-bit, buffered into 3,200-byte chunks and base64-framed for low-latency transmission.
   - Real-time RMS voice energy tracking calculating normalized voice amplitude levels (`voiceLevel: 0..1`) for visual waveform frequency bars.
@@ -271,7 +278,7 @@ The speech integration provides audio playback and streaming communication with 
 
 The AI module supports the Core API contracts for:
 
-- Non-blocking conversational chat backed by durable queued processing in Rexone Core.
+- Non-blocking conversational chat backed by durable queued processing in RexOne Core.
 - Persisted rooms, messages, history, and processing state across navigation, refreshes, and closed sessions.
 - Clear “AI is thinking” feedback with additional submissions disabled only for the room being processed.
 - Real-time completion and failure events through the shared notification socket channel.
@@ -291,7 +298,7 @@ i18next and react-i18next provide runtime localization with English, Spanish, an
 
 Translation keys are organized by module in [`src/locales/app_locales.ts`](src/locales/app_locales.ts), producing discoverable paths such as `AppLocales.Auth.SignInPasscode.Title`. React components use the reactive `useTranslate()` helper, while services use `translate()` outside React lifecycle rules.
 
-Every API request also carries the selected supported locale in the `X-Locale` header. Rexone Core currently accepts English and Burmese, so unsupported client locales—including Spanish—are mapped to English for backend messages.
+Every API request also carries the selected supported locale in the `X-Locale` header. RexOne Core currently accepts English and Burmese, so unsupported client locales—including Spanish—are mapped to English for backend messages.
 
 The structure is intended to stay navigable as product copy grows rather than becoming one flat catalog of unrelated messages.
 
@@ -303,7 +310,7 @@ Frontend failures are treated as operational data, not console debris.
 - Global initialization captures browser runtime failures.
 - Client reports can include stack traces, event context, route, platform, browser, operating system, device information, storage snapshots, severity, and occurrence data.
 - Authenticated requests associate failures with the current user when available.
-- Logs are delivered to `POST /v1/client/logs` and become visible in the Rexone Core administration and error workflows.
+- Logs are delivered to `POST /v1/client/logs` and become visible in the RexOne Core administration and error workflows.
 
 This complements backend exception tracking: the server explains what failed there, while client telemetry explains what the user actually experienced here.
 
@@ -339,7 +346,7 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 
 - Node.js `22.13.0` or newer
 - npm `10` or newer
-- A running [Rexone Core](https://github.com/rex-9/rexone-core) API
+- A running [RexOne Core](https://github.com/rex-9/rexone-core) API
 - Docker with Docker Compose, if using the containerized development path
 
 ### 1. Clone and configure
@@ -362,7 +369,7 @@ The script starts the Docker development stack, building it when necessary. The 
 
 ## End-to-End Testing (Playwright)
 
-Rexone Web includes a production-grade E2E test suite built with **[Playwright](https://playwright.dev/)**. Following Rails RSpec conventions, tests are organized by complete user journeys with deterministic setup, explicit state transitions, and meaningful boundary assertions.
+RexOne Web includes a production-grade E2E test suite built with **[Playwright](https://playwright.dev/)**. Following Rails RSpec conventions, tests are organized by complete user journeys with deterministic setup, explicit state transitions, and meaningful boundary assertions.
 
 ### Test Structure
 
@@ -392,7 +399,7 @@ e2e/
 
 ### Running Tests
 
-Rexone Web provides specialized and unified test runner scripts in [`scripts/`](scripts/):
+RexOne Web provides specialized and unified test runner scripts in [`scripts/`](scripts/):
 
 ```bash
 # 1. Run FULL test suite (Unit + E2E)
@@ -442,9 +449,9 @@ The checked-in [`.env.example`](.env.example) documents the client settings.
 | `VITE_REACT_APP_NAME`                 | Application display name                                                                     | `rexone.me`             |
 | `VITE_REACT_APP_GOOGLE_CLIENT_ID`     | Google OAuth browser client ID                                                               | Empty                   |
 | `VITE_REACT_APP_GOOGLE_CLIENT_SECRET` | Legacy checked-in configuration field; browser apps should not receive Google client secrets | Empty                   |
-| `VITE_REACT_APP_SERVER_BASE_URL`      | Rexone Core HTTP base URL                                                                    | `http://localhost:3000` |
+| `VITE_REACT_APP_SERVER_BASE_URL`      | RexOne Core HTTP base URL                                                                    | `http://localhost:3000` |
 | `VITE_REACT_APP_CLIENT_BASE_URL`      | Public web client base URL                                                                   | `http://localhost:4000` |
-| `VITE_REACT_APP_SERVER_WS_BASE_URL`   | Rexone Core WebSocket base URL                                                               | `ws://localhost:3000`   |
+| `VITE_REACT_APP_SERVER_WS_BASE_URL`   | RexOne Core WebSocket base URL                                                               | `ws://localhost:3000`   |
 | `VITE_PORT`                           | Vite dev server local port                                                                   | `4000`                  |
 | `VITE_REACT_APP_PORT_MAP`             | Docker host/container port mapping                                                           | `4000:4000`             |
 | `VITE_REACT_APP_DOCKERFILE`           | Dockerfile selected by Compose                                                               | `Dockerfile.dev`        |
@@ -456,57 +463,57 @@ All frontend environment variables are centralized through [`src/AppConfig.tsx`]
 
 ## Client route surface
 
-| Access    | Route                               | Purpose                                     |
-| --------- | ----------------------------------- | ------------------------------------------- |
-| Public    | `/`                                 | Root experience                             |
-| Public    | `/signin`                           | Open the authentication dialog              |
-| Public    | `/signup`                           | Enter the account creation flow             |
-| Public    | `/email/confirm`                    | Handle confirmation links or code entry     |
-| Public    | `/password/forgot`                  | Request account recovery                    |
-| Public    | `/password/reset`                   | Complete password reset links               |
-| Public    | `/anapana`                          | Anapana interval reminder                   |
-| Protected | `/home`                             | Authenticated home                          |
-| Protected | `/profile`                          | Current-user profile                        |
-| Protected | `/payment`                          | Products and checkout                       |
-| Protected | `/payment/success`                  | Checkout success return                     |
-| Protected | `/payment/cancel`                   | Checkout cancellation return                |
-| Protected | `/ai`                               | AI workspace                                |
-| Protected | `/signout`                          | Sign out and provider cleanup               |
-| Protected | `/admin`                            | Admin panel entry with smart redirect       |
-| Protected | `/admin/users`                      | User management (super admin only)          |
-| Protected | `/admin/users/create`               | User creation console                       |
-| Protected | `/admin/users/:id/edit`             | User edit console                           |
-| Protected | `/admin/roles`                      | Role and permission management              |
-| Protected | `/admin/roles/create`               | Role creation console                       |
-| Protected | `/admin/roles/:id/edit`             | Role edit console                           |
-| Protected | `/admin/products`                   | Product and pricing management              |
-| Protected | `/admin/products/create`            | Product creation console                    |
-| Protected | `/admin/products/:id/edit`          | Product edit console                        |
-| Protected | `/admin/accesses`                   | Entitlements and user access management     |
-| Protected | `/admin/accesses/create`            | Access grant console                        |
-| Protected | `/admin/accesses/:id/edit`          | Access validity extension console           |
-| Protected | `/admin/assets`                     | Asset control center & storage overview     |
-| Protected | `/admin/assets/create`              | Asset upload console                        |
-| Protected | `/admin/assets/:id`                 | Asset detail (metadata, thumbnail, subtitle)|
-| Protected | `/admin/assets/:id/edit`            | Asset edit, compression, thumbnail, subtitle|
+| Access    | Route                               | Purpose                                       |
+| --------- | ----------------------------------- | --------------------------------------------- |
+| Public    | `/`                                 | Root experience                               |
+| Public    | `/signin`                           | Open the authentication dialog                |
+| Public    | `/signup`                           | Enter the account creation flow               |
+| Public    | `/email/confirm`                    | Handle confirmation links or code entry       |
+| Public    | `/password/forgot`                  | Request account recovery                      |
+| Public    | `/password/reset`                   | Complete password reset links                 |
+| Public    | `/anapana`                          | Anapana interval reminder                     |
+| Protected | `/home`                             | Authenticated home                            |
+| Protected | `/profile`                          | Current-user profile                          |
+| Protected | `/payment`                          | Products and checkout                         |
+| Protected | `/payment/success`                  | Checkout success return                       |
+| Protected | `/payment/cancel`                   | Checkout cancellation return                  |
+| Protected | `/ai`                               | AI workspace                                  |
+| Protected | `/signout`                          | Sign out and provider cleanup                 |
+| Protected | `/admin`                            | Admin panel entry with smart redirect         |
+| Protected | `/admin/users`                      | User management (super admin only)            |
+| Protected | `/admin/users/create`               | User creation console                         |
+| Protected | `/admin/users/:id/edit`             | User edit console                             |
+| Protected | `/admin/roles`                      | Role and permission management                |
+| Protected | `/admin/roles/create`               | Role creation console                         |
+| Protected | `/admin/roles/:id/edit`             | Role edit console                             |
+| Protected | `/admin/products`                   | Product and pricing management                |
+| Protected | `/admin/products/create`            | Product creation console                      |
+| Protected | `/admin/products/:id/edit`          | Product edit console                          |
+| Protected | `/admin/accesses`                   | Entitlements and user access management       |
+| Protected | `/admin/accesses/create`            | Access grant console                          |
+| Protected | `/admin/accesses/:id/edit`          | Access validity extension console             |
+| Protected | `/admin/assets`                     | Asset control center & storage overview       |
+| Protected | `/admin/assets/create`              | Asset upload console                          |
+| Protected | `/admin/assets/:id`                 | Asset detail (metadata, thumbnail, subtitle)  |
+| Protected | `/admin/assets/:id/edit`            | Asset edit, compression, thumbnail, subtitle  |
 | Protected | `/admin/notifications`              | Broadcast notification dispatch and templates |
-| Protected | `/admin/notifications/create`       | Notification template creation console      |
-| Protected | `/admin/notifications/:id/edit`     | Notification template edit console          |
-| Protected | `/admin/user-notifications`         | User notifications inspection & lifecycle   |
-| Protected | `/admin/user-notifications/:id`     | User notification detail & lifecycle actions|
-| Protected | `/admin/user-notifications/bin`     | User notifications recycle bin              |
-| Protected | `/admin/chat/rooms`                 | Chat room moderation                        |
-| Protected | `/admin/chat/messages`              | Chat message moderation                     |
-| Protected | `/admin/feedback`                   | User feedback management                    |
-| Protected | `/admin/logs`                       | Client error and telemetry logs             |
-| Protected | `/admin/versions`                   | App versions (super admin only)             |
-| Protected | `/admin/versions/create`            | App version create console                  |
-| Protected | `/admin/versions/:id/edit`          | App version edit console                    |
-| Protected | `/admin/versions/bin`               | Discarded app versions                      |
-| Protected | `/admin/user-versions`              | All current user versions (super admin)     |
-| Protected | `/admin/versions/:id/user-versions` | User versions for one version               |
+| Protected | `/admin/notifications/create`       | Notification template creation console        |
+| Protected | `/admin/notifications/:id/edit`     | Notification template edit console            |
+| Protected | `/admin/user-notifications`         | User notifications inspection & lifecycle     |
+| Protected | `/admin/user-notifications/:id`     | User notification detail & lifecycle actions  |
+| Protected | `/admin/user-notifications/bin`     | User notifications recycle bin                |
+| Protected | `/admin/chat/rooms`                 | Chat room moderation                          |
+| Protected | `/admin/chat/messages`              | Chat message moderation                       |
+| Protected | `/admin/feedback`                   | User feedback management                      |
+| Protected | `/admin/logs`                       | Client error and telemetry logs               |
+| Protected | `/admin/versions`                   | App versions (super admin only)               |
+| Protected | `/admin/versions/create`            | App version create console                    |
+| Protected | `/admin/versions/:id/edit`          | App version edit console                      |
+| Protected | `/admin/versions/bin`               | Discarded app versions                        |
+| Protected | `/admin/user-versions`              | All current user versions (super admin)       |
+| Protected | `/admin/versions/:id/user-versions` | User versions for one version                 |
 
-[`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. Rexone Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
+[`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. RexOne Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 
 Locale maintenance is enforced with `npm run check:locales`. It compares English and Burmese structure, rejects missing keys and raw translation-key calls, and reports unused constants and hardcoded user-visible JSX copy. Developer-facing diagnostics remain in English and are outside the UI-copy scan.
 
@@ -557,20 +564,20 @@ rexone-web/
 
 For production deployments:
 
-1. Point HTTP and WebSocket variables at the deployed Rexone Core instance.
+1. Point HTTP and WebSocket variables at the deployed RexOne Core instance.
 2. Configure the Google OAuth client for the production origin.
 3. Serve the client over TLS and use `wss://` for real-time traffic.
-4. Keep secrets in Rexone Core or the relevant provider—not in Vite variables.
+4. Keep secrets in RexOne Core or the relevant provider—not in Vite variables.
 5. Run `npm run build`, `npm run lint`, `npm test`, and `./scripts/test.sh` in CI.
 
-## Other Repos in Rexone Ecosystem
+## Other Repos in RexOne Ecosystem
 
-- [Rexone Core](https://github.com/rex-9/rexone-core) — Rails API, IAM, payments, jobs, notifications, storage, AI, administration, and observability
-- [Rexone Mobile](https://github.com/rex-9/rexone_mobile) — mobile client
+- [RexOne Core](https://github.com/rex-9/rexone-core) — Rails API, IAM, payments, jobs, notifications, storage, AI, administration, and observability
+- [RexOne Mobile](https://github.com/rex-9/rexone_mobile) — mobile client
 
 ## 🎨 Rebranding
 
-Rexone Web can be rebranded directly via the master rebranding engine in `rexone-core` or standalone:
+RexOne Web can be rebranded directly via the master rebranding engine in `rexone-core` or standalone:
 
 ```bash
 # 1. From rexone-core (rebrands all 3 repositories):
@@ -584,18 +591,21 @@ VITE_APP_NAME="My New App Name"
 
 ## 🏛️ Ecosystem Lineage & Attribution
 
-This application is built on top of the **Rexone Ecosystem** (`rex-9`). When creating derivative products or white-label applications:
+This application is built on top of the **RexOne Ecosystem** (`rex-9`). When creating derivative products or white-label applications:
 
 - Developers and creators are warmly encouraged to preserve ecosystem credit in documentation to support the project.
 - All development must strictly adhere to the constitutional engineering standards in **[LAW.md](LAW.md)** and **[ECOSYSTEM.md](ECOSYSTEM.md)**.
 
 ---
 
-## Support the project
+## 💖 Sponsor & Support RexOne
 
-If Rexone Web saves you a few weeks—or saves your users from one memorable edge case—consider giving it a star. 🌟
+RexOne is built and maintained by Rex ([@rex-9](https://github.com/rex-9)). If RexOne saves you engineering weeks, AI tokens, or cloud compute costs, consider supporting the foundation!
 
+[![Sponsor rex-9](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rex-9)
 [![GitHub Stars](https://img.shields.io/github/stars/rex-9/rexone-web.svg?style=social&label=Star)](https://github.com/rex-9/rexone-web)
+
+👉 **[Sponsor Rex on GitHub](https://github.com/sponsors/rex-9)**
 
 ## Author
 
@@ -609,6 +619,6 @@ I build systems the same way I approach the path itself: **with a clear mind, de
 - Portfolio: [rex9.me](https://rex9.me)
 - LinkedIn: [rex9](https://www.linkedin.com/in/rex9/)
 
-_Built with ❤️ by Rex9 on Rexone Ecosystem_
+_Built with ❤️ by Rex9 on RexOne Ecosystem_
 
 <p align="right"><a href="#readme-top">Back to top ↑</a></p>
