@@ -1168,7 +1168,10 @@
       "filters": {
         "all_types": "အမျိုးအစား အားလုံး",
         "all_formats": "ဖော်မတ် အားလုံး",
-        "all_sources": "အရင်းအမြစ် အားလုံး"
+        "all_sources": "အရင်းအမြစ် အားလုံး",
+        "parent_assets": "ပင်မမီဒီယာများ",
+        "child_assets": "ဆက်စပ်မီဒီယာများ",
+        "all_assets": "မီဒီယာအားလုံး"
       },
       "table": {
         "preview": "နမူနာ",

@@ -25,7 +25,7 @@
     - Form: `FormContainer`, `TextInput`, `TextArea`, `PasswordInput`, `Dropdown`, `Toggle`, `SearchInput`.
     - Buttons: `Button`, `GoogleButton`, `SignOutButton`.
     - Overlays: `Dialog`, `ConfirmDialog`, `LoadingOverlay`, `Toast`.
-    - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Asset`/`Image`, `Video`.
+    - Common & Media: `NavBar`, `Badge`, `ProfileAvatar`, `Typography`, `TextLink`, `Asset`/`Image`, `Player`.
   - `src/design/pages/` — Shared layout shells (`LayoutPage`, `HomePage`, `NotFoundPage`).
 - **Forbidden Raw HTML Elements**: NEVER use raw `<img>`, `<video>`, `<a>`, `<textarea>`, `<button>`, `<form>`, or `<select>`. Always use the Design System wrappers (`Asset`, `TextLink`, `Dropdown`, `Button`, `Dialog`).
 

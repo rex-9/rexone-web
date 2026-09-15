@@ -1,4 +1,8 @@
+import type { IAssetChild } from "../../../models";
+import { AppLocales } from "../../../locales";
+
 export const ADMIN_ASSET_COLUMNS = {
+  ACTIONS: "actions",
   PREVIEW: "preview",
   NAME: "name",
   TYPE: "type",
@@ -11,18 +15,27 @@ export const ADMIN_ASSET_COLUMNS = {
 } as const;
 
 export const ADMIN_ASSET_FILTERS = {
+  RECORD_SCOPE: "record_scope",
   TYPE: "type",
   FORMAT: "format",
   SOURCE: "source",
   STATUS: "status",
 } as const;
 
+export const ASSET_RECORD_SCOPES = {
+  PARENTS: "parents",
+  CHILDREN: "children",
+  ALL: "all",
+} as const;
+
+export type TAssetRecordScope =
+  (typeof ASSET_RECORD_SCOPES)[keyof typeof ASSET_RECORD_SCOPES];
+
 export const ASSET_TYPES = {
   AVATAR: "avatar",
   THUMBNAIL: "thumbnail",
   SUBTITLE: "subtitle",
-  AUDIO: "audio",
-  VIDEO: "video",
+  TTS: "tts",
   ATTACHMENT: "attachment",
   GENERAL: "general",
 } as const;
@@ -34,6 +47,7 @@ export const ASSET_FORMATS = {
   AUDIO: "audio",
   VIDEO: "video",
   DOC: "doc",
+  ZIP: "zip",
   SUBTITLE: "subtitle",
 } as const;
 
@@ -109,15 +123,49 @@ export const isImageAsset = (
   return false;
 };
 
+export const getAssetThumbnail = <
+  T extends { children?: { thumbnail?: { url?: string | null } | null } },
+>(
+  asset?: T | null,
+) => asset?.children?.thumbnail ?? null;
+
+export const getAssetChildren = <
+  T extends {
+    children?: {
+      thumbnail?: IAssetChild | null;
+      subtitles?: IAssetChild[];
+    };
+  },
+>(
+  asset?: T | null,
+) => [
+  ...(asset?.children?.thumbnail ? [asset.children.thumbnail] : []),
+  ...(asset?.children?.subtitles ?? []),
+];
+
 export const ASSET_TYPE_OPTIONS = [
   { value: "", label: "All Types" },
   { value: ASSET_TYPES.AVATAR, label: "Avatar" },
   { value: ASSET_TYPES.THUMBNAIL, label: "Thumbnail" },
   { value: ASSET_TYPES.SUBTITLE, label: "Subtitle" },
-  { value: ASSET_TYPES.AUDIO, label: "Audio" },
-  { value: ASSET_TYPES.VIDEO, label: "Video" },
+  { value: ASSET_TYPES.TTS, label: "TTS" },
   { value: ASSET_TYPES.ATTACHMENT, label: "Attachment" },
   { value: ASSET_TYPES.GENERAL, label: "General" },
+] as const;
+
+export const ASSET_RECORD_SCOPE_OPTIONS = [
+  {
+    value: ASSET_RECORD_SCOPES.PARENTS,
+    labelKey: AppLocales.Admin.Assets.Filters.ParentAssets,
+  },
+  {
+    value: ASSET_RECORD_SCOPES.CHILDREN,
+    labelKey: AppLocales.Admin.Assets.Filters.ChildAssets,
+  },
+  {
+    value: ASSET_RECORD_SCOPES.ALL,
+    labelKey: AppLocales.Admin.Assets.Filters.AllAssets,
+  },
 ] as const;
 
 export const ASSET_FORMAT_OPTIONS = [
@@ -126,6 +174,7 @@ export const ASSET_FORMAT_OPTIONS = [
   { value: ASSET_FORMATS.AUDIO, label: "Audio" },
   { value: ASSET_FORMATS.VIDEO, label: "Video" },
   { value: ASSET_FORMATS.DOC, label: "Document" },
+  { value: ASSET_FORMATS.ZIP, label: "Zip" },
   { value: ASSET_FORMATS.SUBTITLE, label: "Subtitle" },
 ] as const;
 

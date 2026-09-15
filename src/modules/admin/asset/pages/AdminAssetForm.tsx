@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
+import type { IAssetChild } from "../../../../models";
 import type { IAdminAsset } from "../types";
 import {
   ASSET_TYPE_OPTIONS,
@@ -10,6 +11,8 @@ import {
   ASSET_FORMATS,
   ASSET_STATUSES,
   formatAssetFileSize,
+  getAssetChildren,
+  getAssetThumbnail,
   isImageAsset,
   isSrtSubtitleFile,
 } from "../constants";
@@ -20,6 +23,7 @@ import {
   FormContainer,
   TextInput,
 } from "../../components";
+import { AdminAssetChildrenTable } from "../components";
 import {
   Badge,
   Button,
@@ -33,7 +37,6 @@ import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { UPLOAD_SIZE_LIMITS } from "../../../../constants";
 import { ADMIN_ACTIONS } from "../../constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
-import { AdminAssetSubtitleValue } from "../components";
 
 export interface IAdminAssetEditFormValues {
   name: string;
@@ -59,6 +62,8 @@ export interface IAdminAssetFormProps {
   onRegenerateThumbnail?: () => Promise<void>;
   onUploadThumbnail?: (file: File) => Promise<void>;
   onUploadSubtitle?: (file: File) => Promise<void>;
+  onDownloadChild?: (asset: IAssetChild) => Promise<void>;
+  onEditChild?: (asset: IAssetChild) => void;
   isCompressing?: boolean;
   isUpdatingThumbnail?: boolean;
   isUpdatingSubtitle?: boolean;
@@ -75,6 +80,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   onRegenerateThumbnail,
   onUploadThumbnail,
   onUploadSubtitle,
+  onDownloadChild,
+  onEditChild,
   isCompressing = false,
   isUpdatingThumbnail = false,
   isUpdatingSubtitle = false,
@@ -575,234 +582,250 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
           </div>
         </div>
       ) : asset ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Asset Preview and Details Card */}
-          <div className="lg:col-span-1 bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
-            <h3 className="font-semibold text-base-content text-lg">
-              {t(AppLocales.Admin.Assets.Table.Preview)}
-            </h3>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Asset Preview and Details Card */}
+            <div className="lg:col-span-1 h-fit bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
+              <h3 className="font-semibold text-base-content text-lg">
+                {t(AppLocales.Admin.Assets.Table.Preview)}
+              </h3>
 
-            <div className="w-full aspect-video rounded-lg overflow-hidden bg-base-200 flex items-center justify-center border border-base-300">
-              {isImageAsset(asset) || asset.thumbnail?.url ? (
-                <Image
-                  src={asset.thumbnail?.url || asset.url}
-                  alt={asset.name}
-                  referrerPolicy="no-referrer"
-                  className="w-full h-full object-contain"
-                  fallback={
-                    <div className="flex flex-col items-center gap-2 text-base-content/60">
-                      <iconsLib.photo className="w-12 h-12" />
-                      <span className="text-xs uppercase font-medium">
-                        {asset.format || "Media"}
-                      </span>
-                    </div>
-                  }
-                />
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-base-content/60">
-                  <iconsLib.photo className="w-12 h-12" />
-                  <span className="text-xs uppercase font-medium">
-                    {asset.format || "Media"}
+              <div className="w-full aspect-video rounded-lg overflow-hidden bg-base-200 flex items-center justify-center border border-base-300">
+                {isImageAsset(asset) || getAssetThumbnail(asset)?.url ? (
+                  <Image
+                    src={getAssetThumbnail(asset)?.url || asset.url}
+                    alt={asset.name}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-contain"
+                    fallback={
+                      <div className="flex flex-col items-center gap-2 text-base-content/60">
+                        <iconsLib.photo className="w-12 h-12" />
+                        <span className="text-xs uppercase font-medium">
+                          {asset.format || "Media"}
+                        </span>
+                      </div>
+                    }
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-base-content/60">
+                    <iconsLib.photo className="w-12 h-12" />
+                    <span className="text-xs uppercase font-medium">
+                      {asset.format || "Media"}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3 pt-2 text-sm">
+                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <span className="text-base-content/60">
+                    {t(AppLocales.Admin.Assets.Table.Type)}
+                  </span>
+                  <Badge>{asset.type}</Badge>
+                </div>
+
+                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <span className="text-base-content/60">
+                    {t(AppLocales.Admin.Assets.Table.Format)}
+                  </span>
+                  <span className="font-mono text-xs uppercase font-medium text-base-content">
+                    {asset.format || t(AppLocales.Common.NotAvailable)}
                   </span>
                 </div>
-              )}
-            </div>
 
-            <div className="space-y-3 pt-2 text-sm">
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
-                <span className="text-base-content/60">
-                  {t(AppLocales.Admin.Assets.Table.Type)}
-                </span>
-                <Badge>{asset.type}</Badge>
-              </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
-                <span className="text-base-content/60">
-                  {t(AppLocales.Admin.Assets.Table.Format)}
-                </span>
-                <span className="font-mono text-xs uppercase font-medium text-base-content">
-                  {asset.format || "—"}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
-                <span className="text-base-content/60">
-                  {t(AppLocales.Admin.Assets.Table.Size)}
-                </span>
-                <span className="text-base-content font-medium">
-                  {formatAssetFileSize(asset.size_bytes)}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
-                <span className="text-base-content/60">Status</span>
-                <StatusBadge status={asset.status || ASSET_STATUSES.READY} />
-              </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
-                <span className="text-base-content/60">
-                  {t(AppLocales.Admin.Assets.Table.Created)}
-                </span>
-                <span className="text-base-content/70">
-                  <DateTime value={asset.created_at} format={DateTimeFormats.ADMIN} />
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200 gap-3">
-                <span className="text-base-content/60 shrink-0">
-                  {t(AppLocales.Admin.Assets.Subtitle.Label)}
-                </span>
-                <AdminAssetSubtitleValue subtitle={asset.subtitle} />
-              </div>
-            </div>
-
-            <div className="grid gap-2 pt-2">
-              {onDownload && (
-                <Button
-                  variant={ButtonVariants.SECONDARY}
-                  size={ComponentSizes.SM}
-                  className="w-full flex items-center justify-center gap-1.5"
-                  onClick={onDownload}
-                >
-                  <iconsLib.download className="w-4 h-4" />
-                  {t(AppLocales.Admin.Assets.Download.Action)}
-                </Button>
-              )}
-
-              {asset.format === ASSET_FORMATS.VIDEO &&
-                onRegenerateThumbnail && (
-                  <Button
-                    variant={ButtonVariants.SECONDARY}
-                    size={ComponentSizes.SM}
-                    className="w-full flex items-center justify-center gap-1.5"
-                    onClick={onRegenerateThumbnail}
-                    isLoading={isUpdatingThumbnail}
-                    disabled={isUpdatingThumbnail}
-                  >
-                    <iconsLib.arrowPath className="w-4 h-4" />
-                    {t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}
-                  </Button>
-                )}
-
-              {(asset.format === ASSET_FORMATS.VIDEO ||
-                asset.format === ASSET_FORMATS.AUDIO) &&
-                onUploadThumbnail && (
-                <FileInput
-                  accept="image/*"
-                  disabled={isUpdatingThumbnail}
-                  onChange={(file) => {
-                    if (file) void onUploadThumbnail(file);
-                  }}
-                  buttonText={
-                    <span className="inline-flex items-center gap-1.5">
-                    <iconsLib.upload className="w-4 h-4" />
-                    {t(
-                      isUpdatingThumbnail
-                        ? AppLocales.Admin.Assets.Thumbnail.Uploading
-                        : AppLocales.Admin.Assets.Thumbnail.Upload,
-                    )}
-                    </span>
-                  }
-                />
-              )}
-
-              {(asset.format === ASSET_FORMATS.VIDEO ||
-                asset.format === ASSET_FORMATS.AUDIO) &&
-                onUploadSubtitle && (
-                <FileInput
-                  accept=".srt"
-                  disabled={isUpdatingSubtitle}
-                  onChange={(file) => {
-                    if (!file) return;
-                    if (!isSrtSubtitleFile(file)) {
-                      setAlertMessage(
-                        t(AppLocales.Admin.Assets.Subtitle.InvalidType),
-                      );
-                      return;
-                    }
-                    if (file.size > UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_BYTES) {
-                      setAlertMessage(
-                        t(AppLocales.Admin.Assets.Subtitle.TooLarge, {
-                          size: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
-                        }),
-                      );
-                      return;
-                    }
-                    void onUploadSubtitle(file);
-                  }}
-                  buttonText={
-                    <span className="inline-flex items-center gap-1.5">
-                    <iconsLib.upload className="w-4 h-4" />
-                    {t(
-                      isUpdatingSubtitle
-                        ? AppLocales.Admin.Assets.Subtitle.Uploading
-                        : AppLocales.Admin.Assets.Subtitle.Upload,
-                    )}
-                    </span>
-                  }
-                />
-              )}
-            </div>
-
-            {onCompress &&
-              asset.status !== ASSET_STATUSES.OPTIMAL &&
-              asset.status !== ASSET_STATUSES.PROCESSING && (
-                <div className="pt-2">
-                  <Button
-                    variant={ButtonVariants.SECONDARY}
-                    size={ComponentSizes.SM}
-                    className="w-full flex items-center justify-center gap-1.5"
-                    onClick={onCompress}
-                    isLoading={isCompressing}
-                    disabled={isCompressing}
-                  >
-                    <iconsLib.sparkles className="w-4 h-4 text-primary" />
-                    <span>
-                      {t(
-                        AppLocales.Admin.Assets.Compression.Compress,
-                        "Compress Media",
-                      )}
-                    </span>
-                  </Button>
+                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <span className="text-base-content/60">
+                    {t(AppLocales.Admin.Assets.Table.Size)}
+                  </span>
+                  <span className="text-base-content font-medium">
+                    {formatAssetFileSize(asset.size_bytes)}
+                  </span>
                 </div>
-              )}
+
+                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <span className="text-base-content/60">
+                    {t(AppLocales.Admin.Assets.Detail.Status)}
+                  </span>
+                  <StatusBadge status={asset.status || ASSET_STATUSES.READY} />
+                </div>
+
+                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <span className="text-base-content/60">
+                    {t(AppLocales.Admin.Assets.Table.Created)}
+                  </span>
+                  <span className="text-base-content/70">
+                    <DateTime
+                      value={asset.created_at}
+                      format={DateTimeFormats.ADMIN}
+                    />
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Edit Form */}
+            <div className="lg:col-span-2 space-y-4">
+              <FormContainer onSubmit={handleEditSubmit}>
+                <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm space-y-5">
+                  <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+                    <iconsLib.pencilSquare className="h-5 w-5 text-primary" />
+                    <h3 className="text-body-m font-bold text-base-content">
+                      {t(AppLocales.Admin.Assets.Detail.Title)}
+                    </h3>
+                  </div>
+
+                  <TextInput
+                    label={t(AppLocales.Admin.Assets.Table.Name)}
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    required
+                  />
+
+                  <Dropdown
+                    label={t(AppLocales.Admin.Assets.Table.Type)}
+                    value={editType}
+                    options={filteredTypeOptions.map((opt) => ({
+                      value: opt.value,
+                      label: opt.label,
+                    }))}
+                    onValueChange={(val) => setEditType(val)}
+                  />
+                </div>
+
+                <FormActionRow
+                  cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+                  submitLabel={t(AppLocales.Admin.Common.Actions.Save)}
+                  onCancel={onCancel}
+                />
+              </FormContainer>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-5">
+                  {onDownload && (
+                    <Button
+                      variant={ButtonVariants.SECONDARY}
+                      size={ComponentSizes.SM}
+                      className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                      onClick={onDownload}
+                    >
+                      <iconsLib.download className="w-4 h-4" />
+                      {t(AppLocales.Admin.Assets.Download.Action)}
+                    </Button>
+                  )}
+
+                  {asset.format === ASSET_FORMATS.VIDEO &&
+                    onRegenerateThumbnail && (
+                      <Button
+                        variant={ButtonVariants.SECONDARY}
+                        size={ComponentSizes.SM}
+                        className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        onClick={onRegenerateThumbnail}
+                        isLoading={isUpdatingThumbnail}
+                        disabled={isUpdatingThumbnail}
+                      >
+                        <iconsLib.arrowPath className="w-4 h-4" />
+                        {t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}
+                      </Button>
+                    )}
+
+                  {(asset.format === ASSET_FORMATS.VIDEO ||
+                    asset.format === ASSET_FORMATS.AUDIO) &&
+                    onUploadThumbnail && (
+                      <FileInput
+                        accept="image/*"
+                        disabled={isUpdatingThumbnail}
+                        onChange={(file) => {
+                          if (file) void onUploadThumbnail(file);
+                        }}
+                        buttonText={
+                          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                            <iconsLib.upload className="w-4 h-4" />
+                            {t(
+                              isUpdatingThumbnail
+                                ? AppLocales.Admin.Assets.Thumbnail.Uploading
+                                : AppLocales.Admin.Assets.Thumbnail.Upload,
+                            )}
+                          </span>
+                        }
+                      />
+                    )}
+
+                  {(asset.format === ASSET_FORMATS.VIDEO ||
+                    asset.format === ASSET_FORMATS.AUDIO) &&
+                    onUploadSubtitle && (
+                      <FileInput
+                        accept=".srt"
+                        disabled={isUpdatingSubtitle}
+                        onChange={(file) => {
+                          if (!file) return;
+                          if (!isSrtSubtitleFile(file)) {
+                            setAlertMessage(
+                              t(AppLocales.Admin.Assets.Subtitle.InvalidType),
+                            );
+                            return;
+                          }
+                          if (
+                            file.size > UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_BYTES
+                          ) {
+                            setAlertMessage(
+                              t(AppLocales.Admin.Assets.Subtitle.TooLarge, {
+                                size: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
+                              }),
+                            );
+                            return;
+                          }
+                          void onUploadSubtitle(file);
+                        }}
+                        buttonText={
+                          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+                            <iconsLib.upload className="w-4 h-4" />
+                            {t(
+                              isUpdatingSubtitle
+                                ? AppLocales.Admin.Assets.Subtitle.Uploading
+                                : AppLocales.Admin.Assets.Subtitle.Upload,
+                            )}
+                          </span>
+                        }
+                      />
+                    )}
+
+                  {onCompress &&
+                    asset.status !== ASSET_STATUSES.OPTIMAL &&
+                    asset.status !== ASSET_STATUSES.PROCESSING && (
+                      <Button
+                        variant={ButtonVariants.SECONDARY}
+                        size={ComponentSizes.SM}
+                        className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        onClick={onCompress}
+                        isLoading={isCompressing}
+                        disabled={isCompressing}
+                      >
+                        <iconsLib.sparkles className="w-4 h-4 text-primary" />
+                        <span>
+                          {t(
+                            AppLocales.Admin.Assets.Compression.Compress,
+                            "Compress Media",
+                          )}
+                        </span>
+                      </Button>
+                    )}
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Edit Form */}
-          <div className="lg:col-span-2">
-            <FormContainer onSubmit={handleEditSubmit}>
-              <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm space-y-5">
-                <div className="flex items-center gap-2 border-b border-base-200 pb-3">
-                  <iconsLib.pencilSquare className="h-5 w-5 text-primary" />
-                  <h3 className="text-body-m font-bold text-base-content">
-                    Asset Details
-                  </h3>
-                </div>
-
-                <TextInput
-                  label={t(AppLocales.Admin.Assets.Table.Name)}
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  required
-                />
-
-                <Dropdown
-                  label={t(AppLocales.Admin.Assets.Table.Type)}
-                  value={editType}
-                  options={filteredTypeOptions.map((opt) => ({
-                    value: opt.value,
-                    label: opt.label,
-                  }))}
-                  onValueChange={(val) => setEditType(val)}
-                />
-              </div>
-
-              <FormActionRow
-                cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
-                submitLabel={t(AppLocales.Admin.Common.Actions.Save)}
-                onCancel={onCancel}
-              />
-            </FormContainer>
+          <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm">
+            <div className="mb-4 flex items-center gap-2 border-b border-base-200 pb-3">
+              <iconsLib.document className="h-5 w-5 text-primary" />
+              <h3 className="text-body-m font-bold text-base-content">
+                {t(AppLocales.Admin.Assets.Detail.Children)}
+              </h3>
+            </div>
+            <AdminAssetChildrenTable
+              assets={getAssetChildren(asset)}
+              onDownload={onDownloadChild}
+              onEdit={onEditChild}
+            />
           </div>
         </div>
       ) : null}

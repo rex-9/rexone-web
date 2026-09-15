@@ -48,11 +48,15 @@ import {
 } from "../../constants";
 import {
   ADMIN_ASSET_COLUMNS,
+  ADMIN_ASSET_FILTERS,
+  ASSET_RECORD_SCOPE_OPTIONS,
+  ASSET_RECORD_SCOPES,
   ASSET_TYPE_OPTIONS,
   ASSET_FORMAT_OPTIONS,
   ASSET_STATUSES,
   ASSET_STATUS_OPTIONS,
   formatAssetFileSize,
+  getAssetThumbnail,
   isImageAsset,
 } from "../constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
@@ -83,9 +87,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const searchQuery = searchParams.get("search") || "";
-  const typeFilter = searchParams.get("type") || "";
-  const formatFilter = searchParams.get("format") || "";
-  const statusFilter = searchParams.get("status") || "";
+  const typeFilter = searchParams.get(ADMIN_ASSET_FILTERS.TYPE) || "";
+  const formatFilter = searchParams.get(ADMIN_ASSET_FILTERS.FORMAT) || "";
+  const statusFilter = searchParams.get(ADMIN_ASSET_FILTERS.STATUS) || "";
+  const recordScopeFilter =
+    searchParams.get(ADMIN_ASSET_FILTERS.RECORD_SCOPE) ||
+    ASSET_RECORD_SCOPES.PARENTS;
 
   const { sortBy, sortOrder, handleSort } = useSort({
     defaultSortBy: isActive
@@ -115,7 +122,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         status: string;
         size_bytes?: number;
         url?: string;
-        thumbnail?: IAsset["thumbnail"];
+        thumbnail?: NonNullable<IAsset["children"]>["thumbnail"];
       }
     >
   >(new Map());
@@ -156,6 +163,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       if (typeFilter) params.type = typeFilter;
       if (formatFilter) params.format = formatFilter;
       if (statusFilter) params.status = statusFilter;
+      if (recordScopeFilter) params.record_scope = recordScopeFilter;
 
       const result = isActive
         ? await Admin.AssetController.getAssets(params)
@@ -181,6 +189,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     typeFilter,
     formatFilter,
     statusFilter,
+    recordScopeFilter,
     isActive,
     setLoading,
     toast,
@@ -223,7 +232,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         typeof event.data?.url === "string" ? event.data.url : undefined;
       const thumbnail =
         event.data?.thumbnail && typeof event.data.thumbnail === "object"
-          ? (event.data.thumbnail as IAsset["thumbnail"])
+          ? (event.data.thumbnail as NonNullable<IAsset["children"]>["thumbnail"])
           : undefined;
 
       setAssets((prevAssets) => {
@@ -236,7 +245,13 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               status: (status as IAsset["status"]) || a.status,
               size_bytes: sizeBytes !== undefined ? sizeBytes : a.size_bytes,
               url: url !== undefined ? url : a.url,
-              thumbnail: thumbnail !== undefined ? thumbnail : a.thumbnail,
+              children: {
+                subtitles: a.children?.subtitles ?? [],
+                thumbnail:
+                  thumbnail !== undefined
+                    ? thumbnail
+                    : a.children?.thumbnail,
+              },
             };
           }
           return a;
@@ -523,7 +538,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         className: "w-14",
         render: (asset) => {
           const isImg = isImageAsset(asset);
-          const previewUrl = asset.thumbnail?.url || (isImg ? asset.url : null);
+          const previewUrl = getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
 
           return (
             <div className="w-10 h-10 rounded overflow-hidden bg-base-200 flex items-center justify-center">
@@ -581,12 +596,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Format),
           sortKey: ADMIN_ASSET_COLUMNS.FORMAT,
           render: (asset) => (
-            <span className="text-sm uppercase">{asset.format || "N/A"}</span>
+            <span className="text-sm uppercase">
+              {asset.format || t(AppLocales.Common.NotAvailable)}
+            </span>
           ),
         },
         {
           key: ADMIN_ASSET_COLUMNS.STATUS,
-          header: "Status",
+          header: t(AppLocales.Admin.Common.Table.Status),
           sortKey: ADMIN_ASSET_COLUMNS.STATUS,
           render: (asset) => <StatusBadge status={asset.status || "pending"} />,
         },
@@ -608,8 +625,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           render: (asset) => <DateTime value={asset.created_at} format={DateTimeFormats.ADMIN} />,
         },
         {
-          key: "actions",
-          header: "",
+          key: ADMIN_ASSET_COLUMNS.ACTIONS,
+          header: t(AppLocales.Admin.Common.Table.Actions),
           className: "text-right whitespace-nowrap",
           render: (asset) => (
             <div className="flex items-center gap-1 justify-end">
@@ -681,8 +698,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           render: (asset) => <DateTime value={asset.discarded_at} format={DateTimeFormats.ADMIN} />,
         },
         {
-          key: "actions",
-          header: "",
+          key: ADMIN_ASSET_COLUMNS.ACTIONS,
+          header: t(AppLocales.Admin.Common.Table.Actions),
           className: "text-right whitespace-nowrap",
           render: (asset) => (
             <AdminTableActions
@@ -799,7 +816,10 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 label: o.label,
               }))}
               onValueChange={(val) =>
-                updateSearchParams({ type: val || null, page: "1" })
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.TYPE]: val || null,
+                  page: "1",
+                })
               }
             />
           </div>
@@ -811,7 +831,26 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 label: o.label,
               }))}
               onValueChange={(val) =>
-                updateSearchParams({ format: val || null, page: "1" })
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.FORMAT]: val || null,
+                  page: "1",
+                })
+              }
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <Dropdown
+              value={recordScopeFilter}
+              options={ASSET_RECORD_SCOPE_OPTIONS.map((o) => ({
+                value: o.value,
+                label: t(o.labelKey),
+              }))}
+              onValueChange={(val) =>
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.RECORD_SCOPE]:
+                    val || ASSET_RECORD_SCOPES.PARENTS,
+                  page: "1",
+                })
               }
             />
           </div>
@@ -823,7 +862,10 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
                 label: o.label,
               }))}
               onValueChange={(val) =>
-                updateSearchParams({ status: val || null, page: "1" })
+                updateSearchParams({
+                  [ADMIN_ASSET_FILTERS.STATUS]: val || null,
+                  page: "1",
+                })
               }
             />
           </div>

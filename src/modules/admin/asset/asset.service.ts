@@ -142,7 +142,11 @@ class AssetService {
     file: File,
   ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
     const formData = new FormData();
-    formData.append("file", file);
+    const srtFile =
+      file.type === "text/plain"
+        ? file
+        : new File([file], file.name, { type: "text/plain" });
+    formData.append("file", srtFile);
     return api.post<{ asset: IAdminAsset }>(
       AppRoutes.withId(
         AppRoutes.server.protected.admin.ASSET_SUBTITLE_UPLOAD,

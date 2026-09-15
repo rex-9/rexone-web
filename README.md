@@ -251,7 +251,7 @@ The client provides comprehensive media upload, presentation, and compression ma
 - **Empty Recycle Bin (`AdminEmptyRecycleBinButton`)**: Built-in modal confirmation button that allows admins to empty all discarded items from the recycle bin in one click, permanently purging database records and remote storage objects.
 - **Batch Operations & Multi-Select (`AdminBatchActionBar` & `AdminTable`)**: Support for row checkboxes in `AdminTable`, allowing admins to multi-select items and perform batch discards in the active view, or batch restorations and permanent batch deletions in the recycle bin.
 - **Unified Modular Analytics Cards (`AdminKpiCard`)**: High-reusability metric KPI card shared between the Analytics overview and Asset storage capacity dashboards.
-- **Presentation Primitives**: Standardized `Asset`, `Image`, and `Video` components prevent raw `<img>` or `<video>` tags and handle loading skeletons, fallbacks, and aspect ratios cleanly.
+- **Presentation Primitives**: Standardized `Asset`, `Image`, and `Player` components prevent raw `<img>` or `<video>` tags and handle loading skeletons, fallbacks, and aspect ratios cleanly. Design `Player` uses Vidstack internally for audio and video and can play `.srt` caption tracks from playback `media.subtitles`.
 
 ### Speech & audio
 

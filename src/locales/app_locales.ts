@@ -1049,6 +1049,8 @@ export const AppLocales = {
         Status: "admin.assets.detail.status",
         Duration: "admin.assets.detail.duration",
         StorageKey: "admin.assets.detail.storage_key",
+        Children: "admin.assets.detail.children",
+        NoChildren: "admin.assets.detail.no_children",
       },
       UploadButton: "admin.assets.upload_button",
       SearchPlaceholder: "admin.assets.search_placeholder",
@@ -1060,6 +1062,9 @@ export const AppLocales = {
         AllTypes: "admin.assets.filters.all_types",
         AllFormats: "admin.assets.filters.all_formats",
         AllSources: "admin.assets.filters.all_sources",
+        ParentAssets: "admin.assets.filters.parent_assets",
+        ChildAssets: "admin.assets.filters.child_assets",
+        AllAssets: "admin.assets.filters.all_assets",
       },
       Table: {
         Preview: "admin.assets.table.preview",
