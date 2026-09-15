@@ -36,7 +36,17 @@ export class SignInPasswordPage {
       return;
     }
 
-    await expect(firstInput).toBeEnabled({ timeout: 10000 });
+    try {
+      await expect(firstInput).toBeEnabled({ timeout: 5000 });
+    } catch {
+      const lockedNow = await this.page
+        .getByText(/Too many attempts|Try again in/i)
+        .first()
+        .isVisible()
+        .catch(() => false);
+      if (lockedNow) return;
+      throw new Error("Password input remained disabled without lockout message");
+    }
 
     for (let i = 0; i < 6; i++) {
       const input = this.inputs.nth(i);
