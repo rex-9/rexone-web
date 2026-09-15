@@ -1,6 +1,6 @@
 // src/design/components/auth/AuthDialog.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
   InitialDialog,
@@ -12,6 +12,31 @@ import {
   ForgotPasswordDialog,
 } from ".";
 import { DialogParams, DialogAuthSteps, TAuthStep } from "..";
+import { useAuth } from "../../../contexts";
+
+const SENSITIVE_AUTH_QUERY_KEYS = [
+  "password",
+  "confirmPassword",
+  "password_confirmation",
+] as const;
+
+const AUTH_QUERY_KEYS = [
+  DialogParams.DIALOG,
+  DialogParams.STEP,
+  "email",
+  "otp",
+  "fullName",
+  "username",
+  "challenge_token",
+  "reset_password_token",
+  "message",
+  "error",
+  ...SENSITIVE_AUTH_QUERY_KEYS,
+] as const;
+
+const SENSITIVE_AUTH_QUERY_KEY_SET = new Set<string>(
+  SENSITIVE_AUTH_QUERY_KEYS,
+);
 
 // Map steps to their previous step
 const stepHistory: Record<string, TAuthStep | null> = {
@@ -27,6 +52,7 @@ const stepHistory: Record<string, TAuthStep | null> = {
 
 export const AuthDialog: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { isAuthenticated } = useAuth();
   const isOpen = searchParams.get(DialogParams.DIALOG) === DialogParams.AUTH;
 
   const rawStep = searchParams.get(DialogParams.STEP) || DialogAuthSteps.INITIAL;
@@ -42,17 +68,28 @@ export const AuthDialog: React.FC = () => {
     targetTimeMs: number;
   } | null>(null);
 
+  useEffect(() => {
+    const hasSensitiveParams = SENSITIVE_AUTH_QUERY_KEYS.some((key) =>
+      searchParams.has(key),
+    );
+
+    if (!isAuthenticated && !hasSensitiveParams) return;
+
+    const params = new URLSearchParams(searchParams);
+    const keysToDelete = isAuthenticated
+      ? AUTH_QUERY_KEYS
+      : SENSITIVE_AUTH_QUERY_KEYS;
+
+    keysToDelete.forEach((key) => params.delete(key));
+
+    setPassword("");
+    setConfirmPassword("");
+    setSearchParams(params, { replace: true });
+  }, [isAuthenticated, searchParams, setSearchParams]);
+
   const handleClose = () => {
     const params = new URLSearchParams(searchParams);
-    [
-      "dialog",
-      "step",
-      "email",
-      "otp",
-      "fullName",
-      "username",
-      "challenge_token",
-    ].forEach((key) => params.delete(key));
+    AUTH_QUERY_KEYS.forEach((key) => params.delete(key));
     setSearchParams(params, { replace: true });
     setPassword("");
     setConfirmPassword("");
@@ -66,11 +103,17 @@ export const AuthDialog: React.FC = () => {
     params.set("step", newStep);
     if (extra) {
       Object.entries(extra).forEach(([key, value]) => {
+        if (key === "password") {
+          setPassword(value);
+          return;
+        }
+        if (key === "confirmPassword") {
+          setConfirmPassword(value);
+          return;
+        }
+
         // Never store passwords in URL
-        if (
-          key !== "password" &&
-          key !== "confirmPassword"
-        ) {
+        if (!SENSITIVE_AUTH_QUERY_KEY_SET.has(key)) {
           params.set(key, value);
         }
       });
@@ -99,10 +142,7 @@ export const AuthDialog: React.FC = () => {
     const params = new URLSearchParams(searchParams);
     Object.entries(newParams).forEach(([key, value]) => {
       // Never store passwords in URL
-      if (
-        key !== "password" &&
-        key !== "confirmPassword"
-      ) {
+      if (!SENSITIVE_AUTH_QUERY_KEY_SET.has(key)) {
         if (value) params.set(key, value);
         else params.delete(key);
       }
@@ -110,7 +150,7 @@ export const AuthDialog: React.FC = () => {
     setSearchParams(params, { replace: true });
   };
 
-  if (!isOpen) return null;
+  if (!isOpen || isAuthenticated) return null;
 
   const renderStep = () => {
     switch (rawStep) {

@@ -15,7 +15,7 @@ export interface INotification {
 
 export const useSocket = () => {
   const { token, isAuthenticated } = useAuth();
-  const { success, error, info } = useToast();
+  const { success, error, info, warning } = useToast();
   const [notifications, setNotifications] = useState<INotification[]>([]);
 
   useEffect(() => {
@@ -55,6 +55,11 @@ export const useSocket = () => {
         return;
       }
 
+      if (toast.kind === ToastTypes.WARNING) {
+        warning(toast.message);
+        return;
+      }
+
       info(toast.message);
     };
 
@@ -64,7 +69,7 @@ export const useSocket = () => {
       SocketService.removeListener(handleNotification);
       // Don't disconnect here - let the effect handle it
     };
-  }, [token, isAuthenticated, success, error, info]);
+  }, [token, isAuthenticated, success, error, info, warning]);
 
   const sendMessage = useCallback(
     (channel: string, message: string, data: Record<string, unknown> = {}) => {

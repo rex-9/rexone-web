@@ -4,9 +4,7 @@ import type { TAiChatRole, TAiMessageStatus } from "./constants";
 export interface IChatRequest {
   message: string;
   room_id?: string;
-  system_prompt?: string;
-  temperature?: number;
-  max_tokens?: number;
+  profile_key?: string;
 }
 
 export interface IChatResponse {

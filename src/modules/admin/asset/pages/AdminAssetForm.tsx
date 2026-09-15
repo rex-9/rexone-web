@@ -1,8 +1,7 @@
-// src/modules/admin/asset/pages/AdminAssetForm.tsx
-
 import React, { useMemo, useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import type { IAssetChild } from "../../../../models";
 import type { IAdminAsset } from "../types";
 import {
@@ -88,12 +87,12 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   onCancel,
 }) => {
   const t = useTranslate();
+  const { isLoading, setLoading } = useLoading();
   const isCreate = mode === ADMIN_ACTIONS.CREATE;
 
   // Create Mode state
   const [fileItems, setFileItems] = useState<IFileItem[]>([]);
   const [uploadType, setUploadType] = useState<string>(ASSET_TYPES.GENERAL);
-  const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatusMessage, setUploadStatusMessage] = useState("");
   const [hasOversizedFiles, setHasOversizedFiles] = useState(false);
@@ -167,7 +166,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   };
 
   const handleRemoveFile = (index: number) => {
-    if (isUploading) return;
+    if (isLoading) return;
     setFileItems((prev) => {
       const target = prev[index];
       if (target?.previewUrl) {
@@ -178,7 +177,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   };
 
   const handleClearAllFiles = () => {
-    if (isUploading) return;
+    if (isLoading) return;
     fileItems.forEach((item) => {
       if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
     });
@@ -189,9 +188,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
     e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
-    if (fileItems.length === 0 || isUploading || !onUploadBatch) return;
+    if (fileItems.length === 0 || isLoading || !onUploadBatch) return;
 
-    setIsUploading(true);
+    setLoading(true, { overlay: false });
     setUploadProgress(0);
     setUploadStatusMessage("");
 
@@ -207,7 +206,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
     } catch (err: unknown) {
       setAlertMessage(err instanceof Error ? err.message : "Upload failed");
     } finally {
-      setIsUploading(false);
+      setLoading(false, { overlay: false });
     }
   };
 
@@ -442,7 +441,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     label: opt.label,
                   }))}
                   onValueChange={(val) => setUploadType(val)}
-                  disabled={isUploading}
+                  disabled={isLoading}
                 />
 
                 <FileInput
@@ -459,7 +458,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   )}
                   multiple
                   onFilesChange={handleFilesSelected}
-                  disabled={isUploading}
+                  disabled={isLoading}
                   helperText={t(
                     AppLocales.Admin.Assets.UploadDialog.FileLimitHint,
                     {
@@ -484,7 +483,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                         {UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT}) •{" "}
                         {formatAssetFileSize(totalSize)}
                       </span>
-                      {!isUploading && (
+                      {!isLoading && (
                         <Button
                           variant={ButtonVariants.TERTIARY}
                           size={ComponentSizes.SM}
@@ -529,7 +528,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                             </div>
                           </div>
 
-                          {!isUploading && (
+                          {!isLoading && (
                             <Button
                               variant={ButtonVariants.TERTIARY}
                               size={ComponentSizes.SM}
@@ -546,7 +545,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 )}
 
                 {/* Upload Progress */}
-                {isUploading && (
+                {isLoading && (
                   <div className="space-y-2 pt-2">
                     <ProgressBar
                       value={uploadProgress}
@@ -567,7 +566,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               <FormActionRow
                 cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
                 submitLabel={
-                  isUploading
+                  isLoading
                     ? t(
                         AppLocales.Admin.Assets.UploadDialog.Uploading,
                         "Uploading...",

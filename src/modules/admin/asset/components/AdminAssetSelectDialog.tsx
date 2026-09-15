@@ -5,6 +5,7 @@ import { Dialog, Button, SearchInput, Image, Badge } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import type { IAdminAsset } from "../types";
 import { formatAssetFileSize } from "../constants";
 import type { IApiPagination } from "../../../../models";
@@ -28,43 +29,45 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
   selectedAssetId,
 }) => {
   const t = useTranslate();
+  const { isLoading, setLoading } = useLoading();
   const [assets, setAssets] = useState<IAdminAsset[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState<IAdminAsset | null>(null);
 
   const limit = 12;
 
   const fetchAssets = useCallback(
     async (currentPage: number, searchTerm: string) => {
-      setIsLoading(true);
-      const params: Record<string, string | number> = {
-        page: currentPage,
-        limit,
-      };
+      setLoading(true, { overlay: false });
+      try {
+        const params: Record<string, string | number> = {
+          page: currentPage,
+          limit,
+        };
 
-      if (assetType) {
-        params.type = assetType;
-      }
+        if (assetType) {
+          params.type = assetType;
+        }
 
-      if (searchTerm.trim()) {
-        params.search = searchTerm.trim();
-      }
+        if (searchTerm.trim()) {
+          params.search = searchTerm.trim();
+        }
 
-      const result = await Admin.AssetController.getAssets(params);
-      setIsLoading(false);
-
-      if (result.success) {
-        setAssets(result.assets);
-        setPagination(result.pagination);
-      } else {
-        setAssets([]);
-        setPagination(null);
+        const result = await Admin.AssetController.getAssets(params);
+        if (result.success) {
+          setAssets(result.assets);
+          setPagination(result.pagination);
+        } else {
+          setAssets([]);
+          setPagination(null);
+        }
+      } finally {
+        setLoading(false, { overlay: false });
       }
     },
-    [assetType, limit],
+    [assetType, limit, setLoading],
   );
 
   useEffect(() => {
@@ -129,7 +132,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         </div>
 
         {/* Assets Grid */}
-        <div className="min-h-[300px] max-h-[420px] overflow-y-auto border border-base-200 rounded-xl p-3 bg-base-200/30">
+        <div className="min-h-75 max-h-105 overflow-y-auto border border-base-200 rounded-xl p-3 bg-base-200/30">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-64 gap-3 text-base-content/60">
               <iconsLib.arrowPath className="w-8 h-8 animate-spin text-primary" />
@@ -173,7 +176,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                       />
                       {isSelected && (
                         <div className="absolute top-1.5 right-1.5 bg-primary text-white rounded-full p-1 shadow-md">
-                          <iconsLib.checkr className="w-3 h-3 stroke-[3]" />
+                          <iconsLib.checkr className="w-3 h-3 stroke-3" />
                         </div>
                       )}
                     </div>

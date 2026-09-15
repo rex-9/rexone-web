@@ -89,6 +89,12 @@ import {
   AdminVersionEditPage,
   AdminVersionDetailPage,
   AdminUserVersionsPage,
+  AdminAiProfilesPage,
+  AdminAiProfileCreatePage,
+  AdminAiProfileDetailPage,
+  AdminAiProfileEditPage,
+  AdminAiRunsPage,
+  AdminAiRunDetailPage,
 } from "../modules/admin";
 import { AnalyticsPageView } from "./AnalyticsPageView";
 
@@ -385,6 +391,66 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.CHAT_MESSAGE_EDIT}
               element={<AdminChatMessageEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILES}
+              element={<AdminAiProfilesPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_DETAIL}
+              element={<AdminAiProfileDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_CREATE}
+              element={<AdminAiProfileCreatePage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.UPDATE}
+                resource={ADMIN_RESOURCES.AI_PROFILES}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_PROFILE_EDIT}
+              element={<AdminAiProfileEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.AI_RUNS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.AI_RUNS}
+              element={<AdminAiRunsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.AI_RUN_DETAIL}
+              element={<AdminAiRunDetailPage />}
             />
           </Route>
           <Route

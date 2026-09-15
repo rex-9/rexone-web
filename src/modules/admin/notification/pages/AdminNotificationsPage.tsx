@@ -44,6 +44,7 @@ import {
   BadgeVariants,
   ButtonSizes,
   ButtonTypes,
+  ButtonVariants,
   DropdownSizes,
 } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
@@ -531,28 +532,30 @@ export const AdminNotificationsPage: React.FC = () => {
                           {sortedRoles.length})
                         </span>
                         <div className="flex items-center gap-2 text-xs">
-                          <button
+                          <Button
                             type="button"
+                            variant={ButtonVariants.TERTIARY}
                             onClick={() =>
                               setValues((v) => ({
                                 ...v,
                                 role_ids: sortedRoles.map((r) => r.id),
                               }))
                             }
-                            className="text-primary hover:underline font-medium"
+                            className="!p-0 !min-h-0 text-primary hover:underline font-medium"
                           >
                             All
-                          </button>
+                          </Button>
                           <span className="opacity-30">•</span>
-                          <button
+                          <Button
                             type="button"
+                            variant={ButtonVariants.TERTIARY}
                             onClick={() =>
                               setValues((v) => ({ ...v, role_ids: [] }))
                             }
-                            className="text-base-content/60 hover:text-base-content font-medium"
+                            className="!p-0 !min-h-0 text-base-content/60 hover:text-base-content font-medium"
                           >
                             Clear
-                          </button>
+                          </Button>
                         </div>
                       </div>
 
@@ -560,13 +563,14 @@ export const AdminNotificationsPage: React.FC = () => {
                         {sortedRoles.map((role) => {
                           const isSelected = selectedRoleIdSet.has(role.id);
                           return (
-                            <button
+                            <Button
                               key={role.id}
                               type="button"
+                              variant={ButtonVariants.TERTIARY}
                               onClick={() => toggleRole(role.id)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-s font-medium transition-all ${
                                 isSelected
-                                  ? "bg-primary text-primary-content shadow-sm ring-1 ring-primary"
+                                  ? "!bg-primary !text-primary-content shadow-sm ring-1 ring-primary"
                                   : "bg-base-200/80 hover:bg-base-200 text-base-content/80 border border-base-300/50"
                               }`}
                             >
@@ -574,7 +578,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 <iconsLib.checkr className="w-3.5 h-3.5 shrink-0" />
                               )}
                               <span>{role.name}</span>
-                            </button>
+                            </Button>
                           );
                         })}
                       </div>
@@ -618,10 +622,11 @@ export const AdminNotificationsPage: React.FC = () => {
                               </div>
                             ) : recipientSuggestions.length > 0 ? (
                               recipientSuggestions.map((user) => (
-                                <button
+                                <Button
                                   key={user.id}
                                   type="button"
-                                  className="flex w-full items-center justify-between gap-2 px-3.5 py-2 text-left text-body-s hover:bg-primary/10 transition-colors"
+                                  variant={ButtonVariants.TERTIARY}
+                                  className="!flex !w-full !items-center !justify-between !gap-2 !px-3.5 !py-2 !text-left text-body-s hover:bg-primary/10 transition-colors !rounded-none"
                                   onMouseDown={(e) => {
                                     e.preventDefault();
                                     addUser(user.id);
@@ -636,7 +641,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                     </div>
                                   </div>
                                   <iconsLib.plus className="h-3.5 w-3.5 text-primary shrink-0" />
-                                </button>
+                                </Button>
                               ))
                             ) : recipientQuery.trim().length >=
                               RECIPIENT_SEARCH_MIN_LENGTH ? (
@@ -658,14 +663,15 @@ export const AdminNotificationsPage: React.FC = () => {
                               <span className="truncate max-w-37.5">
                                 {user.name || user.email || user.username}
                               </span>
-                              <button
+                              <Button
                                 type="button"
+                                variant={ButtonVariants.TERTIARY}
                                 onClick={() => removeUser(user.id)}
-                                className="text-base-content/50 hover:text-error"
+                                className="!p-0 !min-h-0 text-base-content/50 hover:text-error"
                                 title="Remove"
                               >
                                 <iconsLib.close className="h-3 w-3" />
-                              </button>
+                              </Button>
                             </span>
                           ))}
                         </div>
@@ -711,11 +717,12 @@ export const AdminNotificationsPage: React.FC = () => {
                               : "text-info";
 
                         return (
-                          <button
+                          <Button
                             key={field}
                             type="button"
+                            variant={ButtonVariants.TERTIARY}
                             onClick={() => updateValue(field, !isChecked)}
-                            className={`flex items-center justify-between px-3 py-2.5 rounded-lg border text-left transition-all ${
+                            className={`!flex !w-full !items-center !justify-between !px-3 !py-2.5 !rounded-lg border !text-left transition-all ${
                               isChecked
                                 ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content"
                                 : "border-base-300 bg-base-100 hover:bg-base-200/60 text-base-content/60"
@@ -746,7 +753,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 <iconsLib.checkr className="w-2.5 h-2.5" />
                               )}
                             </span>
-                          </button>
+                          </Button>
                         );
                       },
                     )}

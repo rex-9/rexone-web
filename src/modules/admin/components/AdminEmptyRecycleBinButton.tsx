@@ -4,6 +4,7 @@ import { ButtonSizes, ButtonVariants } from "../../../design/constants";
 import { iconsLib } from "../../../assets";
 import { ConfirmDialog } from "../../../design/components/overlay";
 import { AppLocales, useTranslate } from "../../../locales";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 import { cn } from "../../../design/helpers";
 
@@ -19,20 +20,20 @@ export const AdminEmptyRecycleBinButton: React.FC<
   IAdminEmptyRecycleBinButtonProps
 > = ({ onConfirm, count, disabled = false, isLoading = false, className }) => {
   const t = useTranslate();
+  const { isLoading: contextLoading, setLoading } = useLoading();
   const [isOpen, setIsOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   const handleConfirm = async () => {
-    setSubmitting(true);
+    setLoading(true, { overlay: false });
     try {
       await onConfirm();
       setIsOpen(false);
     } finally {
-      setSubmitting(false);
+      setLoading(false, { overlay: false });
     }
   };
 
-  const isBusy = isLoading || submitting;
+  const isBusy = isLoading || contextLoading;
 
   return (
     <>

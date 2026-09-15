@@ -81,7 +81,7 @@ export const SigninPasswordDialog: React.FC<ISigninPasswordDialogProps> = ({
       setHasFailureHistory(false);
       setPassword("");
       setError("");
-      navigate(AppRoutes.client.protected.HOME);
+      navigate(AppRoutes.client.protected.HOME, { replace: true });
     } else if (result.otpSent) {
       info(t(AppLocales.Auth.SignInPasscode.VerificationSent));
       navigateToStep(DialogAuthSteps.CONFIRM_EMAIL, { email });

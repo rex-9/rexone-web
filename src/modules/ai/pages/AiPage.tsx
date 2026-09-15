@@ -20,7 +20,7 @@ import { getUtcNowIso } from "../../../helpers";
 
 export const AiPage: React.FC = () => {
   const t = useTranslate();
-  const { success, error, info } = useToast();
+  const { success, error, info, warning } = useToast();
   const { isLoading, setLoading } = useLoading();
   const {
     liveText,
@@ -197,7 +197,7 @@ export const AiPage: React.FC = () => {
     }
 
     if (!message.content.trim()) {
-      error(t(AppLocales.Ai.TtsEmpty));
+      warning(t(AppLocales.Ai.TtsEmpty));
       return;
     }
 
@@ -273,7 +273,7 @@ export const AiPage: React.FC = () => {
         result.message!,
       ]);
       setIsProcessing(true);
-      success(t(AppLocales.Ai.Processing));
+      info(result.notice || t(AppLocales.Ai.Processing));
     } else {
       setInput(content);
       error(result.error || t(AppLocales.Ai.SendMessageFailed));

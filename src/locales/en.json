@@ -305,6 +305,7 @@
         "overview": "Overview",
         "commerce": "Commerce",
         "communication": "Communication",
+        "ai": "AI Control Panel",
         "iam": "IAM",
         "support": "Support",
         "observability": "Observability",
@@ -320,6 +321,8 @@
         "notifications": "Notifications",
         "chat_rooms": "Chat Rooms",
         "chat_messages": "Chat Messages",
+        "ai_profiles": "AI Profiles",
+        "ai_runs": "AI Runs",
         "users": "Users",
         "roles": "Roles",
         "feedback": "Feedback Inbox",
@@ -822,6 +825,104 @@
         "delete_message": "Failed to delete message",
         "load_message": "Failed to load message",
         "update_message": "Failed to update message"
+      }
+    },
+    "ai": {
+      "profiles_title": "AI Profiles",
+      "profiles_description": "Configure AI model profiles, parameters, and system prompts.",
+      "profiles_empty": "No AI profiles found",
+      "create_profile": "Create Profile",
+      "profile_create_title": "Create AI Profile",
+      "profile_create_description": "Define a new AI profile, execution limits, and instructions.",
+      "profile_edit_title": "Edit AI Profile",
+      "profile_edit_description": "Adjust execution parameters, context limits, and instructions.",
+      "profiles_table": {
+        "key": "Profile Key",
+        "name": "Name",
+        "provider": "Provider",
+        "model": "Model",
+        "temperature": "Temp",
+        "tokens": "Tokens (Out / Ctx)",
+        "status": "Status",
+        "created": "Created"
+      },
+      "filters": {
+        "all_statuses": "All Statuses",
+        "all_providers": "All Providers",
+        "all_models": "All Models",
+        "all_features": "All Features",
+        "search_profiles": "Search by name or key...",
+        "search_runs": "Search by model or feature..."
+      },
+      "custom_model": "Custom Model Identifier",
+      "custom_key": "Custom Profile Key",
+      "profile_detail": {
+        "title": "AI Profile Details",
+        "description": "View full profile configuration and parameters.",
+        "overview": "Profile Overview",
+        "parameters": "Execution Parameters",
+        "system_prompt": "System Prompt",
+        "no_system_prompt": "No system prompt configured for this profile.",
+        "settings": "Settings & Extra Config"
+      },
+      "profile_form": {
+        "key_label": "Profile Key",
+        "key_placeholder": "e.g. customer_support, code_assistant",
+        "provider_label": "Provider",
+        "name_label": "Profile Name",
+        "model_label": "Model Identifier",
+        "enabled_label": "Enabled",
+        "temperature_label": "Temperature",
+        "max_output_tokens_label": "Max Output Tokens",
+        "context_max_tokens_label": "Context Max Tokens",
+        "history_max_messages_label": "History Max Messages",
+        "timeout_seconds_label": "Timeout (seconds)",
+        "system_prompt_label": "System Prompt",
+        "system_prompt_placeholder": "Enter system instruction for this profile...",
+        "save_profile": "Save Profile",
+        "create_profile_submit": "Create Profile"
+      },
+      "runs_title": "AI Runs",
+      "runs_description": "Audit telemetry, execution performance, latency, and token consumption of AI runs.",
+      "runs_empty": "No AI runs found",
+      "runs_table": {
+        "id": "Run ID",
+        "feature": "Feature",
+        "profile": "Profile",
+        "provider": "Provider",
+        "model": "Model",
+        "status": "Status",
+        "tokens": "Tokens",
+        "latency": "Latency",
+        "created": "Created"
+      },
+      "run_detail": {
+        "title": "AI Run Diagnostics",
+        "description": "Detailed trace, execution metrics, and telemetry for this AI run.",
+        "overview": "Execution Overview",
+        "parameters": "Execution Parameters",
+        "diagnostics": "Performance & Tokens",
+        "user_id": "User ID",
+        "chat_message_id": "Chat Message ID",
+        "prompt_tokens": "Prompt Tokens",
+        "completion_tokens": "Completion Tokens",
+        "input_messages_count": "Input Messages Count",
+        "input_chars": "Input Characters",
+        "output_chars": "Output Characters",
+        "error": "Error Diagnostics",
+        "request_metadata": "Request Metadata"
+      },
+      "toasts": {
+        "profile_create_success": "AI profile created successfully",
+        "profile_update_success": "Profile updated successfully"
+      },
+      "errors": {
+        "load_profiles": "Failed to load AI profiles",
+        "load_profile": "Failed to load AI profile",
+        "create_profile": "Failed to create AI profile",
+        "update_profile": "Failed to update AI profile",
+        "load_runs": "Failed to load AI runs",
+        "load_run": "Failed to load AI run"
       }
     },
     "feedback": {

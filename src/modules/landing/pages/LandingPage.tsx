@@ -228,14 +228,15 @@ export const LandingPage: React.FC = () => {
 
           <div className="relative flex items-center max-w-7xl mx-auto px-2 sm:px-4">
             {/* Left Carousel Arrow */}
-            <button
+            <Button
               type="button"
+              variant={ButtonVariants.TERTIARY}
               aria-label="Previous Testimonial"
               onClick={handlePrevTestimonial}
-              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11 h-11 rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 !w-11 !h-11 !p-0 !rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronLeft className="w-5 h-5 stroke-[2.5]" />
-            </button>
+            </Button>
 
             {/* Carousel Cards Track */}
             <div
@@ -249,28 +250,30 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Right Carousel Arrow */}
-            <button
+            <Button
               type="button"
+              variant={ButtonVariants.TERTIARY}
               aria-label="Next Testimonial"
               onClick={handleNextTestimonial}
-              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11 h-11 rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 !w-11 !h-11 !p-0 !rounded-full bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronRight className="w-5 h-5 stroke-[2.5]" />
-            </button>
+            </Button>
           </div>
 
           {/* Dots Indicator */}
           <div className="flex justify-center items-center gap-2 mt-4">
             {LANDING_DATA.testimonials.map((_, i) => (
-              <button
+              <Button
                 key={i}
                 type="button"
+                variant={ButtonVariants.TERTIARY}
                 aria-label={`Go to testimonial ${i + 1}`}
                 onClick={() => handleTestimonialDotClick(i)}
-                className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                className={`!h-2 !min-h-0 !p-0 !rounded-full transition-all duration-300 cursor-pointer ${
                   activeTestimonialIdx === i
-                    ? "w-6 bg-primary shadow-[0_0_10px_var(--color-primary)] scale-110"
-                    : "w-2 bg-primary/25 hover:bg-primary/50"
+                    ? "!w-6 bg-primary shadow-[0_0_10px_var(--color-primary)] scale-110"
+                    : "!w-2 bg-primary/25 hover:bg-primary/50"
                 }`}
               />
             ))}
@@ -291,19 +294,16 @@ export const LandingPage: React.FC = () => {
               </div>
 
               <div className="resumeBox text-center lg:text-left pt-6">
-                <a
+                <Button
                   href={LANDING_DATA.cvUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  variant={ButtonVariants.NEON}
+                  size={ComponentSizes.LG}
+                  className="!py-3 !px-7 !text-lg tracking-wide font-bold"
                 >
-                  <Button
-                    variant={ButtonVariants.NEON}
-                    size={ComponentSizes.LG}
-                    className="!py-3 !px-7 !text-lg tracking-wide font-bold"
-                  >
-                    View / Download my Resume 📄
-                  </Button>
-                </a>
+                  View / Download my Resume 📄
+                </Button>
               </div>
             </div>
 

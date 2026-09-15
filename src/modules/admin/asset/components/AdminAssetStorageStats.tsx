@@ -15,6 +15,7 @@ import {
   ProgressBarVariants,
 } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
+import { useLoading } from "../../../../contexts/LoadingContext";
 import { formatAssetFileSize, STORAGE_PARTITION_VALUES } from "../constants";
 import type { IStorageStats } from "../types";
 import { Admin } from "../..";
@@ -27,17 +28,12 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
   className = "",
 }) => {
   const t = useTranslate();
+  const { isLoading, setLoading } = useLoading();
   const [stats, setStats] = useState<IStorageStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchStats = useCallback(async (isManualRefresh = false) => {
-    if (isManualRefresh) {
-      setIsRefreshing(true);
-    } else {
-      setLoading(true);
-    }
+    setLoading(true, { overlay: isManualRefresh });
     setError(null);
 
     const result = await Admin.AssetController.getStorageStats();
@@ -47,9 +43,8 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
       setError(result.error || "Failed to load storage statistics");
     }
 
-    setLoading(false);
-    setIsRefreshing(false);
-  }, []);
+    setLoading(false, { overlay: isManualRefresh });
+  }, [setLoading]);
 
   useEffect(() => {
     // Initial remote synchronization intentionally drives this component's loading state.
@@ -57,7 +52,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
     fetchStats();
   }, [fetchStats]);
 
-  if (loading && !stats) {
+  if (isLoading && !stats) {
     return (
       <div className={`space-y-4 ${className}`}>
         <div className="flex items-center justify-between">
@@ -145,14 +140,14 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
           size={ButtonSizes.SM}
           variant={ButtonVariants.TERTIARY}
           onClick={() => fetchStats(true)}
-          disabled={isRefreshing}
+          disabled={isLoading}
           className="text-xs text-base-content/70 hover:text-base-content"
           title={t(AppLocales.Admin.Assets.StorageStats.Refresh)}
         >
           <iconsLib.arrowPath
-            className={`w-4 h-4 mr-1.5 ${isRefreshing ? "animate-spin" : ""}`}
+            className={`w-4 h-4 mr-1.5 ${isLoading ? "animate-spin" : ""}`}
           />
-          {isRefreshing
+          {isLoading
             ? t(AppLocales.Admin.Assets.StorageStats.Refreshing)
             : t(AppLocales.Admin.Assets.StorageStats.Refresh)}
         </Button>

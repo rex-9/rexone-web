@@ -14,6 +14,9 @@ export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   size?: ComponentSize;
   fullWidth?: boolean;
   isLoading?: boolean;
+  href?: string;
+  target?: string;
+  rel?: string;
 }
 
 export const Button: React.FC<IButtonProps> = ({
@@ -23,6 +26,9 @@ export const Button: React.FC<IButtonProps> = ({
   isLoading = false,
   disabled = false,
   type = "button",
+  href,
+  target,
+  rel,
   className,
   children,
   ...props
@@ -53,36 +59,58 @@ export const Button: React.FC<IButtonProps> = ({
     [ComponentSizes.XL]: "px-8 py-4 text-body-l font-bold",
   };
 
+  const buttonClasses = cn(
+    "inline-flex items-center justify-center whitespace-nowrap select-none",
+    "font-medium transition-all duration-200 ease-out",
+    "rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
+    variants[variant],
+    sizes[size] || sizes[ComponentSizes.MD],
+    fullWidth && "w-full",
+    (disabled || isLoading) && "opacity-50 cursor-not-allowed",
+    isLoading && "cursor-wait",
+    className,
+  );
+
+  const neonBorders = isNeon && (
+    <>
+      <span className="absolute top-0 -left-full w-full h-px bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
+      <span className="absolute -top-full right-0 w-px h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
+      <span className="absolute bottom-0 -right-full w-full h-px bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
+      <span className="absolute -bottom-full left-0 w-px h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
+    </>
+  );
+
+  const innerContent = isLoading ? (
+    <span className="loading loading-spinner loading-sm" />
+  ) : (
+    children
+  );
+
+  if (href) {
+    const isBlank = target === "_blank";
+    return (
+      <a
+        href={href}
+        target={target}
+        rel={rel || (isBlank ? "noopener noreferrer" : undefined)}
+        className={buttonClasses}
+        onClick={props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>}
+      >
+        {neonBorders}
+        {innerContent}
+      </a>
+    );
+  }
+
   return (
     <button
       type={type}
       disabled={disabled || isLoading}
       {...props}
-      className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap select-none",
-        "font-medium transition-all duration-200 ease-out",
-        "rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
-        variants[variant],
-        sizes[size] || sizes[ComponentSizes.MD],
-        fullWidth && "w-full",
-        (disabled || isLoading) && "opacity-50 cursor-not-allowed",
-        isLoading && "cursor-wait",
-        className,
-      )}
+      className={buttonClasses}
     >
-      {isNeon && (
-        <>
-          <span className="absolute top-0 -left-full w-full h-px bg-gradient-to-r from-transparent to-primary animate-neon-border-1" />
-          <span className="absolute -top-full right-0 w-px h-full bg-gradient-to-b from-transparent to-primary animate-neon-border-2" />
-          <span className="absolute bottom-0 -right-full w-full h-px bg-gradient-to-l from-transparent to-primary animate-neon-border-3" />
-          <span className="absolute -bottom-full left-0 w-px h-full bg-gradient-to-t from-transparent to-primary animate-neon-border-4" />
-        </>
-      )}
-      {isLoading ? (
-        <span className="loading loading-spinner loading-sm" />
-      ) : (
-        children
-      )}
+      {neonBorders}
+      {innerContent}
     </button>
   );
 };

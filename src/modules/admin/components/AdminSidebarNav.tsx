@@ -103,6 +103,24 @@ const navSections: IAdminNavSection[] = [
     ],
   },
   {
+    id: "ai",
+    labelKey: AppLocales.Admin.Nav.Sections.Ai,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiProfiles,
+        to: AppRoutes.client.protected.admin.AI_PROFILES,
+        resource: ADMIN_RESOURCES.AI_PROFILES,
+        icon: iconsLib.sparkles,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiRuns,
+        to: AppRoutes.client.protected.admin.AI_RUNS,
+        resource: ADMIN_RESOURCES.AI_RUNS,
+        icon: iconsLib.chartBar,
+      },
+    ],
+  },
+  {
     id: "support",
     labelKey: AppLocales.Admin.Nav.Sections.Support,
     items: [
@@ -121,7 +139,7 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Logs,
         to: AppRoutes.client.protected.admin.LOGS,
-        resource: ADMIN_RESOURCES.CLIENTS,
+        resource: ADMIN_RESOURCES.LOGS,
         icon: iconsLib.document,
       },
     ],
@@ -139,13 +157,13 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
         to: AppRoutes.client.protected.admin.CHAT_ROOMS,
-        resource: ADMIN_RESOURCES.ROOMS,
+        resource: ADMIN_RESOURCES.CHAT_ROOMS,
         icon: iconsLib.chatBubbleLeftRight,
       },
       {
         labelKey: AppLocales.Admin.Nav.Items.ChatMessages,
         to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
-        resource: ADMIN_RESOURCES.MESSAGES,
+        resource: ADMIN_RESOURCES.CHAT_MESSAGES,
         icon: iconsLib.inboxStack,
       },
     ],

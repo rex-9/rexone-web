@@ -26,7 +26,7 @@ Built under the same creed as Rexone Core: **clear in thought, exact in structur
 ---
 
 > [!IMPORTANT]
-> **🏛️ Unified Ecosystem**: For the complete cross-platform architecture, feature parity matrix, and communication protocols between Core, Web, and Mobile, see **[ECOSYSTEM.md](ECOSYSTEM.md)**.
+> **🏛️ Unified Ecosystem**: For the complete cross-platform architecture, feature parity matrix, and communication protocols between Core, Web, and Mobile, see the canonical **[Ecosystem Architecture](https://github.com/rex-9/rexone-core/blob/dev/ECOSYSTEM.md)** and **[Visual Walkthrough](https://github.com/rex-9/rexone-core/blob/dev/docs/VISUAL_WALKTHROUGH.md)**.
 >
 > **📜 Constitutional Law**: All development must strictly adhere to the architecture, design system, and state laws in **[LAW.md](LAW.md)**. Zero exceptions.
 

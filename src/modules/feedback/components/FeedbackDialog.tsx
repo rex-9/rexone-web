@@ -21,7 +21,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
   onClose,
 }) => {
   const t = useTranslate();
-  const { success, error } = useToast();
+  const { success, error, warning } = useToast();
   const { isLoading, setLoading } = useLoading();
   const [content, setContent] = useState("");
   const [rating, setRating] = useState<number>(FEEDBACK_RATINGS.DEFAULT);
@@ -29,7 +29,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) {
-      error(t(AppLocales.Feedback.ErrorEmpty));
+      warning(t(AppLocales.Feedback.ErrorEmpty));
       return;
     }
 
