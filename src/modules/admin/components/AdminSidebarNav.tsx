@@ -155,6 +155,12 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.bellAlert,
       },
       {
+        labelKey: AppLocales.Admin.Nav.Items.UserNotifications,
+        to: AppRoutes.client.protected.admin.USER_NOTIFICATIONS,
+        resource: ADMIN_RESOURCES.USER_NOTIFICATIONS,
+        icon: iconsLib.bell,
+      },
+      {
         labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
         to: AppRoutes.client.protected.admin.CHAT_ROOMS,
         resource: ADMIN_RESOURCES.CHAT_ROOMS,

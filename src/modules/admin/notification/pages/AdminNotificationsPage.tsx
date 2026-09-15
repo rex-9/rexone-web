@@ -1,6 +1,7 @@
 // src/modules/admin/notifications/pages/AdminNotificationsPage.tsx
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
@@ -94,8 +95,31 @@ export const AdminNotificationsPage: React.FC = () => {
   const { isLoading, setLoading } = useLoading();
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab") as TNotificationAdminTab | null;
   const [activeTab, setActiveTab] = useState<TNotificationAdminTab>(
-    NOTIFICATION_ADMIN_TABS.BROADCAST,
+    tabParam && Object.values(NOTIFICATION_ADMIN_TABS).includes(tabParam)
+      ? tabParam
+      : NOTIFICATION_ADMIN_TABS.BROADCAST,
+  );
+
+  const handleTabChange = useCallback(
+    (tab: TNotificationAdminTab) => {
+      setActiveTab(tab);
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (tab === NOTIFICATION_ADMIN_TABS.BROADCAST) {
+            next.delete("tab");
+          } else {
+            next.set("tab", tab);
+          }
+          return next;
+        },
+        { replace: true },
+      );
+    },
+    [setSearchParams],
   );
 
   const tabItems = useMemo<ITabItem<TNotificationAdminTab>[]>(
@@ -426,7 +450,7 @@ export const AdminNotificationsPage: React.FC = () => {
       <Tabs<TNotificationAdminTab>
         items={tabItems}
         value={activeTab}
-        onChange={setActiveTab}
+        onChange={handleTabChange}
       />
 
       {activeTab === NOTIFICATION_ADMIN_TABS.TEMPLATES ? (
@@ -541,7 +565,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 role_ids: sortedRoles.map((r) => r.id),
                               }))
                             }
-                            className="!p-0 !min-h-0 text-primary hover:underline font-medium"
+                            className="p-0! min-h-0! text-primary hover:underline font-medium"
                           >
                             All
                           </Button>
@@ -552,7 +576,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             onClick={() =>
                               setValues((v) => ({ ...v, role_ids: [] }))
                             }
-                            className="!p-0 !min-h-0 text-base-content/60 hover:text-base-content font-medium"
+                            className="p-0! min-h-0! text-base-content/60 hover:text-base-content font-medium"
                           >
                             Clear
                           </Button>
@@ -570,7 +594,7 @@ export const AdminNotificationsPage: React.FC = () => {
                               onClick={() => toggleRole(role.id)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-s font-medium transition-all ${
                                 isSelected
-                                  ? "!bg-primary !text-primary-content shadow-sm ring-1 ring-primary"
+                                  ? "bg-primary! text-primary-content! shadow-sm ring-1 ring-primary"
                                   : "bg-base-200/80 hover:bg-base-200 text-base-content/80 border border-base-300/50"
                               }`}
                             >
@@ -626,7 +650,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                   key={user.id}
                                   type="button"
                                   variant={ButtonVariants.TERTIARY}
-                                  className="!flex !w-full !items-center !justify-between !gap-2 !px-3.5 !py-2 !text-left text-body-s hover:bg-primary/10 transition-colors !rounded-none"
+                                  className="flex! w-full! items-center! justify-between! gap-2! px-3.5! py-2! text-left! text-body-s hover:bg-primary/10 transition-colors rounded-none!"
                                   onMouseDown={(e) => {
                                     e.preventDefault();
                                     addUser(user.id);
@@ -667,7 +691,7 @@ export const AdminNotificationsPage: React.FC = () => {
                                 type="button"
                                 variant={ButtonVariants.TERTIARY}
                                 onClick={() => removeUser(user.id)}
-                                className="!p-0 !min-h-0 text-base-content/50 hover:text-error"
+                                className="p-0! min-h-0! text-base-content/50 hover:text-error"
                                 title="Remove"
                               >
                                 <iconsLib.close className="h-3 w-3" />
@@ -722,7 +746,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             type="button"
                             variant={ButtonVariants.TERTIARY}
                             onClick={() => updateValue(field, !isChecked)}
-                            className={`!flex !w-full !items-center !justify-between !px-3 !py-2.5 !rounded-lg border !text-left transition-all ${
+                            className={`flex! w-full! items-center! justify-between! px-3! py-2.5! rounded-lg border! text-left transition-all ${
                               isChecked
                                 ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content"
                                 : "border-base-300 bg-base-100 hover:bg-base-200/60 text-base-content/60"

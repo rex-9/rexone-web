@@ -193,7 +193,10 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
         header: t(AppLocales.Admin.Versions.Table.ForceUpdate),
         render: (version) =>
           version.is_force_update ? (
-            <StatusBadge status="urgent" label={t(AppLocales.Admin.Versions.Table.Force)} />
+            <StatusBadge
+              status="urgent"
+              label={t(AppLocales.Admin.Versions.Table.Force)}
+            />
           ) : (
             <span className="text-caption text-base-content opacity-50">—</span>
           ),
@@ -255,10 +258,6 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
                             version.id,
                           ),
                         ),
-                    },
-                    {
-                      type: ADMIN_ACTIONS.INSPECT,
-                      onClick: () => openVersionDetail(version.id),
                     },
                     {
                       type: ADMIN_ACTIONS.DISCARD,

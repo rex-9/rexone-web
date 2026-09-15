@@ -189,7 +189,7 @@ The client admin panel architecture provides a protected workspace for managing 
   - **Users**: User management (`/admin/users`), user creation (`/admin/users/create`), and user edit (`/admin/users/:id/edit`) powered by `AdminUserForm`.
   - **Roles**: Role and permission management (`/admin/roles`), role creation (`/admin/roles/create`), and role edit (`/admin/roles/:id/edit`) powered by `AdminRoleForm`.
   - **Products**: Product and pricing management (`/admin/products`), product creation (`/admin/products/create`), and product edit (`/admin/products/:id/edit`) powered by `AdminProductForm`.
-  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), and template edit (`/admin/notifications/:id/edit`) powered by `AdminNotificationForm`.
+  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), template edit (`/admin/notifications/:id/edit`), and dedicated user notifications management with recycle bin and detail page (`/admin/user-notifications`, `/admin/user-notifications/:id`, `/admin/user-notifications/bin`).
   - **Accesses**: Entitlements and access management (`/admin/accesses`), access grant console (`/admin/accesses/create`), and validity extension console (`/admin/accesses/:id/edit`) powered by `AdminAccessForm`.
   - **Assets**: Asset control center (`/admin/assets`), batch upload console (`/admin/assets/create`), asset detail (`/admin/assets/:id`), and asset edit console (`/admin/assets/:id/edit`) powered by `AdminAssetForm`. Canonical server-generated video thumbnails are consumed from the asset response and updated live through `asset_thumbnail_generated`; clients only show placeholders while generation is pending. Video and audio edit also support replacing a thumbnail and uploading an `.srt` subtitle (`POST /v1/admin/assets/:id/subtitle/upload`, same multipart `file` contract as thumbnail upload, non-video 10 MB limit). Nested thumbnail and subtitle use the shared `IChildAsset` shape (`id`, `url`, `status`, `size_bytes`) and are shown on detail and edit. List filters include `subtitle` type and format. Super admins additionally receive Garage and VPS capacity telemetry with separate object and byte usage for the `dev/`, `uat/`, and `prod/` storage partitions; regular admins never request or render these statistics.
   - **Versions**: Super-admin-only version catalogue (`/admin/versions`), create (`/admin/versions/create`), edit (`/admin/versions/:id/edit`), recycle bin (`/admin/versions/bin`), and user versions (`/admin/user-versions`, `GET /v1/admin/client/versions/user_versions`). Nested user versions for one version remain at `/admin/versions/:id/user-versions` (`GET /v1/admin/client/versions/:id/user_versions`). Updates use PUT. There is no hard delete.
@@ -489,9 +489,12 @@ All frontend environment variables are centralized through [`src/AppConfig.tsx`]
 | Protected | `/admin/assets/create`              | Asset upload console                        |
 | Protected | `/admin/assets/:id`                 | Asset detail (metadata, thumbnail, subtitle)|
 | Protected | `/admin/assets/:id/edit`            | Asset edit, compression, thumbnail, subtitle|
-| Protected | `/admin/notifications`              | Broadcast notification dispatch & templates |
+| Protected | `/admin/notifications`              | Broadcast notification dispatch and templates |
 | Protected | `/admin/notifications/create`       | Notification template creation console      |
 | Protected | `/admin/notifications/:id/edit`     | Notification template edit console          |
+| Protected | `/admin/user-notifications`         | User notifications inspection & lifecycle   |
+| Protected | `/admin/user-notifications/:id`     | User notification detail & lifecycle actions|
+| Protected | `/admin/user-notifications/bin`     | User notifications recycle bin              |
 | Protected | `/admin/chat/rooms`                 | Chat room moderation                        |
 | Protected | `/admin/chat/messages`              | Chat message moderation                     |
 | Protected | `/admin/feedback`                   | User feedback management                    |

@@ -50,6 +50,7 @@
     "react-clock": "^6.0.0",
     "react-dom": "^19.2.8",
     "react-i18next": "^17.0.13",
+    "react-is": "^19.3.0",
     "react-router-dom": "^7.18.3",
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",

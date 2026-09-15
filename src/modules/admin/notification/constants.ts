@@ -87,6 +87,25 @@ export const NOTIFICATION_ADMIN_TABS = {
   TEMPLATES: "templates",
 } as const;
 
+export const ADMIN_USER_NOTIFICATION_SORT_KEYS = {
+  CREATED_AT: "created_at",
+  READ_AT: "read_at",
+  TITLE: "title",
+  DISCARDED_AT: "discarded_at",
+} as const;
+
+export const ADMIN_USER_NOTIFICATION_STATUS_FILTERS = {
+  ALL: "all",
+  UNREAD: "unread",
+  READ: "read",
+} as const;
+
+export const ADMIN_USER_NOTIFICATION_CLIENT_FILTERS = {
+  ALL: "all",
+  WEB: "web",
+  MOBILE: "mobile",
+} as const;
+
 export type TNotificationAdminTab =
   (typeof NOTIFICATION_ADMIN_TABS)[keyof typeof NOTIFICATION_ADMIN_TABS];
 

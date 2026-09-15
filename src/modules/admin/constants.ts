@@ -45,6 +45,7 @@ export const ADMIN_RESOURCES = {
   ACCESSES: "accesses",
   ASSETS: "assets",
   NOTIFICATIONS: "notifications",
+  USER_NOTIFICATIONS: "user_notifications",
   FEEDBACKS: "feedbacks",
   ANALYTICS: "analytics",
   SPEECH: "speech",

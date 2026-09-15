@@ -59,6 +59,9 @@ import {
   AdminNotificationsPage,
   AdminNotificationCreatePage,
   AdminNotificationEditPage,
+  AdminUserNotificationsPage,
+  AdminUserNotificationDetailPage,
+  AdminDiscardedUserNotificationsPage,
   AdminProductCreatePage,
   AdminProductEditPage,
   AdminProductDetailPage,
@@ -490,6 +493,36 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.NOTIFICATION_EDIT}
               element={<AdminNotificationEditPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.USER_NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.USER_NOTIFICATIONS}
+              element={<AdminUserNotificationsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL}
+              element={<AdminUserNotificationDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.DELETE}
+                resource={ADMIN_RESOURCES.USER_NOTIFICATIONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN}
+              element={<AdminDiscardedUserNotificationsPage />}
             />
           </Route>
           <Route

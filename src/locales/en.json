@@ -319,6 +319,7 @@
         "subscriptions": "Subscriptions",
         "accesses": "Access",
         "notifications": "Notifications",
+        "user_notifications": "User Notifications",
         "chat_rooms": "Chat Rooms",
         "chat_messages": "Chat Messages",
         "ai_profiles": "AI Profiles",
@@ -1195,7 +1196,73 @@
           "save": "Save Changes",
           "create": "Create Template",
           "event_required": "Event identifier is required",
-          "name_required": "Template name is required"
+          "name_required": "Template name is required."
+        }
+      },
+      "user_notifications": {
+        "title": "User Notifications",
+        "recycle_title": "User Notifications Recycle Bin",
+        "description": "Inspect and manage in-app notifications dispatched across all registered users.",
+        "recycle_description": "Restore or permanently delete discarded user notifications.",
+        "search_placeholder": "Search notifications by title, message, or user email...",
+        "tabs": {
+          "active": "Active Notifications",
+          "recycle_bin": "Recycle Bin"
+        },
+        "filters": {
+          "client": "Platform",
+          "all_clients": "All Platforms",
+          "status": "Status",
+          "all_statuses": "All Statuses",
+          "unread": "Unread",
+          "read": "Read"
+        },
+        "columns": {
+          "recipient": "Recipient",
+          "notification": "Notification",
+          "platforms": "Platforms",
+          "status": "Status",
+          "sent_at": "Sent Date",
+          "discarded_at": "Discarded Date",
+          "actions": "Actions"
+        },
+        "empty_title": "No user notifications found",
+        "empty_desc": "Delivered user notifications will appear here once dispatched.",
+        "loading": "Loading user notifications...",
+        "delete_title": "Delete User Notification",
+        "delete_message": "Are you sure you want to permanently delete this notification? This action cannot be undone.",
+        "discard_title": "Move to Recycle Bin",
+        "discard_message": "Are you sure you want to move this notification to the recycle bin?",
+        "restore_title": "Restore User Notification",
+        "restore_message": "Are you sure you want to restore this notification?",
+        "toasts": {
+          "discard_success": "Notification moved to recycle bin",
+          "restore_success": "Notification restored successfully",
+          "destroy_success": "Notification permanently deleted",
+          "batch_discard_success": "{{count}} notifications moved to recycle bin",
+          "batch_restore_success": "{{count}} notifications restored successfully",
+          "batch_destroy_success": "{{count}} notifications permanently deleted",
+          "recycle_bin_emptied": "Recycle bin emptied successfully"
+        },
+        "detail": {
+          "title": "User Notification Details",
+          "description": "Inspect recipient, message content, async telemetry, and payload metadata.",
+          "recipient_section": "Recipient & Delivery",
+          "content_section": "Notification Content",
+          "operation_section": "Async Operation",
+          "metadata_section": "Payload Metadata (JSON)",
+          "recipient": "Recipient User",
+          "recipient_name": "Full Name",
+          "notification_title": "Title",
+          "notification_message": "Message Body",
+          "target_link": "Target Link",
+          "read_status": "Read Status",
+          "platforms": "Target Platforms",
+          "sent_at": "Sent Date",
+          "discarded_at": "Discarded Date",
+          "operation_id": "Operation ID",
+          "operation_type": "Operation Type",
+          "operation_status": "Operation Status"
         }
       }
     },

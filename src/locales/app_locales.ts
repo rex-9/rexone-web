@@ -150,6 +150,7 @@ export const AppLocales = {
         Subscriptions: "admin.nav.items.subscriptions",
         Accesses: "admin.nav.items.accesses",
         Notifications: "admin.nav.items.notifications",
+        UserNotifications: "admin.nav.items.user_notifications",
         ChatRooms: "admin.nav.items.chat_rooms",
         ChatMessages: "admin.nav.items.chat_messages",
         AiProfiles: "admin.nav.items.ai_profiles",
@@ -1087,6 +1088,101 @@ export const AppLocales = {
           Create: "admin.notifications.templates.dialog.create",
           EventRequired: "admin.notifications.templates.dialog.event_required",
           NameRequired: "admin.notifications.templates.dialog.name_required",
+        },
+      },
+      UserNotifications: {
+        Title: "admin.notifications.user_notifications.title",
+        RecycleTitle: "admin.notifications.user_notifications.recycle_title",
+        Description: "admin.notifications.user_notifications.description",
+        RecycleDescription:
+          "admin.notifications.user_notifications.recycle_description",
+        SearchPlaceholder:
+          "admin.notifications.user_notifications.search_placeholder",
+        Tabs: {
+          Active: "admin.notifications.user_notifications.tabs.active",
+          RecycleBin: "admin.notifications.user_notifications.tabs.recycle_bin",
+        },
+        Filters: {
+          Client: "admin.notifications.user_notifications.filters.client",
+          AllClients:
+            "admin.notifications.user_notifications.filters.all_clients",
+          Status: "admin.notifications.user_notifications.filters.status",
+          AllStatuses:
+            "admin.notifications.user_notifications.filters.all_statuses",
+          Unread: "admin.notifications.user_notifications.filters.unread",
+          Read: "admin.notifications.user_notifications.filters.read",
+        },
+        Columns: {
+          Recipient: "admin.notifications.user_notifications.columns.recipient",
+          Notification:
+            "admin.notifications.user_notifications.columns.notification",
+          Platforms: "admin.notifications.user_notifications.columns.platforms",
+          Status: "admin.notifications.user_notifications.columns.status",
+          SentAt: "admin.notifications.user_notifications.columns.sent_at",
+          DiscardedAt:
+            "admin.notifications.user_notifications.columns.discarded_at",
+          Actions: "admin.notifications.user_notifications.columns.actions",
+        },
+        EmptyTitle: "admin.notifications.user_notifications.empty_title",
+        EmptyDesc: "admin.notifications.user_notifications.empty_desc",
+        Loading: "admin.notifications.user_notifications.loading",
+        DeleteTitle: "admin.notifications.user_notifications.delete_title",
+        DeleteMessage: "admin.notifications.user_notifications.delete_message",
+        DiscardTitle: "admin.notifications.user_notifications.discard_title",
+        DiscardMessage:
+          "admin.notifications.user_notifications.discard_message",
+        RestoreTitle: "admin.notifications.user_notifications.restore_title",
+        RestoreMessage:
+          "admin.notifications.user_notifications.restore_message",
+        Toasts: {
+          DiscardSuccess:
+            "admin.notifications.user_notifications.toasts.discard_success",
+          RestoreSuccess:
+            "admin.notifications.user_notifications.toasts.restore_success",
+          DestroySuccess:
+            "admin.notifications.user_notifications.toasts.destroy_success",
+          BatchDiscardSuccess:
+            "admin.notifications.user_notifications.toasts.batch_discard_success",
+          BatchRestoreSuccess:
+            "admin.notifications.user_notifications.toasts.batch_restore_success",
+          BatchDestroySuccess:
+            "admin.notifications.user_notifications.toasts.batch_destroy_success",
+          RecycleBinEmptied:
+            "admin.notifications.user_notifications.toasts.recycle_bin_emptied",
+        },
+        Detail: {
+          Title: "admin.notifications.user_notifications.detail.title",
+          Description:
+            "admin.notifications.user_notifications.detail.description",
+          RecipientSection:
+            "admin.notifications.user_notifications.detail.recipient_section",
+          ContentSection:
+            "admin.notifications.user_notifications.detail.content_section",
+          OperationSection:
+            "admin.notifications.user_notifications.detail.operation_section",
+          MetadataSection:
+            "admin.notifications.user_notifications.detail.metadata_section",
+          Recipient: "admin.notifications.user_notifications.detail.recipient",
+          RecipientName:
+            "admin.notifications.user_notifications.detail.recipient_name",
+          NotificationTitle:
+            "admin.notifications.user_notifications.detail.notification_title",
+          NotificationMessage:
+            "admin.notifications.user_notifications.detail.notification_message",
+          TargetLink:
+            "admin.notifications.user_notifications.detail.target_link",
+          ReadStatus:
+            "admin.notifications.user_notifications.detail.read_status",
+          Platforms: "admin.notifications.user_notifications.detail.platforms",
+          SentAt: "admin.notifications.user_notifications.detail.sent_at",
+          DiscardedAt:
+            "admin.notifications.user_notifications.detail.discarded_at",
+          OperationId:
+            "admin.notifications.user_notifications.detail.operation_id",
+          OperationType:
+            "admin.notifications.user_notifications.detail.operation_type",
+          OperationStatus:
+            "admin.notifications.user_notifications.detail.operation_status",
         },
       },
     },

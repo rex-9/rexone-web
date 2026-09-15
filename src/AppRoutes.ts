@@ -57,6 +57,9 @@ class AppRoutes {
         NOTIFICATIONS: AppRoutes.admin("/notifications"),
         NOTIFICATION_CREATE: AppRoutes.admin("/notifications/create"),
         NOTIFICATION_EDIT: AppRoutes.admin("/notifications/:id/edit"),
+        USER_NOTIFICATIONS: AppRoutes.admin("/user-notifications"),
+        USER_NOTIFICATION_DETAIL: AppRoutes.admin("/user-notifications/:id"),
+        USER_NOTIFICATIONS_RECYCLE_BIN: AppRoutes.admin("/user-notifications/bin"),
         PRODUCTS: AppRoutes.admin("/products"),
         PRODUCT_DETAIL: AppRoutes.admin("/products/:id"),
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
@@ -211,6 +214,24 @@ class AppRoutes {
         NOTIFICATION_TEMPLATE_DISCARD: AppRoutes.adminApi("/notifications/:id"), // DELETE
         NOTIFICATION_TEMPLATE_UNDISCARD: AppRoutes.adminApi(
           "/notifications/:id/undiscard",
+        ), // POST
+        USER_NOTIFICATIONS: AppRoutes.adminApi("/user_notifications"), // GET
+        USER_NOTIFICATION_DETAIL: AppRoutes.adminApi("/user_notifications/:id"), // GET, DELETE
+        USER_NOTIFICATION_DISCARD: AppRoutes.adminApi(
+          "/user_notifications/:id/discard",
+        ), // POST
+        USER_NOTIFICATION_UNDISCARD: AppRoutes.adminApi(
+          "/user_notifications/:id/undiscard",
+        ), // POST
+        USER_NOTIFICATIONS_BIN: AppRoutes.adminApi("/user_notifications/bin"), // DELETE
+        USER_NOTIFICATIONS_DISCARD_BATCH: AppRoutes.adminApi(
+          "/user_notifications/discard_batch",
+        ), // POST
+        USER_NOTIFICATIONS_UNDISCARD_BATCH: AppRoutes.adminApi(
+          "/user_notifications/undiscard_batch",
+        ), // POST
+        USER_NOTIFICATIONS_DESTROY_BATCH: AppRoutes.adminApi(
+          "/user_notifications/destroy_batch",
         ), // POST
         PAYMENT_PRODUCTS: AppRoutes.adminApi("/payment/products"), // GET, POST
         PAYMENT_PRODUCT_DETAIL: AppRoutes.adminApi("/payment/products/:id"), // GET, PUT, DELETE

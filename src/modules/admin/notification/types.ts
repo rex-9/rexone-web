@@ -74,3 +74,40 @@ export interface IAdminNotificationDelivery {
   recipient_count: number;
   channels: NotificationDeliveryChannel[];
 }
+
+export interface IAdminUserNotification {
+  id: string;
+  user_id: string;
+  user_email?: string;
+  user_name?: string;
+  notification_id?: string | null;
+  notification_event?: string | null;
+  title: string;
+  message: string;
+  link?: string | null;
+  clients: string[];
+  metadata: Record<string, unknown>;
+  operation_id?: string | null;
+  operation_type?: string | null;
+  operation_status?: string | null;
+  read: boolean;
+  read_at?: string | null;
+  created_at: string;
+  updated_at?: string;
+  discarded_at?: string | null;
+}
+
+export interface IAdminUserNotificationListParams {
+  [key: string]: unknown;
+  page?: number;
+  limit?: number;
+  search?: string;
+  user_id?: string;
+  client?: string;
+  status?: string;
+  filter?: string;
+  view?: string;
+  discarded?: boolean | string;
+  sort?: string;
+  order?: string;
+}
