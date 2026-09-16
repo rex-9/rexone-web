@@ -15,6 +15,8 @@ Across all three repositories, the architecture adheres to one uncompromising do
 
 > 📜 **Constitutional Law**: For strict repository-specific engineering constraints and architectural rules, see **[LAW.md](LAW.md)**. All applications and derivative products built upon the **RexOne Ecosystem** (`rex-9`) must strictly adhere to these rules and protocols without exception. Developers are warmly encouraged to preserve ecosystem credit to support the project.
 >
+> 🌐 **Live Web Demo**: Explore the production web application preview at **[rexone.rex9.me](https://rexone.rex9.me)**.
+>
 > 🗺️ **Visual Walkthrough**: For the screenshot-driven, feature-by-feature tour of the ecosystem across Core, Web, Mobile, administration, and operations, see **[VISUAL_WALKTHROUGH.md](./docs/VISUAL_WALKTHROUGH.md)**.
 >
 > 🛡️ **Production Operations**: Use the **[Production Deployment Guide](docs/DEPLOYMENT.md)** together with **[DDoS and API Abuse Protection](docs/DDOS.md)**. Cloudflare, origin isolation, proxy limits, Rack Attack, and bounded application resources form one defense system.

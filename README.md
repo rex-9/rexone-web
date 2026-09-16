@@ -16,11 +16,12 @@ Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clea
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Sponsor rex-9](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/rex-9)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-rexone.rex9.me-FF2238?logo=firefox&logoColor=white)](https://rexone.rex9.me)
 [![CI](https://github.com/rex-9/rexone-web/actions/workflows/test.yml/badge.svg)](https://github.com/rex-9/rexone-web/actions/workflows/test.yml)
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
+[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
 
 </div>
 
