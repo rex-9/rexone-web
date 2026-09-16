@@ -13,20 +13,24 @@ import {
   ComponentSizes,
   TextLink,
 } from "../../../design";
+import { isRex9LandingDomain } from "../helpers";
 
 export interface ILandingNavProps {
   activeSection?: string;
   onSectionClick?: (sectionId: string) => void;
+  hideEnter?: boolean;
 }
 
 export const LandingNav: React.FC<ILandingNavProps> = ({
   activeSection = "#Greetings",
   onSectionClick,
+  hideEnter,
 }) => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const currentSection = activeSection;
+  const shouldHideEnter = hideEnter ?? isRex9LandingDomain();
 
   const navItems = [
     { label: "Greetings", href: "#Greetings" },
@@ -105,13 +109,15 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
           </div>
 
           {/* Right: Enter Button */}
-          <Button
-            variant={ButtonVariants.PRIMARY}
-            size={ComponentSizes.LG}
-            onClick={handleEnterClick}
-          >
-            Enter
-          </Button>
+          {!shouldHideEnter && (
+            <Button
+              variant={ButtonVariants.PRIMARY}
+              size={ComponentSizes.LG}
+              onClick={handleEnterClick}
+            >
+              Enter
+            </Button>
+          )}
         </nav>
 
         {/* Mobile Navigation Header */}
@@ -134,14 +140,16 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
 
           {/* Right: Enter & Toggle */}
           <div className="flex items-center gap-2">
-            <Button
-              variant={ButtonVariants.PRIMARY}
-              size={ComponentSizes.SM}
-              onClick={handleEnterClick}
-              className="py-1! px-4! text-xs font-primary"
-            >
-              Enter
-            </Button>
+            {!shouldHideEnter && (
+              <Button
+                variant={ButtonVariants.PRIMARY}
+                size={ComponentSizes.SM}
+                onClick={handleEnterClick}
+                className="py-1! px-4! text-xs font-primary"
+              >
+                Enter
+              </Button>
+            )}
 
             <Button
               variant={ButtonVariants.TERTIARY}

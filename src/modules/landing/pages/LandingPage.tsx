@@ -17,7 +17,11 @@ import { Button } from "../../../design/components/button";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
 import { images, iconsLib } from "../../../assets";
 
-export const LandingPage: React.FC = () => {
+export interface ILandingPageProps {
+  hideEnter?: boolean;
+}
+
+export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
   const [activeSection, setActiveSection] = useState("#Greetings");
   const [activeTestimonialIdx, setActiveTestimonialIdx] = useState(0);
   const testimonialsTrackRef = React.useRef<HTMLDivElement>(null);
@@ -152,6 +156,7 @@ export const LandingPage: React.FC = () => {
       <LandingNav
         activeSection={activeSection}
         onSectionClick={handleScrollToSection}
+        hideEnter={hideEnter}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
