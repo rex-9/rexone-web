@@ -120,6 +120,7 @@ cleanup_test_data() {
   echo "🧹 Cleaning up test users from database..."
   docker exec dev-rexone-core-api bin/rails runner "User.where('email LIKE ? OR email LIKE ?', 'e2e-%', '%@rexone.test').destroy_all" 2>/dev/null || true
 }
+
 ensure_test_users() {
   docker exec dev-rexone-core-api bin/rails runner "
     just = User.find_or_initialize_by(email: 'just@admin.com')
@@ -138,6 +139,9 @@ ensure_test_users() {
   " 2>/dev/null || true
 }
 
+trap cleanup_test_data EXIT
+
+cleanup_test_data
 ensure_test_users
 
 npx playwright test "$TARGET" "${EXTRA_ARGS[@]}"

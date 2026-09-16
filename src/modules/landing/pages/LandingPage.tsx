@@ -11,6 +11,7 @@ import {
   TestimonialCard,
   ContactForm,
   SponsorCard,
+  DoctrineCard,
 } from "../components";
 import { Button } from "../../../design/components/button";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
@@ -214,47 +215,7 @@ export const LandingPage: React.FC = () => {
           </div>
 
           {/* The Sovereign Creed Banner - The Heart of RexOne */}
-          <div className="relative rounded-3xl bg-glass-card/85 backdrop-blur-xl border border-glass-border p-6 sm:p-10 mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] text-center overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(255,34,56,0.3)]">
-            {/* Ambient Background Glows */}
-            <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-primary-dark/25 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="relative z-10 max-w-3xl mx-auto space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary-light text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-[0_0_12px_rgba(255,34,56,0.25)]">
-                <iconsLib.sparkles className="w-4 h-4 text-primary" />
-                <span>The Sovereign Doctrine</span>
-              </div>
-
-              <blockquote className="font-display text-2xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_12px_var(--color-glow-white),0_0_25px_var(--color-primary),0_0_50px_var(--color-primary-dark)] py-1">
-                “Start from One. Not from Zero.”
-              </blockquote>
-
-              <div className="w-24 h-0.5 mx-auto bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]" />
-
-              <p className="text-sm sm:text-base text-white/80 leading-relaxed font-primary">
-                Every new endeavor shouldn&apos;t mean burning money
-                repetitively by wasting AI tokens on weak architecture or
-                rebuilding foundation from scratch. RexOne unifies backend, web,
-                and mobile into an immutable, battle-tested trinity—forged under
-                Constitutional Law with zero technical debt.
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  RexOne Core • Rails 8 API
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  RexOne Web • React 19 Client
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  RexOne Mobile • Flutter Vanguard
-                </span>
-              </div>
-            </div>
-          </div>
+          <DoctrineCard className="mb-10" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
             {LANDING_DATA.projects.map((project) => (

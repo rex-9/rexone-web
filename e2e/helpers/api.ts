@@ -104,11 +104,19 @@ export async function deleteUserAccount(token: string): Promise<boolean> {
 }
 
 /**
- * Clean up a test user by attempting to sign in and delete their account via standard routes.
+ * Clean up a test user by deleting their account from the test database.
  */
 export async function cleanupUser(email?: string): Promise<void> {
-  void email;
-  // Best-effort cleanup placeholder
+  if (!email) return;
+  try {
+    const { exec } = await import("node:child_process");
+    const sanitizedEmail = email.replace(/['"\\]/g, "");
+    exec(
+      `docker exec dev-rexone-core-api bin/rails runner "User.find_by(email: '${sanitizedEmail}')&.destroy"`
+    );
+  } catch {
+    // Best-effort cleanup placeholder
+  }
 }
 
 /**

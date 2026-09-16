@@ -8,3 +8,4 @@ export { ProjectCard } from "./ProjectCard";
 export { TestimonialCard } from "./TestimonialCard";
 export { ContactForm } from "./ContactForm";
 export { SponsorCard } from "./SponsorCard";
+export { DoctrineCard } from "./DoctrineCard";

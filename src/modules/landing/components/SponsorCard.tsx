@@ -75,7 +75,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/5 border border-glass-border text-white/70">
               <iconsLib.shieldCheck className="w-3 h-3 text-white/80" />
-              MIT Licensed
+              Apache 2.0 Licensed
             </span>
           </div>
         </div>
