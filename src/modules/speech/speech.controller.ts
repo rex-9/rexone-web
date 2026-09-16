@@ -57,7 +57,7 @@ export class SpeechController {
   }
 
   /**
-   * Transcribe an audio file or Blob using Rexone Core STT.
+   * Transcribe an audio file or Blob using RexOne Core STT.
    * Usable across any upload form, feedback voice note, or media recorder.
    */
   static async transcribeAudio(

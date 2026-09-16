@@ -1,7 +1,7 @@
 // src/design/elements/index.ts
 
 /**
- * Rexone Design System - Atoms & Elements
+ * RexOne Design System - Atoms & Elements
  *
  * Foundation tokens exported from atoms.
  * Sourced by Tailwind config and UI components.

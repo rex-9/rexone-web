@@ -1,4 +1,4 @@
-# 📊 Rexone Analytics System & Developer Guide
+# 📊 RexOne Analytics System & Developer Guide
 
 ### A unified, high-performance operational analytics engine for business telemetry, KPIs, and time-series visualizers.
 
@@ -22,7 +22,7 @@ flowchart TD
         Hook["useAnalytics(period, customDates)"]
         Helper["analyticsDate.helper (UTC -> Local TZ)"]
         Charts["Recharts Visualizers (Area / Bar / Pie / Line)"]
-        
+
         UI --> Hook
         Hook --> Helper
         Hook --> Charts
@@ -32,7 +32,7 @@ flowchart TD
         Controller["V1::Admin::AnalyticsController#read_overview"]
         Service["AnalyticsService::Overview"]
         DB[(PostgreSQL 18)]
-        
+
         Controller --> Service
         Service --> DB
     end
@@ -47,11 +47,11 @@ flowchart TD
 
 Every analytics query flows through [`AnalyticsService::Overview`](file:///Users/rex/Desktop/Dev/rexone/rexone-core/app/services/analytics_service/overview.rb), querying real domain models:
 
-| Section | Method | Output Shape | Existing Models Queried |
-|---|---|---|---|
-| **KPIs** | `build_kpis` | `Hash<Symbol, Numeric>` | `User.kept`, `Payment::Transaction.kept`, `Payment::Subscription.kept`, `Chat::Message.kept`, `Feedback.kept`, `Log::Client.kept`, `Asset.all`. |
-| **Time Series** | `build_time_series` | `Array<Hash>` | Chronological data points grouped by UTC buckets (`hourly`, `daily`, `monthly`) based on date range duration. |
-| **Breakdowns** | `build_breakdowns` | `Hash<Symbol, Hash>` | Categorical distributions (e.g. feedback ratings 1..10, subscriptions by interval, client errors by platform). |
+| Section         | Method              | Output Shape            | Existing Models Queried                                                                                                                         |
+| --------------- | ------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **KPIs**        | `build_kpis`        | `Hash<Symbol, Numeric>` | `User.kept`, `Payment::Transaction.kept`, `Payment::Subscription.kept`, `Chat::Message.kept`, `Feedback.kept`, `Log::Client.kept`, `Asset.all`. |
+| **Time Series** | `build_time_series` | `Array<Hash>`           | Chronological data points grouped by UTC buckets (`hourly`, `daily`, `monthly`) based on date range duration.                                   |
+| **Breakdowns**  | `build_breakdowns`  | `Hash<Symbol, Hash>`    | Categorical distributions (e.g. feedback ratings 1..10, subscriptions by interval, client errors by platform).                                  |
 
 ---
 
@@ -69,7 +69,7 @@ Edit [`app/services/analytics_service/overview.rb`](file:///Users/rex/Desktop/De
 # 1. Add KPI & Delta Calculation using real models and domain constants
 def build_kpis
   # ... existing KPIs ...
-  
+
   # Current period vs Previous period using real Asset model
   current_assets_count = Asset.uploaded.where(created_at: time_range).count
   prev_assets_count    = Asset.uploaded.where(created_at: prev_time_range).count
@@ -84,7 +84,7 @@ end
 # 2. Add Time-Series Aggregation
 def build_time_series
   buckets = generate_bucket_keys
-  
+
   # Group by bucket in UTC using group_count helper
   assets_by_bucket = group_count(Asset.uploaded.where(created_at: time_range))
 
@@ -140,6 +140,7 @@ admin_analytics_overview_response: object(
 ```
 
 Regenerate Swagger:
+
 ```bash
 docker exec dev-rexone-core-api bundle exec rake rswag:specs:swaggerize
 ```
@@ -184,53 +185,88 @@ Create a component in [`rexone-web/src/modules/admin/analytics/components/`](fil
 
 ```tsx
 // src/modules/admin/analytics/components/AssetUploadsChart.tsx
-import React from 'react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { IAnalyticsTimeSeriesPoint } from '../types';
-import { formatUtcToLocalLabel } from '../helpers/analyticsDate.helper';
+import React from "react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
+import { IAnalyticsTimeSeriesPoint } from "../types";
+import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
 
 interface IAssetUploadsChartProps {
   data: IAnalyticsTimeSeriesPoint[];
-  grain?: 'hourly' | 'daily' | 'monthly';
+  grain?: "hourly" | "daily" | "monthly";
 }
 
-export const AssetUploadsChart: React.FC<IAssetUploadsChartProps> = ({ data, grain = 'daily' }) => {
+export const AssetUploadsChart: React.FC<IAssetUploadsChartProps> = ({
+  data,
+  grain = "daily",
+}) => {
   return (
     <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-5">
       <div className="mb-4">
-        <h3 className="text-body-m font-semibold text-base-content">Media & Asset Uploads</h3>
-        <p className="text-caption text-base-content opacity-60">Storage asset creation volume over time</p>
+        <h3 className="text-body-m font-semibold text-base-content">
+          Media & Asset Uploads
+        </h3>
+        <p className="text-caption text-base-content opacity-60">
+          Storage asset creation volume over time
+        </p>
       </div>
 
       <div className="h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
             <defs>
               <linearGradient id="assetGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.4} />
                 <stop offset="95%" stopColor="#38BDF8" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-base-300" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="currentColor"
+              className="text-base-300"
+            />
             <XAxis
               dataKey="date"
               tickFormatter={(val: string) => formatUtcToLocalLabel(val, grain)}
-              tick={{ fill: 'currentColor', fontSize: 12, opacity: 0.6 }}
+              tick={{ fill: "currentColor", fontSize: 12, opacity: 0.6 }}
             />
-            <YAxis tick={{ fill: 'currentColor', fontSize: 12, opacity: 0.6 }} />
+            <YAxis
+              tick={{ fill: "currentColor", fontSize: 12, opacity: 0.6 }}
+            />
             <Tooltip
               content={({ active, payload, label }) => {
                 if (!active || !payload?.length) return null;
                 const point = payload[0].payload as IAnalyticsTimeSeriesPoint;
                 return (
                   <div className="rounded-md border border-base-300 bg-base-100 p-3 shadow-xl">
-                    <p className="text-caption font-semibold text-base-content">{formatUtcToLocalLabel(String(label), grain)}</p>
-                    <p className="mt-1 text-body-m font-bold text-info">{point.uploaded_assets ?? 0} uploads</p>
+                    <p className="text-caption font-semibold text-base-content">
+                      {formatUtcToLocalLabel(String(label), grain)}
+                    </p>
+                    <p className="mt-1 text-body-m font-bold text-info">
+                      {point.uploaded_assets ?? 0} uploads
+                    </p>
                   </div>
                 );
               }}
             />
-            <Area type="monotone" dataKey="uploaded_assets" stroke="#38BDF8" strokeWidth={2} fill="url(#assetGradient)" />
+            <Area
+              type="monotone"
+              dataKey="uploaded_assets"
+              stroke="#38BDF8"
+              strokeWidth={2}
+              fill="url(#assetGradient)"
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -256,17 +292,17 @@ Mount it in [`AdminAnalyticsPage.tsx`](file:///Users/rex/Desktop/Dev/rexone/rexo
 
 The analytics engine automatically maps presets defined in `AnalyticsConstants::Period`:
 
-| Period Constant | Query String | Duration | Grain Constant | Comparison Window (`prev_time_range`) |
-|---|---|---|---|---|
-| `Period::TODAY` | `period=today` | Current day (00:00 - 23:59 UTC) | `Grain::HOURLY` | Yesterday (same 24h window) |
-| `Period::YESTERDAY` | `period=yesterday` | Previous day (00:00 - 23:59 UTC) | `Grain::HOURLY` | 2 days ago |
-| `Period::SEVEN_DAYS` | `period=7d` | Past 7 days | `Grain::DAILY` | Preceding 7 days (7d to 14d ago) |
-| `Period::THIRTY_DAYS` | `period=30d` | Past 30 days (default) | `Grain::DAILY` | Preceding 30 days (30d to 60d ago) |
-| `Period::THIS_MONTH` | `period=this_month` | Current month-to-date | `Grain::DAILY` | Last month full duration |
-| `Period::LAST_MONTH` | `period=last_month` | Complete previous month | `Grain::DAILY` | Two months ago |
-| `Period::THIS_YEAR` | `period=this_year` | Current year-to-date | `Grain::MONTHLY` | Previous complete calendar year |
-| `Period::LAST_YEAR` | `period=last_year` | Complete previous year | `Grain::MONTHLY` | Two years ago |
-| `Period::CUSTOM` | `period=custom&start_date=...&end_date=...` | Arbitrary date picker | Auto: `<=2d` hourly, `<=90d` daily, `>90d` monthly | Exact matching duration immediately preceding `start_date` |
+| Period Constant       | Query String                                | Duration                         | Grain Constant                                     | Comparison Window (`prev_time_range`)                      |
+| --------------------- | ------------------------------------------- | -------------------------------- | -------------------------------------------------- | ---------------------------------------------------------- |
+| `Period::TODAY`       | `period=today`                              | Current day (00:00 - 23:59 UTC)  | `Grain::HOURLY`                                    | Yesterday (same 24h window)                                |
+| `Period::YESTERDAY`   | `period=yesterday`                          | Previous day (00:00 - 23:59 UTC) | `Grain::HOURLY`                                    | 2 days ago                                                 |
+| `Period::SEVEN_DAYS`  | `period=7d`                                 | Past 7 days                      | `Grain::DAILY`                                     | Preceding 7 days (7d to 14d ago)                           |
+| `Period::THIRTY_DAYS` | `period=30d`                                | Past 30 days (default)           | `Grain::DAILY`                                     | Preceding 30 days (30d to 60d ago)                         |
+| `Period::THIS_MONTH`  | `period=this_month`                         | Current month-to-date            | `Grain::DAILY`                                     | Last month full duration                                   |
+| `Period::LAST_MONTH`  | `period=last_month`                         | Complete previous month          | `Grain::DAILY`                                     | Two months ago                                             |
+| `Period::THIS_YEAR`   | `period=this_year`                          | Current year-to-date             | `Grain::MONTHLY`                                   | Previous complete calendar year                            |
+| `Period::LAST_YEAR`   | `period=last_year`                          | Complete previous year           | `Grain::MONTHLY`                                   | Two years ago                                              |
+| `Period::CUSTOM`      | `period=custom&start_date=...&end_date=...` | Arbitrary date picker            | Auto: `<=2d` hourly, `<=90d` daily, `>90d` monthly | Exact matching duration immediately preceding `start_date` |
 
 ---
 

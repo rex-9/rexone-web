@@ -1,9 +1,9 @@
 // src/design/examples.tsx
 
 /**
- * Rexone Design System - Usage Examples
+ * RexOne Design System - Usage Examples
  *
- * Demonstrates standard Tailwind CSS & DaisyUI class usage with Rexone design tokens
+ * Demonstrates standard Tailwind CSS & DaisyUI class usage with RexOne design tokens
  * and official Design System wrapper components.
  *
  * ⚠️ NEVER use raw HTML `<input>`, `<button>`, `<img>`, `<video>`, `<a>`, or `<textarea>`.
@@ -223,7 +223,7 @@ export const CompletePageExample: React.FC = () => {
   return (
     <div className="bg-base-100 min-h-screen p-6 sm:p-8 text-base-content flex items-center justify-center">
       <div className="max-w-md w-full">
-        <FormContainer title="✨ Rexone ✨">
+        <FormContainer title="✨ RexOne ✨">
           <div className="flex justify-center my-2">
             <Asset asset={icons.logo} className="h-12 w-12" />
           </div>

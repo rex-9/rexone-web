@@ -1,7 +1,7 @@
 // src/design/elements/motion.ts
 
 /**
- * Rexone Design System - Motion Tokens
+ * RexOne Design System - Motion Tokens
  *
  * Simple, consistent animation values for Tailwind
  */

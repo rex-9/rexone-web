@@ -1,5 +1,5 @@
 /**
- * Rexone Design System - TextArea Molecule
+ * RexOne Design System - TextArea Molecule
  *
  * Auto-expanding textarea with same visual language as input fields.
  * Supports Ctrl+Enter and Cmd+Enter to submit forms or focus next inputs.

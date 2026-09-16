@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Rexone Web — E2E Test Runner (Playwright)
+# RexOne Web — E2E Test Runner (Playwright)
 #
 # Usage:
 #   ./scripts/test_e2e.sh [flow|file] [options]
@@ -35,7 +35,7 @@ EXTRA_ARGS=()
 for arg in "$@"; do
   case "$arg" in
     --help)
-      echo "Rexone Web — E2E Test Runner"
+      echo "RexOne Web — E2E Test Runner"
       echo ""
       echo "Usage: ./scripts/test_e2e.sh [flow|file] [--headed|--ui|--debug]"
       echo ""

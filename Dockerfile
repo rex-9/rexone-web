@@ -1,5 +1,5 @@
 # rexone-web/Dockerfile
-# Multi-stage production build for Rexone Web
+# Multi-stage production build for RexOne Web
 
 # ============================================================
 # Stage 1: Build static assets

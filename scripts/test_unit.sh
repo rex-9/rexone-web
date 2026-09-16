@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Rexone Web — Unit Test Runner (Vitest)
+# RexOne Web — Unit Test Runner (Vitest)
 #
 # Usage:
 #   ./scripts/test_unit.sh [filter] [options]
@@ -19,7 +19,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 echo "===================================================="
-echo " ⚡ Rexone Web — Unit Tests (Vitest)"
+echo " ⚡ RexOne Web — Unit Tests (Vitest)"
 echo "===================================================="
 
 npx vitest run "$@"

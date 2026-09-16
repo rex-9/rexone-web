@@ -1,7 +1,7 @@
 // src/design/constants/sizes.constants.ts
 
 /**
- * Rexone Design System - Size Constants
+ * RexOne Design System - Size Constants
  */
 
 export const ComponentSizes = {

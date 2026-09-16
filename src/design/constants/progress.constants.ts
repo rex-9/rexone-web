@@ -1,7 +1,7 @@
 // src/design/constants/progress.constants.ts
 
 /**
- * Rexone Design System - ProgressBar Constants & Types
+ * RexOne Design System - ProgressBar Constants & Types
  */
 
 export const ProgressBarSizes = {

@@ -1,5 +1,5 @@
 /**
- * Rexone Design System - Toast Notification
+ * RexOne Design System - Toast Notification
  * Uses DaisyUI alert components with consistent iconsLib icons
  */
 

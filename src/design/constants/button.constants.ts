@@ -1,7 +1,7 @@
 // src/design/constants/button.constants.ts
 
 /**
- * Rexone Design System - Button Constants & Types
+ * RexOne Design System - Button Constants & Types
  */
 
 export const ButtonVariants = {

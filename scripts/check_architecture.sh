@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Rexone Web — Architecture Contract Check
+# RexOne Web — Architecture Contract Check
 #
 # Usage:
 #   ./scripts/check_architecture.sh

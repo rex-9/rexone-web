@@ -2,7 +2,7 @@
 import { colors } from "./colors";
 
 /**
- * Rexone Design System - Animation Keyframes & Motion
+ * RexOne Design System - Animation Keyframes & Motion
  * Sourced directly from Rex9 design system
  */
 

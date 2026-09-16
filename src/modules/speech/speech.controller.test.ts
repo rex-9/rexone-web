@@ -27,10 +27,10 @@ describe("SpeechController", () => {
     it("returns success when SpeechService.playText resolves", async () => {
       vi.mocked(SpeechService.playText).mockResolvedValue();
 
-      const result = await SpeechController.playText("Hello Rexone");
+      const result = await SpeechController.playText("Hello RexOne");
 
       expect(SpeechService.playText).toHaveBeenCalledWith(
-        "Hello Rexone",
+        "Hello RexOne",
         undefined,
       );
       expect(result).toEqual({ success: true });
@@ -41,7 +41,7 @@ describe("SpeechController", () => {
         new Error("Audio play failed"),
       );
 
-      const result = await SpeechController.playText("Hello Rexone");
+      const result = await SpeechController.playText("Hello RexOne");
 
       expect(result.success).toBe(false);
       expect(result.error).toBe("Audio play failed");

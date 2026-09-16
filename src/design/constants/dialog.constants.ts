@@ -1,7 +1,7 @@
 // src/design/constants/dialog.constants.ts
 
 /**
- * Rexone Design System - Dialog Variants
+ * RexOne Design System - Dialog Variants
  */
 
 export const DialogVariants = {

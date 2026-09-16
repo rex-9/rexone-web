@@ -1,5 +1,5 @@
 /**
- * Rexone Design System - Input Field Molecule
+ * RexOne Design System - Input Field Molecule
  *
  * Standard text input with label, helper text, and error states
  */

@@ -1,7 +1,7 @@
 // src/design/constants/badge.constants.ts
 
 /**
- * Rexone Design System - Badge Constants & Categories
+ * RexOne Design System - Badge Constants & Categories
  */
 
 export const BadgeVariants = {

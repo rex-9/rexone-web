@@ -58,7 +58,7 @@ describe("pcm helpers", () => {
 
   describe("bytesToBase64", () => {
     it("encodes Uint8Array into base64 string", () => {
-      const text = "Hello Rexone Speech";
+      const text = "Hello RexOne Speech";
       const bytes = new TextEncoder().encode(text);
       const b64 = bytesToBase64(bytes);
 
@@ -102,7 +102,11 @@ describe("pcm helpers", () => {
 
     it("calculates voice level from PCM16 byte buffers", () => {
       const samples = new Int16Array([1000, 5000, 15000, -8000]);
-      const bytes = new Uint8Array(samples.buffer, samples.byteOffset, samples.byteLength);
+      const bytes = new Uint8Array(
+        samples.buffer,
+        samples.byteOffset,
+        samples.byteLength,
+      );
       const level = pcmBytesToVoiceLevel(bytes);
 
       expect(level).toBeGreaterThan(0);

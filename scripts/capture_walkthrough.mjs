@@ -105,9 +105,9 @@ async function run() {
   await webPage.waitForTimeout(1500);
   await webPage.evaluate(() => {
     const btn = document.querySelector('header button[aria-label="Notifications"]') ||
-                document.querySelector('header button[title="Notifications"]') ||
-                document.querySelector('header button:has(svg.lucide-bell)') ||
-                Array.from(document.querySelectorAll('header button')).find(b => b.innerHTML.includes('lucide-bell') || b.querySelector('svg'));
+      document.querySelector('header button[title="Notifications"]') ||
+      document.querySelector('header button:has(svg.lucide-bell)') ||
+      Array.from(document.querySelectorAll('header button')).find(b => b.innerHTML.includes('lucide-bell') || b.querySelector('svg'));
     if (btn) btn.click();
   });
   await webPage.waitForTimeout(1500);
@@ -145,7 +145,7 @@ async function run() {
   await unauthContext.close();
 
   // 3. Capture Rails Operations Center in Browser Dark Mode (localhost:3000)
-  console.log('🔒 Connecting to Rails Operations Center on http://localhost:3000 with HTTP Basic Auth in Rexone Dark Theme...');
+  console.log('🔒 Connecting to Rails Operations Center on http://localhost:3000 with HTTP Basic Auth in RexOne Dark Theme...');
   const opsContext = await browser.newContext({
     viewport: { width: 1600, height: 900 },
     deviceScaleFactor: 2,
@@ -162,8 +162,8 @@ async function run() {
     console.log(`📸 Capturing Ops: http://localhost:3000${urlPath} -> ${outputPath}...`);
     try {
       await opsPage.goto(`http://localhost:3000${urlPath}`, { waitUntil: 'networkidle', timeout: 25000 });
-      
-      // Inject unified Rexone Dark Theme styling with hover glow and custom scrollbars
+
+      // Inject unified RexOne Dark Theme styling with hover glow and custom scrollbars
       await opsPage.addStyleTag({
         content: `
           :root {

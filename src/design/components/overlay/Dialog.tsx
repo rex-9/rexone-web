@@ -1,5 +1,5 @@
 /**
- * Rexone Design System - Dialog Molecule (DaisyUI Native Modal)
+ * RexOne Design System - Dialog Molecule (DaisyUI Native Modal)
  *
  * Rounded 20-24px, dimmed background with slight vignette
  */

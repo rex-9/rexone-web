@@ -1,7 +1,7 @@
 // src/design/constants/index.ts
 
 /**
- * Rexone Design System - Component Constants
+ * RexOne Design System - Component Constants
  *
  * Centralized constant values and types for component variants, sizes, and states.
  * Eliminates string literal duplication and prevents typos.

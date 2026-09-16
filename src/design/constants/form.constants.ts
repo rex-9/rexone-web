@@ -1,7 +1,7 @@
 // src/design/constants/form.constants.ts
 
 /**
- * Rexone Design System - Form & Input Constants
+ * RexOne Design System - Form & Input Constants
  */
 
 export const InputVariants = {

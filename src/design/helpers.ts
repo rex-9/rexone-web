@@ -1,7 +1,7 @@
 // src/design/utils.ts
 
 /**
- * Rexone Design System - Utility Functions
+ * RexOne Design System - Utility Functions
  *
  * Helper functions for working with design tokens and classes
  */
@@ -132,9 +132,7 @@ import {
  * Shared across Admin and non-Admin views to provide consistent status and priority styling.
  */
 
-export const getStatusBadgeVariant = (
-  status?: string | null,
-): BadgeVariant => {
+export const getStatusBadgeVariant = (status?: string | null): BadgeVariant => {
   switch (status?.toLowerCase()) {
     case BadgeStatuses.ACTIVE:
     case BadgeStatuses.RESOLVED:
@@ -201,9 +199,7 @@ export const getSeverityBadgeVariant = (
   }
 };
 
-export const getRoleBadgeVariant = (
-  role?: string | null,
-): BadgeVariant => {
+export const getRoleBadgeVariant = (role?: string | null): BadgeVariant => {
   switch (role?.toLowerCase()) {
     case BadgeRoles.SUPER_ADMIN:
       return BadgeVariants.ERROR;

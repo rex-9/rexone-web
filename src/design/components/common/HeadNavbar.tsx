@@ -49,7 +49,7 @@ export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
         "flex min-w-0 items-center gap-3 select-none no-underline transition-opacity hover:opacity-90",
         className,
       )}
-      aria-label="Rexone Home"
+      aria-label="RexOne Home"
     >
       <Asset
         asset={icons.logo}
@@ -61,7 +61,7 @@ export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
       {showText && (
         <div className="min-w-0">
           <div className="truncate text-body-m font-bold tracking-wide text-base-content font-display">
-            Rexone
+            RexOne
           </div>
           {isAdmin && (
             <div className="truncate text-caption font-medium uppercase tracking-wider text-base-content/60">

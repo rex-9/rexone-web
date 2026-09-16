@@ -39,7 +39,7 @@
 
   "feedback": {
     "title": "အကြံပြုချက်",
-    "description": "Rexone ပိုမိုကောင်းမွန်စေရန် သင့်အကြံပြုချက်ကို ကြိုဆိုပါသည်။",
+    "description": "RexOne ပိုမိုကောင်းမွန်စေရန် သင့်အကြံပြုချက်ကို ကြိုဆိုပါသည်။",
     "rate_experience": "အဆင့်သတ်မှတ်ပါ (၁ - ၁၀)",
     "tell_us_more": "သင့်အကြံပြုချက် ရေးပါ",
     "placeholder": "ချို့ယွင်းချက်၊ အကြံပြုချက် သို့မဟုတ် စိတ်ကူးသစ်များ ရေးသားနိုင်ပါသည်။",
@@ -141,7 +141,7 @@
       "validation": { "passcode_length": "စကားဝှက်သည် ဂဏန်း ၆ လုံး ဖြစ်ရမည်" }
     },
     "initial": {
-      "title": "Rexone မှ ကြိုဆိုပါသည်",
+      "title": "RexOne မှ ကြိုဆိုပါသည်",
       "description": "အိပ်မက်များကို အကောင်အထည်ဖော်လိုက်ပါ။",
       "continue_with_google": "Google ဖြင့် ဆက်ရန်",
       "or": "သို့မဟုတ်",
@@ -587,8 +587,25 @@
       "description": "တစ်ကြိမ်ဝယ်ယူမှုများ၊ ငွေပေးချေမှုရလဒ်များနှင့် Stripe မှတ်တမ်းများကို စစ်ဆေးပါ။",
       "search": "အသုံးပြုသူ၊ ထုတ်ကုန် သို့မဟုတ် ငွေပေးချေမှု ID ဖြင့်ရှာရန်...",
       "filters": { "all": "အခြေအနေအားလုံး" },
-      "table": { "purchase": "ဝယ်ယူမှု", "user": "အသုံးပြုသူ", "amount": "ပမာဏ", "method": "ငွေပေးချေနည်း" },
-      "detail": { "title": "ငွေပေးချေမှု အသေးစိတ်", "description": "ဝယ်ယူမှု၊ အသုံးပြုသူ၊ ငွေပေးချေနည်းနှင့် Stripe ID များ။", "purchase": "ဝယ်ယူမှုအကျဉ်း", "payment": "ငွေပေးချေမှုအသေးစိတ်", "product": "ထုတ်ကုန်", "product_code": "ထုတ်ကုန်ကုဒ်", "paid_at": "ပေးချေချိန်", "user": "ဝယ်ယူသူ", "payment_method": "ငွေပေးချေနည်း", "payment_intent": "Payment intent", "charge": "Charge" },
+      "table": {
+        "purchase": "ဝယ်ယူမှု",
+        "user": "အသုံးပြုသူ",
+        "amount": "ပမာဏ",
+        "method": "ငွေပေးချေနည်း"
+      },
+      "detail": {
+        "title": "ငွေပေးချေမှု အသေးစိတ်",
+        "description": "ဝယ်ယူမှု၊ အသုံးပြုသူ၊ ငွေပေးချေနည်းနှင့် Stripe ID များ။",
+        "purchase": "ဝယ်ယူမှုအကျဉ်း",
+        "payment": "ငွေပေးချေမှုအသေးစိတ်",
+        "product": "ထုတ်ကုန်",
+        "product_code": "ထုတ်ကုန်ကုဒ်",
+        "paid_at": "ပေးချေချိန်",
+        "user": "ဝယ်ယူသူ",
+        "payment_method": "ငွေပေးချေနည်း",
+        "payment_intent": "Payment intent",
+        "charge": "Charge"
+      },
       "errors": { "load": "ငွေပေးချေမှုများကို မတင်နိုင်ပါ" }
     },
     "subscriptions": {
@@ -596,9 +613,29 @@
       "description": "ထပ်တလဲလဲ ငွေတောင်းခံမှု၊ သက်တမ်းတိုးကာလနှင့် ပယ်ဖျက်မှုများကို စစ်ဆေးပါ။",
       "search": "အသုံးပြုသူ၊ ထုတ်ကုန် သို့မဟုတ် subscription ID ဖြင့်ရှာရန်...",
       "scheduled": "ပယ်ဖျက်ရန် စီစဉ်ထားသည်",
-      "filters": { "all_statuses": "အခြေအနေအားလုံး", "all_intervals": "ကာလအားလုံး" },
-      "table": { "subscription": "စာရင်းသွင်းမှု", "user": "အသုံးပြုသူ", "amount": "ဈေးနှုန်း", "period_end": "ကာလပြီးဆုံးချိန်", "cancellation": "ပယ်ဖျက်မှု" },
-      "detail": { "title": "စာရင်းသွင်းမှု အသေးစိတ်", "description": "အစီအစဉ်၊ အသုံးပြုသူ၊ ငွေတောင်းခံကာလနှင့် Stripe ID များ။", "plan": "အစီအစဉ်နှင့် အသုံးပြုသူ", "billing": "ငွေတောင်းခံမှုမှတ်တမ်း", "product": "ထုတ်ကုန်", "quantity": "အရေအတွက်", "subscription_id": "Subscription ID", "period_start": "ကာလစတင်ချိန်", "started_at": "စတင်ချိန်", "payment_method": "ငွေပေးချေနည်း" },
+      "filters": {
+        "all_statuses": "အခြေအနေအားလုံး",
+        "all_intervals": "ကာလအားလုံး"
+      },
+      "table": {
+        "subscription": "စာရင်းသွင်းမှု",
+        "user": "အသုံးပြုသူ",
+        "amount": "ဈေးနှုန်း",
+        "period_end": "ကာလပြီးဆုံးချိန်",
+        "cancellation": "ပယ်ဖျက်မှု"
+      },
+      "detail": {
+        "title": "စာရင်းသွင်းမှု အသေးစိတ်",
+        "description": "အစီအစဉ်၊ အသုံးပြုသူ၊ ငွေတောင်းခံကာလနှင့် Stripe ID များ။",
+        "plan": "အစီအစဉ်နှင့် အသုံးပြုသူ",
+        "billing": "ငွေတောင်းခံမှုမှတ်တမ်း",
+        "product": "ထုတ်ကုန်",
+        "quantity": "အရေအတွက်",
+        "subscription_id": "Subscription ID",
+        "period_start": "ကာလစတင်ချိန်",
+        "started_at": "စတင်ချိန်",
+        "payment_method": "ငွေပေးချေနည်း"
+      },
       "errors": { "load": "စာရင်းသွင်းမှုများကို မတင်နိုင်ပါ" }
     },
     "products": {

@@ -1,5 +1,5 @@
 /**
- * Rexone Design System - Main Export
+ * RexOne Design System - Main Export
  *
  * Central export point for the entire design system
  * Import from here: import { colors, typography, spacing } from '@/design-system'
@@ -21,6 +21,6 @@ export * from "./pages";
 export * from "./helpers";
 
 // Export design system metadata
-export const DESIGN_SYSTEM_NAME = "Rexone Design System";
-export const DESIGN_SYSTEM_SHORT_NAME = "Rexone Design System";
+export const DESIGN_SYSTEM_NAME = "RexOne Design System";
+export const DESIGN_SYSTEM_SHORT_NAME = "RexOne Design System";
 export const DESIGN_SYSTEM_VERSION = "1.0.0";

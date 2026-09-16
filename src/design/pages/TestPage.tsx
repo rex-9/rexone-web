@@ -45,14 +45,14 @@ export const TestPage: React.FC = () => {
     <div className="w-full max-w-5xl space-y-6">
       <div>
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-          Rexone Test Lab
+          RexOne Test Lab
         </p>
         <h1 className="text-heading-l font-bold text-base-content">
           Playback & diagnostics
         </h1>
         <p className="mt-2 text-base-content/70">
-          Use this page for browser checks, client logging tests, and progressive
-          audio/video playback against Rexone Core.
+          Use this page for browser checks, client logging tests, and
+          progressive audio/video playback against RexOne Core.
         </p>
       </div>
 

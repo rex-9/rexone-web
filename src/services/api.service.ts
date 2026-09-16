@@ -65,7 +65,7 @@ axiosInstance.interceptors.request.use(
     // Always send platform so backend can enforce one active session per platform
     headers.set("X-Platform", PLATFORM_HEADER_VALUE);
 
-    // Rexone Core locale
+    // RexOne Core locale
     headers.set("X-Locale", getApiLocale());
 
     if (config.data instanceof FormData) {

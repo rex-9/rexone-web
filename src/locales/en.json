@@ -39,7 +39,7 @@
 
   "feedback": {
     "title": "Share Your Feedback",
-    "description": "We value your thoughts and ideas to help improve Rexone.",
+    "description": "We value your thoughts and ideas to help improve RexOne.",
     "rate_experience": "Rate your experience (1 - 10)",
     "tell_us_more": "What's on your mind?",
     "placeholder": "Tell us anything — bugs, suggestions, questions, or ideas. We triage automatically!",
@@ -141,7 +141,7 @@
       "validation": { "passcode_length": "Passcode must be 6 digits" }
     },
     "initial": {
-      "title": "Welcome to Rexone",
+      "title": "Welcome to RexOne",
       "description": "Support dreams or make yours come true.",
       "continue_with_google": "Continue with Google",
       "or": "or",
@@ -588,8 +588,25 @@
       "description": "Review one-time purchases, payment outcomes, and Stripe payment records.",
       "search": "Search user, product, payment intent, or charge...",
       "filters": { "all": "All statuses" },
-      "table": { "purchase": "Purchase", "user": "User", "amount": "Amount", "method": "Payment method" },
-      "detail": { "title": "Transaction Details", "description": "Purchase, customer, payment method, and Stripe identifiers.", "purchase": "Purchase summary", "payment": "Payment details", "product": "Product", "product_code": "Product code", "paid_at": "Paid", "user": "Customer", "payment_method": "Payment method", "payment_intent": "Payment intent", "charge": "Charge" },
+      "table": {
+        "purchase": "Purchase",
+        "user": "User",
+        "amount": "Amount",
+        "method": "Payment method"
+      },
+      "detail": {
+        "title": "Transaction Details",
+        "description": "Purchase, customer, payment method, and Stripe identifiers.",
+        "purchase": "Purchase summary",
+        "payment": "Payment details",
+        "product": "Product",
+        "product_code": "Product code",
+        "paid_at": "Paid",
+        "user": "Customer",
+        "payment_method": "Payment method",
+        "payment_intent": "Payment intent",
+        "charge": "Charge"
+      },
       "errors": { "load": "Failed to load transactions" }
     },
     "subscriptions": {
@@ -597,9 +614,29 @@
       "description": "Review recurring billing state, renewal periods, and cancellation schedules.",
       "search": "Search user, product, or subscription ID...",
       "scheduled": "Scheduled to cancel",
-      "filters": { "all_statuses": "All statuses", "all_intervals": "All intervals" },
-      "table": { "subscription": "Subscription", "user": "User", "amount": "Price", "period_end": "Period ends", "cancellation": "Cancellation" },
-      "detail": { "title": "Subscription Details", "description": "Plan snapshot, customer, billing period, and Stripe identifiers.", "plan": "Plan and customer", "billing": "Billing lifecycle", "product": "Product", "quantity": "Quantity", "subscription_id": "Subscription ID", "period_start": "Period starts", "started_at": "Started", "payment_method": "Payment method" },
+      "filters": {
+        "all_statuses": "All statuses",
+        "all_intervals": "All intervals"
+      },
+      "table": {
+        "subscription": "Subscription",
+        "user": "User",
+        "amount": "Price",
+        "period_end": "Period ends",
+        "cancellation": "Cancellation"
+      },
+      "detail": {
+        "title": "Subscription Details",
+        "description": "Plan snapshot, customer, billing period, and Stripe identifiers.",
+        "plan": "Plan and customer",
+        "billing": "Billing lifecycle",
+        "product": "Product",
+        "quantity": "Quantity",
+        "subscription_id": "Subscription ID",
+        "period_start": "Period starts",
+        "started_at": "Started",
+        "payment_method": "Payment method"
+      },
       "errors": { "load": "Failed to load subscriptions" }
     },
     "products": {

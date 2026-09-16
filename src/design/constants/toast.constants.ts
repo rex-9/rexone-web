@@ -1,7 +1,7 @@
 // src/design/constants/toast.constants.ts
 
 /**
- * Rexone Design System - Toast & Alert Types
+ * RexOne Design System - Toast & Alert Types
  */
 
 export const ToastTypes = {

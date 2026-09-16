@@ -1,7 +1,7 @@
 // src/design/elements/font.ts
 
 /**
- * Rexone Design System - Typography Tokens
+ * RexOne Design System - Typography Tokens
  *
  * Primary UI: Quicksand
  * Display: Clip

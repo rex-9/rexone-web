@@ -1,7 +1,7 @@
 // src/design/constants/typography.constants.ts
 
 /**
- * Rexone Design System - Typography Variants
+ * RexOne Design System - Typography Variants
  */
 
 export const TypographyVariants = {

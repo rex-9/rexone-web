@@ -101,7 +101,7 @@ import noteSound from "./sounds/note.mp3";
 // ============================================================
 
 export const images = {
-  banner: { src: banner, alt: "Banner image", title: "Rexone Banner" },
+  banner: { src: banner, alt: "Banner image", title: "RexOne Banner" },
   darkBrickWall: {
     src: darkBrickWall,
     alt: "Dark Brick Wall",
@@ -135,8 +135,8 @@ export const projectImages = {
 // ============================================================
 
 export const icons = {
-  logo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
-  rexoneLogo: { src: rexoneLogoSvg, alt: "Rexone Logo", title: "Rexone" },
+  logo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
+  rexoneLogo: { src: rexoneLogoSvg, alt: "RexOne Logo", title: "RexOne" },
   instagram: { src: instagramIcon, alt: "Instagram icon", title: "Instagram" },
   google: { src: googleIcon, alt: "Google icon", title: "Google" },
   github: { src: githubSvg, alt: "GitHub", title: "GitHub" },

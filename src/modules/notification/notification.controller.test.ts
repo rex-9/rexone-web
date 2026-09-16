@@ -31,7 +31,7 @@ describe("UserNotificationController", () => {
         {
           id: "noti-1",
           title: "Welcome",
-          message: "Welcome to Rexone!",
+          message: "Welcome to RexOne!",
           link: "/dashboard",
           data: {},
           read: false,
@@ -161,4 +161,3 @@ describe("UserNotificationController", () => {
     });
   });
 });
-

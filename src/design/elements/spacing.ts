@@ -1,7 +1,7 @@
 // src/design/elements/spacing.ts
 
 /**
- * Rexone Design System - Spacing Tokens
+ * RexOne Design System - Spacing Tokens
  * Sourced from the 4px/8px grid system.
  * Matches mobile AppSpacing tokens for cross-platform alignment.
  */

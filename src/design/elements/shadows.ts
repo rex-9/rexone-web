@@ -2,7 +2,7 @@
 import { colors } from "./colors";
 
 /**
- * Rexone Design System - Shadow Tokens
+ * RexOne Design System - Shadow Tokens
  * Sourced directly from colors.ts
  */
 

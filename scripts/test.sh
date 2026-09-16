@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Rexone Web — Full Test Suite Runner (Unit + E2E)
+# RexOne Web — Full Test Suite Runner (Unit + E2E)
 #
 # Usage:
 #   ./scripts/test.sh [flow|file] [options]
@@ -24,7 +24,7 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 echo "===================================================="
-echo " 🧪 Rexone Web — Running Full Test Suite"
+echo " 🧪 RexOne Web — Running Full Test Suite"
 echo " (Unit + E2E)"
 echo "===================================================="
 
