@@ -56,6 +56,7 @@ import {
   ASSET_STATUSES,
   ASSET_STATUS_OPTIONS,
   formatAssetFileSize,
+  getAssetTitle,
   getAssetThumbnail,
   isImageAsset,
 } from "../constants";
@@ -539,7 +540,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               {previewUrl ? (
                 <Image
                   src={previewUrl}
-                  alt={asset.name}
+                  alt={getAssetTitle(asset)}
                   referrerPolicy="no-referrer"
                   className={`w-full h-full object-cover ${!isActive ? "opacity-50 grayscale" : ""}`}
                   fallback={
@@ -558,22 +559,35 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         header: t(AppLocales.Admin.Assets.Table.Name),
         sortKey: ADMIN_ASSET_COLUMNS.NAME,
         className: "w-56 max-w-55 sm:max-w-65",
-        render: (asset) => (
-          <div className="flex flex-col min-w-0 max-w-55 sm:max-w-65">
-            <span
-              className="font-medium text-base-content truncate"
-              title={asset.name}
-            >
-              {asset.name}
-            </span>
-            <span
-              className="text-xs text-base-content/60 font-mono truncate"
-              title={asset.id}
-            >
-              {asset.id}
-            </span>
-          </div>
-        ),
+        render: (asset) => {
+          const assetTitle = getAssetTitle(asset);
+          const description = asset.description?.trim();
+
+          return (
+            <div className="flex flex-col min-w-0 max-w-55 sm:max-w-65">
+              <span
+                className="font-medium text-base-content truncate"
+                title={assetTitle}
+              >
+                {assetTitle}
+              </span>
+              {description ? (
+                <span
+                  className="text-xs text-base-content/70 truncate"
+                  title={description}
+                >
+                  {description}
+                </span>
+              ) : null}
+              <span
+                className="text-xs text-base-content/60 font-mono truncate"
+                title={asset.id}
+              >
+                {asset.id}
+              </span>
+            </div>
+          );
+        },
       },
       {
         key: ADMIN_ASSET_COLUMNS.TYPE,

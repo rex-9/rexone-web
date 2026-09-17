@@ -14,6 +14,7 @@ import {
   ADMIN_ASSET_COLUMNS,
   ASSET_STATUSES,
   formatAssetFileSize,
+  getAssetTitle,
   isImageAsset,
 } from "../constants";
 import { AppLocales, useTranslate } from "../../../../locales";
@@ -44,7 +45,7 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
             {canPreview ? (
               <Image
                 src={asset.url}
-                alt={asset.name}
+                alt={getAssetTitle(asset)}
                 className="h-full w-full object-cover"
                 fallback={
                   <iconsLib.photo className="h-5 w-5 text-base-content/50" />
@@ -61,16 +62,26 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
       key: ADMIN_ASSET_COLUMNS.NAME,
       header: t(AppLocales.Admin.Assets.Table.Name),
       className: "min-w-56 max-w-72",
-      render: (asset) => (
-        <div className="flex min-w-0 flex-col">
-          <span className="truncate font-medium text-base-content" title={asset.name}>
-            {asset.name}
-          </span>
-          <span className="truncate font-mono text-xs text-base-content/60" title={asset.id}>
-            {asset.id}
-          </span>
-        </div>
-      ),
+      render: (asset) => {
+        const assetTitle = getAssetTitle(asset);
+        const description = asset.description?.trim();
+
+        return (
+          <div className="flex min-w-0 flex-col">
+            <span className="truncate font-medium text-base-content" title={assetTitle}>
+              {assetTitle}
+            </span>
+            {description ? (
+              <span className="truncate text-xs text-base-content/70" title={description}>
+                {description}
+              </span>
+            ) : null}
+            <span className="truncate font-mono text-xs text-base-content/60" title={asset.id}>
+              {asset.id}
+            </span>
+          </div>
+        );
+      },
     },
     {
       key: ADMIN_ASSET_COLUMNS.TYPE,

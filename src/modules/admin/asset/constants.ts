@@ -103,6 +103,10 @@ export const formatAssetFileSize = (bytes?: number | null): string => {
   );
 };
 
+export const getAssetTitle = (
+  asset?: { title?: string | null; name?: string } | null,
+): string => asset?.title?.trim() || asset?.name || "";
+
 export const isImageAsset = (
   asset?: {
     format?: string | null;

@@ -14,7 +14,12 @@ import {
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AssetController from "../asset.controller";
-import { formatAssetFileSize, getAssetChildren, getAssetThumbnail } from "../constants";
+import {
+  formatAssetFileSize,
+  getAssetChildren,
+  getAssetTitle,
+  getAssetThumbnail,
+} from "../constants";
 import { AdminAssetChildrenTable } from "../components";
 import type { IAdminAsset } from "../types";
 import type { IAssetChild } from "../../../../models";
@@ -49,7 +54,7 @@ export const AdminAssetDetailPage: React.FC = () => {
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           { label: t(AppLocales.Admin.Assets.Title), to: listPath },
-          { label: asset?.name || t(AppLocales.Admin.Common.Detail.Details) },
+          { label: getAssetTitle(asset) || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
         title={t(AppLocales.Admin.Assets.Detail.Title)}
         description={t(AppLocales.Admin.Assets.Detail.Description)}
@@ -63,7 +68,7 @@ export const AdminAssetDetailPage: React.FC = () => {
             {preview ? (
               <Image
                 src={preview}
-                alt={asset.name}
+                alt={getAssetTitle(asset)}
                 className="max-h-80 w-full rounded-lg object-contain"
               />
             ) : (
@@ -90,8 +95,18 @@ export const AdminAssetDetailPage: React.FC = () => {
           >
             <AdminDetailGrid>
               <AdminDetailField
+                label={t(AppLocales.Admin.Assets.Detail.AssetTitle)}
+                value={asset.title?.trim() || undefined}
+                className="sm:col-span-2 xl:col-span-3"
+              />
+              <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={asset.name}
+                className="sm:col-span-2 xl:col-span-3"
+              />
+              <AdminDetailField
+                label={t(AppLocales.Admin.Common.Detail.Description)}
+                value={asset.description?.trim() || undefined}
                 className="sm:col-span-2 xl:col-span-3"
               />
               <AdminDetailField label={t(AppLocales.Admin.Common.Detail.Type)} value={asset.type} />

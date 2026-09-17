@@ -1356,6 +1356,7 @@
         "description": "Media preview, ownership, and storage metadata.",
         "preview": "Preview",
         "metadata": "Asset metadata",
+        "asset_title": "Title",
         "status": "Status",
         "duration": "Duration",
         "storage_key": "Storage key",

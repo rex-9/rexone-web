@@ -1245,6 +1245,7 @@ export const AppLocales = {
         Description: "admin.assets.detail.description",
         Preview: "admin.assets.detail.preview",
         Metadata: "admin.assets.detail.metadata",
+        AssetTitle: "admin.assets.detail.asset_title",
         Status: "admin.assets.detail.status",
         Duration: "admin.assets.detail.duration",
         StorageKey: "admin.assets.detail.storage_key",
