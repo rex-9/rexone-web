@@ -20,6 +20,7 @@ import {
 import { ButtonVariants } from "../../../../design/constants";
 import type { IAdminVersion } from "../types";
 import VersionController from "../version.controller";
+import { AdminUserVersionsPage } from "./AdminUserVersionsPage";
 import {
   AdminPagination,
   AdminState,
@@ -29,6 +30,7 @@ import {
   PageHeader,
   Tabs,
   type IAdminTableColumn,
+  type ITabItem,
 } from "../../components";
 import {
   ADMIN_ACTIONS,
@@ -40,6 +42,7 @@ import {
 import {
   ADMIN_VERSION_SORT_KEYS,
   ADMIN_VERSION_TABLE_KEYS,
+  ADMIN_VERSION_TABS,
   VERSION_STATUSES,
 } from "../constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
@@ -57,14 +60,19 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
   view = ADMIN_VIEW_MODES.ACTIVE,
 }) => {
   const t = useTranslate();
-  useDocumentTitle(
-    view === ADMIN_VIEW_MODES.ACTIVE
-      ? `${t(AppLocales.Admin.Versions.Title)} | Admin`
-      : `${t(AppLocales.Admin.Versions.RecycleTitle)} | Admin`,
-  );
-
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const isUserVersionsTab = tabParam === ADMIN_VERSION_TABS.USER_VERSIONS;
+
+  useDocumentTitle(
+    isUserVersionsTab
+      ? `${t(AppLocales.Admin.UserVersions.Title)} | Admin`
+      : view === ADMIN_VIEW_MODES.ACTIVE
+        ? `${t(AppLocales.Admin.Versions.Title)} | Admin`
+        : `${t(AppLocales.Admin.Versions.RecycleTitle)} | Admin`,
+  );
+
   const page = parseInt(searchParams.get("page") || "1", 10);
   const statusFilter = searchParams.get("status") || "";
 
@@ -79,6 +87,13 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
+  const canReadVersions = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.VERSIONS);
+  const canReadUserVersions = can(
+    ADMIN_ACTIONS.READ,
+    ADMIN_RESOURCES.USER_VERSIONS,
+  );
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.VERSIONS);
+  const canDelete = can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.VERSIONS);
 
   const [versions, setVersions] = useState<IAdminVersion[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
@@ -123,7 +138,8 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
   );
 
   const loadVersions = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.VERSIONS)) return;
+    if (isUserVersionsTab) return;
+    if (!canReadVersions) return;
 
     setLoading(true);
     setError("");
@@ -150,17 +166,28 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
       setError(result.error || t(AppLocales.Admin.Versions.Errors.LoadList));
     }
     setLoading(false);
-  }, [can, page, setLoading, sortBy, sortOrder, statusFilter, t, view]);
+  }, [
+    canReadVersions,
+    isUserVersionsTab,
+    page,
+    setLoading,
+    sortBy,
+    sortOrder,
+    statusFilter,
+    t,
+    view,
+  ]);
 
   useEffect(() => {
     if (permissionsLoading) return;
+    if (isUserVersionsTab) return;
 
     const timeoutId = window.setTimeout(() => {
       void loadVersions();
     }, 0);
 
     return () => window.clearTimeout(timeoutId);
-  }, [loadVersions, permissionsLoading]);
+  }, [isUserVersionsTab, loadVersions, permissionsLoading]);
 
   const columns = useMemo<IAdminTableColumn<IAdminVersion>[]>(
     () => [
@@ -314,23 +341,89 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
     }
   };
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.VERSIONS);
+  const activeTab = isUserVersionsTab
+    ? ADMIN_VERSION_TABS.USER_VERSIONS
+    : view === ADMIN_VIEW_MODES.DISCARDED
+      ? ADMIN_VERSION_TABS.DISCARDED
+      : ADMIN_VERSION_TABS.ACTIVE;
+
+  const tabItems = useMemo<ITabItem<string>[]>(() => {
+    const items: ITabItem<string>[] = [
+      {
+        value: ADMIN_VERSION_TABS.ACTIVE,
+        label: t(AppLocales.Admin.Versions.Tabs.ActiveVersions),
+        icon: iconsLib.sparkles,
+        count:
+          view === ADMIN_VIEW_MODES.ACTIVE && !isUserVersionsTab
+            ? pagination?.total_count
+            : undefined,
+      },
+    ];
+
+    if (canReadUserVersions) {
+      items.push({
+        value: ADMIN_VERSION_TABS.USER_VERSIONS,
+        label: t(AppLocales.Admin.UserVersions.Title),
+        icon: iconsLib.devicePhoneMobile,
+      });
+    }
+
+    if (canDelete) {
+      items.push({
+        value: ADMIN_VERSION_TABS.DISCARDED,
+        label: t(AppLocales.Admin.Versions.Tabs.RecycleBin),
+        icon: iconsLib.trash,
+        count:
+          view === ADMIN_VIEW_MODES.DISCARDED
+            ? pagination?.total_count
+            : undefined,
+      });
+    }
+
+    return items;
+  }, [
+    canDelete,
+    canReadUserVersions,
+    isUserVersionsTab,
+    pagination?.total_count,
+    t,
+    view,
+  ]);
+
+  const handleTabChange = useCallback(
+    (tab: string) => {
+      if (tab === ADMIN_VERSION_TABS.USER_VERSIONS) {
+        navigate(
+          `${AppRoutes.client.protected.admin.VERSIONS}?tab=${ADMIN_VERSION_TABS.USER_VERSIONS}`,
+        );
+      } else if (tab === ADMIN_VERSION_TABS.DISCARDED) {
+        navigate(AppRoutes.client.protected.admin.VERSIONS_RECYCLE_BIN);
+      } else {
+        navigate(AppRoutes.client.protected.admin.VERSIONS);
+      }
+    },
+    [navigate],
+  );
 
   return (
     <div className="space-y-6">
       <PageHeader
         title={
-          view === ADMIN_VIEW_MODES.ACTIVE
-            ? t(AppLocales.Admin.Versions.Title)
-            : t(AppLocales.Admin.Versions.RecycleTitle)
+          isUserVersionsTab
+            ? t(AppLocales.Admin.UserVersions.Title)
+            : view === ADMIN_VIEW_MODES.ACTIVE
+              ? t(AppLocales.Admin.Versions.Title)
+              : t(AppLocales.Admin.Versions.RecycleTitle)
         }
         description={
-          view === ADMIN_VIEW_MODES.ACTIVE
-            ? t(AppLocales.Admin.Versions.Description)
-            : t(AppLocales.Admin.Versions.RecycleDescription)
+          isUserVersionsTab
+            ? t(AppLocales.Admin.UserVersions.Description)
+            : view === ADMIN_VIEW_MODES.ACTIVE
+              ? t(AppLocales.Admin.Versions.Description)
+              : t(AppLocales.Admin.Versions.RecycleDescription)
         }
         action={
-          view === ADMIN_VIEW_MODES.ACTIVE && canCreate ? (
+          view === ADMIN_VIEW_MODES.ACTIVE && !isUserVersionsTab && canCreate ? (
             <Button
               onClick={() =>
                 navigate(AppRoutes.client.protected.admin.VERSION_CREATE)
@@ -341,99 +434,75 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
             </Button>
           ) : null
         }
-      >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.VERSIONS) && (
-          <Tabs
-            value={view}
-            onChange={(tab) => {
-              navigate(
-                tab === ADMIN_VIEW_MODES.ACTIVE
-                  ? AppRoutes.client.protected.admin.VERSIONS
-                  : AppRoutes.client.protected.admin.VERSIONS_RECYCLE_BIN,
-              );
-              updateFilters({ page: 1 });
-            }}
-            items={[
-              {
-                value: ADMIN_VIEW_MODES.ACTIVE,
-                label: t(AppLocales.Admin.Versions.Tabs.ActiveVersions),
-                icon: iconsLib.sparkles,
-                count:
-                  view === ADMIN_VIEW_MODES.ACTIVE
-                    ? pagination?.total_count
-                    : undefined,
-              },
-              {
-                value: ADMIN_VIEW_MODES.DISCARDED,
-                label: t(AppLocales.Admin.Versions.Tabs.RecycleBin),
-                icon: iconsLib.trash,
-                count:
-                  view === ADMIN_VIEW_MODES.DISCARDED
-                    ? pagination?.total_count
-                    : undefined,
-              },
-            ]}
-          />
-        )}
-      </PageHeader>
+      />
 
-      {view === ADMIN_VIEW_MODES.ACTIVE && (
-        <Dropdown
-          size={DropdownSizes.MD}
-          containerClassName="w-full sm:max-w-sm"
-          label={t(AppLocales.Admin.Versions.Filters.Status)}
-          value={statusFilter}
-          onValueChange={(value) => updateFilters({ status: value })}
-          options={[
-            {
-              value: "",
-              label: t(AppLocales.Admin.Versions.Filters.AllStatuses),
-            },
-            {
-              value: VERSION_STATUSES.DRAFT,
-              label: t(AppLocales.Admin.Versions.Status.Draft),
-            },
-            {
-              value: VERSION_STATUSES.PUBLISHED,
-              label: t(AppLocales.Admin.Versions.Status.Published),
-            },
-            {
-              value: VERSION_STATUSES.YANKED,
-              label: t(AppLocales.Admin.Versions.Status.Yanked),
-            },
-          ]}
-        />
-      )}
+      <Tabs
+        value={activeTab}
+        onChange={handleTabChange}
+        items={tabItems}
+      />
 
-      {error ? (
-        <AdminState
-          icon={iconsLib.warning}
-          title={t(AppLocales.Admin.Common.State.ErrorTitle)}
-          message={error}
-        />
-      ) : !isLoading && versions.length === 0 ? (
-        <AdminState
-          icon={iconsLib.tag}
-          title={t(AppLocales.Admin.Common.State.EmptyTitle)}
-          message={t(AppLocales.Admin.Common.State.EmptyDesc)}
-        />
+      {isUserVersionsTab ? (
+        <AdminUserVersionsPage embedded={true} />
       ) : (
         <>
-          <AdminTable<IAdminVersion>
-            records={versions}
-            columns={columns}
-            getRowKey={(record) => record.id}
-            sortBy={sortBy}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-            onRowClick={(version) => openVersionDetail(version.id)}
-          />
-          <AdminPagination
-            pagination={pagination}
-            onPageChange={(nextPage) => updateFilters({ page: nextPage })}
-          />
-        </>
-      )}
+          {view === ADMIN_VIEW_MODES.ACTIVE && (
+            <Dropdown
+              size={DropdownSizes.MD}
+              containerClassName="w-full sm:max-w-sm"
+              label={t(AppLocales.Admin.Versions.Filters.Status)}
+              value={statusFilter}
+              onValueChange={(value) => updateFilters({ status: value })}
+              options={[
+                {
+                  value: "",
+                  label: t(AppLocales.Admin.Versions.Filters.AllStatuses),
+                },
+                {
+                  value: VERSION_STATUSES.DRAFT,
+                  label: t(AppLocales.Admin.Versions.Status.Draft),
+                },
+                {
+                  value: VERSION_STATUSES.PUBLISHED,
+                  label: t(AppLocales.Admin.Versions.Status.Published),
+                },
+                {
+                  value: VERSION_STATUSES.YANKED,
+                  label: t(AppLocales.Admin.Versions.Status.Yanked),
+                },
+              ]}
+            />
+          )}
+
+          {error ? (
+            <AdminState
+              icon={iconsLib.warning}
+              title={t(AppLocales.Admin.Common.State.ErrorTitle)}
+              message={error}
+            />
+          ) : !isLoading && versions.length === 0 ? (
+            <AdminState
+              icon={iconsLib.tag}
+              title={t(AppLocales.Admin.Common.State.EmptyTitle)}
+              message={t(AppLocales.Admin.Common.State.EmptyDesc)}
+            />
+          ) : (
+            <>
+              <AdminTable<IAdminVersion>
+                records={versions}
+                columns={columns}
+                getRowKey={(record) => record.id}
+                sortBy={sortBy}
+                sortOrder={sortOrder}
+                onSort={handleSort}
+                onRowClick={(version) => openVersionDetail(version.id)}
+              />
+              <AdminPagination
+                pagination={pagination}
+                onPageChange={(nextPage) => updateFilters({ page: nextPage })}
+              />
+            </>
+          )}
 
       <ConfirmDialog
         isOpen={Boolean(lifecycleTarget)}
@@ -458,6 +527,8 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
         onClose={() => !isLoading && setLifecycleTarget(null)}
         onConfirm={handleLifecycleAction}
       />
+        </>
+      )}
     </div>
   );
 };

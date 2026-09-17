@@ -4,6 +4,7 @@ import { api } from "../../services";
 import {
   IAccess,
   ICheckoutResponse,
+  ICouponValidationResult,
   IProduct,
   ISubscription,
   ITransaction,
@@ -89,22 +90,42 @@ class PaymentService {
   }
 
   // ===== CHECKOUT =====
+  async validateCoupon(
+    code: string,
+    productId: string,
+  ): Promise<IApiResponse<IApiEnvelope<ICouponValidationResult>>> {
+    const response = await api.post<ICouponValidationResult>(
+      AppRoutes.server.protected.PAYMENT_COUPONS_VALIDATE,
+      {
+        code: code.trim().toUpperCase(),
+        product_id: productId,
+      },
+    );
+    return response;
+  }
+
   async createCheckout(
     productId: string,
     successUrl?: string,
     cancelUrl?: string,
+    couponCode?: string,
   ): Promise<IApiResponse<IApiEnvelope<ICheckoutResponse>>> {
+    const payload: Record<string, unknown> = {
+      product_id: productId,
+      success_url:
+        successUrl ||
+        window.location.origin + AppRoutes.client.protected.PAYMENT_SUCCESS,
+      cancel_url:
+        cancelUrl ||
+        window.location.origin + AppRoutes.client.protected.PAYMENT_CANCEL,
+    };
+    if (couponCode) {
+      payload.coupon_code = couponCode.trim().toUpperCase();
+    }
+
     const response = await api.post<ICheckoutResponse>(
       AppRoutes.server.protected.PAYMENT_SESSION,
-      {
-        product_id: productId,
-        success_url:
-          successUrl ||
-          window.location.origin + AppRoutes.client.protected.PAYMENT_SUCCESS,
-        cancel_url:
-          cancelUrl ||
-          window.location.origin + AppRoutes.client.protected.PAYMENT_CANCEL,
-      },
+      payload,
     );
     return response;
   }

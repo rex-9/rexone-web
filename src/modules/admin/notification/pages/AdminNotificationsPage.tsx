@@ -35,6 +35,7 @@ import {
   type ITabItem,
 } from "../../components";
 import { AdminNotificationTemplatesTab } from "../components";
+import { AdminUserNotificationsPage } from "./AdminUserNotificationsPage";
 import {
   Dropdown,
   FormContainer,
@@ -79,6 +80,10 @@ export const AdminNotificationsPage: React.FC = () => {
   const { can, isLoading: permissionsLoading } = usePermissions();
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
   const canReadUsers = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.USERS);
+  const canReadUserNotifications = can(
+    ADMIN_ACTIONS.READ,
+    ADMIN_RESOURCES.USER_NOTIFICATIONS,
+  );
   const canCreateNotifications = can(
     ADMIN_ACTIONS.CREATE,
     ADMIN_RESOURCES.NOTIFICATIONS,
@@ -103,6 +108,14 @@ export const AdminNotificationsPage: React.FC = () => {
       : NOTIFICATION_ADMIN_TABS.BROADCAST,
   );
 
+  useEffect(() => {
+    if (tabParam && Object.values(NOTIFICATION_ADMIN_TABS).includes(tabParam)) {
+      setActiveTab(tabParam);
+    } else if (!tabParam) {
+      setActiveTab(NOTIFICATION_ADMIN_TABS.BROADCAST);
+    }
+  }, [tabParam]);
+
   const handleTabChange = useCallback(
     (tab: TNotificationAdminTab) => {
       setActiveTab(tab);
@@ -122,21 +135,30 @@ export const AdminNotificationsPage: React.FC = () => {
     [setSearchParams],
   );
 
-  const tabItems = useMemo<ITabItem<TNotificationAdminTab>[]>(
-    () => [
+  const tabItems = useMemo<ITabItem<TNotificationAdminTab>[]>(() => {
+    const tabs: ITabItem<TNotificationAdminTab>[] = [
       {
         value: NOTIFICATION_ADMIN_TABS.BROADCAST,
         label: t(AppLocales.Admin.Notifications.Tabs.Broadcast),
-        icon: iconsLib.bell,
+        icon: iconsLib.bellAlert,
       },
       {
         value: NOTIFICATION_ADMIN_TABS.TEMPLATES,
         label: t(AppLocales.Admin.Notifications.Tabs.Templates),
         icon: iconsLib.document,
       },
-    ],
-    [t],
-  );
+    ];
+
+    if (canReadUserNotifications) {
+      tabs.push({
+        value: NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS,
+        label: t(AppLocales.Admin.Notifications.UserNotifications.Title),
+        icon: iconsLib.bell,
+      });
+    }
+
+    return tabs;
+  }, [canReadUserNotifications, t]);
 
   useEffect(() => {
     if (permissionsLoading) return;
@@ -455,6 +477,8 @@ export const AdminNotificationsPage: React.FC = () => {
 
       {activeTab === NOTIFICATION_ADMIN_TABS.TEMPLATES ? (
         <AdminNotificationTemplatesTab />
+      ) : activeTab === NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS ? (
+        <AdminUserNotificationsPage embedded={true} />
       ) : error && templates.length === 0 ? (
         <AdminState
           icon={iconsLib.warning}

@@ -64,6 +64,12 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.document,
       },
       {
+        labelKey: AppLocales.Admin.Nav.Items.Coupons,
+        to: AppRoutes.client.protected.admin.COUPONS,
+        resource: ADMIN_RESOURCES.COUPONS,
+        icon: iconsLib.tag,
+      },
+      {
         labelKey: AppLocales.Admin.Nav.Items.Accesses,
         to: AppRoutes.client.protected.admin.ACCESSES,
         resource: ADMIN_RESOURCES.ACCESSES,
@@ -155,12 +161,6 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.bellAlert,
       },
       {
-        labelKey: AppLocales.Admin.Nav.Items.UserNotifications,
-        to: AppRoutes.client.protected.admin.USER_NOTIFICATIONS,
-        resource: ADMIN_RESOURCES.USER_NOTIFICATIONS,
-        icon: iconsLib.bell,
-      },
-      {
         labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
         to: AppRoutes.client.protected.admin.CHAT_ROOMS,
         resource: ADMIN_RESOURCES.CHAT_ROOMS,
@@ -183,13 +183,6 @@ const navSections: IAdminNavSection[] = [
         to: AppRoutes.client.protected.admin.VERSIONS,
         resource: ADMIN_RESOURCES.VERSIONS,
         icon: iconsLib.tag,
-        superAdminOnly: true,
-      },
-      {
-        labelKey: AppLocales.Admin.Nav.Items.UserVersions,
-        to: AppRoutes.client.protected.admin.USER_VERSIONS,
-        resource: ADMIN_RESOURCES.USER_VERSIONS,
-        icon: iconsLib.devicePhoneMobile,
         superAdminOnly: true,
       },
     ],

@@ -10,6 +10,7 @@ import {
 } from "../../../design/constants";
 import { IAccess, IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
+import { CheckoutDialog } from "../components";
 import { AnalyticsService } from "../../../services";
 
 export const PaymentPage: React.FC = () => {
@@ -20,6 +21,7 @@ export const PaymentPage: React.FC = () => {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [accesses, setAccesses] = useState<IAccess[]>([]);
   const [cancelTargetId, setCancelTargetId] = useState<string | null>(null);
+  const [checkoutProduct, setCheckoutProduct] = useState<IProduct | null>(null);
   const viewedProductIds = useRef(new Set<string>());
 
   const fetchData = React.useCallback(async () => {
@@ -259,7 +261,7 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() => setCheckoutProduct(product)}
           >
             Subscribe Again
           </Button>
@@ -280,7 +282,7 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() => setCheckoutProduct(product)}
           >
             Buy Again
           </Button>
@@ -301,7 +303,7 @@ export const PaymentPage: React.FC = () => {
             variant={ButtonVariants.PRIMARY}
             fullWidth
             size={ComponentSizes.MD}
-            onClick={() => handleCheckout(product.id)}
+            onClick={() => setCheckoutProduct(product)}
           >
             Buy Again
           </Button>
@@ -318,7 +320,7 @@ export const PaymentPage: React.FC = () => {
         variant={ButtonVariants.PRIMARY}
         fullWidth
         size={ComponentSizes.MD}
-        onClick={() => handleCheckout(product.id)}
+        onClick={() => setCheckoutProduct(product)}
       >
         {product.recurring ? "Subscribe Now" : "Buy Now"}
       </Button>
@@ -384,6 +386,13 @@ export const PaymentPage: React.FC = () => {
         confirmLabel="Cancel Subscription"
         cancelLabel="Keep Subscription"
         isDestructive={true}
+      />
+
+      <CheckoutDialog
+        isOpen={checkoutProduct !== null}
+        product={checkoutProduct}
+        onClose={() => setCheckoutProduct(null)}
+        onSuccess={() => void fetchData()}
       />
     </>
   );

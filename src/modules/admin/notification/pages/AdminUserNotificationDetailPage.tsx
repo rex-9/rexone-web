@@ -25,6 +25,7 @@ import {
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import NotificationController from "../notification.controller";
+import { NOTIFICATION_ADMIN_TABS } from "../constants";
 import type { IAdminUserNotification } from "../types";
 
 const loadUserNotification = async (id: string) => {
@@ -64,8 +65,8 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
 
   const isDiscarded = Boolean(notification?.discarded_at);
   const listPath = isDiscarded
-    ? AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN
-    : AppRoutes.client.protected.admin.USER_NOTIFICATIONS;
+    ? `${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}&view=discarded`
+    : `${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}`;
 
   const handleDiscard = async () => {
     if (!notification) return;
@@ -82,7 +83,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
           ),
         );
         setIsDiscardOpen(false);
-        navigate(AppRoutes.client.protected.admin.USER_NOTIFICATIONS);
+        navigate(listPath);
       } else {
         toast.error(result.error || "Failed to discard user notification");
       }
@@ -132,9 +133,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
           ),
         );
         setIsDestroyOpen(false);
-        navigate(
-          AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN,
-        );
+        navigate(listPath);
       } else {
         toast.error(
           result.error || "Failed to permanently delete user notification",
@@ -157,21 +156,13 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
             to: AppRoutes.client.protected.admin.HOME,
           },
           {
-            label: t(AppLocales.Admin.Notifications.UserNotifications.Title),
-            to: AppRoutes.client.protected.admin.USER_NOTIFICATIONS,
+            label: t(AppLocales.Admin.Notifications.Title),
+            to: AppRoutes.client.protected.admin.NOTIFICATIONS,
           },
-          ...(isDiscarded
-            ? [
-                {
-                  label: t(
-                    AppLocales.Admin.Notifications.UserNotifications.Tabs
-                      .RecycleBin,
-                  ),
-                  to: AppRoutes.client.protected.admin
-                    .USER_NOTIFICATIONS_RECYCLE_BIN,
-                },
-              ]
-            : []),
+          {
+            label: t(AppLocales.Admin.Notifications.UserNotifications.Title),
+            to: listPath,
+          },
           {
             label:
               notification?.title || t(AppLocales.Admin.Common.Detail.Details),

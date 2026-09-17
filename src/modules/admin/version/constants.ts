@@ -23,6 +23,15 @@ export const ADMIN_VERSION_PAGE_TITLES = {
   USER_VERSIONS: "User Versions",
 } as const;
 
+export const ADMIN_VERSION_TABS = {
+  ACTIVE: "active",
+  USER_VERSIONS: "user_versions",
+  DISCARDED: "discarded",
+} as const;
+
+export type TAdminVersionTab =
+  (typeof ADMIN_VERSION_TABS)[keyof typeof ADMIN_VERSION_TABS];
+
 export const ADMIN_VERSION_TABLE_KEYS = {
   NUMBER: "number",
   TITLE: "title",

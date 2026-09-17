@@ -13,6 +13,7 @@ vi.mock("./index", () => ({
     resumeSubscription: vi.fn(),
     getTransactions: vi.fn(),
     createCheckout: vi.fn(),
+    validateCoupon: vi.fn(),
   },
 }));
 
@@ -199,6 +200,88 @@ describe("PaymentController", () => {
       const result = await PaymentController.createCheckout("free-prod");
       expect(result.success).toBe(true);
       expect(result.freeAccessGranted).toBe(true);
+    });
+
+    it("passes coupon code to checkout creation", async () => {
+      vi.mocked(PaymentService.createCheckout).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "OK" },
+          data: {
+            checkout_url: "https://checkout.stripe.com/test",
+            coupon_code: "SAVE20",
+            discount_amount: 200,
+          },
+        },
+      });
+
+      const result = await PaymentController.createCheckout("prod-1", "SAVE20");
+      expect(result.success).toBe(true);
+      expect(result.couponCode).toBe("SAVE20");
+      expect(PaymentService.createCheckout).toHaveBeenCalledWith(
+        "prod-1",
+        undefined,
+        undefined,
+        "SAVE20",
+      );
+    });
+  });
+
+  describe("validateCoupon", () => {
+    it("returns validation result when coupon is valid", async () => {
+      vi.mocked(PaymentService.validateCoupon).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "Valid" },
+          data: {
+            valid: true,
+            original_amount: 1000,
+            discount_amount: 200,
+            final_amount: 800,
+            currency: "usd",
+          },
+        },
+      });
+
+      const result = await PaymentController.validateCoupon("SAVE20", "prod-1");
+      expect(result.success).toBe(true);
+      expect(result.data?.discount_amount).toBe(200);
+      expect(result.data?.final_amount).toBe(800);
+    });
+
+    it("returns error and attempt data when coupon validation fails", async () => {
+      vi.mocked(PaymentService.validateCoupon).mockResolvedValue({
+        data: {
+          status: { code: 422, success: false, message: "Invalid coupon" },
+          data: {
+            valid: false,
+            remaining_attempts: 2,
+            cooldown_remaining: 0,
+          } as any,
+        },
+      });
+
+      const result = await PaymentController.validateCoupon("INVALID", "prod-1");
+      expect(result.success).toBe(false);
+      expect(result.error).toBeDefined();
+      expect(result.remaining_attempts).toBe(2);
+      expect(result.cooldown_remaining).toBe(0);
+    });
+
+    it("returns cooldown data when rate limited", async () => {
+      vi.mocked(PaymentService.validateCoupon).mockResolvedValue({
+        data: {
+          status: { code: 429, success: false, message: "Too many attempts" },
+          data: {
+            valid: false,
+            remaining_attempts: 0,
+            cooldown_remaining: 30,
+          } as any,
+        },
+      });
+
+      const result = await PaymentController.validateCoupon("INVALID", "prod-1");
+      expect(result.success).toBe(false);
+      expect(result.remaining_attempts).toBe(0);
+      expect(result.cooldown_remaining).toBe(30);
     });
   });
 });

@@ -85,6 +85,7 @@ export const NOTIFICATION_TEMPLATE_LINKS = {
 export const NOTIFICATION_ADMIN_TABS = {
   BROADCAST: "broadcast",
   TEMPLATES: "templates",
+  USER_NOTIFICATIONS: "user_notifications",
 } as const;
 
 export const ADMIN_USER_NOTIFICATION_SORT_KEYS = {

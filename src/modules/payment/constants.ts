@@ -51,3 +51,28 @@ export const ACCESS_STATUS = {
 } as const;
 
 export type TAccessStatus = (typeof ACCESS_STATUS)[keyof typeof ACCESS_STATUS];
+
+export const PAYMENT_CURRENCIES = {
+  USD: "usd",
+  MMK: "mmk",
+  SGD: "sgd",
+} as const;
+
+export type TPaymentCurrency =
+  (typeof PAYMENT_CURRENCIES)[keyof typeof PAYMENT_CURRENCIES];
+
+export const PAYMENT_CURRENCY_OPTIONS = [
+  { value: PAYMENT_CURRENCIES.USD, label: "USD ($)" },
+  { value: PAYMENT_CURRENCIES.MMK, label: "MMK (Ks)" },
+  { value: PAYMENT_CURRENCIES.SGD, label: "SGD ($)" },
+] as const;
+
+export const COUPON_TYPES = {
+  PERCENTAGE: "percentage",
+  FIXED: "fixed",
+} as const;
+
+export type TCouponType = (typeof COUPON_TYPES)[keyof typeof COUPON_TYPES];
+
+export const MAX_PERCENTAGE_DISCOUNT = 100;
+

@@ -1,7 +1,13 @@
 import { PaymentService } from ".";
 import { AppLocales, translate } from "../../locales";
 import { getApiError, parsePagyList } from "../../services/api.service";
-import { IAccess, IProduct, ISubscription, ITransaction } from "./types";
+import {
+  IAccess,
+  ICouponValidationResult,
+  IProduct,
+  ISubscription,
+  ITransaction,
+} from "./types";
 import { IApiPagination } from "../../models";
 
 class PaymentController {
@@ -186,14 +192,55 @@ class PaymentController {
     };
   }
 
-  // ===== CHECKOUT =====
-  async createCheckout(productId: string): Promise<{
+  // ===== CHECKOUT & COUPONS =====
+  async validateCoupon(
+    code: string,
+    productId: string,
+  ): Promise<{
+    success: boolean;
+    data?: ICouponValidationResult;
+    error?: string;
+    remaining_attempts?: number;
+    cooldown_remaining?: number;
+  }> {
+    const response = await PaymentService.validateCoupon(code, productId);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data?.valid) {
+      return {
+        success: true,
+        data,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Payment.CheckoutDialog.InvalidCode),
+      ),
+      remaining_attempts: data?.remaining_attempts,
+      cooldown_remaining: data?.cooldown_remaining,
+    };
+  }
+
+  async createCheckout(
+    productId: string,
+    couponCode?: string,
+  ): Promise<{
     success: boolean;
     checkoutUrl?: string;
     freeAccessGranted?: boolean;
+    couponCode?: string;
+    discountAmount?: number;
     error?: string;
   }> {
-    const response = await PaymentService.createCheckout(productId);
+    const response = await PaymentService.createCheckout(
+      productId,
+      undefined,
+      undefined,
+      couponCode,
+    );
     const { status, data } = response.data || {};
 
     if (status?.success) {
@@ -201,6 +248,8 @@ class PaymentController {
         return {
           success: true,
           freeAccessGranted: true,
+          couponCode: data.coupon_code,
+          discountAmount: data.discount_amount,
         };
       }
 
@@ -208,6 +257,8 @@ class PaymentController {
         return {
           success: true,
           checkoutUrl: data.checkout_url,
+          couponCode: data.coupon_code,
+          discountAmount: data.discount_amount,
         };
       }
     }

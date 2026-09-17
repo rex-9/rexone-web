@@ -3,6 +3,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
   Outlet,
@@ -59,9 +60,7 @@ import {
   AdminNotificationsPage,
   AdminNotificationCreatePage,
   AdminNotificationEditPage,
-  AdminUserNotificationsPage,
   AdminUserNotificationDetailPage,
-  AdminDiscardedUserNotificationsPage,
   AdminProductCreatePage,
   AdminProductEditPage,
   AdminProductDetailPage,
@@ -71,6 +70,10 @@ import {
   AdminTransactionDetailPage,
   AdminSubscriptionsPage,
   AdminSubscriptionDetailPage,
+  AdminCouponsPage,
+  AdminCouponCreatePage,
+  AdminCouponDetailPage,
+  AdminUserCouponsPage,
   AdminRoleCreatePage,
   AdminRoleEditPage,
   AdminRoleDetailPage,
@@ -91,13 +94,14 @@ import {
   AdminVersionCreatePage,
   AdminVersionEditPage,
   AdminVersionDetailPage,
-  AdminUserVersionsPage,
   AdminAiProfilesPage,
   AdminAiProfileCreatePage,
   AdminAiProfileDetailPage,
   AdminAiProfileEditPage,
   AdminAiRunsPage,
   AdminAiRunDetailPage,
+  ADMIN_VERSION_TABS,
+  NOTIFICATION_ADMIN_TABS,
 } from "../modules/admin";
 import { AnalyticsPageView } from "./AnalyticsPageView";
 
@@ -505,7 +509,12 @@ const router = createBrowserRouter(
           >
             <Route
               path={AppRoutes.client.protected.admin.USER_NOTIFICATIONS}
-              element={<AdminUserNotificationsPage />}
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}`}
+                  replace
+                />
+              }
             />
             <Route
               path={AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL}
@@ -521,8 +530,15 @@ const router = createBrowserRouter(
             }
           >
             <Route
-              path={AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN}
-              element={<AdminDiscardedUserNotificationsPage />}
+              path={
+                AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN
+              }
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}&view=discarded`}
+                  replace
+                />
+              }
             />
           </Route>
           <Route
@@ -630,6 +646,49 @@ const router = createBrowserRouter(
             <Route
               path={AppRoutes.client.protected.admin.SUBSCRIPTION_DETAIL}
               element={<AdminSubscriptionDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PAYMENT_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.COUPONS}
+              element={<AdminCouponsPage />}
+            />
+            <Route
+              path={AppRoutes.client.protected.admin.COUPON_DETAIL}
+              element={<AdminCouponDetailPage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.CREATE}
+                resource={ADMIN_RESOURCES.PAYMENT_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.COUPON_CREATE}
+              element={<AdminCouponCreatePage />}
+            />
+          </Route>
+          <Route
+            element={
+              <AdminRootRoute
+                action={ADMIN_ACTIONS.READ}
+                resource={ADMIN_RESOURCES.PAYMENT_USER_COUPONS}
+              />
+            }
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.USER_COUPONS}
+              element={<AdminUserCouponsPage />}
             />
           </Route>
           <Route
@@ -850,7 +909,12 @@ const router = createBrowserRouter(
           >
             <Route
               path={AppRoutes.client.protected.admin.USER_VERSIONS}
-              element={<AdminUserVersionsPage />}
+              element={
+                <Navigate
+                  to={`${AppRoutes.client.protected.admin.VERSIONS}?tab=${ADMIN_VERSION_TABS.USER_VERSIONS}`}
+                  replace
+                />
+              }
             />
           </Route>
         </Route>
