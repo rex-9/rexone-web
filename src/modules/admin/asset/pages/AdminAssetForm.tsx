@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -20,6 +20,7 @@ import {
   Dropdown,
   FormActionRow,
   FormContainer,
+  TextArea,
   TextInput,
 } from "../../components";
 import { AdminAssetChildrenTable } from "../components";
@@ -39,6 +40,8 @@ import { DateTime, DateTimeFormats } from "../../../../design";
 
 export interface IAdminAssetEditFormValues {
   name: string;
+  title?: string;
+  description?: string;
   type: string;
 }
 
@@ -54,6 +57,7 @@ export interface IAdminAssetFormProps {
     files: File[],
     type: string,
     onProgress: (percent: number, msg: string) => void,
+    meta?: { title?: string; description?: string },
   ) => Promise<void>;
   onSubmitEdit?: (values: IAdminAssetEditFormValues) => Promise<void>;
   onCompress?: () => Promise<void>;
@@ -93,15 +97,31 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   // Create Mode state
   const [fileItems, setFileItems] = useState<IFileItem[]>([]);
   const [uploadType, setUploadType] = useState<string>(ASSET_TYPES.GENERAL);
+  const [uploadTitle, setUploadTitle] = useState("");
+  const [uploadDescription, setUploadDescription] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatusMessage, setUploadStatusMessage] = useState("");
   const [hasOversizedFiles, setHasOversizedFiles] = useState(false);
 
   // Edit Mode state
   const [editName, setEditName] = useState(asset?.name ?? "");
+  const [editTitle, setEditTitle] = useState(asset?.title ?? "");
+  const [editDescription, setEditDescription] = useState(
+    asset?.description ?? "",
+  );
   const [editType, setEditType] = useState(asset?.type ?? ASSET_TYPES.GENERAL);
 
+  useEffect(() => {
+    if (asset) {
+      setEditName(asset.name ?? "");
+      setEditTitle(asset.title ?? "");
+      setEditDescription(asset.description ?? "");
+      setEditType(asset.type ?? ASSET_TYPES.GENERAL);
+    }
+  }, [asset?.id, asset?.name, asset?.title, asset?.description, asset?.type]);
+
   const [alertMessage, setAlertMessage] = useState("");
+  const isChildAsset = Boolean(asset?.parent_asset_id);
 
   const filteredTypeOptions = useMemo(
     () => ASSET_TYPE_OPTIONS.filter((opt) => opt.value !== ""),
@@ -202,6 +222,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
           setUploadProgress(percent);
           setUploadStatusMessage(msg);
         },
+        {
+          title: uploadTitle.trim() || undefined,
+          description: uploadDescription.trim() || undefined,
+        },
       );
     } catch (err: unknown) {
       setAlertMessage(err instanceof Error ? err.message : "Upload failed");
@@ -222,7 +246,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
     await onSubmitEdit({
       name: trimmed,
-      type: editType,
+      title: editTitle.trim() || undefined,
+      description: editDescription.trim() || undefined,
+      type: isChildAsset && asset ? asset.type : editType,
     });
   };
 
@@ -442,6 +468,29 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   }))}
                   onValueChange={(val) => setUploadType(val)}
                   disabled={isLoading}
+                />
+
+                <TextInput
+                  label={t(
+                    AppLocales.Admin.Assets.UploadDialog.TitleLabel,
+                    "Title",
+                  )}
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  placeholder="Optional title"
+                  disabled={isLoading}
+                />
+
+                <TextArea
+                  label={t(
+                    AppLocales.Admin.Assets.UploadDialog.DescriptionLabel,
+                    "Description",
+                  )}
+                  value={uploadDescription}
+                  onChange={(e) => setUploadDescription(e.target.value)}
+                  placeholder="Optional description"
+                  disabled={isLoading}
+                  rows={2}
                 />
 
                 <FileInput
@@ -676,8 +725,22 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   <TextInput
                     label={t(AppLocales.Admin.Assets.Table.Name)}
                     value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    required
+                    disabled
+                  />
+
+                  <TextInput
+                    label={t(AppLocales.Admin.Assets.Table.Title)}
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="Title"
+                  />
+
+                  <TextArea
+                    label={t(AppLocales.Admin.Assets.Table.Description)}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    placeholder="Description"
+                    rows={3}
                   />
 
                   <Dropdown
@@ -688,6 +751,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       label: opt.label,
                     }))}
                     onValueChange={(val) => setEditType(val)}
+                    disabled={isChildAsset}
                   />
                 </div>
 

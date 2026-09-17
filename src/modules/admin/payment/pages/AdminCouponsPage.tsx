@@ -42,7 +42,12 @@ import {
   ADMIN_VIEW_MODES,
   type TAdminViewMode,
 } from "../../constants";
-import { ADMIN_COUPON_SORT_KEYS } from "../constants";
+import {
+  ADMIN_COUPON_COLUMNS,
+  ADMIN_COUPON_FILTERS,
+  ADMIN_COUPON_SORT_KEYS,
+  COUPON_TYPES,
+} from "../constants";
 import PaymentController from "../payment.controller";
 import type { ICoupon } from "../../../payment/types";
 import { useToast } from "../../../../contexts/ToastContext";
@@ -61,11 +66,11 @@ export const AdminCouponsPage: React.FC = () => {
   const { isLoading, setLoading } = useLoading();
   const [params, setParams] = useSearchParams();
 
-  const page = Number(params.get("page") || 1);
-  const couponType = params.get("coupon_type") || "";
-  const search = params.get("search") || "";
+  const page = Number(params.get(ADMIN_COUPON_FILTERS.PAGE) || 1);
+  const couponType = params.get(ADMIN_COUPON_FILTERS.COUPON_TYPE) || "";
+  const search = params.get(ADMIN_COUPON_FILTERS.SEARCH) || "";
   const viewMode =
-    (params.get("view") as TAdminViewMode) || ADMIN_VIEW_MODES.ACTIVE;
+    (params.get(ADMIN_COUPON_FILTERS.VIEW) as TAdminViewMode) || ADMIN_VIEW_MODES.ACTIVE;
   const isDiscardedView = viewMode === ADMIN_VIEW_MODES.DISCARDED;
 
   const [searchInput, setSearchInput] = useState(search);
@@ -113,7 +118,10 @@ export const AdminCouponsPage: React.FC = () => {
     const timer = window.setTimeout(
       () =>
         searchInput !== search &&
-        update({ search: searchInput.trim(), page: 1 }),
+        update({
+          [ADMIN_COUPON_FILTERS.SEARCH]: searchInput.trim(),
+          [ADMIN_COUPON_FILTERS.PAGE]: 1,
+        }),
       300,
     );
     return () => window.clearTimeout(timer);
@@ -312,167 +320,170 @@ export const AdminCouponsPage: React.FC = () => {
     ];
   }, [isDiscardedView, t]);
 
-  const columns: IAdminTableColumn<ICoupon>[] = [
-    {
-      key: "code",
-      header: t(AppLocales.Admin.Coupons.Table.Code),
-      sortKey: ADMIN_COUPON_SORT_KEYS.CODE,
-      render: (coupon) => (
-        <div className="flex items-center gap-2">
-          <Badge
-            variant={
-              coupon.active ? BadgeVariants.PRIMARY : BadgeVariants.DEFAULT
-            }
-            size={ComponentSizes.MD}
-            className="font-mono font-bold tracking-wider"
-          >
-            {coupon.code}
-          </Badge>
-          {coupon.referrer_id && (
-            <Badge variant={BadgeVariants.INFO} size={ComponentSizes.SM}>
-              {t(AppLocales.Admin.Coupons.Table.Referral)}
+  const columns: IAdminTableColumn<ICoupon>[] = useMemo(
+    () => [
+      {
+        key: ADMIN_COUPON_COLUMNS.CODE,
+        header: t(AppLocales.Admin.Coupons.Table.Code),
+        sortKey: ADMIN_COUPON_SORT_KEYS.CODE,
+        render: (coupon) => (
+          <div className="flex items-center gap-2">
+            <Badge
+              variant={
+                coupon.active ? BadgeVariants.PRIMARY : BadgeVariants.DEFAULT
+              }
+              size={ComponentSizes.MD}
+              className="font-mono font-bold tracking-wider"
+            >
+              {coupon.code}
             </Badge>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: "title",
-      header: t(AppLocales.Admin.Coupons.Table.Title),
-      sortKey: ADMIN_COUPON_SORT_KEYS.TITLE,
-      render: (coupon) => (
-        <div>
-          <span className="font-semibold text-base-content block">
-            {coupon.title}
-          </span>
-          {coupon.description && (
-            <span className="text-xs text-base-content/60 line-clamp-1">
-              {coupon.description}
-            </span>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: "amount",
-      header: t(AppLocales.Admin.Coupons.Table.Discount),
-      sortKey: ADMIN_COUPON_SORT_KEYS.AMOUNT,
-      render: (coupon) => (
-        <span className="font-semibold text-success">
-          {coupon.coupon_type === "percentage"
-            ? `${coupon.amount}% ${t(AppLocales.Admin.Coupons.Table.Off)}`
-            : `${money(coupon.amount, coupon.currency || "usd")} ${t(AppLocales.Admin.Coupons.Table.Off)}`}
-        </span>
-      ),
-    },
-    {
-      key: "used_count",
-      header: t(AppLocales.Admin.Coupons.Table.Usage),
-      sortKey: ADMIN_COUPON_SORT_KEYS.USED_COUNT,
-      render: (coupon) => {
-        const isUnlimited = coupon.max_usage === 0;
-        return (
-          <div>
-            <span className="text-sm font-medium">
-              {coupon.used_count} / {isUnlimited ? "∞" : coupon.max_usage}
-            </span>
-            <span className="text-xs text-base-content/50 block">
-              {t(AppLocales.Admin.Coupons.Table.MaxPerUser, {
-                count: coupon.max_usage_per_user,
-              })}
-            </span>
+            {coupon.referrer_id && (
+              <Badge variant={BadgeVariants.INFO} size={ComponentSizes.SM}>
+                {t(AppLocales.Admin.Coupons.Table.Referral)}
+              </Badge>
+            )}
           </div>
-        );
+        ),
       },
-    },
-    {
-      key: "expires_at",
-      header: t(AppLocales.Admin.Coupons.Table.Expires),
-      sortKey: ADMIN_COUPON_SORT_KEYS.EXPIRES_AT,
-      render: (coupon) =>
-        coupon.expires_at ? (
-          <DateTime
-            value={coupon.expires_at}
-            format={DateTimeFormats.DATE_TIME}
-            fallback={t(AppLocales.Admin.Coupons.Table.Never)}
-          />
-        ) : (
-          <span className="text-xs text-base-content/60">
-            {t(AppLocales.Admin.Coupons.Table.Never)}
+      {
+        key: ADMIN_COUPON_COLUMNS.TITLE,
+        header: t(AppLocales.Admin.Coupons.Table.Title),
+        sortKey: ADMIN_COUPON_SORT_KEYS.TITLE,
+        render: (coupon) => (
+          <div>
+            <span className="font-semibold text-base-content block">
+              {coupon.title}
+            </span>
+            {coupon.description && (
+              <span className="text-xs text-base-content/60 line-clamp-1">
+                {coupon.description}
+              </span>
+            )}
+          </div>
+        ),
+      },
+      {
+        key: ADMIN_COUPON_COLUMNS.AMOUNT,
+        header: t(AppLocales.Admin.Coupons.Table.Discount),
+        sortKey: ADMIN_COUPON_SORT_KEYS.AMOUNT,
+        render: (coupon) => (
+          <span className="font-semibold text-success">
+            {coupon.coupon_type === COUPON_TYPES.PERCENTAGE
+              ? `${coupon.amount}% ${t(AppLocales.Admin.Coupons.Table.Off)}`
+              : `${money(coupon.amount, coupon.currency || "usd")} ${t(AppLocales.Admin.Coupons.Table.Off)}`}
           </span>
         ),
-    },
-    {
-      key: "created_at",
-      header: t(AppLocales.Admin.Coupons.Table.Created),
-      sortKey: ADMIN_COUPON_SORT_KEYS.CREATED_AT,
-      render: (coupon) => (
-        <DateTime
-          value={coupon.created_at}
-          format={DateTimeFormats.DATE}
-          fallback="—"
-        />
-      ),
-    },
-    {
-      key: "actions",
-      header: t(AppLocales.Admin.Coupons.Table.Actions),
-      className: "text-right",
-      render: (coupon) => (
-        <div
-          className="flex items-center justify-end gap-1.5"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {isDiscardedView
-            ? canDelete && (
-                <>
+      },
+      {
+        key: ADMIN_COUPON_COLUMNS.USED_COUNT,
+        header: t(AppLocales.Admin.Coupons.Table.Usage),
+        sortKey: ADMIN_COUPON_SORT_KEYS.USED_COUNT,
+        render: (coupon) => {
+          const isUnlimited = coupon.max_usage === 0;
+          return (
+            <div>
+              <span className="text-sm font-medium">
+                {coupon.used_count} / {isUnlimited ? "∞" : coupon.max_usage}
+              </span>
+              <span className="text-xs text-base-content/50 block">
+                {t(AppLocales.Admin.Coupons.Table.MaxPerUser, {
+                  count: coupon.max_usage_per_user,
+                })}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        key: ADMIN_COUPON_COLUMNS.EXPIRES_AT,
+        header: t(AppLocales.Admin.Coupons.Table.Expires),
+        sortKey: ADMIN_COUPON_SORT_KEYS.EXPIRES_AT,
+        render: (coupon) =>
+          coupon.expires_at ? (
+            <DateTime
+              value={coupon.expires_at}
+              format={DateTimeFormats.DATE_TIME}
+              fallback={t(AppLocales.Admin.Coupons.Table.Never)}
+            />
+          ) : (
+            <span className="text-xs text-base-content/60">
+              {t(AppLocales.Admin.Coupons.Table.Never)}
+            </span>
+          ),
+      },
+      {
+        key: ADMIN_COUPON_COLUMNS.CREATED_AT,
+        header: t(AppLocales.Admin.Coupons.Table.Created),
+        sortKey: ADMIN_COUPON_SORT_KEYS.CREATED_AT,
+        render: (coupon) => (
+          <DateTime
+            value={coupon.created_at}
+            format={DateTimeFormats.DATE}
+            fallback="—"
+          />
+        ),
+      },
+      {
+        key: ADMIN_COUPON_COLUMNS.ACTIONS,
+        header: t(AppLocales.Admin.Coupons.Table.Actions),
+        className: "text-right",
+        render: (coupon) => (
+          <div
+            className="flex items-center justify-end gap-1.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {isDiscardedView
+              ? canDelete && (
+                  <>
+                    <Button
+                      variant={ButtonVariants.TERTIARY}
+                      size={ComponentSizes.SM}
+                      onClick={() =>
+                        setLifecycleTarget({
+                          coupon,
+                          action: ADMIN_ACTIONS.UNDISCARD,
+                        })
+                      }
+                      title={t(AppLocales.Admin.Common.Actions.Restore)}
+                    >
+                      <iconsLib.arrowPath className="w-4 h-4 text-success" />
+                    </Button>
+                    <Button
+                      variant={ButtonVariants.TERTIARY}
+                      size={ComponentSizes.SM}
+                      onClick={() =>
+                        setLifecycleTarget({
+                          coupon,
+                          action: ADMIN_ACTIONS.DESTROY,
+                        })
+                      }
+                      title={t(AppLocales.Admin.Common.Actions.Destroy)}
+                    >
+                      <iconsLib.trash className="w-4 h-4 text-error" />
+                    </Button>
+                  </>
+                )
+              : canDelete && (
                   <Button
                     variant={ButtonVariants.TERTIARY}
                     size={ComponentSizes.SM}
                     onClick={() =>
                       setLifecycleTarget({
                         coupon,
-                        action: ADMIN_ACTIONS.UNDISCARD,
+                        action: ADMIN_ACTIONS.DISCARD,
                       })
                     }
-                    title={t(AppLocales.Admin.Common.Actions.Restore)}
-                  >
-                    <iconsLib.arrowPath className="w-4 h-4 text-success" />
-                  </Button>
-                  <Button
-                    variant={ButtonVariants.TERTIARY}
-                    size={ComponentSizes.SM}
-                    onClick={() =>
-                      setLifecycleTarget({
-                        coupon,
-                        action: ADMIN_ACTIONS.DESTROY,
-                      })
-                    }
-                    title={t(AppLocales.Admin.Common.Actions.Destroy)}
+                    title={t(AppLocales.Admin.Common.Actions.Discard)}
                   >
                     <iconsLib.trash className="w-4 h-4 text-error" />
                   </Button>
-                </>
-              )
-            : canDelete && (
-                <Button
-                  variant={ButtonVariants.TERTIARY}
-                  size={ComponentSizes.SM}
-                  onClick={() =>
-                    setLifecycleTarget({
-                      coupon,
-                      action: ADMIN_ACTIONS.DISCARD,
-                    })
-                  }
-                  title={t(AppLocales.Admin.Common.Actions.Discard)}
-                >
-                  <iconsLib.trash className="w-4 h-4 text-error" />
-                </Button>
-              )}
-        </div>
-      ),
-    },
-  ];
+                )}
+          </div>
+        ),
+      },
+    ],
+    [canDelete, isDiscardedView, navigate, t],
+  );
 
   return (
     <div className="space-y-6">
@@ -519,7 +530,10 @@ export const AdminCouponsPage: React.FC = () => {
             size={ComponentSizes.SM}
             onClick={() => {
               setSelectedIds([]);
-              update({ view: ADMIN_VIEW_MODES.ACTIVE, page: 1 });
+              update({
+                [ADMIN_COUPON_FILTERS.VIEW]: ADMIN_VIEW_MODES.ACTIVE,
+                [ADMIN_COUPON_FILTERS.PAGE]: 1,
+              });
             }}
           >
             {t(AppLocales.Admin.Coupons.Tabs.Active)}
@@ -531,7 +545,10 @@ export const AdminCouponsPage: React.FC = () => {
             size={ComponentSizes.SM}
             onClick={() => {
               setSelectedIds([]);
-              update({ view: ADMIN_VIEW_MODES.DISCARDED, page: 1 });
+              update({
+                [ADMIN_COUPON_FILTERS.VIEW]: ADMIN_VIEW_MODES.DISCARDED,
+                [ADMIN_COUPON_FILTERS.PAGE]: 1,
+              });
             }}
             className="flex items-center gap-1.5"
           >
@@ -554,16 +571,21 @@ export const AdminCouponsPage: React.FC = () => {
           <div className="w-40">
             <Dropdown
               value={couponType}
-              onValueChange={(value) => update({ coupon_type: value, page: 1 })}
+              onValueChange={(value) =>
+                update({
+                  [ADMIN_COUPON_FILTERS.COUPON_TYPE]: value,
+                  [ADMIN_COUPON_FILTERS.PAGE]: 1,
+                })
+              }
               placeholder={t(AppLocales.Admin.Coupons.FilterAll)}
               options={[
                 { value: "", label: t(AppLocales.Admin.Coupons.FilterAll) },
                 {
-                  value: "percentage",
+                  value: COUPON_TYPES.PERCENTAGE,
                   label: t(AppLocales.Admin.Coupons.FilterPercentage),
                 },
                 {
-                  value: "fixed",
+                  value: COUPON_TYPES.FIXED,
                   label: t(AppLocales.Admin.Coupons.FilterFixed),
                 },
               ]}

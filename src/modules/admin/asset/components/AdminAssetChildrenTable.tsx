@@ -22,12 +22,22 @@ export interface IAdminAssetChildrenTableProps {
   assets?: IAssetChild[];
   onDownload?: (asset: IAssetChild) => void | Promise<void>;
   onEdit?: (asset: IAssetChild) => void;
+  onDiscard?: (asset: IAssetChild) => void;
+  onUndiscard?: (asset: IAssetChild) => void;
+  onDestroy?: (asset: IAssetChild) => void;
+  onRowClick?: (asset: IAssetChild) => void;
 }
 
-export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = ({
+export const AdminAssetChildrenTable: React.FC<
+  IAdminAssetChildrenTableProps
+> = ({
   assets = [],
   onDownload,
   onEdit,
+  onDiscard,
+  onUndiscard,
+  onDestroy,
+  onRowClick,
 }) => {
   const t = useTranslate();
 
@@ -58,17 +68,25 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
       },
     },
     {
-      key: ADMIN_ASSET_COLUMNS.NAME,
-      header: t(AppLocales.Admin.Assets.Table.Name),
+      key: ADMIN_ASSET_COLUMNS.TITLE,
+      header: t(AppLocales.Admin.Assets.Table.Title),
       className: "min-w-56 max-w-72",
       render: (asset) => (
         <div className="flex min-w-0 flex-col">
-          <span className="truncate font-medium text-base-content" title={asset.name}>
-            {asset.name}
+          <span
+            className="truncate font-medium text-base-content"
+            title={asset.title || asset.name}
+          >
+            {asset.title || asset.name}
           </span>
-          <span className="truncate font-mono text-xs text-base-content/60" title={asset.id}>
-            {asset.id}
-          </span>
+          {asset.title && (
+            <span
+              className="truncate text-xs text-base-content/70"
+              title={asset.name}
+            >
+              {asset.name}
+            </span>
+          )}
         </div>
       ),
     },
@@ -89,7 +107,9 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
     {
       key: ADMIN_ASSET_COLUMNS.STATUS,
       header: t(AppLocales.Admin.Assets.Detail.Status),
-      render: (asset) => <StatusBadge status={asset.status || ASSET_STATUSES.READY} />,
+      render: (asset) => (
+        <StatusBadge status={asset.status || ASSET_STATUSES.READY} />
+      ),
     },
     {
       key: ADMIN_ASSET_COLUMNS.SIZE,
@@ -110,37 +130,64 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
     },
   ];
 
-  if (onDownload || onEdit) {
+  if (onDownload || onEdit || onDiscard || onUndiscard || onDestroy) {
     columns.push({
       key: ADMIN_ASSET_COLUMNS.ACTIONS,
       header: t(AppLocales.Admin.Assets.Table.Actions),
       className: "text-right",
-      render: (asset) => (
-        <div className="flex items-center justify-end gap-1.5">
-          {onDownload && (
-            <Button
-              size={ButtonSizes.XS}
-              variant={ButtonVariants.SECONDARY}
-              onClick={() => void onDownload(asset)}
-              className="inline-flex items-center gap-1.5"
-            >
-              <iconsLib.download className="h-4 w-4" />
-              {t(AppLocales.Admin.Assets.Download.Action)}
-            </Button>
-          )}
-          {onEdit && (
-            <AdminTableActions
-              resource={ADMIN_RESOURCES.ASSETS}
-              actions={[
-                {
-                  type: ADMIN_ACTIONS.EDIT,
-                  onClick: () => onEdit(asset),
-                },
-              ]}
-            />
-          )}
-        </div>
-      ),
+      render: (asset) => {
+        const isDiscarded = Boolean(asset.discarded_at);
+        const actions = [];
+        if (onEdit && !isDiscarded) {
+          actions.push({
+            type: ADMIN_ACTIONS.EDIT,
+            onClick: () => onEdit(asset),
+          });
+        }
+        if (onDiscard && !isDiscarded) {
+          actions.push({
+            type: ADMIN_ACTIONS.DISCARD,
+            onClick: () => onDiscard(asset),
+          });
+        }
+        if (onUndiscard && isDiscarded) {
+          actions.push({
+            type: ADMIN_ACTIONS.UNDISCARD,
+            onClick: () => onUndiscard(asset),
+          });
+        }
+        if (onDestroy && isDiscarded) {
+          actions.push({
+            type: ADMIN_ACTIONS.DESTROY,
+            onClick: () => onDestroy(asset),
+          });
+        }
+
+        return (
+          <div
+            className="flex items-center justify-end gap-1.5"
+            data-row-click-ignore
+          >
+            {onDownload && (
+              <Button
+                size={ButtonSizes.XS}
+                variant={ButtonVariants.SECONDARY}
+                onClick={() => void onDownload(asset)}
+                className="inline-flex items-center gap-1.5"
+              >
+                <iconsLib.download className="h-4 w-4" />
+                {t(AppLocales.Admin.Assets.Download.Action)}
+              </Button>
+            )}
+            {actions.length > 0 && (
+              <AdminTableActions
+                resource={ADMIN_RESOURCES.ASSETS}
+                actions={actions}
+              />
+            )}
+          </div>
+        );
+      },
     });
   }
 
@@ -157,6 +204,7 @@ export const AdminAssetChildrenTable: React.FC<IAdminAssetChildrenTableProps> = 
       columns={columns}
       records={assets}
       getRowKey={(asset) => asset.id}
+      onRowClick={onRowClick}
     />
   );
 };

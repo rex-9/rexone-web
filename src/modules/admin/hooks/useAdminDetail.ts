@@ -14,6 +14,9 @@ export const useAdminDetail = <T>(
   const { setLoading } = useLoading();
   const [record, setRecord] = useState<T | null>(null);
   const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const reload = () => setReloadKey((prev) => prev + 1);
 
   useEffect(() => {
     if (!id) return;
@@ -42,7 +45,7 @@ export const useAdminDetail = <T>(
       active = false;
       setLoading(false);
     };
-  }, [id, load, setLoading]);
+  }, [id, load, setLoading, reloadKey]);
 
-  return { record, error };
+  return { record, error, reload };
 };

@@ -34,3 +34,22 @@ export const ADMIN_USER_COUPON_SORT_KEYS = {
   COUPON_CODE: "coupon_code",
 } as const;
 
+export const ADMIN_COUPON_COLUMNS = {
+  CODE: "code",
+  TITLE: "title",
+  AMOUNT: "amount",
+  USED_COUNT: "used_count",
+  EXPIRES_AT: "expires_at",
+  CREATED_AT: "created_at",
+  ACTIONS: "actions",
+} as const;
+
+export const ADMIN_COUPON_FILTERS = {
+  PAGE: "page",
+  COUPON_TYPE: "coupon_type",
+  SEARCH: "search",
+  VIEW: "view",
+} as const;
+
+export { COUPON_TYPES, type TCouponType } from "../../payment/constants";
+

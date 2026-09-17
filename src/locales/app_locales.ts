@@ -543,6 +543,7 @@ export const AppLocales = {
         MaxPerUserLabel: "admin.coupons.form.max_per_user_label",
         MaxPerUserPlaceholder: "admin.coupons.form.max_per_user_placeholder",
         MaxPerUserHelper: "admin.coupons.form.max_per_user_helper",
+        MaxPerUserExceedsMax: "admin.coupons.form.max_per_user_exceeds_max",
         ExpiresLabel: "admin.coupons.form.expires_label",
         ExpiresHelper: "admin.coupons.form.expires_helper",
         BatchCountLabel: "admin.coupons.form.batch_count_label",
@@ -1404,6 +1405,8 @@ export const AppLocales = {
       Table: {
         Preview: "admin.assets.table.preview",
         Name: "admin.assets.table.name",
+        Title: "admin.assets.table.title",
+        Description: "admin.assets.table.description",
         Type: "admin.assets.table.type",
         Format: "admin.assets.table.format",
         Size: "admin.assets.table.size",
@@ -1415,6 +1418,8 @@ export const AppLocales = {
       UploadDialog: {
         Title: "admin.assets.upload_dialog.title",
         TypeLabel: "admin.assets.upload_dialog.type_label",
+        TitleLabel: "admin.assets.upload_dialog.title_label",
+        DescriptionLabel: "admin.assets.upload_dialog.description_label",
         FileLabel: "admin.assets.upload_dialog.file_label",
         ChooseFiles: "admin.assets.upload_dialog.choose_files",
         UploadButton: "admin.assets.upload_dialog.upload_button",

@@ -107,6 +107,11 @@ export const AdminCouponCreatePage: React.FC = () => {
       return;
     }
 
+    if (maxUsage > 0 && maxUsagePerUser > maxUsage) {
+      toastError(t(AppLocales.Admin.Coupons.Form.MaxPerUserExceedsMax));
+      return;
+    }
+
     setLoading(true);
 
     const parsedTargetUsers = targetUserEmailsInput

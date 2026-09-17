@@ -400,6 +400,10 @@ Clients keep sending `"app_version": "1.0.0"`. Core looks up a kept `Client::Ver
   - 9 failures $\rightarrow$ 120s cooldown
   - 12+ failures $\rightarrow$ 300s cooldown
 - Clients only consume `data.remaining_attempts` and `data.cooldown_remaining` from the API response to drive UI timers.
+- **Password Reset Request Cooldown (`POST /password/forgot`)**:
+  - `password_reset:cooldown:{user_id}`: 60s cooldown between consecutive password reset email requests.
+  - On 429 Too Many Requests: returns `data.cooldown_remaining` and error message `"We've sent an email. Please wait %{seconds}s before requesting again."`.
+  - Frontend dialogs (Web & Mobile) catch 429 and start their local countdown timers directly from `data.cooldown_remaining`.
 
 ### 5. Dashboard Separation & Priority Protocol
 

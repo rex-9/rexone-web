@@ -28,6 +28,7 @@ export const AdminAssetCreatePage: React.FC = () => {
     files: File[],
     type: string,
     onProgress: (percent: number, msg: string) => void,
+    meta?: { title?: string; description?: string },
   ) => {
     const total = files.length;
 
@@ -43,7 +44,11 @@ export const AdminAssetCreatePage: React.FC = () => {
         }),
       );
 
-      const response = await Admin.AssetController.uploadAsset(file, { type });
+      const response = await Admin.AssetController.uploadAsset(file, {
+        type,
+        title: meta?.title,
+        description: meta?.description,
+      });
 
       if (!response.success) {
         throw new Error(

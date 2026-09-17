@@ -47,6 +47,8 @@ export interface IAssetChild {
   size_bytes?: IAsset["size_bytes"];
   duration_secs?: IAsset["duration_secs"];
   parent_asset_id?: IAsset["parent_asset_id"];
+  discarded_at?: string | null;
+  undiscarded_at?: string | null;
   created_at: IAsset["created_at"];
   updated_at: IAsset["updated_at"];
 }

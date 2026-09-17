@@ -188,10 +188,18 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     <div className="w-full min-w-0">
                       <span
                         className="block truncate text-xs font-semibold text-base-content"
-                        title={asset.name}
+                        title={asset.title || asset.name}
                       >
-                        {asset.name}
+                        {asset.title || asset.name}
                       </span>
+                      {asset.title && (
+                        <span
+                          className="block truncate text-[10px] text-base-content/70"
+                          title={asset.name}
+                        >
+                          {asset.name}
+                        </span>
+                      )}
                       <div className="flex justify-between items-center text-[10px] text-base-content/60 mt-0.5">
                         <span className="uppercase font-medium">
                           {asset.format || "Media"}

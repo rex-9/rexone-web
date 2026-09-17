@@ -85,6 +85,8 @@ class AssetController {
     file: File,
     options?: {
       type?: string;
+      title?: string;
+      description?: string;
       assetable_type?: string;
       assetable_id?: string;
       folder?: string;
@@ -115,7 +117,15 @@ class AssetController {
   async updateAsset(
     id: string,
     values: Partial<
-      Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">
+      Pick<
+        IAsset,
+        | "name"
+        | "title"
+        | "description"
+        | "type"
+        | "assetable_type"
+        | "assetable_id"
+      >
     >,
   ): Promise<{
     success: boolean;

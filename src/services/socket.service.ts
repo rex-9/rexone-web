@@ -28,15 +28,21 @@ class SocketService {
   private subscriptionWaiters = new Map<string, TSubscriptionWaiter>();
   private subscribedChannels = new Set<string>();
 
+  private logDev(...args: unknown[]): void {
+    if (AppConfig.IS_DEV) {
+      console.log(...args);
+    }
+  }
+
   connect(token: string | null): void {
     // Don't connect if already connecting or no token
     if (this.isConnecting) {
-      console.log("🔌 Connection already in progress");
+      this.logDev("🔌 Connection already in progress");
       return;
     }
 
     if (!token || token.trim() === "") {
-      console.log("🔌 No token, skipping WebSocket");
+      this.logDev("🔌 No token, skipping WebSocket");
       this.disconnect();
       return;
     }
@@ -54,7 +60,7 @@ class SocketService {
     this.isConnecting = true;
 
     const wsUrl = `${AppConfig.SERVER_WS_BASE_URL}/cable?token=${cleanToken}`;
-    console.log("🔌 Connecting to WebSocket...");
+    this.logDev("🔌 Connecting to WebSocket...");
     this.ws = new WebSocket(wsUrl);
 
     this.ws.onopen = this.handleOpen.bind(this);
@@ -138,7 +144,7 @@ class SocketService {
   }
 
   private handleOpen(): void {
-    console.log("🔌 WebSocket connected");
+    this.logDev("🔌 WebSocket connected");
     this.isConnected = true;
     this.isConnecting = false;
     this.reconnectAttempts = 0;
@@ -157,7 +163,7 @@ class SocketService {
 
       // Handle different message types
       if (data.type === "welcome") {
-        console.log("👋 WebSocket welcome");
+        this.logDev("👋 WebSocket welcome");
         return;
       }
 
@@ -188,7 +194,7 @@ class SocketService {
   }
 
   private handleClose(event: CloseEvent): void {
-    console.log("🔌 WebSocket disconnected");
+    this.logDev("🔌 WebSocket disconnected");
     this.isConnected = false;
     this.isConnecting = false;
     this.rejectSubscriptionWaiters("WebSocket disconnected");
@@ -216,7 +222,7 @@ class SocketService {
     if (this.reconnectAttempts < this.maxReconnectAttempts && this.token) {
       this.reconnectAttempts++;
       const delay = 2000 * this.reconnectAttempts;
-      console.log(
+      this.logDev(
         `🔄 Reconnecting in ${delay}ms... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})`,
       );
 
@@ -232,7 +238,7 @@ class SocketService {
       return;
     }
 
-    console.log("❌ Max reconnect attempts reached");
+    this.logDev("❌ Max reconnect attempts reached");
     this.isConnecting = false;
   }
 

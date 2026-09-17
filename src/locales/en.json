@@ -739,6 +739,7 @@
         "max_per_user_label": "Usage Limit Per User",
         "max_per_user_placeholder": "1",
         "max_per_user_helper": "How many times each customer can redeem.",
+        "max_per_user_exceeds_max": "Usage limit per user cannot exceed global usage limit.",
         "expires_label": "Expiration Date (Optional)",
         "expires_helper": "Leave empty if this coupon never expires.",
         "batch_count_label": "Number of Coupons to Generate",
@@ -1548,6 +1549,8 @@
       "table": {
         "preview": "Preview",
         "name": "Name",
+        "title": "Title",
+        "description": "Description",
         "type": "Type",
         "format": "Format",
         "size": "Size",
@@ -1559,6 +1562,8 @@
       "upload_dialog": {
         "title": "Upload Assets",
         "type_label": "Asset Type",
+        "title_label": "Title",
+        "description_label": "Description",
         "file_label": "Select Files",
         "choose_files": "Choose Files (Up to {{count}})",
         "upload_button": "Upload",
