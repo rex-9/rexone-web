@@ -39,6 +39,8 @@ describe("AdminAssetController", () => {
           attributes: {
             id: "a1",
             name: "avatar.png",
+            title: "Profile Avatar",
+            description: "User profile photo",
             url: "https://example.com/avatar.png",
             type: "avatar",
             format: "image",
@@ -75,6 +77,8 @@ describe("AdminAssetController", () => {
       expect(result.success).toBe(true);
       expect(result.assets).toHaveLength(1);
       expect(result.assets[0].name).toBe("avatar.png");
+      expect(result.assets[0].title).toBe("Profile Avatar");
+      expect(result.assets[0].description).toBe("User profile photo");
       expect(AdminAssetService.getAssets).toHaveBeenCalledWith({
         type: "avatar",
         search: "avatar",
@@ -129,6 +133,8 @@ describe("AdminAssetController", () => {
             asset: {
               id: "a1",
               name: "dev/admin/avatar.png",
+              title: "Profile Avatar",
+              description: "User profile photo",
               url: "https://example.com/avatar.png",
               type: "avatar",
             },
@@ -143,6 +149,8 @@ describe("AdminAssetController", () => {
       const result = await AdminAssetController.getAsset("a1");
       expect(result.success).toBe(true);
       expect(result.asset?.name).toBe("dev/admin/avatar.png");
+      expect(result.asset?.title).toBe("Profile Avatar");
+      expect(result.asset?.description).toBe("User profile photo");
     });
 
     it("returns error and failure when asset belongs to another environment (404 Not Found)", async () => {
@@ -166,6 +174,99 @@ describe("AdminAssetController", () => {
       expect(result.success).toBe(false);
       expect(result.asset).toBeUndefined();
       expect(result.error).toBe("Not Found");
+    });
+  });
+
+  describe("updateAsset", () => {
+    it("sends title and description with the update payload", async () => {
+      const values = {
+        name: "dev/admin/avatar.png",
+        title: "My Video.mp4",
+        description: "Lesson intro",
+        type: "general",
+      };
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Asset updated" },
+          data: {
+            asset: {
+              id: "a1",
+              name: values.name,
+              title: values.title,
+              description: values.description,
+              type: values.type,
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.updateAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.updateAsset("a1", values);
+
+      expect(AdminAssetService.updateAsset).toHaveBeenCalledWith("a1", values);
+      expect(result.success).toBe(true);
+      expect(result.message).toBe("Asset updated");
+      expect(result.asset?.title).toBe("My Video.mp4");
+      expect(result.asset?.description).toBe("Lesson intro");
+    });
+
+    it("clears title and description when null is sent", async () => {
+      const values = {
+        name: "dev/admin/avatar.png",
+        title: null,
+        description: null,
+        type: "general",
+      };
+      const mockResponse = {
+        data: {
+          status: { code: 200, success: true, message: "Asset updated" },
+          data: {
+            asset: {
+              id: "a1",
+              name: values.name,
+              title: null,
+              description: null,
+              type: values.type,
+            },
+          },
+        },
+      };
+
+      vi.mocked(AdminAssetService.updateAsset).mockResolvedValue(
+        mockResponse as never,
+      );
+
+      const result = await AdminAssetController.updateAsset("a1", values);
+
+      expect(AdminAssetService.updateAsset).toHaveBeenCalledWith("a1", values);
+      expect(result.success).toBe(true);
+      expect(result.asset?.title).toBeNull();
+      expect(result.asset?.description).toBeNull();
+    });
+
+    it("returns error when update fails", async () => {
+      vi.mocked(AdminAssetService.updateAsset).mockResolvedValue({
+        data: {
+          status: {
+            code: 422,
+            success: false,
+            message: "Update failed",
+            error: "Invalid asset",
+          },
+          data: null,
+        },
+      } as never);
+
+      const result = await AdminAssetController.updateAsset("a1", {
+        title: "Broken",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.asset).toBeUndefined();
+      expect(result.error).toBe("Invalid asset");
     });
   });
 
