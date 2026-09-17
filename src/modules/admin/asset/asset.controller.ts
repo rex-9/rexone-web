@@ -115,7 +115,15 @@ class AssetController {
   async updateAsset(
     id: string,
     values: Partial<
-      Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">
+      Pick<
+        IAsset,
+        | "name"
+        | "type"
+        | "title"
+        | "description"
+        | "assetable_type"
+        | "assetable_id"
+      >
     >,
   ): Promise<{
     success: boolean;

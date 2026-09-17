@@ -11,6 +11,7 @@ import {
   ASSET_STATUSES,
   formatAssetFileSize,
   getAssetChildren,
+  getAssetTitle,
   getAssetThumbnail,
   isImageAsset,
   isSrtSubtitleFile,
@@ -20,6 +21,7 @@ import {
   Dropdown,
   FormActionRow,
   FormContainer,
+  TextArea,
   TextInput,
 } from "../../components";
 import { AdminAssetChildrenTable } from "../components";
@@ -39,6 +41,8 @@ import { DateTime, DateTimeFormats } from "../../../../design";
 
 export interface IAdminAssetEditFormValues {
   name: string;
+  title: string;
+  description: string;
   type: string;
 }
 
@@ -99,6 +103,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
   // Edit Mode state
   const [editName, setEditName] = useState(asset?.name ?? "");
+  const [editTitle, setEditTitle] = useState(asset?.title ?? "");
+  const [editDescription, setEditDescription] = useState(
+    asset?.description ?? "",
+  );
   const [editType, setEditType] = useState(asset?.type ?? ASSET_TYPES.GENERAL);
 
   const [alertMessage, setAlertMessage] = useState("");
@@ -222,6 +230,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
     await onSubmitEdit({
       name: trimmed,
+      title: editTitle.trim(),
+      description: editDescription.trim(),
       type: editType,
     });
   };
@@ -593,7 +603,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 {isImageAsset(asset) || getAssetThumbnail(asset)?.url ? (
                   <Image
                     src={getAssetThumbnail(asset)?.url || asset.url}
-                    alt={asset.name}
+                    alt={getAssetTitle(asset)}
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-contain"
                     fallback={
@@ -674,10 +684,23 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   </div>
 
                   <TextInput
+                    label={t(AppLocales.Admin.Assets.Detail.AssetTitle)}
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                  />
+
+                  <TextInput
                     label={t(AppLocales.Admin.Assets.Table.Name)}
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
                     required
+                  />
+
+                  <TextArea
+                    label={t(AppLocales.Admin.Common.Detail.Description)}
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    rows={3}
                   />
 
                   <Dropdown

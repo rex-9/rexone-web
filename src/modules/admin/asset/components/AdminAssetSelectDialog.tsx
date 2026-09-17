@@ -7,7 +7,7 @@ import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import type { IAdminAsset } from "../types";
-import { formatAssetFileSize } from "../constants";
+import { formatAssetFileSize, getAssetTitle } from "../constants";
 import type { IApiPagination } from "../../../../models";
 import { Admin } from "../..";
 
@@ -161,6 +161,8 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                 const isSelected =
                   selectedAsset?.id === asset.id ||
                   (!selectedAsset && selectedAssetId === asset.id);
+                const assetTitle = getAssetTitle(asset);
+                const description = asset.description?.trim();
 
                 return (
                   <Button
@@ -176,7 +178,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     <div className="w-full aspect-square rounded-lg overflow-hidden bg-base-200 border border-base-300 relative flex items-center justify-center mb-2">
                       <Image
                         src={asset.url}
-                        alt={asset.name}
+                        alt={assetTitle}
                         className="w-full h-full object-cover"
                       />
                       {isSelected && (
@@ -188,10 +190,18 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     <div className="w-full min-w-0">
                       <span
                         className="block truncate text-xs font-semibold text-base-content"
-                        title={asset.name}
+                        title={assetTitle}
                       >
-                        {asset.name}
+                        {assetTitle}
                       </span>
+                      {description ? (
+                        <span
+                          className="mt-0.5 block truncate text-[10px] text-base-content/70"
+                          title={description}
+                        >
+                          {description}
+                        </span>
+                      ) : null}
                       <div className="flex justify-between items-center text-[10px] text-base-content/60 mt-0.5">
                         <span className="uppercase font-medium">
                           {asset.format || "Media"}

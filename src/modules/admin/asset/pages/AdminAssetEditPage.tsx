@@ -132,6 +132,9 @@ export const AdminAssetEditPage: React.FC = () => {
   useEffect(() => {
     if (!id) return;
 
+    setAsset(null);
+    setError("");
+
     const loadAsset = async () => {
       setLoading(true);
       const result = await Admin.AssetController.getAsset(id);
@@ -156,6 +159,8 @@ export const AdminAssetEditPage: React.FC = () => {
 
     const result = await Admin.AssetController.updateAsset(id, {
       name: values.name,
+      title: values.title || null,
+      description: values.description || null,
       type: values.type,
     });
     setLoading(false, { overlay: false });
@@ -276,6 +281,7 @@ export const AdminAssetEditPage: React.FC = () => {
         />
       ) : asset ? (
         <AdminAssetForm
+          key={asset.id}
           mode={ADMIN_ACTIONS.EDIT}
           asset={asset}
           onSubmitEdit={handleSubmitEdit}

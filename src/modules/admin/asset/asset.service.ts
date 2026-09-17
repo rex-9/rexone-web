@@ -63,7 +63,15 @@ class AssetService {
   async updateAsset(
     id: string,
     data: Partial<
-      Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">
+      Pick<
+        IAsset,
+        | "name"
+        | "type"
+        | "title"
+        | "description"
+        | "assetable_type"
+        | "assetable_id"
+      >
     >,
   ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
     return api.put<{ asset: IAdminAsset }>(
