@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Image, StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  Image,
+  StatusBadge,
+} from "../../../../design";
+import {
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -28,7 +32,7 @@ export const AdminUserDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.USERS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -63,7 +67,7 @@ export const AdminUserDetailPage: React.FC = () => {
         />
       ) : user ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Identity)}
             icon={iconsLib.user}
             accent
@@ -81,25 +85,25 @@ export const AdminUserDetailPage: React.FC = () => {
                 <p className="text-xs font-mono font-medium text-primary mt-0.5">@{user.username}</p>
               </div>
             </div>
-          </AdminDetailSection>
-          <AdminDetailSection
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Account)}
             icon={iconsLib.document}
             className="lg:col-span-2"
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={user.email}
                 copyable
                 mono
                 className="sm:col-span-2"
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Provider)}
                 value={user.provider}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Confirmed)}
                 value={
                   <StatusBadge
@@ -107,13 +111,13 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Locked)}
                 value={
                   <StatusBadge status={user.locked ? "locked" : "active"} />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -122,7 +126,7 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   <DateTime
@@ -131,9 +135,9 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Roles)}
             icon={iconsLib.key}
             className="lg:col-span-3"
@@ -154,7 +158,7 @@ export const AdminUserDetailPage: React.FC = () => {
                 </span>
               )}
             </div>
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
     </div>

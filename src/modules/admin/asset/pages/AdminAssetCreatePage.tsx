@@ -17,7 +17,7 @@ import { Admin } from "../..";
 export const AdminAssetCreatePage: React.FC = () => {
   const t = useTranslate();
   useDocumentTitle(
-    `${t(AppLocales.Admin.Assets.UploadDialog.Title, "Upload Assets")} | Admin`,
+    `${t(AppLocales.Admin.Assets.UploadDialog.Title)} | Admin`,
   );
 
   const navigate = useNavigate();
@@ -37,7 +37,6 @@ export const AdminAssetCreatePage: React.FC = () => {
       onProgress(
         Math.round((i / total) * 100),
         t(AppLocales.Admin.Assets.UploadDialog.UploadingStatus, {
-          defaultValue: `Uploading file {{current}} of {{total}}: {{name}}`,
           current: i + 1,
           total,
           name: file.name,
@@ -60,7 +59,6 @@ export const AdminAssetCreatePage: React.FC = () => {
       onProgress(
         Math.round(((i + 1) / total) * 100),
         t(AppLocales.Admin.Assets.UploadDialog.UploadingStatus, {
-          defaultValue: `Uploading file {{current}} of {{total}}: {{name}}`,
           current: i + 1,
           total,
           name: file.name,
@@ -71,7 +69,6 @@ export const AdminAssetCreatePage: React.FC = () => {
     if (total > 1) {
       toast.success(
         t(AppLocales.Admin.Assets.Toasts.BulkUploadSuccess, {
-          defaultValue: `Successfully uploaded ${total} assets`,
           count: total,
         }),
       );
@@ -96,7 +93,7 @@ export const AdminAssetCreatePage: React.FC = () => {
 
       <div className="space-y-6">
         <PageHeader
-          title={t(AppLocales.Admin.Assets.UploadDialog.Title, "Upload Assets")}
+          title={t(AppLocales.Admin.Assets.UploadDialog.Title)}
           description="Upload and configure media assets in storage"
           action={
             <Button

@@ -47,10 +47,7 @@
     "submitting": "Submitting...",
     "success_message": "Thank you for your feedback!",
     "rating_label": "How was your experience? (1 - 10)",
-    "worst": "1 - Needs Work",
-    "best": "10 - Excellent",
     "content_label": "What's on your mind?",
-    "success": "Thank you for your feedback!",
     "error_empty": "Please enter your feedback.",
     "error_submit": "Failed to submit feedback. Please try again."
   },
@@ -778,7 +775,6 @@
     "user_coupons": {
       "title": "Redemption Ledger",
       "description": "Global audit log of coupon redemptions and applied discounts across all customers",
-      "back_button": "Back to Coupons",
       "search_placeholder": "Search by email, coupon code, or product name...",
       "filter_all": "All Purchase Types",
       "filter_trx": "One-Time Purchase (trx)",

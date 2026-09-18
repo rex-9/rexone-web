@@ -187,6 +187,7 @@ export const AppLocales = {
         DeselectAll: "admin.common.actions.deselect_all",
         ClearAll: "admin.common.actions.clear_all",
         ApplyFilter: "admin.common.actions.apply_filter",
+        ResetFilter: "admin.common.actions.reset_filter",
         OpenRecycleBin: "admin.common.actions.open_recycle_bin",
       },
       RecycleBin: {
@@ -582,7 +583,6 @@ export const AppLocales = {
     UserCoupons: {
       Title: "admin.user_coupons.title",
       Description: "admin.user_coupons.description",
-      BackButton: "admin.user_coupons.back_button",
       SearchPlaceholder: "admin.user_coupons.search_placeholder",
       FilterAll: "admin.user_coupons.filter_all",
       FilterTrx: "admin.user_coupons.filter_trx",

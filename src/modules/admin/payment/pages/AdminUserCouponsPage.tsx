@@ -1,17 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { Button } from "../../../../design";
-import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
+import { ButtonSizes, ButtonVariants } from "../../../../design/constants";
 import { useDocumentTitle } from "../../../../hooks";
-import { AppLocales } from "../../../../locales/app_locales";
+import { AppLocales, useTranslate } from "../../../../locales";
 import { PageHeader } from "../../components";
 import { AdminRedemptionsTable } from "../components";
 
 export const AdminUserCouponsPage: React.FC = () => {
-  const { t } = useTranslation();
+  const t = useTranslate();
   useDocumentTitle(t(AppLocales.Admin.UserCoupons.Title));
   const navigate = useNavigate();
 
@@ -22,12 +21,13 @@ export const AdminUserCouponsPage: React.FC = () => {
         description={t(AppLocales.Admin.UserCoupons.Description)}
         action={
           <Button
-            variant={ButtonVariants.TERTIARY}
-            size={ComponentSizes.MD}
+            size={ButtonSizes.SM}
+            variant={ButtonVariants.SECONDARY}
+            className="shrink-0 gap-1.5"
             onClick={() => navigate(AppRoutes.client.protected.admin.COUPONS)}
           >
-            <iconsLib.arrowLeft className="w-4 h-4 mr-1.5" />
-            {t(AppLocales.Admin.UserCoupons.BackButton)}
+            <iconsLib.arrowLeft className="h-4 w-4" />
+            {t(AppLocales.Admin.Common.Actions.Back)}
           </Button>
         }
       />

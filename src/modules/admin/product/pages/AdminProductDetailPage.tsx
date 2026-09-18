@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Image, StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  Image,
+  StatusBadge,
+} from "../../../../design";
+import {
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -30,7 +34,7 @@ export const AdminProductDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.PRODUCTS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -57,7 +61,7 @@ export const AdminProductDetailPage: React.FC = () => {
         />
       ) : product ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Products.Detail.Product)}
             icon={iconsLib.photo}
             accent
@@ -73,28 +77,28 @@ export const AdminProductDetailPage: React.FC = () => {
             )}
             <h2 className="text-xl font-bold tracking-tight text-base-content">{product.name}</h2>
             <p className="mt-1.5 text-xs text-base-content/70">{product.description}</p>
-          </AdminDetailSection>
-          <AdminDetailSection
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Products.Detail.Pricing)}
             icon={iconsLib.cube}
             className="lg:col-span-2"
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Products.Table.Code)}
                 value={product.code}
                 copyable
                 mono
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Table.Price)}
                 value={product.price}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.BillingInterval)}
                 value={product.period_label || product.interval}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.Recurring)}
                 value={
                   <StatusBadge
@@ -102,7 +106,7 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.Availability)}
                 value={
                   <StatusBadge
@@ -110,7 +114,7 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -119,8 +123,8 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
         </div>
       ) : null}
     </div>

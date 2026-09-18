@@ -2,14 +2,19 @@ import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Button, ConfirmDialog, Image, StatusBadge } from "../../../../design";
+import {
+  Button,
+  ConfirmDialog,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  Image,
+  StatusBadge,
+} from "../../../../design";
 import { ButtonVariants } from "../../../../design/constants";
 import { useToast } from "../../../../contexts/ToastContext";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -89,7 +94,7 @@ export const AdminAssetDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           { label: t(AppLocales.Admin.Assets.Title), to: listPath },
@@ -114,7 +119,7 @@ export const AdminAssetDetailPage: React.FC = () => {
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : asset ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Assets.Detail.Preview)}
             icon={iconsLib.photo}
             accent
@@ -143,22 +148,22 @@ export const AdminAssetDetailPage: React.FC = () => {
                 {t(AppLocales.Admin.Assets.Download.Action)}
               </Button>
             </div>
-          </AdminDetailSection>
-          <AdminDetailSection
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Assets.Detail.Metadata)}
             icon={iconsLib.document}
             className="lg:col-span-2"
           >
-            <AdminDetailGrid>
+            <DetailGrid>
               {asset.title && (
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Assets.Table.Title)}
                   value={asset.title}
                   copyable
                   className="sm:col-span-2 xl:col-span-3"
                 />
               )}
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={asset.name}
                 copyable
@@ -166,39 +171,39 @@ export const AdminAssetDetailPage: React.FC = () => {
                 className="sm:col-span-2 xl:col-span-3"
               />
               {asset.description && (
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Assets.Table.Description)}
                   value={asset.description}
                   className="sm:col-span-2 xl:col-span-3"
                 />
               )}
-              <AdminDetailField label={t(AppLocales.Admin.Common.Detail.Type)} value={asset.type} />
-              <AdminDetailField label={t(AppLocales.Admin.Common.Detail.Format)} value={asset.format} />
-              <AdminDetailField
+              <DetailField label={t(AppLocales.Admin.Common.Detail.Type)} value={asset.type} />
+              <DetailField label={t(AppLocales.Admin.Common.Detail.Format)} value={asset.format} />
+              <DetailField
                 label={t(AppLocales.Admin.Assets.Detail.Status)}
                 value={<StatusBadge status={asset.status || "unknown"} />}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Size)}
                 value={formatAssetFileSize(asset.size_bytes)}
               />
-              <AdminDetailField label={t(AppLocales.Admin.Common.Detail.Source)} value={asset.source} />
-              <AdminDetailField
+              <DetailField label={t(AppLocales.Admin.Common.Detail.Source)} value={asset.source} />
+              <DetailField
                 label={t(AppLocales.Admin.Assets.Detail.Duration)}
                 value={
                   asset.duration_secs ? `${asset.duration_secs}s` : undefined
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Assets.Detail.StorageKey)}
                 value={asset.storage_key}
                 copyable
                 mono
                 className="sm:col-span-2 xl:col-span-3"
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Assets.Detail.Children)}
             icon={iconsLib.document}
             className="lg:col-span-3"
@@ -226,7 +231,7 @@ export const AdminAssetDetailPage: React.FC = () => {
               onUndiscard={(child) => setChildToUndiscard(child)}
               onDestroy={(child) => setChildToDestroy(child)}
             />
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
 

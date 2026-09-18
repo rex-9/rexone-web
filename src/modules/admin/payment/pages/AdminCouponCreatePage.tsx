@@ -8,6 +8,7 @@ import {
   Dropdown,
 } from "../../../../design";
 import {
+  ButtonSizes,
   ButtonVariants,
   ComponentSizes,
 } from "../../../../design/constants";
@@ -201,12 +202,13 @@ export const AdminCouponCreatePage: React.FC = () => {
         description={t(AppLocales.Admin.Coupons.CreateDescription)}
         action={
           <Button
-            variant={ButtonVariants.TERTIARY}
-            size={ComponentSizes.MD}
+            size={ButtonSizes.SM}
+            variant={ButtonVariants.SECONDARY}
+            className="shrink-0 gap-1.5"
             onClick={() => navigate(AppRoutes.client.protected.admin.COUPONS)}
           >
-            <iconsLib.arrowLeft className="w-4 h-4 mr-1.5" />
-            {t(AppLocales.Admin.Coupons.Title)}
+            <iconsLib.arrowLeft className="h-4 w-4" />
+            {t(AppLocales.Admin.Common.Actions.Back)}
           </Button>
         }
       />

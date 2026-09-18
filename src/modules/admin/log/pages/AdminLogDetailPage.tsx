@@ -7,17 +7,16 @@ import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { iconsLib } from "../../../../assets";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
-import { Button, StatusBadge } from "../../../../design";
+import { Button, DateTime, DateTimeFormats, DetailHeader, StatusBadge } from "../../../../design";
 import {
   BadgeVariants,
   ButtonTypes,
   ButtonVariants,
 } from "../../../../design/constants";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import { ADMIN_LOG_SEVERITY } from "../constants";
 import type { IAdminLog } from "../types";
 import AdminLogController from "../log.controller";
-import { AlertDialog, AdminDetailHeader, AdminState } from "../../components";
+import { AlertDialog, AdminState } from "../../components";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
 
@@ -95,7 +94,7 @@ export const AdminLogDetailPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
 
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           {

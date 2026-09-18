@@ -12,8 +12,10 @@ import { IAccess, IProduct, ISubscription, ITransaction } from "..";
 import { PaymentController } from "..";
 import { CheckoutDialog } from "../components";
 import { AnalyticsService } from "../../../services";
+import { useTranslate, AppLocales } from "../../../locales";
 
 export const PaymentPage: React.FC = () => {
+  const t = useTranslate();
   const { setLoading } = useLoading();
   const { success, error } = useToast();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -213,7 +215,7 @@ export const PaymentPage: React.FC = () => {
             size={ComponentSizes.SM}
             onClick={() => setCancelTargetId(activeSub.id)}
           >
-            Cancel Subscription
+            {t(AppLocales.Payment.CancelSubscription)}
           </Button>
         </div>
       );
@@ -242,7 +244,7 @@ export const PaymentPage: React.FC = () => {
             size={ComponentSizes.SM}
             onClick={() => handleResume(canceledSub.id)}
           >
-            Resume Subscription
+            {t(AppLocales.Payment.ResumeSubscription)}
           </Button>
         </div>
       );
@@ -263,7 +265,7 @@ export const PaymentPage: React.FC = () => {
             size={ComponentSizes.MD}
             onClick={() => setCheckoutProduct(product)}
           >
-            Subscribe Again
+            {t(AppLocales.Payment.SubscribeNow)}
           </Button>
         </div>
       );
@@ -322,7 +324,7 @@ export const PaymentPage: React.FC = () => {
         size={ComponentSizes.MD}
         onClick={() => setCheckoutProduct(product)}
       >
-        {product.recurring ? "Subscribe Now" : "Buy Now"}
+        {product.recurring ? t(AppLocales.Payment.SubscribeNow) : "Buy Now"}
       </Button>
     );
   };

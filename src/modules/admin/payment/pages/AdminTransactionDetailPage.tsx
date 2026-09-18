@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { DateTime, DateTimeFormats, StatusBadge } from "../../../../design";
+import {
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -32,7 +36,7 @@ export const AdminTransactionDetailPage: React.FC = () => {
   const list = AppRoutes.client.protected.admin.TRANSACTIONS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -65,31 +69,31 @@ export const AdminTransactionDetailPage: React.FC = () => {
         />
       ) : record ? (
         <div className="grid gap-6 lg:grid-cols-2">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Transactions.Detail.Purchase)}
             icon={iconsLib.banknotes}
             accent
           >
-            <AdminDetailGrid columns={2}>
-              <AdminDetailField
+            <DetailGrid columns={2}>
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Table.Amount)}
                 value={amount(record.unit_amount, record.currency)}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Status)}
                 value={<StatusBadge status={record.status} />}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.Product)}
                 value={record.product_name}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.ProductCode)}
                 value={record.product_code}
                 copyable
                 mono
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -98,7 +102,7 @@ export const AdminTransactionDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.PaidAt)}
                 value={
                   record.paid_at ? (
@@ -111,36 +115,36 @@ export const AdminTransactionDetailPage: React.FC = () => {
                   )
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Transactions.Detail.Payment)}
             icon={iconsLib.banknotes}
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.User)}
                 value={record.user_name || record.username}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={record.user_email}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.PaymentMethod)}
                 value={record.payment_method_display}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.PaymentIntent)}
                 value={record.stripe_payment_intent_id}
                 className="sm:col-span-2"
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.Charge)}
                 value={record.stripe_charge_id}
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
         </div>
       ) : null}
     </div>

@@ -16,11 +16,10 @@ import {
   BadgeVariants,
   DropdownSizes,
 } from "../../../../design/constants";
-import { DateTime, DateTimeFormats } from "../../../../design";
+import { DateTime, DateTimeFormats, DetailHeader } from "../../../../design";
 import type { IAdminFeedback } from "../types";
 import {
   AlertDialog,
-  AdminDetailHeader,
   AdminState,
   FormActionRow,
   FormContainer,
@@ -151,7 +150,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
 
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           {

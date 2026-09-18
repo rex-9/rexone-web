@@ -98,7 +98,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title={title || t(AppLocales.Admin.Assets.Picker.Title, "Select Asset")}
+      title={title || t(AppLocales.Admin.Assets.Picker.Title)}
       className="max-w-3xl w-full"
     >
       <div className="space-y-4">
@@ -107,10 +107,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
           <div className="flex-1">
             <SearchInput
               value={search}
-              placeholder={t(
-                AppLocales.Admin.Assets.Picker.SearchPlaceholder,
-                "Search assets by name...",
-              )}
+              placeholder={t(AppLocales.Admin.Assets.Picker.SearchPlaceholder)}
               searchableKeys={[
                 t(AppLocales.Admin.Common.Detail.Name),
                 t(AppLocales.Admin.Common.Detail.Type),
@@ -128,7 +125,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
           </div>
           {assetType && (
             <div className="flex items-center gap-2 text-xs text-base-content/70">
-              <span>{t(AppLocales.Admin.Assets.Table.Type, "Type")}:</span>
+              <span>{t(AppLocales.Admin.Assets.Table.Type)}:</span>
               <Badge variant="primary" className="capitalize">
                 {assetType}
               </Badge>
@@ -142,17 +139,14 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
             <div className="flex flex-col items-center justify-center h-64 gap-3 text-base-content/60">
               <iconsLib.arrowPath className="w-8 h-8 animate-spin text-primary" />
               <span className="text-sm">
-                {t(AppLocales.Common.Loading, "Loading...")}
+                {t(AppLocales.Common.Loading)}
               </span>
             </div>
           ) : assets.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 gap-2 text-base-content/60">
               <iconsLib.document className="w-12 h-12 stroke-[1.5]" />
               <p className="text-sm font-medium">
-                {t(
-                  AppLocales.Admin.Assets.Picker.NoAssets,
-                  "No assets found matching criteria.",
-                )}
+                {t(AppLocales.Admin.Assets.Picker.NoAssets)}
               </p>
             </div>
           ) : (
@@ -250,14 +244,14 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         {/* Dialog Actions */}
         <div className="flex justify-end gap-2 pt-2">
           <Button variant={ButtonVariants.SECONDARY} onClick={onClose}>
-            {t(AppLocales.Admin.Common.Actions.Cancel, "Cancel")}
+            {t(AppLocales.Admin.Common.Actions.Cancel)}
           </Button>
           <Button
             variant={ButtonVariants.PRIMARY}
             disabled={!selectedAsset}
             onClick={handleConfirm}
           >
-            {t(AppLocales.Admin.Assets.Picker.SelectAction, "Select Asset")}
+            {t(AppLocales.Admin.Assets.Picker.SelectAction)}
           </Button>
         </div>
       </div>

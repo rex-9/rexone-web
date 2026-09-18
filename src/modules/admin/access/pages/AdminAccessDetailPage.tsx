@@ -2,15 +2,16 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
-  AdminState,
-} from "../../components";
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
+import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AccessController from "../access.controller";
@@ -30,7 +31,7 @@ export const AdminAccessDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.ACCESSES;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           { label: t(AppLocales.Admin.Accesses.Title), to: listPath },
@@ -47,44 +48,44 @@ export const AdminAccessDetailPage: React.FC = () => {
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : access ? (
         <div className="grid gap-6 lg:grid-cols-2">
-          <AdminDetailSection title={t(AppLocales.Admin.Accesses.Detail.Holder)} icon={iconsLib.user}>
-            <AdminDetailGrid columns={2}>
-              <AdminDetailField
+          <DetailSection title={t(AppLocales.Admin.Accesses.Detail.Holder)} icon={iconsLib.user}>
+            <DetailGrid columns={2}>
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={access.user_name || access.username}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={access.user_email}
                 copyable
                 mono
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Accesses.Detail.UserId)}
                 value={access.user_id}
                 copyable
                 mono
                 className="sm:col-span-2"
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection title={t(AppLocales.Admin.Accesses.Detail.Entitlement)} icon={iconsLib.shieldCheck}>
-            <AdminDetailGrid className="xl:grid-cols-2">
-              <AdminDetailField
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection title={t(AppLocales.Admin.Accesses.Detail.Entitlement)} icon={iconsLib.shieldCheck}>
+            <DetailGrid className="xl:grid-cols-2">
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.Product)}
                 value={access.product_name || access.product_code}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Status)}
                 value={<StatusBadge status={access.status} />}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Accesses.Detail.Granted)}
                 value={
                   access.granted_at ? <DateTime value={access.granted_at} format={DateTimeFormats.ADMIN} /> : "—"
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Accesses.Detail.Expires)}
                 value={
                   access.expires_at
@@ -92,11 +93,11 @@ export const AdminAccessDetailPage: React.FC = () => {
                     : t(AppLocales.Admin.Accesses.Detail.Never)
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Accesses.Detail.RemainingDays)}
                 value={access.remaining_days}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   <DateTime
@@ -105,8 +106,8 @@ export const AdminAccessDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
         </div>
       ) : null}
     </div>

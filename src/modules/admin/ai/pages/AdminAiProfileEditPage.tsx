@@ -6,7 +6,7 @@ import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
-import { Dropdown } from "../../../../design";
+import { DetailHeader, Dropdown } from "../../../../design";
 import AiController from "../ai.controller";
 import type {
   IAdminAiProfile,
@@ -20,7 +20,6 @@ import {
   TextInput,
   TextArea,
   Toggle,
-  AdminDetailHeader,
 } from "../../components";
 import {
   AI_PROVIDER_OPTIONS,
@@ -59,7 +58,7 @@ export const AdminAiProfileEditPage: React.FC = () => {
       ...list.map((m) => ({ value: m.value, label: m.label })),
       {
         value: "__custom__",
-        label: t(AppLocales.Admin.Ai.CustomModel) || "Custom Model...",
+        label: t(AppLocales.Admin.Ai.CustomModel),
       },
     ];
   }, [provider, t]);
@@ -182,7 +181,7 @@ export const AdminAiProfileEditPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
 
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),

@@ -10,9 +10,9 @@ import {
   IAdminRole,
   IAdminRoleFormValues,
 } from "../types";
+import { DetailSection } from "../../../../design";
 import {
   AdminPermissionMatrix,
-  AdminDetailSection,
   FormActionRow,
   FormContainer,
   TextInput,
@@ -129,7 +129,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
         />
 
         <div className="md:col-span-2">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Roles.Form.PermissionsMatrixTitle)}
           >
             <AdminPermissionMatrix
@@ -141,7 +141,7 @@ export const AdminRoleForm: React.FC<IAdminRoleFormProps> = ({
               onSelectPermissions={selectPermissions}
               onClearPermissions={clearPermissions}
             />
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       </div>
 

@@ -5,7 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { useToast } from "../../../../contexts/ToastContext";
-import { Badge, Button, DateTime, DateTimeFormats, StatusBadge } from "../../../../design";
+import {
+  Badge,
+  Button,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
 import {
   BadgeVariants,
   ButtonSizes,
@@ -15,10 +25,6 @@ import {
 import { usePermissions } from "../../../../hooks";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
   ConfirmDialog,
 } from "../../components";
@@ -149,7 +155,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -197,7 +203,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
       ) : notification ? (
         <div className="space-y-6">
           {/* Notification Content Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .ContentSection,
@@ -249,18 +255,18 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 </div>
               )}
             </div>
-          </AdminDetailSection>
+          </DetailSection>
 
           {/* Recipient & Delivery Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .RecipientSection,
             )}
             icon={iconsLib.user}
           >
-            <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
-              <AdminDetailField
+            <DetailGrid className="grid-cols-1 sm:grid-cols-2">
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .Recipient,
@@ -279,7 +285,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .RecipientName,
@@ -293,7 +299,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .ReadStatus,
@@ -320,7 +326,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .Platforms,
@@ -346,7 +352,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .SentAt,
@@ -360,7 +366,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
               />
 
               {notification.discarded_at && (
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .DiscardedAt,
@@ -374,20 +380,20 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                   }
                 />
               )}
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
 
           {/* Async Operation Section if present */}
           {notification.operation_id && (
-            <AdminDetailSection
+            <DetailSection
               title={t(
                 AppLocales.Admin.Notifications.UserNotifications.Detail
                   .OperationSection,
               )}
               icon={iconsLib.cube}
             >
-              <AdminDetailGrid className="grid-cols-1 sm:grid-cols-3">
-                <AdminDetailField
+              <DetailGrid className="grid-cols-1 sm:grid-cols-3">
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationId,
@@ -398,7 +404,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </span>
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationType,
@@ -409,7 +415,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </Badge>
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationStatus,
@@ -429,12 +435,12 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </Badge>
                   }
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
           )}
 
           {/* Metadata Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .MetadataSection,
@@ -446,7 +452,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 ? JSON.stringify(notification.metadata, null, 2)
                 : "{}"}
             </pre>
-          </AdminDetailSection>
+          </DetailSection>
 
           {/* Actions Bar at the bottom in a row side by side right aligned */}
           <div className="flex flex-wrap items-center justify-end gap-3 pt-2">

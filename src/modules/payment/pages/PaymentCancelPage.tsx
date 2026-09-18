@@ -4,27 +4,29 @@ import { useToast } from "../../../contexts/ToastContext";
 import { Button } from "../../../design/components/button/Button";
 import { ButtonVariants } from "../../../design/constants";
 import AppRoutes from "../../../AppRoutes";
+import { useTranslate, AppLocales } from "../../../locales";
 
 export const PaymentCancelPage: React.FC = () => {
+  const t = useTranslate();
   const { info } = useToast();
 
   useEffect(() => {
-    info("Payment was canceled. You can try again anytime.");
-  }, [info]);
+    info(t(AppLocales.Payment.CancelDesc));
+  }, [info, t]);
 
   return (
     <div className="max-w-md mx-auto w-full bg-base-100/70 border border-base-300 rounded-2xl p-8 shadow-xl backdrop-blur-md text-center space-y-4">
       <div className="text-5xl">😅</div>
       <h1 className="text-2xl font-bold font-primary text-base-content">
-        Payment Canceled
+        {t(AppLocales.Payment.CancelTitle)}
       </h1>
       <p className="text-body-m text-base-content/70">
-        Your payment was not completed. You can try again anytime.
+        {t(AppLocales.Payment.CancelDesc)}
       </p>
       <div className="pt-2">
         <Link to={AppRoutes.client.protected.PAYMENT} className="block w-full">
           <Button variant={ButtonVariants.PRIMARY} fullWidth>
-            Try Again
+            {t(AppLocales.Common.Retry)}
           </Button>
         </Link>
       </div>

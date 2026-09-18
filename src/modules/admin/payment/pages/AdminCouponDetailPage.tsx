@@ -9,6 +9,10 @@ import {
   ConfirmDialog,
   DateTime,
   DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
 } from "../../../../design";
 import {
   BadgeVariants,
@@ -19,10 +23,6 @@ import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { AppLocales } from "../../../../locales/app_locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import {
@@ -124,7 +124,7 @@ export const AdminCouponDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -301,13 +301,13 @@ export const AdminCouponDetailPage: React.FC = () => {
           </div>
 
           {/* Targeting restrictions summary */}
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Coupons.Detail.TargetingRestrictions)}
             icon={iconsLib.shieldCheck}
           >
-            <AdminDetailGrid columns={canReadRoles ? 3 : 2}>
+            <DetailGrid columns={canReadRoles ? 3 : 2}>
               {canReadRoles && (
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Coupons.Detail.TargetRoles)}
                   value={
                     coupon.target_role_ids.length > 0 ? (
@@ -320,7 +320,7 @@ export const AdminCouponDetailPage: React.FC = () => {
                   }
                 />
               )}
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Coupons.Detail.TargetProducts)}
                 value={
                   coupon.target_product_ids.length > 0 ? (
@@ -332,7 +332,7 @@ export const AdminCouponDetailPage: React.FC = () => {
                   )
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Coupons.Detail.TargetUsers)}
                 value={
                   coupon.target_user_emails && coupon.target_user_emails.length > 0 ? (
@@ -352,11 +352,11 @@ export const AdminCouponDetailPage: React.FC = () => {
                   )
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
 
           {/* Redemptions Table */}
-          <AdminDetailSection
+          <DetailSection
             title={`${t(AppLocales.Admin.Coupons.Detail.RedemptionHistory)} (${coupon.used_count})`}
             icon={iconsLib.banknotes}
             contentClassName="p-0 sm:p-0"
@@ -364,7 +364,7 @@ export const AdminCouponDetailPage: React.FC = () => {
             <div className="p-4 sm:p-6">
               <AdminRedemptionsTable couponId={coupon.id} hideCouponColumn />
             </div>
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
 

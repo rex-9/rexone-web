@@ -110,7 +110,7 @@ export const AdminAiRunsPage: React.FC = () => {
     () => [
       {
         value: "",
-        label: t(AppLocales.Admin.Ai.Filters.AllProviders) || "All Providers",
+        label: t(AppLocales.Admin.Ai.Filters.AllProviders),
       },
       ...AI_PROVIDER_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
     ],
@@ -135,7 +135,7 @@ export const AdminAiRunsPage: React.FC = () => {
     return [
       {
         value: "",
-        label: t(AppLocales.Admin.Ai.Filters.AllModels) || "All Models",
+        label: t(AppLocales.Admin.Ai.Filters.AllModels),
       },
       ...models,
     ];
@@ -147,7 +147,7 @@ export const AdminAiRunsPage: React.FC = () => {
         value: o.value,
         label:
           o.value === ""
-            ? t(AppLocales.Admin.Ai.Filters.AllStatuses) || o.label
+            ? t(AppLocales.Admin.Ai.Filters.AllStatuses)
             : o.label,
       })),
     [t],
@@ -159,7 +159,7 @@ export const AdminAiRunsPage: React.FC = () => {
         value: o.value,
         label:
           o.value === ""
-            ? t(AppLocales.Admin.Ai.Filters.AllFeatures) || o.label
+            ? t(AppLocales.Admin.Ai.Filters.AllFeatures)
             : o.label,
       })),
     [t],
@@ -324,10 +324,7 @@ export const AdminAiRunsPage: React.FC = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onClear={() => setSearchInput("")}
-            placeholder={
-              t(AppLocales.Admin.Ai.Filters.SearchRuns) ||
-              "Search runs..."
-            }
+            placeholder={t(AppLocales.Admin.Ai.Filters.SearchRuns)}
             searchableKeys={[
               t(AppLocales.Admin.Ai.RunsTable.Feature),
               t(AppLocales.Admin.Ai.RunsTable.Provider),

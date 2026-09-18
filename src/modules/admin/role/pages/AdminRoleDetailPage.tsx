@@ -2,12 +2,14 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { StatusBadge } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
+import {
   AdminPermissionMatrix,
   AdminState,
 } from "../../components";
@@ -35,7 +37,7 @@ export const AdminRoleDetailPage: React.FC = () => {
   );
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -60,33 +62,33 @@ export const AdminRoleDetailPage: React.FC = () => {
         />
       ) : role ? (
         <div className="space-y-6">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Roles.Detail.Information)}
             icon={iconsLib.key}
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={role.name}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Roles.Detail.Type)}
                 value={
                   <StatusBadge status={role.system ? "system" : "custom"} />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Roles.Detail.AssignedUsers)}
                 value={role.user_count ?? 0}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Description)}
                 value={role.description}
                 className="sm:col-span-2 xl:col-span-3"
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Roles.Detail.Permissions)}
             icon={iconsLib.shieldCheck}
           >
@@ -97,7 +99,7 @@ export const AdminRoleDetailPage: React.FC = () => {
                 {t(AppLocales.Admin.Roles.Detail.NoPermissions)}
               </span>
             )}
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
     </div>

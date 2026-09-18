@@ -144,7 +144,6 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
       setAlertMessage(
         t(AppLocales.Admin.Assets.UploadDialog.MaxFilesExceeded, {
           count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
-          defaultValue: `Maximum ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT} files allowed per batch upload.`,
         }),
       );
       return;
@@ -177,7 +176,6 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
       setAlertMessage(
         t(AppLocales.Admin.Assets.UploadDialog.FileSizeExceeded, {
           names: oversizedFiles.join(", "),
-          defaultValue: `Some files exceed maximum size limit: ${oversizedFiles.join(", ")}`,
         }),
       );
     }
@@ -269,10 +267,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               <div className="flex items-center gap-2 border-b border-base-200 pb-3">
                 <iconsLib.upload className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold text-base-content text-base">
-                  {t(
-                    AppLocales.Admin.Assets.UploadDialog.BulkNoticeTitle,
-                    "Upload Guidelines",
-                  )}
+                  {t(AppLocales.Admin.Assets.UploadDialog.BulkNoticeTitle)}
                 </h3>
               </div>
 
@@ -387,10 +382,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   }
                 >
                   <span>
-                    {t(
-                      AppLocales.Admin.Assets.UploadDialog.CompressImages,
-                      "Compress Images (TinyPNG)",
-                    )}
+                    {t(AppLocales.Admin.Assets.UploadDialog.CompressImages)}
                   </span>
                   <span className="text-xs opacity-70">↗</span>
                 </Button>
@@ -407,10 +399,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   }
                 >
                   <span>
-                    {t(
-                      AppLocales.Admin.Assets.UploadDialog.CompressVideos,
-                      "Compress Videos (FreeConvert)",
-                    )}
+                    {t(AppLocales.Admin.Assets.UploadDialog.CompressVideos)}
                   </span>
                   <span className="text-xs opacity-70">↗</span>
                 </Button>
@@ -431,16 +420,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   <div className="text-xs space-y-2 flex-1">
                     <div>
                       <span className="font-bold block text-base-content">
-                        {t(
-                          AppLocales.Admin.Assets.UploadDialog.CompressTipTitle,
-                          "Compression Recommended",
-                        )}
+                        {t(AppLocales.Admin.Assets.UploadDialog.CompressTipTitle)}
                       </span>
                       <p className="text-base-content/80 leading-relaxed mt-0.5">
-                        {t(
-                          AppLocales.Admin.Assets.UploadDialog.CompressTipDesc,
-                          "Built-in media compression is not yet available for oversized files. Please compress large files before uploading:",
-                        )}
+                        {t(AppLocales.Admin.Assets.UploadDialog.CompressTipDesc)}
                       </p>
                     </div>
                   </div>
@@ -457,10 +440,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 </div>
 
                 <Dropdown
-                  label={t(
-                    AppLocales.Admin.Assets.UploadDialog.TypeLabel,
-                    "Asset Type",
-                  )}
+                  label={t(AppLocales.Admin.Assets.UploadDialog.TypeLabel)}
                   value={uploadType}
                   options={filteredTypeOptions.map((opt) => ({
                     value: opt.value,
@@ -471,10 +451,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
 
                 <TextInput
-                  label={t(
-                    AppLocales.Admin.Assets.UploadDialog.TitleLabel,
-                    "Title",
-                  )}
+                  label={t(AppLocales.Admin.Assets.UploadDialog.TitleLabel)}
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
                   placeholder="Optional title"
@@ -482,10 +459,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
 
                 <TextArea
-                  label={t(
-                    AppLocales.Admin.Assets.UploadDialog.DescriptionLabel,
-                    "Description",
-                  )}
+                  label={t(AppLocales.Admin.Assets.UploadDialog.DescriptionLabel)}
                   value={uploadDescription}
                   onChange={(e) => setUploadDescription(e.target.value)}
                   placeholder="Optional description"
@@ -494,15 +468,11 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
 
                 <FileInput
-                  label={t(
-                    AppLocales.Admin.Assets.UploadDialog.FileLabel,
-                    "Select Files",
-                  )}
+                  label={t(AppLocales.Admin.Assets.UploadDialog.FileLabel)}
                   buttonText={t(
                     AppLocales.Admin.Assets.UploadDialog.ChooseFiles,
                     {
                       count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
-                      defaultValue: `Choose Files (Up to ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT})`,
                     },
                   )}
                   multiple
@@ -514,7 +484,6 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       count: UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT,
                       imageLimit: UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB,
                       videoLimit: UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB,
-                      defaultValue: `You can choose up to ${UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT} files per batch (Max ${UPLOAD_SIZE_LIMITS.MAX_NON_VIDEO_SIZE_MB}MB per image, ${UPLOAD_SIZE_LIMITS.MAX_VIDEO_SIZE_MB}MB per video).`,
                     },
                   )}
                 />
@@ -524,10 +493,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   <div className="border border-base-200 rounded-xl p-4 bg-base-200/40 space-y-3">
                     <div className="flex items-center justify-between text-xs font-medium text-base-content/80 pb-2 border-b border-base-200">
                       <span>
-                        {t(
-                          AppLocales.Admin.Assets.UploadDialog.SelectedFiles,
-                          "Selected Files",
-                        )}{" "}
+                        {t(AppLocales.Admin.Assets.UploadDialog.SelectedFiles)}{" "}
                         ({fileItems.length} /{" "}
                         {UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT}) •{" "}
                         {formatAssetFileSize(totalSize)}
@@ -539,10 +505,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                           onClick={handleClearAllFiles}
                           className="text-error hover:bg-error/10 h-7 px-2.5 text-xs"
                         >
-                          {t(
-                            AppLocales.Admin.Assets.UploadDialog.ClearAll,
-                            "Clear All",
-                          )}
+                          {t(AppLocales.Admin.Assets.UploadDialog.ClearAll)}
                         </Button>
                       )}
                     </div>
@@ -601,10 +564,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       showPercentage
                       label={
                         uploadStatusMessage ||
-                        t(
-                          AppLocales.Admin.Assets.UploadDialog.Uploading,
-                          "Uploading...",
-                        )
+                        t(AppLocales.Admin.Assets.UploadDialog.Uploading)
                       }
                       variant={ProgressBarVariants.PRIMARY}
                     />
@@ -616,11 +576,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
                 submitLabel={
                   isLoading
-                    ? t(
-                        AppLocales.Admin.Assets.UploadDialog.Uploading,
-                        "Uploading...",
-                      )
-                    : `${t(AppLocales.Admin.Assets.UploadDialog.UploadButton, "Upload")}${
+                    ? t(AppLocales.Admin.Assets.UploadDialog.Uploading)
+                    : `${t(AppLocales.Admin.Assets.UploadDialog.UploadButton)}${
                         fileItems.length > 1 ? ` (${fileItems.length})` : ""
                       }`
                 }
@@ -865,10 +822,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       >
                         <iconsLib.sparkles className="w-4 h-4 text-primary" />
                         <span>
-                          {t(
-                            AppLocales.Admin.Assets.Compression.Compress,
-                            "Compress Media",
-                          )}
+                          {t(AppLocales.Admin.Assets.Compression.Compress)}
                         </span>
                       </Button>
                     )}
