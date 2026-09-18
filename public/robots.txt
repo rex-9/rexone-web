@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rexone.me/sitemap.xml
+Sitemap: https://rexone.rex9.me/sitemap.xml
