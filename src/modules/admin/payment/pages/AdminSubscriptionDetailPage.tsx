@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { DateTime, DateTimeFormats, StatusBadge } from "../../../../design";
+import {
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -32,7 +36,7 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
   const list = AppRoutes.client.protected.admin.SUBSCRIPTIONS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -44,9 +48,19 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
               record?.product_name || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Subscriptions.Detail.Title)}
-        description={t(AppLocales.Admin.Subscriptions.Detail.Description)}
+        title={record?.product_name || t(AppLocales.Admin.Subscriptions.Detail.Title)}
+        description={record?.user_email || t(AppLocales.Admin.Subscriptions.Detail.Description)}
         backTo={list}
+        icon={iconsLib.banknotes}
+        statusBadge={record ? <StatusBadge status={record.status} /> : undefined}
+        entityId={record?.id}
+        timestamps={
+          record
+            ? {
+                createdAt: record.started_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState
@@ -55,48 +69,53 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
         />
       ) : record ? (
         <div className="grid gap-6 lg:grid-cols-2">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Subscriptions.Detail.Plan)}
             icon={iconsLib.banknotes}
+            accent
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid columns={2}>
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.Product)}
                 value={record.product_name}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Status)}
                 value={<StatusBadge status={record.status} />}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Table.Amount)}
                 value={`${amount(record.unit_amount, record.currency)} / ${record.interval}`}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.Quantity)}
                 value={record.quantity}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.SubscriptionId)}
                 value={record.stripe_subscription_id}
+                copyable
+                mono
                 className="sm:col-span-2"
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Transactions.Detail.User)}
                 value={record.user_name || record.username}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={record.user_email}
+                copyable
+                mono
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Subscriptions.Detail.Billing)}
             icon={iconsLib.banknotes}
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.PeriodStart)}
                 value={
                   <DateTime
@@ -105,7 +124,7 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Table.PeriodEnd)}
                 value={
                   <DateTime
@@ -114,7 +133,7 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.StartedAt)}
                 value={
                   <DateTime
@@ -123,11 +142,11 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.PaymentMethod)}
                 value={record.payment_method_display}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Subscriptions.Table.Cancellation)}
                 value={
                   record.cancel_at_period_end
@@ -135,7 +154,7 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
                     : "—"
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   <DateTime
@@ -144,8 +163,8 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
         </div>
       ) : null}
     </div>

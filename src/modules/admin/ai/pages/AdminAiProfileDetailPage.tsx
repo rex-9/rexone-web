@@ -5,18 +5,18 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import {
-  StatusBadge,
-  DateTime,
-  DateTimeFormats,
   Button,
   ButtonSizes,
   ButtonVariants,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
 } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -50,7 +50,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -64,6 +64,21 @@ export const AdminAiProfileDetailPage: React.FC = () => {
         title={profile?.name || t(AppLocales.Admin.Ai.ProfileDetail.Title)}
         description={t(AppLocales.Admin.Ai.ProfileDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={
+          profile ? (
+            <StatusBadge status={profile.enabled ? "active" : "disabled"} />
+          ) : undefined
+        }
+        entityId={profile?.id}
+        timestamps={
+          profile
+            ? {
+                createdAt: profile.created_at,
+                updatedAt: profile.updated_at,
+              }
+            : undefined
+        }
         action={
           profile && can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.AI_PROFILES) ? (
             <Button
@@ -93,12 +108,12 @@ export const AdminAiProfileDetailPage: React.FC = () => {
       ) : profile ? (
         <div className="space-y-6">
           {/* Overview Card: Full Width Panoramic Layout */}
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Ai.ProfileDetail.Overview)}
             icon={iconsLib.cube}
           >
-            <AdminDetailGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
-              <AdminDetailField
+            <DetailGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Key)}
                 value={
                   <span className="font-mono text-xs font-semibold text-primary select-all">
@@ -106,11 +121,11 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Name)}
                 value={profile.name}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Provider)}
                 value={
                   <span className="badge badge-neutral uppercase font-mono text-xs font-medium">
@@ -118,7 +133,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Model)}
                 value={
                   <span className="font-mono text-xs font-medium bg-base-200 px-2 py-1 rounded select-all">
@@ -126,7 +141,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Status)}
                 value={
                   <StatusBadge
@@ -139,7 +154,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   profile.created_at ? (
@@ -152,7 +167,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   )
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   profile.updated_at ? (
@@ -165,18 +180,18 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   )
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
 
           {/* 2 Equal Columns: Execution Parameters & System Prompt */}
           <div className="grid gap-6 lg:grid-cols-2 items-start">
             <div className="space-y-6">
-              <AdminDetailSection
+              <DetailSection
                 title={t(AppLocales.Admin.Ai.ProfileDetail.Parameters)}
                 icon={iconsLib.sparkles}
               >
-                <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
-                  <AdminDetailField
+                <DetailGrid className="grid-cols-1 sm:grid-cols-2">
+                  <DetailField
                     label={t(AppLocales.Admin.Ai.ProfileForm.TemperatureLabel)}
                     value={
                       profile.temperature != null
@@ -184,7 +199,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                         : "Default"
                     }
                   />
-                  <AdminDetailField
+                  <DetailField
                     label={t(
                       AppLocales.Admin.Ai.ProfileForm.MaxOutputTokensLabel,
                     )}
@@ -194,7 +209,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                         : "Default"
                     }
                   />
-                  <AdminDetailField
+                  <DetailField
                     label={t(
                       AppLocales.Admin.Ai.ProfileForm.ContextMaxTokensLabel,
                     )}
@@ -204,7 +219,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                         : "Default"
                     }
                   />
-                  <AdminDetailField
+                  <DetailField
                     label={t(
                       AppLocales.Admin.Ai.ProfileForm.HistoryMaxMessagesLabel,
                     )}
@@ -214,7 +229,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                         : "Default"
                     }
                   />
-                  <AdminDetailField
+                  <DetailField
                     label={t(AppLocales.Admin.Ai.ProfileForm.TimeoutSecondsLabel)}
                     value={
                       profile.timeout_seconds != null
@@ -222,22 +237,22 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                         : "Default"
                     }
                   />
-                </AdminDetailGrid>
-              </AdminDetailSection>
+                </DetailGrid>
+              </DetailSection>
 
               {profile.settings && Object.keys(profile.settings).length > 0 && (
-                <AdminDetailSection
+                <DetailSection
                   title={t(AppLocales.Admin.Ai.ProfileDetail.Settings)}
                   icon={iconsLib.cube}
                 >
                   <pre className="rounded-lg bg-base-200/80 border border-base-300 p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
                     {JSON.stringify(profile.settings, null, 2)}
                   </pre>
-                </AdminDetailSection>
+                </DetailSection>
               )}
             </div>
 
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Ai.ProfileDetail.SystemPrompt)}
               icon={iconsLib.document}
             >
@@ -267,7 +282,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   {t(AppLocales.Admin.Ai.ProfileDetail.NoSystemPrompt)}
                 </div>
               )}
-            </AdminDetailSection>
+            </DetailSection>
           </div>
         </div>
       ) : null}

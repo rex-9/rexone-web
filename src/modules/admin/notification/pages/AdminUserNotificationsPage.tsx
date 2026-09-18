@@ -68,9 +68,20 @@ export const AdminUserNotificationsPage: React.FC<
   const { isLoading, setLoading } = useLoading();
   const { can } = usePermissions();
 
-  const [localView, setLocalView] = useState<TAdminViewMode>(initialView);
+  const viewParam = searchParams.get("view") as TAdminViewMode | null;
+  const [localView, setLocalView] = useState<TAdminViewMode>(
+    viewParam === ADMIN_VIEW_MODES.DISCARDED
+      ? ADMIN_VIEW_MODES.DISCARDED
+      : initialView,
+  );
   const currentView = embedded ? localView : initialView;
   const isActive = currentView === ADMIN_VIEW_MODES.ACTIVE;
+
+  useEffect(() => {
+    if (embedded && viewParam) {
+      setLocalView(viewParam);
+    }
+  }, [embedded, viewParam]);
 
   useDocumentTitle(
     embedded
@@ -557,6 +568,10 @@ export const AdminUserNotificationsPage: React.FC<
             setSelectedIds([]);
             if (embedded) {
               setLocalView(tab as TAdminViewMode);
+              updateSearchParams({
+                view: tab === ADMIN_VIEW_MODES.DISCARDED ? tab : "",
+                page: "1",
+              });
             } else {
               navigate(
                 tab === ADMIN_VIEW_MODES.ACTIVE
@@ -564,8 +579,8 @@ export const AdminUserNotificationsPage: React.FC<
                   : AppRoutes.client.protected.admin
                       .USER_NOTIFICATIONS_RECYCLE_BIN,
               );
+              updateSearchParams({ page: "1" });
             }
-            updateSearchParams({ page: "1" });
           }}
           items={[
             {

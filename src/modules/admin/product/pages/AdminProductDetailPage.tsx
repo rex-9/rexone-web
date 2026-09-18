@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Image, StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  Image,
+  StatusBadge,
+} from "../../../../design";
+import {
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -30,7 +34,7 @@ export const AdminProductDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.PRODUCTS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -39,9 +43,16 @@ export const AdminProductDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Products.Title), to: listPath },
           { label: product?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Products.Detail.Title)}
-        description={t(AppLocales.Admin.Products.Detail.Description)}
+        title={product?.name || t(AppLocales.Admin.Products.Detail.Title)}
+        description={product?.description || t(AppLocales.Admin.Products.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={
+          product ? (
+            <StatusBadge status={product.active ? "active" : "inactive"} />
+          ) : undefined
+        }
+        entityId={product?.id}
       />
       {error ? (
         <AdminState
@@ -50,39 +61,44 @@ export const AdminProductDetailPage: React.FC = () => {
         />
       ) : product ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Products.Detail.Product)}
             icon={iconsLib.photo}
+            accent
           >
             {product.thumbnail_url && (
-              <Image
-                src={product.thumbnail_url}
-                alt={product.name}
-                className="mb-4 aspect-video w-full rounded-lg object-cover"
-              />
+              <div className="overflow-hidden rounded-xl border border-base-200 bg-base-200/50 p-2 shadow-inner mb-4">
+                <Image
+                  src={product.thumbnail_url}
+                  alt={product.name}
+                  className="aspect-video w-full rounded-lg object-cover"
+                />
+              </div>
             )}
-            <h2 className="text-title-2 font-semibold">{product.name}</h2>
-            <p className="mt-2 text-base-content/60">{product.description}</p>
-          </AdminDetailSection>
-          <AdminDetailSection
+            <h2 className="text-xl font-bold tracking-tight text-base-content">{product.name}</h2>
+            <p className="mt-1.5 text-xs text-base-content/70">{product.description}</p>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Products.Detail.Pricing)}
             icon={iconsLib.cube}
             className="lg:col-span-2"
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Products.Table.Code)}
                 value={product.code}
+                copyable
+                mono
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Table.Price)}
                 value={product.price}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.BillingInterval)}
                 value={product.period_label || product.interval}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.Recurring)}
                 value={
                   <StatusBadge
@@ -90,7 +106,7 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Products.Detail.Availability)}
                 value={
                   <StatusBadge
@@ -98,7 +114,7 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -107,8 +123,8 @@ export const AdminProductDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
         </div>
       ) : null}
     </div>

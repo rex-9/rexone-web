@@ -5,7 +5,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { useToast } from "../../../../contexts/ToastContext";
-import { Badge, Button, DateTime, DateTimeFormats } from "../../../../design";
+import {
+  Badge,
+  Button,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
 import {
   BadgeVariants,
   ButtonSizes,
@@ -15,16 +25,13 @@ import {
 import { usePermissions } from "../../../../hooks";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
   ConfirmDialog,
 } from "../../components";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import NotificationController from "../notification.controller";
+import { NOTIFICATION_ADMIN_TABS } from "../constants";
 import type { IAdminUserNotification } from "../types";
 
 const loadUserNotification = async (id: string) => {
@@ -64,8 +71,8 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
 
   const isDiscarded = Boolean(notification?.discarded_at);
   const listPath = isDiscarded
-    ? AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN
-    : AppRoutes.client.protected.admin.USER_NOTIFICATIONS;
+    ? `${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}&view=discarded`
+    : `${AppRoutes.client.protected.admin.NOTIFICATIONS}?tab=${NOTIFICATION_ADMIN_TABS.USER_NOTIFICATIONS}`;
 
   const handleDiscard = async () => {
     if (!notification) return;
@@ -82,7 +89,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
           ),
         );
         setIsDiscardOpen(false);
-        navigate(AppRoutes.client.protected.admin.USER_NOTIFICATIONS);
+        navigate(listPath);
       } else {
         toast.error(result.error || "Failed to discard user notification");
       }
@@ -132,9 +139,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
           ),
         );
         setIsDestroyOpen(false);
-        navigate(
-          AppRoutes.client.protected.admin.USER_NOTIFICATIONS_RECYCLE_BIN,
-        );
+        navigate(listPath);
       } else {
         toast.error(
           result.error || "Failed to permanently delete user notification",
@@ -150,38 +155,44 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
             to: AppRoutes.client.protected.admin.HOME,
           },
           {
-            label: t(AppLocales.Admin.Notifications.UserNotifications.Title),
-            to: AppRoutes.client.protected.admin.USER_NOTIFICATIONS,
+            label: t(AppLocales.Admin.Notifications.Title),
+            to: AppRoutes.client.protected.admin.NOTIFICATIONS,
           },
-          ...(isDiscarded
-            ? [
-                {
-                  label: t(
-                    AppLocales.Admin.Notifications.UserNotifications.Tabs
-                      .RecycleBin,
-                  ),
-                  to: AppRoutes.client.protected.admin
-                    .USER_NOTIFICATIONS_RECYCLE_BIN,
-                },
-              ]
-            : []),
+          {
+            label: t(AppLocales.Admin.Notifications.UserNotifications.Title),
+            to: listPath,
+          },
           {
             label:
               notification?.title || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Notifications.UserNotifications.Detail.Title)}
-        description={t(
+        title={notification?.title || t(AppLocales.Admin.Notifications.UserNotifications.Detail.Title)}
+        description={notification?.user_email || t(
           AppLocales.Admin.Notifications.UserNotifications.Detail.Description,
         )}
         backTo={listPath}
+        icon={iconsLib.bell}
+        statusBadge={
+          notification ? (
+            <StatusBadge status={notification.discarded_at ? "discarded" : notification.read_at ? "read" : "unread"} />
+          ) : undefined
+        }
+        entityId={notification?.id}
+        timestamps={
+          notification
+            ? {
+                createdAt: notification.created_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (
@@ -192,7 +203,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
       ) : notification ? (
         <div className="space-y-6">
           {/* Notification Content Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .ContentSection,
@@ -244,18 +255,18 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 </div>
               )}
             </div>
-          </AdminDetailSection>
+          </DetailSection>
 
           {/* Recipient & Delivery Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .RecipientSection,
             )}
             icon={iconsLib.user}
           >
-            <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
-              <AdminDetailField
+            <DetailGrid className="grid-cols-1 sm:grid-cols-2">
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .Recipient,
@@ -274,7 +285,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .RecipientName,
@@ -288,7 +299,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .ReadStatus,
@@ -315,7 +326,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .Platforms,
@@ -341,7 +352,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 }
               />
 
-              <AdminDetailField
+              <DetailField
                 label={t(
                   AppLocales.Admin.Notifications.UserNotifications.Detail
                     .SentAt,
@@ -355,7 +366,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
               />
 
               {notification.discarded_at && (
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .DiscardedAt,
@@ -369,20 +380,20 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                   }
                 />
               )}
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
 
           {/* Async Operation Section if present */}
           {notification.operation_id && (
-            <AdminDetailSection
+            <DetailSection
               title={t(
                 AppLocales.Admin.Notifications.UserNotifications.Detail
                   .OperationSection,
               )}
               icon={iconsLib.cube}
             >
-              <AdminDetailGrid className="grid-cols-1 sm:grid-cols-3">
-                <AdminDetailField
+              <DetailGrid className="grid-cols-1 sm:grid-cols-3">
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationId,
@@ -393,7 +404,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </span>
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationType,
@@ -404,7 +415,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </Badge>
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(
                     AppLocales.Admin.Notifications.UserNotifications.Detail
                       .OperationStatus,
@@ -424,12 +435,12 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                     </Badge>
                   }
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
           )}
 
           {/* Metadata Section */}
-          <AdminDetailSection
+          <DetailSection
             title={t(
               AppLocales.Admin.Notifications.UserNotifications.Detail
                 .MetadataSection,
@@ -441,7 +452,7 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
                 ? JSON.stringify(notification.metadata, null, 2)
                 : "{}"}
             </pre>
-          </AdminDetailSection>
+          </DetailSection>
 
           {/* Actions Bar at the bottom in a row side by side right aligned */}
           <div className="flex flex-wrap items-center justify-end gap-3 pt-2">

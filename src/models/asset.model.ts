@@ -10,7 +10,7 @@ export interface IChildAsset {
 export interface IAsset {
   id: string;
   name: string;
-  display_name?: string | null;
+  title?: string | null;
   description?: string | null;
   metadata?: Record<string, unknown>;
   url: string;
@@ -36,7 +36,7 @@ export interface IAsset {
 export interface IAssetChild {
   id: IAsset["id"];
   name: IAsset["name"];
-  display_name?: string | null;
+  title?: string | null;
   description?: string | null;
   metadata?: Record<string, unknown>;
   url: IAsset["url"];
@@ -47,6 +47,8 @@ export interface IAssetChild {
   size_bytes?: IAsset["size_bytes"];
   duration_secs?: IAsset["duration_secs"];
   parent_asset_id?: IAsset["parent_asset_id"];
+  discarded_at?: string | null;
+  undiscarded_at?: string | null;
   created_at: IAsset["created_at"];
   updated_at: IAsset["updated_at"];
 }

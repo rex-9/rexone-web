@@ -13,6 +13,7 @@ import {
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
 import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
+import { ANALYTICS_COLORS } from "../constants";
 
 interface IChatActivityChartProps {
   data: IAnalyticsTimeSeriesPoint[];
@@ -74,10 +75,10 @@ export const ChatActivityChart: React.FC<IChatActivityChartProps> = ({
                       <p className="text-caption font-semibold text-base-content opacity-80">
                         {formattedLabel}
                       </p>
-                      <p className="mt-1 text-body-s font-semibold text-emerald-400">
+                      <p className="mt-1 text-body-s font-semibold text-success">
                         User Messages: {item.user_messages}
                       </p>
-                      <p className="text-body-s font-semibold text-purple-400">
+                      <p className="text-body-s font-semibold text-info">
                         AI Responses: {item.ai_messages}
                       </p>
                     </div>
@@ -95,13 +96,13 @@ export const ChatActivityChart: React.FC<IChatActivityChartProps> = ({
             <Bar
               name="User Prompts"
               dataKey="user_messages"
-              fill="#10b981"
+              fill={ANALYTICS_COLORS.SUCCESS}
               radius={[4, 4, 0, 0]}
             />
             <Bar
               name="AI Replies"
               dataKey="ai_messages"
-              fill="#c084fc"
+              fill={ANALYTICS_COLORS.PURPLE}
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

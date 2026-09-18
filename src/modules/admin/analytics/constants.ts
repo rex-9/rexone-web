@@ -1,12 +1,12 @@
 // src/modules/admin/analytics/constants.ts
 export const ANALYTICS_COLORS = {
-  PRIMARY: "var(--color-primary, #ff5757)",
-  SECONDARY: "var(--color-secondary, #ff7a7a)",
-  ACCENT: "#38bdf8",
-  SUCCESS: "#34d399",
-  WARNING: "#fbbf24",
-  PURPLE: "#a855f7",
-  MUTED: "var(--color-base-content, #888888)",
+  PRIMARY: "var(--color-primary)",
+  SECONDARY: "var(--color-secondary)",
+  ACCENT: "var(--color-accent)",
+  SUCCESS: "var(--color-success)",
+  WARNING: "var(--color-warning)",
+  PURPLE: "var(--color-info)",
+  MUTED: "var(--color-base-content)",
 } as const;
 
 export const ANALYTICS_CARD_LABELS = {

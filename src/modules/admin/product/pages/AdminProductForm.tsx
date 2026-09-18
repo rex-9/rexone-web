@@ -162,16 +162,10 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         </div>
         <div className="flex-1 text-center sm:text-left space-y-1">
           <span className="text-sm font-semibold text-base-content block">
-            {t(
-              AppLocales.Admin.Products.Form.ThumbnailLabel,
-              "Product Thumbnail",
-            )}
+            {t(AppLocales.Admin.Products.Form.ThumbnailLabel)}
           </span>
           <span className="text-xs text-base-content/60 block">
-            {t(
-              AppLocales.Admin.Products.Form.ThumbnailHelper,
-              "Choose an existing uploaded thumbnail asset for this product.",
-            )}
+            {t(AppLocales.Admin.Products.Form.ThumbnailHelper)}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -181,10 +175,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
             onClick={() => setIsAssetPickerOpen(true)}
           >
             <iconsLib.photo className="w-4 h-4 mr-1.5" />
-            {t(
-              AppLocales.Admin.Products.Form.ChooseThumbnail,
-              "Choose Thumbnail",
-            )}
+            {t(AppLocales.Admin.Products.Form.ChooseThumbnail)}
           </Button>
           {(thumbnailUrl || thumbnailAssetId) && (
             <Button
@@ -197,7 +188,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
               }}
             >
               <iconsLib.trash className="w-4 h-4 mr-1" />
-              {t(AppLocales.Admin.Products.Form.RemoveThumbnail, "Remove")}
+              {t(AppLocales.Admin.Products.Form.RemoveThumbnail)}
             </Button>
           )}
         </div>

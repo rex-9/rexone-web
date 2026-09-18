@@ -159,14 +159,14 @@ export const AnalogClock: React.FC = () => {
 
   return (
     <div className="relative h-72 w-72">
-      <Clock size={288} value={value} className="rounded-full bg-white" />
+      <Clock size={288} value={value} className="rounded-full bg-base-100" />
       <div className="absolute inset-0 rounded-full border-2 border-base-content">
         {markers.map((marker, index) => (
           <React.Fragment key={`${marker.color}-${index}`}>
             <div
               className="absolute h-2 w-2 rounded-full"
               style={{
-                backgroundColor: "pink",
+                backgroundColor: "var(--color-secondary)",
                 left: `${calculateMarkerPosition(startTime).x}px`,
                 top: `${calculateMarkerPosition(startTime).y}px`,
                 transform: "translate(-75%, -75%)",
@@ -191,7 +191,7 @@ export const AnalogClock: React.FC = () => {
             <div
               className="absolute h-2 w-2 rounded-full"
               style={{
-                backgroundColor: "red",
+                backgroundColor: "var(--color-primary)",
                 left: `${calculateMarkerPosition(endTime).x}px`,
                 top: `${calculateMarkerPosition(endTime).y}px`,
                 transform: "translate(-75%, -75%)",

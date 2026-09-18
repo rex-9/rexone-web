@@ -5,6 +5,7 @@ export const ADMIN_ASSET_COLUMNS = {
   ACTIONS: "actions",
   PREVIEW: "preview",
   NAME: "name",
+  TITLE: "title",
   TYPE: "type",
   FORMAT: "format",
   STATUS: "status",

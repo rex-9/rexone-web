@@ -1,8 +1,13 @@
 import React from "react";
 import { Button } from "../../../design/components";
 import LogController from "../log.controller";
+import AppConfig from "../../../AppConfig";
 
 export const DevTestButtons: React.FC = () => {
+  if (!AppConfig.IS_DEV) {
+    return null;
+  }
+
   // === Test: Trigger a frontend rendering error ===
   const triggerFrontendError = () => {
     // This will cause a runtime error (cannot read property of undefined)

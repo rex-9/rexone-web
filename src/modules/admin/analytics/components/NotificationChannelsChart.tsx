@@ -9,12 +9,19 @@ import {
   Tooltip,
 } from "recharts";
 import { IAnalyticsBreakdowns } from "../types";
+import { ANALYTICS_COLORS } from "../constants";
 
 interface INotificationChannelsChartProps {
   breakdowns: IAnalyticsBreakdowns;
 }
 
-const COLORS = ["#ff5757", "#38bdf8", "#34d399", "#fbbf24", "#a855f7"];
+const COLORS = [
+  ANALYTICS_COLORS.PRIMARY,
+  ANALYTICS_COLORS.ACCENT,
+  ANALYTICS_COLORS.SUCCESS,
+  ANALYTICS_COLORS.WARNING,
+  ANALYTICS_COLORS.PURPLE,
+];
 
 export const NotificationChannelsChart: React.FC<
   INotificationChannelsChartProps

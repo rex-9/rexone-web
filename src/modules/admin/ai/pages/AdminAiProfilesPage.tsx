@@ -112,7 +112,7 @@ export const AdminAiProfilesPage: React.FC = () => {
     () => [
       {
         value: "",
-        label: t(AppLocales.Admin.Ai.Filters.AllProviders) || "All Providers",
+        label: t(AppLocales.Admin.Ai.Filters.AllProviders),
       },
       ...AI_PROVIDER_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
     ],
@@ -137,7 +137,7 @@ export const AdminAiProfilesPage: React.FC = () => {
     return [
       {
         value: "",
-        label: t(AppLocales.Admin.Ai.Filters.AllModels) || "All Models",
+        label: t(AppLocales.Admin.Ai.Filters.AllModels),
       },
       ...models,
     ];
@@ -147,7 +147,7 @@ export const AdminAiProfilesPage: React.FC = () => {
     () => [
       {
         value: "",
-        label: t(AppLocales.Admin.Ai.Filters.AllStatuses) || "All Statuses",
+        label: t(AppLocales.Admin.Ai.Filters.AllStatuses),
       },
       { value: "active", label: ADMIN_COMMON_LABELS.ACTIVE },
       { value: "inactive", label: ADMIN_COMMON_LABELS.INACTIVE },
@@ -339,10 +339,7 @@ export const AdminAiProfilesPage: React.FC = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             onClear={() => setSearchInput("")}
-            placeholder={
-              t(AppLocales.Admin.Ai.Filters.SearchProfiles) ||
-              "Search by name or key..."
-            }
+            placeholder={t(AppLocales.Admin.Ai.Filters.SearchProfiles)}
             searchableKeys={[
               t(AppLocales.Admin.Ai.ProfileForm.KeyLabel),
               t(AppLocales.Admin.Ai.ProfileForm.NameLabel),

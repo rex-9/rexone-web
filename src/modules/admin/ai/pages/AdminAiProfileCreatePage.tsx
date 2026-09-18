@@ -6,7 +6,7 @@ import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
-import { Dropdown } from "../../../../design";
+import { DetailHeader, Dropdown } from "../../../../design";
 import AiController from "../ai.controller";
 import type { IAdminAiProfileFormValues } from "../types";
 import {
@@ -16,7 +16,6 @@ import {
   TextInput,
   TextArea,
   Toggle,
-  AdminDetailHeader,
 } from "../../components";
 import {
   AI_PROVIDER_OPTIONS,
@@ -54,7 +53,7 @@ export const AdminAiProfileCreatePage: React.FC = () => {
       ...list.map((m) => ({ value: m.value, label: m.label })),
       {
         value: "__custom__",
-        label: t(AppLocales.Admin.Ai.CustomModel) || "Custom Model...",
+        label: t(AppLocales.Admin.Ai.CustomModel),
       },
     ];
   }, [provider, t]);
@@ -139,7 +138,7 @@ export const AdminAiProfileCreatePage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
 
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -184,7 +183,7 @@ export const AdminAiProfileCreatePage: React.FC = () => {
                     }}
                     className={`px-2 py-0.5 rounded text-caption font-mono transition-colors cursor-pointer ${
                       key === preset.value
-                        ? "bg-primary text-white font-semibold shadow-xs"
+                        ? "bg-primary text-primary-content font-semibold shadow-xs"
                         : "bg-base-200 text-base-content/70 hover:bg-base-300"
                     }`}
                   >

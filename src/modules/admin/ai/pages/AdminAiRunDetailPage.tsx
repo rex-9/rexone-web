@@ -4,14 +4,16 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { StatusBadge, DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
-  AdminState,
-} from "../../components";
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
+import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AiController from "../ai.controller";
@@ -32,7 +34,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -45,9 +47,19 @@ export const AdminAiRunDetailPage: React.FC = () => {
               : t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Ai.RunDetail.Title)}
-        description={t(AppLocales.Admin.Ai.RunDetail.Description)}
+        title={run?.model ? `${run.model} (${run.feature || "run"})` : t(AppLocales.Admin.Ai.RunDetail.Title)}
+        description={run?.feature ? `Feature: ${run.feature}` : t(AppLocales.Admin.Ai.RunDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={run ? <StatusBadge status={run.status} label={run.status.toUpperCase()} /> : undefined}
+        entityId={run?.id}
+        timestamps={
+          run
+            ? {
+                createdAt: run.created_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (
@@ -58,12 +70,12 @@ export const AdminAiRunDetailPage: React.FC = () => {
       ) : run ? (
         <div className="space-y-6">
           {/* Top Card: Panoramic Run Overview (Full Width) */}
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Ai.RunDetail.Overview)}
             icon={iconsLib.cube}
           >
-            <AdminDetailGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
-              <AdminDetailField
+            <DetailGrid className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5">
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Status)}
                 value={
                   <StatusBadge
@@ -72,7 +84,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Feature)}
                 value={
                   <span className="badge badge-sm badge-outline font-mono">
@@ -80,7 +92,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Profile)}
                 value={
                   <span className="font-mono text-xs font-semibold text-primary select-all">
@@ -88,7 +100,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Provider)}
                 value={
                   <span className="badge badge-neutral uppercase font-mono text-xs font-medium">
@@ -96,7 +108,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Model)}
                 value={
                   <span className="font-mono text-xs font-medium bg-base-200 px-2 py-1 rounded select-all">
@@ -104,7 +116,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Latency)}
                 value={
                   <span className="font-mono text-sm font-semibold">
@@ -112,7 +124,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Tokens)}
                 value={
                   <span className="font-mono text-sm font-semibold text-primary">
@@ -122,7 +134,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   </span>
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   run.created_at ? (
@@ -135,7 +147,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   )
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   run.updated_at ? (
@@ -148,17 +160,17 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   )
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
+            </DetailGrid>
+          </DetailSection>
 
           {/* 2 Equal Columns: Performance Telemetry & Context Identifiers */}
           <div className="grid gap-6 lg:grid-cols-2 items-start">
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Ai.RunDetail.Diagnostics)}
               icon={iconsLib.chartBar}
             >
-              <AdminDetailGrid className="grid-cols-1 sm:grid-cols-2">
-                <AdminDetailField
+              <DetailGrid className="grid-cols-1 sm:grid-cols-2">
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.PromptTokens)}
                   value={
                     run.prompt_tokens != null
@@ -166,7 +178,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.CompletionTokens)}
                   value={
                     run.completion_tokens != null
@@ -174,7 +186,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.InputMessagesCount)}
                   value={
                     run.input_messages_count != null
@@ -182,7 +194,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.InputChars)}
                   value={
                     run.input_chars != null
@@ -190,7 +202,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.OutputChars)}
                   value={
                     run.output_chars != null
@@ -198,15 +210,15 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
 
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Common.Detail.Details)}
               icon={iconsLib.info}
             >
-              <AdminDetailGrid className="grid-cols-1">
-                <AdminDetailField
+              <DetailGrid className="grid-cols-1">
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunsTable.Id)}
                   value={
                     <div className="flex items-center gap-2">
@@ -216,7 +228,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                     </div>
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.UserId)}
                   value={
                     run.user_id ? (
@@ -228,7 +240,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                     )
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.ChatMessageId)}
                   value={
                     run.chat_message_id ? (
@@ -240,31 +252,31 @@ export const AdminAiRunDetailPage: React.FC = () => {
                     )
                   }
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
           </div>
 
           {run.error && (
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Ai.RunDetail.Error)}
               icon={iconsLib.warning}
             >
               <div className="rounded-lg bg-error/10 border border-error/20 p-4 font-mono text-xs text-error whitespace-pre-wrap leading-relaxed">
                 {run.error}
               </div>
-            </AdminDetailSection>
+            </DetailSection>
           )}
 
           {run.request_metadata &&
             Object.keys(run.request_metadata).length > 0 && (
-              <AdminDetailSection
+              <DetailSection
                 title={t(AppLocales.Admin.Ai.RunDetail.RequestMetadata)}
                 icon={iconsLib.document}
               >
                 <pre className="rounded-lg bg-base-200/80 border border-base-300 p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
                   {JSON.stringify(run.request_metadata, null, 2)}
                 </pre>
-              </AdminDetailSection>
+              </DetailSection>
             )}
         </div>
       ) : null}

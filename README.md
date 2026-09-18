@@ -21,7 +21,7 @@ Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clea
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
+[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Design System](docs/DESIGN_SYSTEM.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
 
 </div>
 
@@ -197,10 +197,10 @@ The client admin panel architecture provides a protected workspace for managing 
   - **Users**: User management (`/admin/users`), user creation (`/admin/users/create`), and user edit (`/admin/users/:id/edit`) powered by `AdminUserForm`.
   - **Roles**: Role and permission management (`/admin/roles`), role creation (`/admin/roles/create`), and role edit (`/admin/roles/:id/edit`) powered by `AdminRoleForm`.
   - **Products**: Product and pricing management (`/admin/products`), product creation (`/admin/products/create`), and product edit (`/admin/products/:id/edit`) powered by `AdminProductForm`.
-  - **Notifications**: Broadcast dispatch and templates (`/admin/notifications`), template creation (`/admin/notifications/create`), template edit (`/admin/notifications/:id/edit`), and dedicated user notifications management with recycle bin and detail page (`/admin/user-notifications`, `/admin/user-notifications/:id`, `/admin/user-notifications/bin`).
+  - **Notifications**: Broadcast dispatch, templates, and consolidated user notifications tab (`/admin/notifications?tab=user_notifications`), template creation (`/admin/notifications/create`), template edit (`/admin/notifications/:id/edit`), and user notification detail page (`/admin/user-notifications/:id`). Standalone `/admin/user-notifications` and `/admin/user-notifications/bin` routes automatically redirect to their respective parent tabs.
   - **Accesses**: Entitlements and access management (`/admin/accesses`), access grant console (`/admin/accesses/create`), and validity extension console (`/admin/accesses/:id/edit`) powered by `AdminAccessForm`.
   - **Assets**: Asset control center (`/admin/assets`), batch upload console (`/admin/assets/create`), asset detail (`/admin/assets/:id`), and asset edit console (`/admin/assets/:id/edit`) powered by `AdminAssetForm`. Canonical server-generated video thumbnails are consumed from the asset response and updated live through `asset_thumbnail_generated`; clients only show placeholders while generation is pending. Video and audio edit also support replacing a thumbnail and uploading an `.srt` subtitle (`POST /v1/admin/assets/:id/subtitle/upload`, same multipart `file` contract as thumbnail upload, non-video 10 MB limit). Nested thumbnail and subtitle use the shared `IChildAsset` shape (`id`, `url`, `status`, `size_bytes`) and are shown on detail and edit. List filters include `subtitle` type and format. Super admins additionally receive Garage and VPS capacity telemetry with separate object and byte usage for the `dev/`, `uat/`, and `prod/` storage partitions; regular admins never request or render these statistics.
-  - **Versions**: Super-admin-only version catalogue (`/admin/versions`), create (`/admin/versions/create`), edit (`/admin/versions/:id/edit`), recycle bin (`/admin/versions/bin`), and user versions (`/admin/user-versions`, `GET /v1/admin/client/versions/user_versions`). Nested user versions for one version remain at `/admin/versions/:id/user-versions` (`GET /v1/admin/client/versions/:id/user_versions`). Updates use PUT. There is no hard delete.
+  - **Versions**: Super-admin-only version catalogue (`/admin/versions`), create (`/admin/versions/create`), edit (`/admin/versions/:id/edit`), recycle bin (`/admin/versions/bin`), and consolidated user versions tab (`/admin/versions?tab=user_versions`, `GET /v1/admin/client/versions/user_versions`). Standalone `/admin/user-versions` route automatically redirects to the parent tab. Nested user versions for one version remain at `/admin/versions/:id/user-versions` (`GET /v1/admin/client/versions/:id/user_versions`). Updates use PUT. There is no hard delete.
   - **Chat**: Moderation tools for chat rooms and messages.
   - **Feedbacks & Logs**: User feedback review and client runtime error telemetry.
 - **Form Component Unification**: Every admin module featuring Create and Edit shares a single, reusable `Admin[Entity]Form` component (`mode: CREATE | EDIT`) between its dedicated create and edit route pages. Modals and dialogs are retired in favor of full pages.
@@ -208,7 +208,7 @@ The client admin panel architecture provides a protected workspace for managing 
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
-
+ 
 The design layer provides reusable:
 
 - Buttons, Google authentication actions, and text links.
@@ -218,7 +218,7 @@ The design layer provides reusable:
 - Color, typography, spacing, radius, shadow, and motion primitives.
 - Theme and language controls.
 
-Tailwind CSS, DaisyUI, Headless UI, Heroicons, and `tailwind-merge` provide the implementation substrate without owning the application architecture.
+Tailwind CSS v4, DaisyUI v5, and `tailwind-merge` provide the implementation substrate without owning the application architecture. For the complete token contracts, typography families (including monospace), color contrast matrices, and constitutional design laws, see the **[RexOne Design System Guide](docs/DESIGN_SYSTEM.md)**.
 
 ### State & application flow
 
@@ -231,13 +231,16 @@ Browser persistence is used selectively. For example, sign-in cooldown timing su
 The payment module communicates with RexOne Core for:
 
 - Available product retrieval with pagination.
-- Stripe Checkout Session creation.
+- Promo & referral coupon validation (`POST /v1/payment/coupons/validate`) with real-time discount calculations and dynamic order summary in `CheckoutDialog`.
+- Stripe Checkout Session creation (`POST /v1/payment/session`) with attached coupon discounts.
+- 100% discount free access bypass: zero-amount checkouts bypass Stripe, provision immediate product access via Core `AccessService`, and transition UI smoothly without redirecting.
 - Payment success and cancellation routes.
 - Subscription listing, cancellation, and resumption contracts.
 - Transaction retrieval with pagination.
 - Access listing and entitlement checks.
+- Admin Coupon Management (`/admin/coupons` and `/admin/user-coupons`): full CRUD, batch coupon generator, targeting filters (roles, users, products), usage limit enforcement, and redemption audit ledger.
 
-Stripe secrets and webhook processing remain on the backend. The browser owns product presentation and secure checkout handoff, not payment authority.
+Stripe secrets and webhook processing remain on the backend. The browser owns product presentation, promo validation, and secure checkout handoff, not payment authority.
 
 ### Real-time delivery
 
@@ -333,10 +336,12 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 
 ## Quality toolchain
 
-- **TypeScript Project Builds** for strict compile-time type safety.
-- **ESLint** with React Hooks and React Refresh rules.
-- **Vitest** for automated unit and component tests.
-- **Playwright** for end-to-end user journey verification.
+- **TypeScript Project Builds** for strict compile-time type safety (`npm run build`).
+- **ESLint** with React Hooks and React Refresh rules (`npm run lint`).
+- **Architecture Validation** (`npm run check:architecture`) to enforce LAW.md invariants (centralized storage keys, direct cookie disallowance, etc.).
+- **Locales Parity & Fallback Check** (`npm run check:locales`) to verify zero loose strings or missing keys across i18n dictionaries.
+- **Vitest** for automated unit and component tests (`npm run test:unit`).
+- **Playwright** for end-to-end user journey verification (`npm run test:e2e`).
 - **Continuous Integration (GitHub Actions)** for automated build validation (`npm run build`) and Vitest test execution on PR branch pushes.
 - **Vite** production builds and local production preview.
 - Dependency and browser-baseline checks through the npm toolchain.
@@ -464,55 +469,55 @@ All frontend environment variables are centralized through [`src/AppConfig.tsx`]
 
 ## Client route surface
 
-| Access    | Route                               | Purpose                                       |
-| --------- | ----------------------------------- | --------------------------------------------- |
-| Public    | `/`                                 | Root experience                               |
-| Public    | `/signin`                           | Open the authentication dialog                |
-| Public    | `/signup`                           | Enter the account creation flow               |
-| Public    | `/email/confirm`                    | Handle confirmation links or code entry       |
-| Public    | `/password/forgot`                  | Request account recovery                      |
-| Public    | `/password/reset`                   | Complete password reset links                 |
-| Public    | `/anapana`                          | Anapana interval reminder                     |
-| Protected | `/home`                             | Authenticated home                            |
-| Protected | `/profile`                          | Current-user profile                          |
-| Protected | `/payment`                          | Products and checkout                         |
-| Protected | `/payment/success`                  | Checkout success return                       |
-| Protected | `/payment/cancel`                   | Checkout cancellation return                  |
-| Protected | `/ai`                               | AI workspace                                  |
-| Protected | `/signout`                          | Sign out and provider cleanup                 |
-| Protected | `/admin`                            | Admin panel entry with smart redirect         |
-| Protected | `/admin/users`                      | User management (super admin only)            |
-| Protected | `/admin/users/create`               | User creation console                         |
-| Protected | `/admin/users/:id/edit`             | User edit console                             |
-| Protected | `/admin/roles`                      | Role and permission management                |
-| Protected | `/admin/roles/create`               | Role creation console                         |
-| Protected | `/admin/roles/:id/edit`             | Role edit console                             |
-| Protected | `/admin/products`                   | Product and pricing management                |
-| Protected | `/admin/products/create`            | Product creation console                      |
-| Protected | `/admin/products/:id/edit`          | Product edit console                          |
-| Protected | `/admin/accesses`                   | Entitlements and user access management       |
-| Protected | `/admin/accesses/create`            | Access grant console                          |
-| Protected | `/admin/accesses/:id/edit`          | Access validity extension console             |
-| Protected | `/admin/assets`                     | Asset control center & storage overview       |
-| Protected | `/admin/assets/create`              | Asset upload console                          |
-| Protected | `/admin/assets/:id`                 | Asset detail (metadata, thumbnail, subtitle)  |
-| Protected | `/admin/assets/:id/edit`            | Asset edit, compression, thumbnail, subtitle  |
-| Protected | `/admin/notifications`              | Broadcast notification dispatch and templates |
-| Protected | `/admin/notifications/create`       | Notification template creation console        |
-| Protected | `/admin/notifications/:id/edit`     | Notification template edit console            |
-| Protected | `/admin/user-notifications`         | User notifications inspection & lifecycle     |
-| Protected | `/admin/user-notifications/:id`     | User notification detail & lifecycle actions  |
-| Protected | `/admin/user-notifications/bin`     | User notifications recycle bin                |
-| Protected | `/admin/chat/rooms`                 | Chat room moderation                          |
-| Protected | `/admin/chat/messages`              | Chat message moderation                       |
-| Protected | `/admin/feedback`                   | User feedback management                      |
-| Protected | `/admin/logs`                       | Client error and telemetry logs               |
-| Protected | `/admin/versions`                   | App versions (super admin only)               |
-| Protected | `/admin/versions/create`            | App version create console                    |
-| Protected | `/admin/versions/:id/edit`          | App version edit console                      |
-| Protected | `/admin/versions/bin`               | Discarded app versions                        |
-| Protected | `/admin/user-versions`              | All current user versions (super admin)       |
-| Protected | `/admin/versions/:id/user-versions` | User versions for one version                 |
+| Access    | Route                               | Purpose                                                                                            |
+| --------- | ----------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Public    | `/`                                 | Root experience                                                                                    |
+| Public    | `/signin`                           | Open the authentication dialog                                                                     |
+| Public    | `/signup`                           | Enter the account creation flow                                                                    |
+| Public    | `/email/confirm`                    | Handle confirmation links or code entry                                                            |
+| Public    | `/password/forgot`                  | Request account recovery                                                                           |
+| Public    | `/password/reset`                   | Complete password reset links                                                                      |
+| Public    | `/anapana`                          | Anapana interval reminder                                                                          |
+| Protected | `/home`                             | Authenticated home                                                                                 |
+| Protected | `/profile`                          | Current-user profile                                                                               |
+| Protected | `/payment`                          | Products and checkout                                                                              |
+| Protected | `/payment/success`                  | Checkout success return                                                                            |
+| Protected | `/payment/cancel`                   | Checkout cancellation return                                                                       |
+| Protected | `/ai`                               | AI workspace                                                                                       |
+| Protected | `/signout`                          | Sign out and provider cleanup                                                                      |
+| Protected | `/admin`                            | Admin panel entry with smart redirect                                                              |
+| Protected | `/admin/users`                      | User management (super admin only)                                                                 |
+| Protected | `/admin/users/create`               | User creation console                                                                              |
+| Protected | `/admin/users/:id/edit`             | User edit console                                                                                  |
+| Protected | `/admin/roles`                      | Role and permission management                                                                     |
+| Protected | `/admin/roles/create`               | Role creation console                                                                              |
+| Protected | `/admin/roles/:id/edit`             | Role edit console                                                                                  |
+| Protected | `/admin/products`                   | Product and pricing management                                                                     |
+| Protected | `/admin/products/create`            | Product creation console                                                                           |
+| Protected | `/admin/products/:id/edit`          | Product edit console                                                                               |
+| Protected | `/admin/accesses`                   | Entitlements and user access management                                                            |
+| Protected | `/admin/accesses/create`            | Access grant console                                                                               |
+| Protected | `/admin/accesses/:id/edit`          | Access validity extension console                                                                  |
+| Protected | `/admin/assets`                     | Asset control center & storage overview                                                            |
+| Protected | `/admin/assets/create`              | Asset upload console                                                                               |
+| Protected | `/admin/assets/:id`                 | Asset detail (metadata, thumbnail, subtitle)                                                       |
+| Protected | `/admin/assets/:id/edit`            | Asset edit, compression, thumbnail, subtitle                                                       |
+| Protected | `/admin/notifications`              | Broadcast notification dispatch and templates                                                      |
+| Protected | `/admin/notifications/create`       | Notification template creation console                                                             |
+| Protected | `/admin/notifications/:id/edit`     | Notification template edit console                                                                 |
+| Protected | `/admin/user-notifications`         | User notifications (redirects to `/admin/notifications?tab=user_notifications`)                    |
+| Protected | `/admin/user-notifications/:id`     | User notification detail & lifecycle actions                                                       |
+| Protected | `/admin/user-notifications/bin`     | User notifications bin (redirects to `/admin/notifications?tab=user_notifications&view=discarded`) |
+| Protected | `/admin/chat/rooms`                 | Chat room moderation                                                                               |
+| Protected | `/admin/chat/messages`              | Chat message moderation                                                                            |
+| Protected | `/admin/feedback`                   | User feedback management                                                                           |
+| Protected | `/admin/logs`                       | Client error and telemetry logs                                                                    |
+| Protected | `/admin/versions`                   | App versions (super admin only; active, user versions, bin tabs)                                   |
+| Protected | `/admin/versions/create`            | App version create console                                                                         |
+| Protected | `/admin/versions/:id/edit`          | App version edit console                                                                           |
+| Protected | `/admin/versions/bin`               | Discarded app versions                                                                             |
+| Protected | `/admin/user-versions`              | User versions (redirects to `/admin/versions?tab=user_versions`)                                   |
+| Protected | `/admin/versions/:id/user-versions` | User versions for one version                                                                      |
 
 [`src/AppRoutes.ts`](src/AppRoutes.ts) is the client-side source of truth. RexOne Core's OpenAPI page at `/api-docs` and its `config/routes.rb` remain authoritative for server contracts.
 

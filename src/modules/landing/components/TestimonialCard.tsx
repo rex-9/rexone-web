@@ -17,9 +17,9 @@ export const TestimonialCard: React.FC<ITestimonialCardProps> = ({
 
   return (
     <article
-      className={`font-primary flex flex-col justify-between w-90 min-w-90 max-w-95 h-95 flex-none max-[480px]:w-[82vw] max-[480px]:min-w-70 max-[480px]:h-90 bg-glass-card rounded-[20px] p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-glass-card-hover hover:border-glass-border-hover hover:shadow-[0_8px_30px_rgba(255,34,56,0.35)] snap-start text-left box-border relative ${
+      className={`font-primary flex flex-col justify-between w-90 min-w-90 max-w-95 h-95 flex-none max-[480px]:w-[82vw] max-[480px]:min-w-70 max-[480px]:h-90 bg-glass-card rounded-[20px] p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-glass-card-hover hover:border-glass-border-hover hover:shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.35)] snap-start text-left box-border relative ${
         isAi
-          ? "border border-primary/45 shadow-[0_4px_25px_rgba(255,34,56,0.18)]"
+          ? "border border-primary/45 shadow-[0_4px_25px_rgba(var(--color-primary-rgb),0.18)]"
           : "border border-glass-border"
       }`}
     >
@@ -30,7 +30,7 @@ export const TestimonialCard: React.FC<ITestimonialCardProps> = ({
             <TextLink
               href={testimonial.link}
               external
-              className="font-display text-xl text-glow-white font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary),0_0_24px_var(--color-primary-dark)] hover:text-white hover:[text-shadow:0_0_14px_var(--color-primary-light)] transition-all duration-200 block no-underline"
+              className="font-display text-xl text-glow-white font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary),0_0_24px_var(--color-primary-dark)] hover:text-primary-light hover:[text-shadow:0_0_14px_var(--color-primary-light)] transition-all duration-200 block no-underline"
             >
               {testimonial.name}
             </TextLink>
@@ -39,20 +39,20 @@ export const TestimonialCard: React.FC<ITestimonialCardProps> = ({
                 href={testimonial.ratingLink || "/RATING.md"}
                 external
                 title="View Architectural Evaluation & Rating"
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold tracking-tight bg-primary/20 text-primary-light border border-primary/45 hover:bg-primary/35 hover:border-primary transition-all duration-200 shadow-[0_0_8px_rgba(255,34,56,0.3)] hover:shadow-[0_0_12px_rgba(255,34,56,0.5)] font-primary no-underline"
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold tracking-tight bg-primary/20 text-primary-light border border-primary/45 hover:bg-primary/35 hover:border-primary transition-all duration-200 shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.5)] font-primary no-underline"
               >
-                <span className="text-amber-400">★</span>{" "}
+                <span className="text-warning">★</span>{" "}
                 {testimonial.rating || "9.6 / 10"}
               </TextLink>
             )}
           </div>
           {isAi ? (
-            <span className="text-xs text-primary-light font-semibold inline-flex items-center gap-1.5 mt-0.5 font-primary drop-shadow-[0_0_6px_rgba(255,34,56,0.4)]">
+            <span className="text-xs text-primary-light font-semibold inline-flex items-center gap-1.5 mt-0.5 font-primary drop-shadow-[0_0_6px_rgba(var(--color-primary-rgb),0.4)]">
               <iconsLib.sparkles className="w-3.5 h-3.5 text-primary drop-shadow-[0_0_4px_var(--color-primary)] shrink-0" />
               AI Pair Programmer • DeepMind
             </span>
           ) : (
-            <span className="text-xs text-white/60 inline-flex items-center gap-1.5 mt-0.5 font-primary">
+            <span className="text-xs text-base-content/60 inline-flex items-center gap-1.5 mt-0.5 font-primary">
               <Image
                 asset={icons.linkedin}
                 className="w-3.5 h-3.5 object-contain shrink-0"

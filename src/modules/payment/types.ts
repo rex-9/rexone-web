@@ -1,6 +1,7 @@
 import type {
   TAccessStatus,
   TBillingInterval,
+  TCouponType,
   TSubscriptionStatus,
   TTransactionStatus,
 } from "./constants";
@@ -145,4 +146,66 @@ export interface ICheckoutResponse {
   free_access_granted?: boolean;
   product_id?: string;
   access_id?: string;
+  coupon_code?: string;
+  discount_amount?: number;
+}
+
+export type { TCouponType } from "./constants";
+
+export interface ICoupon {
+  id: string;
+  title: string;
+  description: string | null;
+  code: string;
+  coupon_type: TCouponType;
+  amount: number;
+  currency: string | null;
+  max_usage: number;
+  max_usage_per_user: number;
+  used_count: number;
+  expires_at: string | null;
+  referrer_id: string | null;
+  target_role_ids: string[];
+  target_user_ids: string[];
+  target_user_emails?: string[];
+  target_product_ids: string[];
+  active: boolean;
+  expired: boolean;
+  exhausted: boolean;
+  created_at: string;
+  updated_at: string;
+  discarded_at?: string | null;
+}
+
+export type TPurchaseType = "trx" | "sbs";
+
+export interface IUserCoupon {
+  id: string;
+  coupon_id: string;
+  coupon_code?: string;
+  coupon_title?: string;
+  user_id: string;
+  user_name?: string;
+  user_email?: string;
+  product_id: string;
+  product_name?: string;
+  purchase_id: string;
+  purchase_type: TPurchaseType;
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+  currency: string;
+  created_at: string;
+}
+
+export interface ICouponValidationResult {
+  valid: boolean;
+  error?: string;
+  coupon?: ICoupon;
+  original_amount?: number;
+  discount_amount?: number;
+  final_amount?: number;
+  currency?: string;
+  remaining_attempts?: number;
+  cooldown_remaining?: number;
 }

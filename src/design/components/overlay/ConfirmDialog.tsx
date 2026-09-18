@@ -53,7 +53,7 @@ export const ConfirmDialog: React.FC<IConfirmDialogProps> = ({
             }
             className={
               isDestructive
-                ? "!bg-error !text-white hover:!bg-error/90"
+                ? "bg-error! text-primary-content! hover:bg-error/90!"
                 : ""
             }
             onClick={onConfirm}

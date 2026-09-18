@@ -64,6 +64,12 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.document,
       },
       {
+        labelKey: AppLocales.Admin.Nav.Items.Coupons,
+        to: AppRoutes.client.protected.admin.COUPONS,
+        resource: ADMIN_RESOURCES.COUPONS,
+        icon: iconsLib.tag,
+      },
+      {
         labelKey: AppLocales.Admin.Nav.Items.Accesses,
         to: AppRoutes.client.protected.admin.ACCESSES,
         resource: ADMIN_RESOURCES.ACCESSES,
@@ -155,12 +161,6 @@ const navSections: IAdminNavSection[] = [
         icon: iconsLib.bellAlert,
       },
       {
-        labelKey: AppLocales.Admin.Nav.Items.UserNotifications,
-        to: AppRoutes.client.protected.admin.USER_NOTIFICATIONS,
-        resource: ADMIN_RESOURCES.USER_NOTIFICATIONS,
-        icon: iconsLib.bell,
-      },
-      {
         labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
         to: AppRoutes.client.protected.admin.CHAT_ROOMS,
         resource: ADMIN_RESOURCES.CHAT_ROOMS,
@@ -183,13 +183,6 @@ const navSections: IAdminNavSection[] = [
         to: AppRoutes.client.protected.admin.VERSIONS,
         resource: ADMIN_RESOURCES.VERSIONS,
         icon: iconsLib.tag,
-        superAdminOnly: true,
-      },
-      {
-        labelKey: AppLocales.Admin.Nav.Items.UserVersions,
-        to: AppRoutes.client.protected.admin.USER_VERSIONS,
-        resource: ADMIN_RESOURCES.USER_VERSIONS,
-        icon: iconsLib.devicePhoneMobile,
         superAdminOnly: true,
       },
     ],
@@ -299,7 +292,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                                 ? "h-11 gap-3 px-3 text-body-m justify-start"
                                 : "h-10 w-10 p-0 mx-auto justify-center lg:h-11 lg:w-full lg:px-3 lg:gap-3 lg:justify-start text-body-m",
                               isActive
-                                ? "bg-primary text-navy-900 shadow-sm"
+                                ? "bg-primary text-primary-content shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                             )
                           }

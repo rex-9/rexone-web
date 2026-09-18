@@ -2,14 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
+import {
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -33,7 +36,7 @@ export const AdminVersionDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -45,9 +48,20 @@ export const AdminVersionDetailPage: React.FC = () => {
               version?.number || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Versions.Detail.Title)}
-        description={t(AppLocales.Admin.Versions.Detail.Description)}
+        title={version?.number ? `v${version.number}` : t(AppLocales.Admin.Versions.Detail.Title)}
+        description={version?.title || t(AppLocales.Admin.Versions.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.tag}
+        statusBadge={version ? <StatusBadge status={version.status} /> : undefined}
+        entityId={version?.id}
+        timestamps={
+          version
+            ? {
+                createdAt: version.created_at,
+                updatedAt: version.updated_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (
@@ -58,24 +72,24 @@ export const AdminVersionDetailPage: React.FC = () => {
       ) : version ? (
         <>
           <div className="grid gap-6 lg:grid-cols-2">
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Versions.Detail.Release)}
               icon={iconsLib.tag}
             >
-              <AdminDetailGrid className="xl:grid-cols-2">
-                <AdminDetailField
+              <DetailGrid className="xl:grid-cols-2">
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Detail.VersionNumber)}
                   value={version.number}
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Common.Detail.Status)}
                   value={<StatusBadge status={version.status} />}
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Table.Title)}
                   value={version.title}
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Detail.ForceUpdate)}
                   value={
                     <StatusBadge
@@ -83,28 +97,28 @@ export const AdminVersionDetailPage: React.FC = () => {
                     />
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Common.Detail.Description)}
                   value={version.description}
                   className="sm:col-span-2"
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
 
-            <AdminDetailSection
+            <DetailSection
               title={t(AppLocales.Admin.Versions.Detail.Builds)}
               icon={iconsLib.devicePhoneMobile}
             >
-              <AdminDetailGrid className="xl:grid-cols-2">
-                <AdminDetailField
+              <DetailGrid className="xl:grid-cols-2">
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Detail.IosBuild)}
                   value={version.ios_build_number}
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Detail.AndroidBuild)}
                   value={version.android_build_number}
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Detail.Released)}
                   value={
                     <DateTime
@@ -113,7 +127,7 @@ export const AdminVersionDetailPage: React.FC = () => {
                     />
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Common.Detail.Created)}
                   value={
                     <DateTime
@@ -122,7 +136,7 @@ export const AdminVersionDetailPage: React.FC = () => {
                     />
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Common.Detail.Updated)}
                   value={
                     <DateTime
@@ -131,21 +145,21 @@ export const AdminVersionDetailPage: React.FC = () => {
                     />
                   }
                 />
-                <AdminDetailField
+                <DetailField
                   label={t(AppLocales.Admin.Versions.Table.Installs)}
                   value={version.install_count ?? 0}
                 />
-              </AdminDetailGrid>
-            </AdminDetailSection>
+              </DetailGrid>
+            </DetailSection>
           </div>
 
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Versions.Detail.Installs)}
             icon={iconsLib.user}
             contentClassName="space-y-6"
           >
             <AdminUserVersionsPage embedded />
-          </AdminDetailSection>
+          </DetailSection>
         </>
       ) : null}
     </div>

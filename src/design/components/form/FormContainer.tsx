@@ -36,7 +36,7 @@ export const FormContainer = React.forwardRef<
         className={cn(
           "flex flex-col",
           isGlass
-            ? "bg-glass-form border border-glass-border backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.8),0_0_25px_rgba(107,20,38,0.35)] rounded-2xl p-6 sm:p-8 w-full max-w-md"
+            ? "bg-glass-form border border-glass-border backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.8),0_0_25px_rgba(var(--color-glow-outer-rgb),0.35)] rounded-2xl p-6 sm:p-8 w-full max-w-md"
             : "bg-base-100 p-4 rounded",
           className,
         )}

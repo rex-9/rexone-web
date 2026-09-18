@@ -152,13 +152,13 @@ export const PasswordInput: React.FC<IPasswordInputProps> = ({
                 focus:outline-none focus:ring-2 focus:ring-primary/25 focus:border-primary
                 ${
                   mask && digit
-                    ? "font-sans font-bold text-2xl sm:text-3xl text-white tracking-normal pt-1"
+                    ? "font-primary font-bold text-2xl sm:text-3xl text-base-content tracking-normal pt-1"
                     : "font-primary font-semibold text-xl text-base-content tracking-wider pt-0"
                 }
                 ${
                   hasError
                     ? "border-error focus:border-error focus:ring-error"
-                    : "border-base-300 hover:border-base-content/30 focus:border-primary"
+                    : "border-base-300 hover:border-primary focus:border-primary"
                 }
                 ${
                   disabled

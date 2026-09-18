@@ -39,6 +39,8 @@ class AssetService {
     file: File,
     options?: {
       type?: string;
+      title?: string;
+      description?: string;
       assetable_type?: string;
       assetable_id?: string;
       folder?: string;
@@ -47,6 +49,8 @@ class AssetService {
     const formData = new FormData();
     formData.append("file", file);
     if (options?.type) formData.append("type", options.type);
+    if (options?.title) formData.append("title", options.title);
+    if (options?.description) formData.append("description", options.description);
     if (options?.assetable_type)
       formData.append("assetable_type", options.assetable_type);
     if (options?.assetable_id)
@@ -63,7 +67,15 @@ class AssetService {
   async updateAsset(
     id: string,
     data: Partial<
-      Pick<IAsset, "name" | "type" | "assetable_type" | "assetable_id">
+      Pick<
+        IAsset,
+        | "name"
+        | "title"
+        | "description"
+        | "type"
+        | "assetable_type"
+        | "assetable_id"
+      >
     >,
   ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
     return api.put<{ asset: IAdminAsset }>(

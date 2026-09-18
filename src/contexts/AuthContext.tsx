@@ -17,6 +17,7 @@ import { isTokenExpired } from "../helpers";
 import { useLoading } from "./LoadingContext";
 import UserController from "../modules/user/user.controller";
 import { AnalyticsService } from "../services";
+import AppConfig from "../AppConfig";
 
 interface IAuthContextType {
   isAuthenticated: boolean;
@@ -67,7 +68,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (!token || !isTokenExpired(token)) return;
 
     const timeoutId = window.setTimeout(() => {
-      console.log("🔐 Token expired, signing out...");
+      if (AppConfig.IS_DEV) {
+        console.log("🔐 Token expired, signing out...");
+      }
       signout();
     }, 0);
 
@@ -80,7 +83,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const interval = setInterval(() => {
       if (isTokenExpired(token)) {
-        console.log("Token expired during session, signing out...");
+        if (AppConfig.IS_DEV) {
+          console.log("Token expired during session, signing out...");
+        }
         signout();
       }
     }, 3600000);

@@ -24,7 +24,7 @@ export const dropShadows = {
     "0 0 14px var(--color-primary-dark)",
   ],
   "neon-hover": [
-    "0 0 4px #ffffff",
+    "0 0 4px var(--color-glow-white)",
     "0 0 10px var(--color-primary-light)",
     "0 0 22px var(--color-primary)",
     "0 0 34px var(--color-primary-dark)",

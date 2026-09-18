@@ -59,7 +59,9 @@ class AppRoutes {
         NOTIFICATION_EDIT: AppRoutes.admin("/notifications/:id/edit"),
         USER_NOTIFICATIONS: AppRoutes.admin("/user-notifications"),
         USER_NOTIFICATION_DETAIL: AppRoutes.admin("/user-notifications/:id"),
-        USER_NOTIFICATIONS_RECYCLE_BIN: AppRoutes.admin("/user-notifications/bin"),
+        USER_NOTIFICATIONS_RECYCLE_BIN: AppRoutes.admin(
+          "/user-notifications/bin",
+        ),
         PRODUCTS: AppRoutes.admin("/products"),
         PRODUCT_DETAIL: AppRoutes.admin("/products/:id"),
         PRODUCTS_RECYCLE_BIN: AppRoutes.admin("/products/bin"),
@@ -69,6 +71,12 @@ class AppRoutes {
         TRANSACTION_DETAIL: AppRoutes.admin("/transactions/:id"),
         SUBSCRIPTIONS: AppRoutes.admin("/subscriptions"),
         SUBSCRIPTION_DETAIL: AppRoutes.admin("/subscriptions/:id"),
+        COUPONS: AppRoutes.admin("/coupons"),
+        COUPON_CREATE: AppRoutes.admin("/coupons/create"),
+        COUPON_EDIT: AppRoutes.admin("/coupons/:id/edit"),
+        COUPON_DETAIL: AppRoutes.admin("/coupons/:id"),
+        COUPONS_RECYCLE_BIN: AppRoutes.admin("/coupons/bin"),
+        USER_COUPONS: AppRoutes.admin("/user-coupons"),
         ASSETS: AppRoutes.admin("/assets"),
         ASSET_DETAIL: AppRoutes.admin("/assets/:id"),
         ASSETS_RECYCLE_BIN: AppRoutes.admin("/assets/bin"),
@@ -162,6 +170,7 @@ class AppRoutes {
         "/payment/subscriptions/:id/resume",
       ), // POST
       PAYMENT_TRANSACTIONS: AppRoutes.api("/payment/transactions"), // GET
+      PAYMENT_COUPONS_VALIDATE: AppRoutes.api("/payment/coupons/validate"), // POST
 
       // Chat
       AI_CHAT: AppRoutes.api("/chat/messages"), // POST
@@ -249,6 +258,29 @@ class AppRoutes {
         PAYMENT_SUBSCRIPTION_DETAIL: AppRoutes.adminApi(
           "/payment/subscriptions/:id",
         ), // GET
+        PAYMENT_COUPONS: AppRoutes.adminApi("/payment/coupons"), // GET, POST
+        PAYMENT_COUPON_DETAIL: AppRoutes.adminApi("/payment/coupons/:id"), // GET, PUT, DELETE
+        PAYMENT_COUPON_DISCARD: AppRoutes.adminApi(
+          "/payment/coupons/:id/discard",
+        ), // POST
+        PAYMENT_COUPON_UNDISCARD: AppRoutes.adminApi(
+          "/payment/coupons/:id/undiscard",
+        ), // POST
+        PAYMENT_COUPONS_BATCH: AppRoutes.adminApi("/payment/coupons/batch"), // POST
+        PAYMENT_COUPONS_BIN: AppRoutes.adminApi("/payment/coupons/bin"), // DELETE
+        PAYMENT_COUPONS_DISCARD_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/discard_batch",
+        ), // POST
+        PAYMENT_COUPONS_UNDISCARD_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/undiscard_batch",
+        ), // POST
+        PAYMENT_COUPONS_DESTROY_BATCH: AppRoutes.adminApi(
+          "/payment/coupons/destroy_batch",
+        ), // POST
+        PAYMENT_COUPON_REDEMPTIONS: AppRoutes.adminApi(
+          "/payment/coupons/:id/redemptions",
+        ), // GET
+        PAYMENT_USER_COUPONS: AppRoutes.adminApi("/payment/user_coupons"), // GET
         ASSETS: AppRoutes.adminApi("/assets"), // GET
         ASSET_DETAIL: AppRoutes.adminApi("/assets/:id"), // GET, PUT, DELETE
         ASSET_UPLOAD: AppRoutes.adminApi("/assets/upload"), // POST

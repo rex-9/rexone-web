@@ -43,7 +43,7 @@ export const AdminEmptyRecycleBinButton: React.FC<
         disabled={disabled || isBusy || (count !== undefined && count <= 0)}
         onClick={() => setIsOpen(true)}
         className={cn(
-          "!bg-error !text-white hover:!bg-error/90 border-transparent",
+          "bg-error! text-primary-content! hover:bg-error/90! border-transparent",
           className,
         )}
         title={t(AppLocales.Admin.Common.RecycleBin.EmptyTitle)}

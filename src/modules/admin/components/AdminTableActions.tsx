@@ -113,7 +113,7 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
 
         const categoryStyles: Record<TAdminActionCategory, string> = {
           [ADMIN_ACTION_CATEGORIES.NEUTRAL]:
-            "border border-base-300 bg-base-100 text-base-content/70 hover:text-base-content hover:bg-base-200 hover:border-base-400 active:bg-base-300",
+            "border border-base-300 bg-base-100 text-base-content/70 hover:text-base-content hover:bg-base-200 hover:border-primary active:bg-base-300",
           [ADMIN_ACTION_CATEGORIES.DANGER]:
             "border border-error/30 bg-error/5 text-error hover:bg-error/15 hover:border-error active:bg-error/25",
           [ADMIN_ACTION_CATEGORIES.SUCCESS]:

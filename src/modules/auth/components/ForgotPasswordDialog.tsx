@@ -54,6 +54,9 @@ export const ForgotPasswordDialog: React.FC<IForgotPasswordDialogProps> = ({
       cooldown.start(60);
       success(t(AppLocales.Auth.ForgotPasscode.ResetLinkSent));
     } else {
+      if (result.cooldownRemaining && result.cooldownRemaining > 0) {
+        cooldown.start(result.cooldownRemaining);
+      }
       setError(result.error || "Failed to send password reset email.");
     }
   };

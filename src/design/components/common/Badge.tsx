@@ -31,9 +31,9 @@ export const Badge: React.FC<IBadgeProps> = ({
 }) => {
   const variants: Record<BadgeVariant, string> = {
     [BadgeVariants.DEFAULT]:
-      "bg-base-200 text-base-content border border-border",
+      "bg-base-200 text-base-content border border-base-300",
     [BadgeVariants.NEON]:
-      "border border-glass-tag bg-glass-tag-bg text-white font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-white hover:shadow-neon",
+      "border border-glass-tag bg-glass-tag-bg text-base-content font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-primary-content hover:shadow-neon",
     [BadgeVariants.PRIMARY]:
       "bg-primary/10 text-primary border border-primary/30",
     [BadgeVariants.SECONDARY]:

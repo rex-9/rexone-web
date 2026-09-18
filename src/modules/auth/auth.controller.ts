@@ -264,9 +264,10 @@ class AuthController {
     success: boolean;
     message?: string;
     error?: string;
+    cooldownRemaining?: number;
   }> {
     const response = await AuthService.sendForgotPasswordMail(email);
-    const { status } = response.data || {};
+    const { status, data } = response.data || {};
 
     if (status?.success) {
       return {
@@ -275,9 +276,15 @@ class AuthController {
       };
     }
 
+    const cooldownRemaining =
+      typeof data?.cooldown_remaining === "number"
+        ? data.cooldown_remaining
+        : undefined;
+
     return {
       success: false,
       error: status?.error || response.error || "Failed to send password reset email.",
+      cooldownRemaining,
     };
   }
 

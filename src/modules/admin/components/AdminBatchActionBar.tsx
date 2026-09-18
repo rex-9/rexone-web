@@ -84,7 +84,7 @@ export const AdminBatchActionBar: React.FC<IAdminBatchActionBarProps> = ({
               variant={variant}
               className={
                 action.isDestructive
-                  ? "bg-error! text-white! hover:bg-error/90! border-transparent"
+                  ? "bg-error! text-primary-content! hover:bg-error/90! border-transparent"
                   : ""
               }
               disabled={action.disabled || isLoading}

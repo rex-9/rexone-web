@@ -42,13 +42,13 @@ export const ColorExamples = () => {
           Brand Colors
         </Typography>
         <div className="flex gap-4 flex-wrap">
-          <div className="bg-primary text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+          <div className="bg-primary text-primary-content font-semibold px-4 py-2 rounded-md shadow-sm">
             Primary (Sunset Coral)
           </div>
-          <div className="bg-secondary text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+          <div className="bg-secondary text-primary-content font-semibold px-4 py-2 rounded-md shadow-sm">
             Secondary (Coral Peach)
           </div>
-          <div className="bg-accent text-white font-semibold px-4 py-2 rounded-md shadow-sm">
+          <div className="bg-accent text-primary-content font-semibold px-4 py-2 rounded-md shadow-sm">
             Accent (Crimson)
           </div>
         </div>

@@ -20,8 +20,17 @@ export const MarkerPopup: React.FC = () => {
   const [startTime, setStartTime] = useAtom(atoms.startTimeAtom);
   const [endTime, setEndTime] = useAtom(atoms.endTimeAtom);
 
+  const MARKER_PALETTE = [
+    "var(--color-primary)",
+    "var(--color-secondary)",
+    "var(--color-accent)",
+    "var(--color-info)",
+    "var(--color-success)",
+    "var(--color-warning)",
+  ];
+
   const handleAddMarker = () => {
-    const color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+    const color = MARKER_PALETTE[Math.floor(Math.random() * MARKER_PALETTE.length)];
     addMarker({ interval, unit, color });
     showToast("success", AppLocales.Anapana.StartMessage);
   };

@@ -12,6 +12,7 @@ import {
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
 import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
+import { ANALYTICS_COLORS } from "../constants";
 
 interface IRevenueChartProps {
   data: IAnalyticsTimeSeriesPoint[];
@@ -43,8 +44,8 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
           >
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#ff5757" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#ff5757" stopOpacity={0.0} />
+                <stop offset="5%" stopColor={ANALYTICS_COLORS.PRIMARY} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={ANALYTICS_COLORS.PRIMARY} stopOpacity={0.0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -95,7 +96,7 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
             <Area
               type="monotone"
               dataKey="revenue"
-              stroke="#ff5757"
+              stroke={ANALYTICS_COLORS.PRIMARY}
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#revenueGradient)"

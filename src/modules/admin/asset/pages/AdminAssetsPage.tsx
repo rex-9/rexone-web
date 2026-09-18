@@ -142,53 +142,56 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const [isBatchUndiscardOpen, setIsBatchUndiscardOpen] = useState(false);
   const [isBatchDestroyOpen, setIsBatchDestroyOpen] = useState(false);
 
-  const fetchAssets = useCallback(async (options?: { silent?: boolean }) => {
-    const silent = Boolean(options?.silent);
-    if (!silent) setLoading(true, { overlay: true });
-    try {
-      const params: Record<string, string | number> = {
-        page,
-        limit: ADMIN_PAGE_SIZE,
-      };
+  const fetchAssets = useCallback(
+    async (options?: { silent?: boolean }) => {
+      const silent = Boolean(options?.silent);
+      if (!silent) setLoading(true, { overlay: true });
+      try {
+        const params: Record<string, string | number> = {
+          page,
+          limit: ADMIN_PAGE_SIZE,
+        };
 
-      if (sortBy) params.sort_by = sortBy;
-      if (sortOrder) params.sort_order = sortOrder;
-      if (searchQuery) params.search = searchQuery;
-      if (typeFilter) params.type = typeFilter;
-      if (formatFilter) params.format = formatFilter;
-      if (statusFilter) params.status = statusFilter;
-      if (recordScopeFilter) params.record_scope = recordScopeFilter;
+        if (sortBy) params.sort_by = sortBy;
+        if (sortOrder) params.sort_order = sortOrder;
+        if (searchQuery) params.search = searchQuery;
+        if (typeFilter) params.type = typeFilter;
+        if (formatFilter) params.format = formatFilter;
+        if (statusFilter) params.status = statusFilter;
+        if (recordScopeFilter) params.record_scope = recordScopeFilter;
 
-      const result = isActive
-        ? await Admin.AssetController.getAssets(params)
-        : await Admin.AssetController.getDiscardedAssets(params);
+        const result = isActive
+          ? await Admin.AssetController.getAssets(params)
+          : await Admin.AssetController.getDiscardedAssets(params);
 
-      if (result.success) {
-        setAssets(result.assets);
-        setPagination(result.pagination);
-      } else if (!silent) {
-        toast.error(
-          result.error || t(AppLocales.Admin.Assets.Errors.LoadFailed),
-        );
+        if (result.success) {
+          setAssets(result.assets);
+          setPagination(result.pagination);
+        } else if (!silent) {
+          toast.error(
+            result.error || t(AppLocales.Admin.Assets.Errors.LoadFailed),
+          );
+        }
+      } finally {
+        if (!silent) setLoading(false, { overlay: true });
+        setHasLoadedOnce(true);
       }
-    } finally {
-      if (!silent) setLoading(false, { overlay: true });
-      setHasLoadedOnce(true);
-    }
-  }, [
-    page,
-    sortBy,
-    sortOrder,
-    searchQuery,
-    typeFilter,
-    formatFilter,
-    statusFilter,
-    recordScopeFilter,
-    isActive,
-    setLoading,
-    toast,
-    t,
-  ]);
+    },
+    [
+      page,
+      sortBy,
+      sortOrder,
+      searchQuery,
+      typeFilter,
+      formatFilter,
+      statusFilter,
+      recordScopeFilter,
+      isActive,
+      setLoading,
+      toast,
+      t,
+    ],
+  );
 
   useEffect(() => {
     fetchAssets();
@@ -226,7 +229,9 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         typeof event.data?.url === "string" ? event.data.url : undefined;
       const thumbnail =
         event.data?.thumbnail && typeof event.data.thumbnail === "object"
-          ? (event.data.thumbnail as NonNullable<IAsset["children"]>["thumbnail"])
+          ? (event.data.thumbnail as NonNullable<
+              IAsset["children"]
+            >["thumbnail"])
           : undefined;
 
       setAssets((prevAssets) => {
@@ -242,9 +247,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               children: {
                 subtitles: a.children?.subtitles ?? [],
                 thumbnail:
-                  thumbnail !== undefined
-                    ? thumbnail
-                    : a.children?.thumbnail,
+                  thumbnail !== undefined ? thumbnail : a.children?.thumbnail,
               },
             };
           }
@@ -532,7 +535,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         className: "w-14",
         render: (asset) => {
           const isImg = isImageAsset(asset);
-          const previewUrl = getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
+          const previewUrl =
+            getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
 
           return (
             <div className="w-10 h-10 rounded overflow-hidden bg-base-200 flex items-center justify-center">
@@ -554,24 +558,26 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
         },
       },
       {
-        key: ADMIN_ASSET_COLUMNS.NAME,
-        header: t(AppLocales.Admin.Assets.Table.Name),
-        sortKey: ADMIN_ASSET_COLUMNS.NAME,
+        key: ADMIN_ASSET_COLUMNS.TITLE,
+        header: t(AppLocales.Admin.Assets.Table.Title),
+        sortKey: ADMIN_ASSET_COLUMNS.TITLE,
         className: "w-56 max-w-55 sm:max-w-65",
         render: (asset) => (
           <div className="flex flex-col min-w-0 max-w-55 sm:max-w-65">
             <span
               className="font-medium text-base-content truncate"
-              title={asset.name}
+              title={asset.title || asset.name}
             >
-              {asset.name}
+              {asset.title || asset.name}
             </span>
-            <span
-              className="text-xs text-base-content/60 font-mono truncate"
-              title={asset.id}
-            >
-              {asset.id}
-            </span>
+            {asset.title && (
+              <span
+                className="text-xs text-base-content/70 truncate"
+                title={asset.name}
+              >
+                {asset.name}
+              </span>
+            )}
           </div>
         ),
       },
@@ -616,7 +622,9 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Created),
           sortKey: ADMIN_ASSET_COLUMNS.CREATED_AT,
           className: "text-center",
-          render: (asset) => <DateTime value={asset.created_at} format={DateTimeFormats.ADMIN} />,
+          render: (asset) => (
+            <DateTime value={asset.created_at} format={DateTimeFormats.ADMIN} />
+          ),
         },
         {
           key: ADMIN_ASSET_COLUMNS.ACTIONS,
@@ -689,7 +697,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
           header: t(AppLocales.Admin.Assets.Table.Discarded),
           sortKey: ADMIN_ASSET_COLUMNS.DISCARDED_AT,
           className: "text-center",
-          render: (asset) => <DateTime value={asset.discarded_at} format={DateTimeFormats.ADMIN} />,
+          render: (asset) => (
+            <DateTime
+              value={asset.discarded_at}
+              format={DateTimeFormats.ADMIN}
+            />
+          ),
         },
         {
           key: ADMIN_ASSET_COLUMNS.ACTIONS,
@@ -890,7 +903,14 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               sortBy={sortBy}
               sortOrder={sortOrder}
               onSort={handleSort}
-              onRowClick={(asset) => navigate(AppRoutes.withId(AppRoutes.client.protected.admin.ASSET_DETAIL, asset.id))}
+              onRowClick={(asset) =>
+                navigate(
+                  AppRoutes.withId(
+                    AppRoutes.client.protected.admin.ASSET_DETAIL,
+                    asset.id,
+                  ),
+                )
+              }
               selectable={canDelete}
               selectedRowKeys={selectedIds}
               onSelectRow={(id, selected) => {

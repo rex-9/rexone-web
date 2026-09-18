@@ -16,7 +16,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
 
   return (
     <div
-      className={`relative w-full max-w-2xl mx-auto rounded-3xl bg-glass-card/90 backdrop-blur-xl border border-glass-border p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(255,34,56,0.35)] text-left ${className}`}
+      className={`relative w-full max-w-2xl mx-auto rounded-3xl bg-glass-card/90 backdrop-blur-xl border border-glass-border p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.6)] overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(var(--color-primary-rgb),0.35)] text-left ${className}`}
     >
       {/* Subtle Ambient Glows */}
       <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
@@ -26,7 +26,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
       <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left pb-6 border-b border-glass-border/70">
         {/* Avatar with Glowing Ring & Heart Badge */}
         <div className="relative shrink-0">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-0.5 border-2 border-primary shadow-[0_0_18px_var(--color-primary)] bg-black/40 overflow-hidden">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-0.5 border-2 border-primary shadow-[0_0_18px_var(--color-primary)] bg-base-300/40 overflow-hidden">
             <img
               src="https://github.com/rex-9.png"
               alt="Rex (rex-9)"
@@ -39,10 +39,10 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
             />
           </div>
           <div
-            className="absolute -bottom-1 -right-1 bg-primary text-white rounded-full p-1.5 shadow-[0_0_12px_var(--color-primary)] border border-white/20"
+            className="absolute -bottom-1 -right-1 bg-primary text-primary-content rounded-full p-1.5 shadow-[0_0_12px_var(--color-primary)] border border-primary-light/20"
             title="GitHub Sponsor"
           >
-            <iconsLib.heart className="w-4 h-4 fill-current animate-pulse text-white" />
+            <iconsLib.heart className="w-4 h-4 fill-current animate-pulse text-primary-content" />
           </div>
         </div>
 
@@ -55,14 +55,14 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
             <TextLink
               href={githubUrl}
               external
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-white transition-colors"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:text-primary-light transition-colors"
             >
               <span>@rex-9</span>
               <iconsLib.externalLink className="w-3.5 h-3.5" />
             </TextLink>
           </div>
 
-          <p className="text-sm sm:text-base text-white/90 font-medium">
+          <p className="text-sm sm:text-base text-base-content/90 font-medium">
             Architect & Creator of the{" "}
             <span className="text-primary-light font-semibold">RexOne</span>{" "}
             Ecosystem
@@ -73,8 +73,8 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
               <iconsLib.sparkles className="w-3 h-3 text-primary" />
               Open-Source Sponsor
             </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/5 border border-glass-border text-white/70">
-              <iconsLib.shieldCheck className="w-3 h-3 text-white/80" />
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-base-200/50 border border-glass-border text-base-content/70">
+              <iconsLib.shieldCheck className="w-3 h-3 text-base-content/80" />
               Apache 2.0 Licensed
             </span>
           </div>
@@ -83,7 +83,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
 
       {/* Mission Body */}
       <div className="relative z-10 py-5 space-y-4">
-        <p className="text-sm sm:text-base text-white/80 leading-relaxed">
+        <p className="text-sm sm:text-base text-base-content/80 leading-relaxed">
           Directly back independent open-source engineering. Your sponsorship
           powers continuous architectural refinement, sovereign tooling, and
           guarantees a zero-technical-debt foundation for developers and
@@ -91,20 +91,20 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
         </p>
 
         {/* Feature Highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs sm:text-sm text-white/75">
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-black/25 border border-glass-border/50">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs sm:text-sm text-base-content/75">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">🏛️</span>
             <span>Constitutional Law (`LAW.md`)</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-black/25 border border-glass-border/50">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">⚡</span>
             <span>Zero Wasted Tokens or Plumbing</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-black/25 border border-glass-border/50">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">🛡️</span>
             <span>900+ Invariant Specs & Testing</span>
           </div>
-          <div className="flex items-center gap-2 p-2 rounded-lg bg-black/25 border border-glass-border/50">
+          <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">💎</span>
             <span>Complete Rails, React & Flutter Trinity</span>
           </div>
@@ -123,10 +123,10 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
         >
           <iconsLib.heart className="w-5 h-5 text-primary-light fill-current" />
           <span>Sponsor @rex-9 on GitHub</span>
-          <iconsLib.externalLink className="w-4 h-4 text-white/70" />
+          <iconsLib.externalLink className="w-4 h-4 text-glow-white/70" />
         </Button>
 
-        <div className="flex items-center gap-2 text-xs text-white/50">
+        <div className="flex items-center gap-2 text-xs text-base-content/50">
           <Asset
             src={icons.github.src}
             alt="GitHub"

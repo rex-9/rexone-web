@@ -2,13 +2,17 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { Image, StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  Image,
+  StatusBadge,
+} from "../../../../design";
+import {
   AdminState,
 } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -28,7 +32,7 @@ export const AdminUserDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.USERS;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           {
             label: t(AppLocales.Admin.Common.Detail.Admin),
@@ -37,9 +41,24 @@ export const AdminUserDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Users.Title), to: listPath },
           { label: user?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Users.Detail.Title)}
-        description={t(AppLocales.Admin.Users.Detail.Description)}
+        title={user?.name || t(AppLocales.Admin.Users.Detail.Title)}
+        description={user?.username ? `@${user.username}` : t(AppLocales.Admin.Users.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.user}
+        statusBadge={
+          user ? (
+            <StatusBadge status={user.locked ? "locked" : user.confirmed ? "confirmed" : "unconfirmed"} />
+          ) : undefined
+        }
+        entityId={user?.id}
+        timestamps={
+          user
+            ? {
+                createdAt: user.created_at,
+                updatedAt: user.updated_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState
@@ -48,39 +67,43 @@ export const AdminUserDetailPage: React.FC = () => {
         />
       ) : user ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Identity)}
             icon={iconsLib.user}
+            accent
           >
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="h-24 w-24 overflow-hidden rounded-full border border-base-300 bg-base-200">
+            <div className="flex flex-col items-center gap-4 text-center py-2">
+              <div className="h-28 w-28 overflow-hidden rounded-2xl border-2 border-primary/30 bg-base-200 shadow-md p-1">
                 <Image
                   src={user.avatar_url || ""}
                   alt={user.name}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover rounded-xl"
                 />
               </div>
               <div>
-                <h2 className="text-title-2 font-semibold">{user.name}</h2>
-                <p className="text-base-content/60">@{user.username}</p>
+                <h2 className="text-xl font-bold tracking-tight text-base-content">{user.name}</h2>
+                <p className="text-xs font-mono font-medium text-primary mt-0.5">@{user.username}</p>
               </div>
             </div>
-          </AdminDetailSection>
-          <AdminDetailSection
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Account)}
             icon={iconsLib.document}
             className="lg:col-span-2"
           >
-            <AdminDetailGrid>
-              <AdminDetailField
+            <DetailGrid>
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={user.email}
+                copyable
+                mono
+                className="sm:col-span-2"
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Provider)}
                 value={user.provider}
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Confirmed)}
                 value={
                   <StatusBadge
@@ -88,13 +111,13 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Users.Detail.Locked)}
                 value={
                   <StatusBadge status={user.locked ? "locked" : "active"} />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -103,7 +126,7 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   <DateTime
@@ -112,9 +135,9 @@ export const AdminUserDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Users.Detail.Roles)}
             icon={iconsLib.key}
             className="lg:col-span-3"
@@ -135,7 +158,7 @@ export const AdminUserDetailPage: React.FC = () => {
                 </span>
               )}
             </div>
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
     </div>

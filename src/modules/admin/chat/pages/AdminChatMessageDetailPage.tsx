@@ -2,15 +2,16 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import { StatusBadge } from "../../../../design";
-import { DateTime, DateTimeFormats } from "../../../../design";
 import {
-  AdminDetailField,
-  AdminDetailGrid,
-  AdminDetailHeader,
-  AdminDetailSection,
-  AdminState,
-} from "../../components";
+  DateTime,
+  DateTimeFormats,
+  DetailField,
+  DetailGrid,
+  DetailHeader,
+  DetailSection,
+  StatusBadge,
+} from "../../../../design";
+import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import ChatController from "../chat.controller";
@@ -30,31 +31,48 @@ export const AdminChatMessageDetailPage: React.FC = () => {
   const listPath = AppRoutes.client.protected.admin.CHAT_MESSAGES;
   return (
     <div className="space-y-6">
-      <AdminDetailHeader
+      <DetailHeader
         breadcrumbs={[
           { label: t(AppLocales.Admin.Common.Detail.Admin), to: AppRoutes.client.protected.admin.HOME },
           { label: t(AppLocales.Admin.Chat.MessagesTitle), to: listPath },
           { label: message ? t(AppLocales.Admin.Chat.MessageDetail.MessageBreadcrumb, { role: message.role }) : t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Chat.MessageDetail.Title)}
+        title={message?.role ? `${message.role.toUpperCase()} Message` : t(AppLocales.Admin.Chat.MessageDetail.Title)}
         description={t(AppLocales.Admin.Chat.MessageDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.chatBubbleLeftRight}
+        statusBadge={message ? <StatusBadge status={message.role} /> : undefined}
+        entityId={message?.id}
+        timestamps={
+          message
+            ? {
+                createdAt: message.created_at,
+                updatedAt: message.updated_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : message ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection
+          <DetailSection
             title={t(AppLocales.Admin.Chat.MessageDetail.Context)}
             icon={iconsLib.chatBubbleLeftRight}
+            accent
           >
-            <AdminDetailGrid className="grid-cols-1">
-              <AdminDetailField
+            <DetailGrid columns={1}>
+              <DetailField
                 label={t(AppLocales.Admin.Chat.MessageDetail.Role)}
                 value={<StatusBadge status={message.role} />}
               />
-              <AdminDetailField label={t(AppLocales.Admin.Chat.MessageDetail.RoomId)} value={message.room_id} />
-              <AdminDetailField
+              <DetailField
+                label={t(AppLocales.Admin.Chat.MessageDetail.RoomId)}
+                value={message.room_id}
+                copyable
+                mono
+              />
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   <DateTime
@@ -63,7 +81,7 @@ export const AdminChatMessageDetailPage: React.FC = () => {
                   />
                 }
               />
-              <AdminDetailField
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Updated)}
                 value={
                   <DateTime
@@ -72,9 +90,9 @@ export const AdminChatMessageDetailPage: React.FC = () => {
                   />
                 }
               />
-            </AdminDetailGrid>
-          </AdminDetailSection>
-          <AdminDetailSection
+            </DetailGrid>
+          </DetailSection>
+          <DetailSection
             title={t(AppLocales.Admin.Chat.MessageDetail.Content)}
             icon={iconsLib.document}
             className="lg:col-span-2"
@@ -82,7 +100,7 @@ export const AdminChatMessageDetailPage: React.FC = () => {
             <div className="whitespace-pre-wrap wrap-break-word leading-relaxed text-base-content">
               {message.content}
             </div>
-          </AdminDetailSection>
+          </DetailSection>
         </div>
       ) : null}
     </div>

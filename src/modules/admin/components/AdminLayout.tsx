@@ -130,7 +130,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
       {isSidebarOpen && (
         <Button
           type={ButtonTypes.BUTTON}
-          className="fixed bottom-0 left-72 right-0 top-0 z-30 bg-navy-900/40 lg:hidden"
+          className="fixed bottom-0 left-72 right-0 top-0 z-30 bg-black/40 lg:hidden"
           aria-label="Close admin navigation"
           onClick={closeSidebar}
         />

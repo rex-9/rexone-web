@@ -120,8 +120,8 @@ class AuthService {
 
   async sendForgotPasswordMail(
     email: string,
-  ): Promise<IApiResponse<IApiEnvelope<undefined>>> {
-    const response = await api.post<undefined>(
+  ): Promise<IApiResponse<IApiEnvelope<{ cooldown_remaining?: number }>>> {
+    const response = await api.post<{ cooldown_remaining?: number }>(
       AppRoutes.server.public.FORGOT_PASSWORD,
       { email },
     );

@@ -14,3 +14,42 @@ export const ADMIN_SUBSCRIPTION_SORT_KEYS = {
   STATUS: "status",
   INTERVAL: "interval",
 } as const;
+
+export const ADMIN_COUPON_SORT_KEYS = {
+  CREATED_AT: "created_at",
+  CODE: "code",
+  TITLE: "title",
+  AMOUNT: "amount",
+  USED_COUNT: "used_count",
+  EXPIRES_AT: "expires_at",
+} as const;
+
+export const ADMIN_USER_COUPON_SORT_KEYS = {
+  CREATED_AT: "created_at",
+  DISCOUNT_AMOUNT: "discount_amount",
+  FINAL_AMOUNT: "final_amount",
+  PURCHASE_TYPE: "purchase_type",
+  USER_EMAIL: "user_email",
+  PRODUCT_NAME: "product_name",
+  COUPON_CODE: "coupon_code",
+} as const;
+
+export const ADMIN_COUPON_COLUMNS = {
+  CODE: "code",
+  TITLE: "title",
+  AMOUNT: "amount",
+  USED_COUNT: "used_count",
+  EXPIRES_AT: "expires_at",
+  CREATED_AT: "created_at",
+  ACTIONS: "actions",
+} as const;
+
+export const ADMIN_COUPON_FILTERS = {
+  PAGE: "page",
+  COUPON_TYPE: "coupon_type",
+  SEARCH: "search",
+  VIEW: "view",
+} as const;
+
+export { COUPON_TYPES, type TCouponType } from "../../payment/constants";
+

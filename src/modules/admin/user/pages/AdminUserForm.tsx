@@ -106,13 +106,10 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
         </div>
         <div className="flex-1 text-center sm:text-left space-y-1">
           <span className="text-sm font-semibold text-base-content block">
-            {t(AppLocales.Admin.Users.Form.AvatarLabel, "Profile Avatar")}
+            {t(AppLocales.Admin.Users.Form.AvatarLabel)}
           </span>
           <span className="text-xs text-base-content/60 block">
-            {t(
-              AppLocales.Admin.Users.Form.AvatarHelper,
-              "Choose an existing uploaded avatar asset for this user.",
-            )}
+            {t(AppLocales.Admin.Users.Form.AvatarHelper)}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -122,7 +119,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
             onClick={() => setIsAssetPickerOpen(true)}
           >
             <iconsLib.photo className="w-4 h-4 mr-1.5" />
-            {t(AppLocales.Admin.Users.Form.ChooseAvatar, "Choose Avatar")}
+            {t(AppLocales.Admin.Users.Form.ChooseAvatar)}
           </Button>
           {(avatarUrl || avatarAssetId) && (
             <Button
@@ -135,7 +132,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
               }}
             >
               <iconsLib.trash className="w-4 h-4 mr-1" />
-              {t(AppLocales.Admin.Users.Form.RemoveAvatar, "Remove")}
+              {t(AppLocales.Admin.Users.Form.RemoveAvatar)}
             </Button>
           )}
         </div>

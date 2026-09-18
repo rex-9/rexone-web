@@ -39,12 +39,10 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
         </div>
 
         {/* Bullet Details */}
-        <div className="flex flex-col w-full px-2 text-left text-xs sm:text-sm leading-snug text-white/85 mb-3 space-y-1">
+        <div className="flex flex-col w-full px-2 text-left text-xs sm:text-sm leading-snug text-base-content/85 mb-3 space-y-1">
           {project.details.map((detail, idx) => (
             <p key={idx} className="flex items-start">
-              <span className="text-primary font-bold mr-1 select-none">
-                •
-              </span>
+              <span className="text-primary font-bold mr-1 select-none">•</span>
               <span>{detail}</span>
             </p>
           ))}
@@ -56,12 +54,12 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
             <TextLink
               href={project.source}
               external
-              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg !text-primary px-5 py-2 rounded-md transition-all duration-300 hover:!bg-primary hover:!text-white hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
+              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg text-primary! px-5 py-2 rounded-md transition-all duration-300 hover:bg-primary! hover:text-primary-content! hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
             >
               Source
             </TextLink>
           ) : (
-            <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-white/30 px-5 py-2 rounded-md pointer-events-none">
+            <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-base-content/30 px-5 py-2 rounded-md pointer-events-none">
               Source
             </span>
           )}
@@ -70,12 +68,12 @@ export const ProjectCard: React.FC<IProjectCardProps> = ({ project }) => {
             <TextLink
               href={project.live}
               external
-              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg !text-primary px-5 py-2 rounded-md transition-all duration-300 hover:!bg-primary hover:!text-white hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
+              className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border bg-glass-tag-bg text-primary! px-5 py-2 rounded-md transition-all duration-300 hover:bg-primary! hover:text-primary-content! hover:border-primary hover:shadow-neon-lg hover:no-underline active:scale-95"
             >
               Live
             </TextLink>
           ) : (
-            <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-white/30 px-5 py-2 rounded-md pointer-events-none">
+            <span className="text-sm font-bold font-primary uppercase tracking-wider border border-glass-border/30 text-base-content/30 px-5 py-2 rounded-md pointer-events-none">
               Live
             </span>
           )}

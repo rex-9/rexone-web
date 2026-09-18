@@ -33,7 +33,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
 }) => {
   return (
     <div
-      className={`relative rounded-3xl bg-glass-card/85 backdrop-blur-xl border border-glass-border p-6 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] text-center overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(255,34,56,0.3)] ${className}`}
+      className={`relative rounded-3xl bg-glass-card/85 backdrop-blur-xl border border-glass-border p-6 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] text-center overflow-hidden transition-all duration-500 hover:border-glass-border-hover hover:shadow-[0_0_35px_rgba(var(--color-primary-rgb),0.3)] ${className}`}
     >
       {/* Ambient Background Glows */}
       <div className="absolute -top-20 -left-20 w-64 h-64 bg-primary/15 rounded-full blur-3xl pointer-events-none" />
@@ -41,7 +41,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
 
       <div className="relative z-10 max-w-3xl mx-auto space-y-4">
         {/* Doctrine Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary-light text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-[0_0_12px_rgba(255,34,56,0.25)]">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary-light text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)]">
           {pillIcon || <iconsLib.sparkles className="w-4 h-4 text-primary" />}
           <span>{pillText}</span>
         </div>
@@ -52,10 +52,10 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
         </blockquote>
 
         {/* Glowing Gradient Accent Line */}
-        <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]" />
+        <div className="w-24 h-0.5 mx-auto bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_var(--color-primary)]" />
 
         {/* Philosophy Explanation */}
-        <p className="text-sm sm:text-base text-white/80 leading-relaxed font-primary">
+        <p className="text-sm sm:text-base text-base-content/80 leading-relaxed font-primary">
           {description}
         </p>
 
@@ -65,7 +65,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
             {tags.map((tag, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-white/90 shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-glass-border bg-glass-tag-bg text-base-content/90 shadow-sm"
               >
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                 <span>
