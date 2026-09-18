@@ -43,6 +43,18 @@ export const ASSET_TYPES = {
 
 export type TAssetType = (typeof ASSET_TYPES)[keyof typeof ASSET_TYPES];
 
+export const CHILD_ASSET_TYPES = [
+  ASSET_TYPES.THUMBNAIL,
+  ASSET_TYPES.SUBTITLE,
+] as const;
+
+export type TChildAssetType = (typeof CHILD_ASSET_TYPES)[number];
+
+export const isChildAssetType = (type?: string | null): boolean => {
+  if (!type) return false;
+  return (CHILD_ASSET_TYPES as readonly string[]).includes(type);
+};
+
 export const ASSET_FORMATS = {
   IMAGE: "image",
   AUDIO: "audio",

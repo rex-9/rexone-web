@@ -1555,6 +1555,19 @@
         "discarded": "Discarded",
         "actions": "Actions"
       },
+      "form": {
+        "parent_asset_label": "Parent Asset",
+        "parent_asset_placeholder": "Select parent asset...",
+        "parent_asset_search_placeholder": "Search parent assets by title or name...",
+        "parent_asset_required": "Parent asset is required for thumbnails and subtitles",
+        "parent_asset_loading": "Loading parent assets...",
+        "parent_asset_none": "No parent assets found",
+        "parent_asset_already_has_thumbnail": "Already has thumbnail",
+        "replace_thumbnail_title": "Replace Existing Thumbnail?",
+        "replace_thumbnail_message": "Parent asset \"{{parentTitle}}\" already has a thumbnail ({{existingThumbnail}}). Are you sure you want to replace it?",
+        "replace_thumbnail_confirm": "Yes, Replace Thumbnail",
+        "replace_thumbnail_cancel": "Cancel"
+      },
       "upload_dialog": {
         "title": "Upload Assets",
         "type_label": "Asset Type",

@@ -162,6 +162,7 @@ export const AdminAssetEditPage: React.FC = () => {
       title: values.title,
       description: values.description,
       type: values.type,
+      parent_asset_id: values.parent_asset_id,
     });
     setLoading(false, { overlay: false });
 

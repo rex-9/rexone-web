@@ -1415,6 +1415,21 @@ export const AppLocales = {
         Discarded: "admin.assets.table.discarded",
         Actions: "admin.assets.table.actions",
       },
+      Form: {
+        ParentAssetLabel: "admin.assets.form.parent_asset_label",
+        ParentAssetPlaceholder: "admin.assets.form.parent_asset_placeholder",
+        ParentAssetSearchPlaceholder:
+          "admin.assets.form.parent_asset_search_placeholder",
+        ParentAssetRequired: "admin.assets.form.parent_asset_required",
+        ParentAssetLoading: "admin.assets.form.parent_asset_loading",
+        ParentAssetNone: "admin.assets.form.parent_asset_none",
+        ParentAssetAlreadyHasThumbnail:
+          "admin.assets.form.parent_asset_already_has_thumbnail",
+        ReplaceThumbnailTitle: "admin.assets.form.replace_thumbnail_title",
+        ReplaceThumbnailMessage: "admin.assets.form.replace_thumbnail_message",
+        ReplaceThumbnailConfirm: "admin.assets.form.replace_thumbnail_confirm",
+        ReplaceThumbnailCancel: "admin.assets.form.replace_thumbnail_cancel",
+      },
       UploadDialog: {
         Title: "admin.assets.upload_dialog.title",
         TypeLabel: "admin.assets.upload_dialog.type_label",

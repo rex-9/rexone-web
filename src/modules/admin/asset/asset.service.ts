@@ -43,6 +43,7 @@ class AssetService {
       description?: string;
       assetable_type?: string;
       assetable_id?: string;
+      parent_asset_id?: string;
       folder?: string;
     },
   ): Promise<IApiResponse<IApiEnvelope<IAssetUploadResponse>>> {
@@ -55,6 +56,8 @@ class AssetService {
       formData.append("assetable_type", options.assetable_type);
     if (options?.assetable_id)
       formData.append("assetable_id", options.assetable_id);
+    if (options?.parent_asset_id)
+      formData.append("parent_asset_id", options.parent_asset_id);
     if (options?.folder) formData.append("folder", options.folder);
 
     return api.post<IAssetUploadResponse>(
@@ -75,6 +78,7 @@ class AssetService {
         | "type"
         | "assetable_type"
         | "assetable_id"
+        | "parent_asset_id"
       >
     >,
   ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {

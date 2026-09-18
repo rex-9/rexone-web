@@ -14,6 +14,7 @@ import {
   getAssetThumbnail,
   isImageAsset,
   isSrtSubtitleFile,
+  isChildAssetType,
 } from "../constants";
 import {
   AlertDialog,
@@ -23,7 +24,10 @@ import {
   TextArea,
   TextInput,
 } from "../../components";
-import { AdminAssetChildrenTable } from "../components";
+import {
+  AdminAssetChildrenTable,
+  AdminParentAssetSelect,
+} from "../components";
 import {
   Badge,
   Button,
@@ -43,6 +47,7 @@ export interface IAdminAssetEditFormValues {
   title?: string;
   description?: string;
   type: string;
+  parent_asset_id?: string;
 }
 
 export interface IFileItem {
@@ -57,7 +62,11 @@ export interface IAdminAssetFormProps {
     files: File[],
     type: string,
     onProgress: (percent: number, msg: string) => void,
-    meta?: { title?: string; description?: string },
+    meta?: {
+      title?: string;
+      description?: string;
+      parent_asset_id?: string;
+    },
   ) => Promise<void>;
   onSubmitEdit?: (values: IAdminAssetEditFormValues) => Promise<void>;
   onCompress?: () => Promise<void>;
@@ -97,6 +106,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
   // Create Mode state
   const [fileItems, setFileItems] = useState<IFileItem[]>([]);
   const [uploadType, setUploadType] = useState<string>(ASSET_TYPES.GENERAL);
+  const [uploadParentAssetId, setUploadParentAssetId] = useState<string>("");
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -110,6 +120,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
     asset?.description ?? "",
   );
   const [editType, setEditType] = useState(asset?.type ?? ASSET_TYPES.GENERAL);
+  const [editParentAssetId, setEditParentAssetId] = useState<string>(
+    asset?.parent_asset_id ?? "",
+  );
+  const [parentAssetError, setParentAssetError] = useState<string>("");
 
   useEffect(() => {
     if (asset) {
@@ -117,8 +131,17 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
       setEditTitle(asset.title ?? "");
       setEditDescription(asset.description ?? "");
       setEditType(asset.type ?? ASSET_TYPES.GENERAL);
+      setEditParentAssetId(asset.parent_asset_id ?? "");
+      setParentAssetError("");
     }
-  }, [asset?.id, asset?.name, asset?.title, asset?.description, asset?.type]);
+  }, [
+    asset?.id,
+    asset?.name,
+    asset?.title,
+    asset?.description,
+    asset?.type,
+    asset?.parent_asset_id,
+  ]);
 
   const [alertMessage, setAlertMessage] = useState("");
   const isChildAsset = Boolean(asset?.parent_asset_id);
@@ -208,6 +231,11 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
     e.preventDefault();
     if (fileItems.length === 0 || isLoading || !onUploadBatch) return;
 
+    if (isChildAssetType(uploadType) && !uploadParentAssetId) {
+      setParentAssetError(t(AppLocales.Admin.Assets.Form.ParentAssetRequired));
+      return;
+    }
+
     setLoading(true, { overlay: false });
     setUploadProgress(0);
     setUploadStatusMessage("");
@@ -223,6 +251,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
         {
           title: uploadTitle.trim() || undefined,
           description: uploadDescription.trim() || undefined,
+          parent_asset_id: isChildAssetType(uploadType)
+            ? uploadParentAssetId
+            : undefined,
         },
       );
     } catch (err: unknown) {
@@ -242,11 +273,20 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
       return;
     }
 
+    const effectiveType = isChildAsset && asset ? asset.type : editType;
+    if (isChildAssetType(effectiveType) && !editParentAssetId) {
+      setParentAssetError(t(AppLocales.Admin.Assets.Form.ParentAssetRequired));
+      return;
+    }
+
     await onSubmitEdit({
       name: trimmed,
       title: editTitle.trim() || undefined,
       description: editDescription.trim() || undefined,
-      type: isChildAsset && asset ? asset.type : editType,
+      type: effectiveType,
+      parent_asset_id: isChildAssetType(effectiveType)
+        ? editParentAssetId
+        : undefined,
     });
   };
 
@@ -446,9 +486,28 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     value: opt.value,
                     label: opt.label,
                   }))}
-                  onValueChange={(val) => setUploadType(val)}
+                  onValueChange={(val) => {
+                    setUploadType(val);
+                    if (!isChildAssetType(val)) {
+                      setUploadParentAssetId("");
+                      setParentAssetError("");
+                    }
+                  }}
                   disabled={isLoading}
                 />
+
+                {isChildAssetType(uploadType) && (
+                  <AdminParentAssetSelect
+                    value={uploadParentAssetId}
+                    onChange={(id) => {
+                      setUploadParentAssetId(id);
+                      if (id) setParentAssetError("");
+                    }}
+                    targetType={uploadType}
+                    disabled={isLoading}
+                    error={parentAssetError}
+                  />
+                )}
 
                 <TextInput
                   label={t(AppLocales.Admin.Assets.UploadDialog.TitleLabel)}
@@ -707,9 +766,29 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       value: opt.value,
                       label: opt.label,
                     }))}
-                    onValueChange={(val) => setEditType(val)}
+                    onValueChange={(val) => {
+                      setEditType(val);
+                      if (!isChildAssetType(val)) {
+                        setEditParentAssetId("");
+                        setParentAssetError("");
+                      }
+                    }}
                     disabled={isChildAsset}
                   />
+
+                  {isChildAssetType(editType) && (
+                    <AdminParentAssetSelect
+                      value={editParentAssetId}
+                      onChange={(id) => {
+                        setEditParentAssetId(id);
+                        if (id) setParentAssetError("");
+                      }}
+                      targetType={editType}
+                      currentAssetId={asset?.id}
+                      disabled={isLoading}
+                      error={parentAssetError}
+                    />
+                  )}
                 </div>
 
                 <FormActionRow

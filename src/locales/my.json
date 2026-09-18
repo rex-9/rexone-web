@@ -1554,6 +1554,19 @@
         "discarded": "ဖျက်ခဲ့ချိန်",
         "actions": "လုပ်ဆောင်ချက်များ"
       },
+      "form": {
+        "parent_asset_label": "ပင်မ မီဒီယာ",
+        "parent_asset_placeholder": "ပင်မ မီဒီယာကို ရွေးချယ်ပါ...",
+        "parent_asset_search_placeholder": "အမည် သို့မဟုတ် ခေါင်းစဉ်ဖြင့် ရှာဖွေပါ...",
+        "parent_asset_required": "ပုံငယ် သို့မဟုတ် စာတန်းထိုး အတွက် ပင်မ မီဒီယာ လိုအပ်ပါသည်",
+        "parent_asset_loading": "ပင်မ မီဒီယာများကို ရယူနေပါသည်...",
+        "parent_asset_none": "ပင်မ မီဒီယာ မတွေ့ရှိပါ",
+        "parent_asset_already_has_thumbnail": "ပုံငယ် ရှိပြီးသားဖြစ်သည်",
+        "replace_thumbnail_title": "ပုံငယ် အသစ်ဖြင့် အစားထိုးမလား?",
+        "replace_thumbnail_message": "ပင်မ မီဒီယာ \"{{parentTitle}}\" တွင် ပုံငယ် ({{existingThumbnail}}) ရှိပြီးသားဖြစ်ပါသည်။ အစားထိုးရန် သေချာပါသလား?",
+        "replace_thumbnail_confirm": "အစားထိုးမည်",
+        "replace_thumbnail_cancel": "မလုပ်တော့ပါ"
+      },
       "upload_dialog": {
         "title": "ဖိုင်များ တင်ရန်",
         "type_label": "ဖိုင် အမျိုးအစား",

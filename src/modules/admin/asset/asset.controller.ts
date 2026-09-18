@@ -89,6 +89,7 @@ class AssetController {
       description?: string;
       assetable_type?: string;
       assetable_id?: string;
+      parent_asset_id?: string;
       folder?: string;
     },
   ): Promise<{
@@ -125,6 +126,7 @@ class AssetController {
         | "type"
         | "assetable_type"
         | "assetable_id"
+        | "parent_asset_id"
       >
     >,
   ): Promise<{
