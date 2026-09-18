@@ -8,11 +8,15 @@
   html {
     scrollbar-gutter: stable;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 34, 56, 0.35) rgba(15, 5, 8, 0.6);
+    scrollbar-color: rgba(var(--color-primary-rgb), 0.35) var(--color-base-300);
+    font-family: var(--font-primary);
   }
 
   body {
     overflow-x: hidden;
+    font-family: var(--font-primary);
+    color: var(--color-base-content);
+    background-color: var(--color-base-100);
   }
 
   /* Sleek Thin Scrollbar matching Rex9 */
@@ -22,24 +26,24 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(15, 5, 8, 0.6);
+    background: var(--color-base-300);
     border-radius: 10px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 34, 56, 0.35);
+    background: rgba(var(--color-primary-rgb), 0.35);
     border-radius: 10px;
     transition: background 0.3s ease;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 34, 56, 0.75);
+    background: rgba(var(--color-primary-rgb), 0.75);
   }
 
   /* Thin internal scrollbars for cards, carousels, and scroll containers */
   .scrollbar-thin {
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 34, 56, 0.35) transparent;
+    scrollbar-color: rgba(var(--color-primary-rgb), 0.35) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -52,13 +56,62 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: rgba(255, 34, 56, 0.35);
+    background: rgba(var(--color-primary-rgb), 0.35);
     border-radius: 10px;
     transition: background 0.3s ease;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 34, 56, 0.75);
+    background: rgba(var(--color-primary-rgb), 0.75);
   }
+}
+
+/* ==========================================================================
+   Rexone High-Contrast Design System Theme Engine
+   - White / Light Theme (Day): Red & Black (Rex9 Scarlet Red & Pure Black)
+   - Dark Theme (Night): Red & White (Rex9 Scarlet Red & Pure White)
+   - Centralized: Eliminates all washed-out grey text globally across components
+   ========================================================================== */
+
+/* Universal text and background inheritance for any active or future theme */
+:root,
+[data-theme] {
+  color: var(--color-base-content);
+  background-color: var(--color-base-100);
+}
+
+[data-theme] body {
+  color: var(--color-base-content);
+  background-color: var(--color-base-100);
+}
+
+/* Ensure all base-content text variations render crisp at high-contrast, never washed-out grey */
+.text-base-content,
+[class*="text-base-content/"]:not(:hover) {
+  color: var(--color-base-content);
+}
+
+/* Prevent opacity utilities on text elements from washing out to low-contrast grey */
+p.opacity-60,
+span.opacity-60,
+div.opacity-60,
+label.opacity-60,
+p.opacity-70,
+span.opacity-70,
+div.opacity-70,
+label.opacity-70,
+p.opacity-50,
+span.opacity-50,
+div.opacity-50,
+label.opacity-50,
+.text-caption.opacity-60,
+.text-body-s.opacity-60 {
+  opacity: 1;
+  color: var(--color-base-content);
+}
+
+/* Interactive hover borders on cards, tiles, and fields follow centralized --color-primary */
+[class*="hover:border-primary"]:hover {
+  border-color: var(--color-primary) !important;
 }
 

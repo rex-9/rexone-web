@@ -18,7 +18,13 @@ import {
 import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { AppLocales } from "../../../../locales/app_locales";
-import { AdminDetailHeader, AdminState } from "../../components";
+import {
+  AdminDetailField,
+  AdminDetailGrid,
+  AdminDetailHeader,
+  AdminDetailSection,
+  AdminState,
+} from "../../components";
 import {
   ADMIN_ACTIONS,
   ADMIN_RESOURCES,
@@ -139,6 +145,37 @@ export const AdminCouponDetailPage: React.FC = () => {
         }
         description={coupon?.title || t(AppLocales.Admin.Coupons.DetailDescription)}
         backTo={listPath}
+        icon={iconsLib.tag}
+        statusBadge={
+          coupon ? (
+            coupon.discarded_at ? (
+              <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Tabs.RecycleBin)}
+              </Badge>
+            ) : coupon.exhausted ? (
+              <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Detail.RemainingUsage)}: 0
+              </Badge>
+            ) : coupon.expired ? (
+              <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Table.Expires)}
+              </Badge>
+            ) : (
+              <Badge variant={BadgeVariants.SUCCESS} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Tabs.Active)}
+              </Badge>
+            )
+          ) : undefined
+        }
+        entityId={coupon?.id}
+        timestamps={
+          coupon
+            ? {
+                createdAt: coupon.created_at,
+                updatedAt: coupon.updated_at,
+              }
+            : undefined
+        }
         action={
           coupon?.discarded_at ? (
             can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PAYMENT_COUPONS) && (
@@ -187,31 +224,31 @@ export const AdminCouponDetailPage: React.FC = () => {
       ) : coupon ? (
         <div className="space-y-6">
           {/* Top Stat Cards */}
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-base-100 p-5 rounded-xl border border-base-300">
-              <span className="text-xs text-base-content/60 block mb-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Table.Discount)}
               </span>
-              <span className="text-2xl font-extrabold text-success">
+              <span className="text-2xl font-black tracking-tight text-primary">
                 {coupon.coupon_type === "percentage"
                   ? `${coupon.amount}% ${t(AppLocales.Admin.Coupons.Table.Off)}`
                   : `${money(coupon.amount, coupon.currency || "usd")} ${t(AppLocales.Admin.Coupons.Table.Off)}`}
               </span>
             </div>
 
-            <div className="bg-base-100 p-5 rounded-xl border border-base-300">
-              <span className="text-xs text-base-content/60 block mb-1">
+            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Detail.TotalRedemptions)}
               </span>
-              <span className="text-2xl font-extrabold text-base-content">
+              <span className="text-2xl font-black tracking-tight text-base-content">
                 {coupon.used_count}
-                <span className="text-sm font-normal text-base-content/60 ml-1">
+                <span className="text-sm font-medium text-base-content/50 ml-1.5 font-mono">
                   / {coupon.max_usage === 0 ? "∞" : coupon.max_usage}
                 </span>
               </span>
-              <div className="w-full bg-base-200 rounded-full h-1.5 mt-2">
+              <div className="w-full bg-base-200 rounded-full h-1.5 mt-2 overflow-hidden">
                 <div
-                  className="bg-primary h-1.5 rounded-full"
+                  className="bg-primary h-1.5 rounded-full transition-all duration-300"
                   style={{
                     width: coupon.max_usage === 0
                       ? "100%"
@@ -221,17 +258,17 @@ export const AdminCouponDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-base-100 p-5 rounded-xl border border-base-300">
-              <span className="text-xs text-base-content/60 block mb-1">
+            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Form.MaxPerUserLabel)}
               </span>
-              <span className="text-2xl font-extrabold text-base-content">
+              <span className="text-2xl font-black tracking-tight text-base-content">
                 {coupon.max_usage_per_user}
               </span>
             </div>
 
-            <div className="bg-base-100 p-5 rounded-xl border border-base-300">
-              <span className="text-xs text-base-content/60 block mb-1">
+            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Products.Table.Status)}
               </span>
               <div className="mt-1">
@@ -253,7 +290,7 @@ export const AdminCouponDetailPage: React.FC = () => {
                   </Badge>
                 )}
               </div>
-              <div className="text-xs text-base-content/50 mt-2">
+              <div className="text-xs text-base-content/50 mt-2 font-mono">
                 {coupon.expires_at ? (
                   <DateTime value={coupon.expires_at} format={DateTimeFormats.DATE} />
                 ) : (
@@ -264,70 +301,70 @@ export const AdminCouponDetailPage: React.FC = () => {
           </div>
 
           {/* Targeting restrictions summary */}
-          <div className="bg-base-100 p-5 rounded-xl border border-base-300 space-y-3">
-            <h4 className="font-bold text-sm text-base-content">
-              {t(AppLocales.Admin.Coupons.Detail.TargetingRestrictions)}
-            </h4>
-            <div className={`grid ${canReadRoles ? "grid-cols-3" : "grid-cols-2"} gap-4 text-xs`}>
+          <AdminDetailSection
+            title={t(AppLocales.Admin.Coupons.Detail.TargetingRestrictions)}
+            icon={iconsLib.shieldCheck}
+          >
+            <AdminDetailGrid columns={canReadRoles ? 3 : 2}>
               {canReadRoles && (
-                <div>
-                  <span className="text-base-content/60 block mb-1">
-                    {t(AppLocales.Admin.Coupons.Detail.TargetRoles)}
-                  </span>
-                  {coupon.target_role_ids.length > 0 ? (
-                    <span className="font-semibold">
-                      {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_role_ids.length })}
+                <AdminDetailField
+                  label={t(AppLocales.Admin.Coupons.Detail.TargetRoles)}
+                  value={
+                    coupon.target_role_ids.length > 0 ? (
+                      <span className="font-semibold text-primary">
+                        {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_role_ids.length })}
+                      </span>
+                    ) : (
+                      <span className="text-base-content/60">{t(AppLocales.Admin.Coupons.Detail.TargetingAllRoles)}</span>
+                    )
+                  }
+                />
+              )}
+              <AdminDetailField
+                label={t(AppLocales.Admin.Coupons.Detail.TargetProducts)}
+                value={
+                  coupon.target_product_ids.length > 0 ? (
+                    <span className="font-semibold text-primary">
+                      {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_product_ids.length })}
                     </span>
                   ) : (
-                    <span className="text-base-content/50">{t(AppLocales.Admin.Coupons.Detail.TargetingAllRoles)}</span>
-                  )}
-                </div>
-              )}
-              <div>
-                <span className="text-base-content/60 block mb-1">
-                  {t(AppLocales.Admin.Coupons.Detail.TargetProducts)}
-                </span>
-                {coupon.target_product_ids.length > 0 ? (
-                  <span className="font-semibold">
-                    {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_product_ids.length })}
-                  </span>
-                ) : (
-                  <span className="text-base-content/50">{t(AppLocales.Admin.Coupons.Detail.TargetingAllProducts)}</span>
-                )}
-              </div>
-              <div>
-                <span className="text-base-content/60 block mb-1">
-                  {t(AppLocales.Admin.Coupons.Detail.TargetUsers)}
-                </span>
-                {coupon.target_user_emails && coupon.target_user_emails.length > 0 ? (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {coupon.target_user_emails.map((email) => (
-                      <span key={email} className="badge badge-sm badge-outline font-mono text-xs">
-                        {email}
-                      </span>
-                    ))}
-                  </div>
-                ) : coupon.target_user_ids.length > 0 ? (
-                  <span className="font-semibold">
-                    {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_user_ids.length })}
-                  </span>
-                ) : (
-                  <span className="text-base-content/50">{t(AppLocales.Admin.Coupons.Detail.TargetingAllUsers)}</span>
-                )}
-              </div>
-            </div>
-          </div>
+                    <span className="text-base-content/60">{t(AppLocales.Admin.Coupons.Detail.TargetingAllProducts)}</span>
+                  )
+                }
+              />
+              <AdminDetailField
+                label={t(AppLocales.Admin.Coupons.Detail.TargetUsers)}
+                value={
+                  coupon.target_user_emails && coupon.target_user_emails.length > 0 ? (
+                    <div className="flex flex-wrap gap-1.5 mt-0.5">
+                      {coupon.target_user_emails.map((email) => (
+                        <span key={email} className="rounded-md border border-base-300 bg-base-300/40 px-2 py-0.5 font-mono text-xs text-base-content">
+                          {email}
+                        </span>
+                      ))}
+                    </div>
+                  ) : coupon.target_user_ids.length > 0 ? (
+                    <span className="font-semibold text-primary">
+                      {t(AppLocales.Admin.Coupons.Detail.RestrictedCount, { count: coupon.target_user_ids.length })}
+                    </span>
+                  ) : (
+                    <span className="text-base-content/60">{t(AppLocales.Admin.Coupons.Detail.TargetingAllUsers)}</span>
+                  )
+                }
+              />
+            </AdminDetailGrid>
+          </AdminDetailSection>
 
           {/* Redemptions Table */}
-          <div className="bg-base-100 p-6 rounded-xl border border-base-300 space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-bold text-base text-base-content font-primary">
-                {t(AppLocales.Admin.Coupons.Detail.RedemptionHistory)} ({coupon.used_count})
-              </h3>
+          <AdminDetailSection
+            title={`${t(AppLocales.Admin.Coupons.Detail.RedemptionHistory)} (${coupon.used_count})`}
+            icon={iconsLib.banknotes}
+            contentClassName="p-0 sm:p-0"
+          >
+            <div className="p-4 sm:p-6">
+              <AdminRedemptionsTable couponId={coupon.id} hideCouponColumn />
             </div>
-
-            <AdminRedemptionsTable couponId={coupon.id} hideCouponColumn />
-          </div>
+          </AdminDetailSection>
         </div>
       ) : null}
 

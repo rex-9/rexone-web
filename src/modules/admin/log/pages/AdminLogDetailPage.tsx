@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
+import { iconsLib } from "../../../../assets";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { Button, StatusBadge } from "../../../../design";
 import {
@@ -101,11 +102,26 @@ export const AdminLogDetailPage: React.FC = () => {
             label: t(AppLocales.Admin.Logs.Title),
             to: AppRoutes.client.protected.admin.LOGS,
           },
-          { label: t(AppLocales.Admin.Logs.Drawer.Title) },
+          { label: log?.message || t(AppLocales.Admin.Logs.Drawer.Title) },
         ]}
-        title={t(AppLocales.Admin.Logs.Drawer.Title)}
-        description={t(AppLocales.Admin.Logs.Detail.Description)}
+        title={log?.message || t(AppLocales.Admin.Logs.Drawer.Title)}
+        description={log?.url || t(AppLocales.Admin.Logs.Detail.Description)}
         backTo={AppRoutes.client.protected.admin.LOGS}
+        icon={iconsLib.document}
+        statusBadge={
+          log ? (
+            <StatusBadge status={isResolved ? "resolved" : "unresolved"} />
+          ) : undefined
+        }
+        entityId={log?.id}
+        timestamps={
+          log
+            ? {
+                createdAt: log.created_at,
+                updatedAt: log.updated_at,
+              }
+            : undefined
+        }
         action={
           canUpdate && log ? (
             <Button

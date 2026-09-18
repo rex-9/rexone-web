@@ -95,24 +95,41 @@ export const AdminAssetDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Assets.Title), to: listPath },
           { label: asset?.title || asset?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Assets.Detail.Title)}
-        description={t(AppLocales.Admin.Assets.Detail.Description)}
+        title={asset?.title || asset?.name || t(AppLocales.Admin.Assets.Detail.Title)}
+        description={asset?.description || (asset?.title ? asset.name : undefined) || t(AppLocales.Admin.Assets.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.photo}
+        statusBadge={asset?.status ? <StatusBadge status={asset.status} /> : undefined}
+        entityId={asset?.id}
+        timestamps={
+          asset
+            ? {
+                createdAt: asset.created_at,
+                updatedAt: asset.updated_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : asset ? (
         <div className="grid gap-6 lg:grid-cols-3">
-          <AdminDetailSection title={t(AppLocales.Admin.Assets.Detail.Preview)} icon={iconsLib.photo}>
+          <AdminDetailSection
+            title={t(AppLocales.Admin.Assets.Detail.Preview)}
+            icon={iconsLib.photo}
+            accent
+          >
             {preview ? (
-              <Image
-                src={preview}
-                alt={asset.title || asset.name}
-                className="max-h-80 w-full rounded-lg object-contain"
-              />
+              <div className="overflow-hidden rounded-xl border border-base-200 bg-base-200/50 p-2 shadow-inner">
+                <Image
+                  src={preview}
+                  alt={asset.title || asset.name}
+                  className="max-h-80 w-full rounded-lg object-contain"
+                />
+              </div>
             ) : (
-              <div className="flex aspect-video items-center justify-center rounded-lg bg-base-200">
-                <iconsLib.photo className="h-12 w-12 text-base-content/30" />
+              <div className="flex aspect-video items-center justify-center rounded-xl bg-base-200/50 border border-base-200">
+                <iconsLib.photo className="h-12 w-12 text-base-content/25" />
               </div>
             )}
             <div className="pt-4">
@@ -120,9 +137,9 @@ export const AdminAssetDetailPage: React.FC = () => {
                 variant={ButtonVariants.SECONDARY}
                 fullWidth
                 onClick={() => void handleDownload(asset)}
-                className="gap-1.5"
+                className="gap-2 font-semibold"
               >
-                <iconsLib.download className="h-4 w-4" />
+                <iconsLib.download className="h-4 w-4 text-primary" />
                 {t(AppLocales.Admin.Assets.Download.Action)}
               </Button>
             </div>
@@ -137,12 +154,15 @@ export const AdminAssetDetailPage: React.FC = () => {
                 <AdminDetailField
                   label={t(AppLocales.Admin.Assets.Table.Title)}
                   value={asset.title}
+                  copyable
                   className="sm:col-span-2 xl:col-span-3"
                 />
               )}
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={asset.name}
+                copyable
+                mono
                 className="sm:col-span-2 xl:col-span-3"
               />
               {asset.description && (
@@ -172,6 +192,8 @@ export const AdminAssetDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Assets.Detail.StorageKey)}
                 value={asset.storage_key}
+                copyable
+                mono
                 className="sm:col-span-2 xl:col-span-3"
               />
             </AdminDetailGrid>

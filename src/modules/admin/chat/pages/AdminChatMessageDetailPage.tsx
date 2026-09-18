@@ -36,9 +36,20 @@ export const AdminChatMessageDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Chat.MessagesTitle), to: listPath },
           { label: message ? t(AppLocales.Admin.Chat.MessageDetail.MessageBreadcrumb, { role: message.role }) : t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Chat.MessageDetail.Title)}
+        title={message?.role ? `${message.role.toUpperCase()} Message` : t(AppLocales.Admin.Chat.MessageDetail.Title)}
         description={t(AppLocales.Admin.Chat.MessageDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.chatBubbleLeftRight}
+        statusBadge={message ? <StatusBadge status={message.role} /> : undefined}
+        entityId={message?.id}
+        timestamps={
+          message
+            ? {
+                createdAt: message.created_at,
+                updatedAt: message.updated_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
@@ -47,13 +58,19 @@ export const AdminChatMessageDetailPage: React.FC = () => {
           <AdminDetailSection
             title={t(AppLocales.Admin.Chat.MessageDetail.Context)}
             icon={iconsLib.chatBubbleLeftRight}
+            accent
           >
-            <AdminDetailGrid className="grid-cols-1">
+            <AdminDetailGrid columns={1}>
               <AdminDetailField
                 label={t(AppLocales.Admin.Chat.MessageDetail.Role)}
                 value={<StatusBadge status={message.role} />}
               />
-              <AdminDetailField label={t(AppLocales.Admin.Chat.MessageDetail.RoomId)} value={message.room_id} />
+              <AdminDetailField
+                label={t(AppLocales.Admin.Chat.MessageDetail.RoomId)}
+                value={message.room_id}
+                copyable
+                mono
+              />
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={

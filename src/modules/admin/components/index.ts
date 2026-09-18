@@ -6,6 +6,7 @@ export { AdminDetailHeader } from "./AdminDetailHeader";
 export type { IAdminDetailHeaderProps } from "./AdminDetailHeader";
 export { AdminDetailField, AdminDetailGrid, AdminDetailSection } from "./AdminDetailSection";
 export type { IAdminDetailFieldProps, IAdminDetailSectionProps } from "./AdminDetailSection";
+export { CopyButton } from "../../../design";
 export {  AdminState } from "./AdminState";
 export { AdminPagination } from "./AdminPagination";
 export { AdminPermissionMatrix } from "./AdminPermissionMatrix";

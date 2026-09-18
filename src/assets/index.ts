@@ -56,6 +56,7 @@ import {
   KeyIcon,
   UserGroupIcon,
   ArchiveBoxIcon,
+  DocumentDuplicateIcon,
   ChatBubbleBottomCenterTextIcon,
   ChevronDownIcon,
   ChevronUpIcon,
@@ -226,6 +227,7 @@ export const iconsLib = {
   play: PlayIcon,
   photo: PhotoIcon,
   tag: TagIcon,
+  copy: DocumentDuplicateIcon,
   devicePhoneMobile: DevicePhoneMobileIcon,
   externalLink: ArrowTopRightOnSquareIcon,
 } as const;

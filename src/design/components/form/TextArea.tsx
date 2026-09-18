@@ -89,10 +89,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
       {label && (
         <label
           htmlFor={inputId}
-          className={cn(
-            "text-sm font-medium",
-            isGlass ? "text-glow-white" : "text-base-content",
-          )}
+          className="text-sm font-medium text-base-content"
         >
           {label}
         </label>
@@ -110,7 +107,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
         className={cn(
           "w-full transition-all duration-200 ease-out focus:outline-none",
           isGlass
-            ? "bg-transparent text-white border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-white/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
+            ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-base-content/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
             : "rounded-md px-4 py-3 text-base border bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-transparent",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           disabled && !isGlass && "disabled:bg-base-200",
@@ -118,7 +115,7 @@ export const TextArea: React.FC<ITextAreaProps> = ({
             ? isGlass
               ? "border-b-error focus:border-b-error"
               : "border-error focus:ring-error"
-            : !isGlass && "border-base-300 hover:border-base-400",
+            : !isGlass && "border-base-300 hover:border-primary",
           className,
         )}
       />

@@ -75,20 +75,20 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
           <TextLink
             href="#Greetings"
             onClick={(e) => handleNavClick(e, "#Greetings")}
-            className="flex items-center gap-3 no-underline select-none group text-white! hover:no-underline"
+            className="flex items-center gap-3 no-underline select-none group text-base-content! hover:no-underline"
             aria-label="RexOne Home"
           >
             <Asset
               asset={icons.logo}
-              className="h-9 w-9 shrink-0 select-none transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_10px_rgba(225,29,72,0.6)]"
+              className="h-9 w-9 shrink-0 select-none transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.6)]"
             />
-            <span className="font-display text-2xl font-bold tracking-wider text-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)]">
+            <span className="font-display text-2xl font-bold tracking-wider text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)]">
               RexOne
             </span>
           </TextLink>
 
           {/* Middle: Navigation Links */}
-          <div className="flex items-center space-x-7 font-display text-xl tracking-wider text-white">
+          <div className="flex items-center space-x-7 font-display text-xl tracking-wider text-base-content">
             {navItems.map((item) => {
               const isActive = currentSection === item.href;
               return (
@@ -98,8 +98,8 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={`transition-all duration-300 hover:no-underline ${
                     isActive
-                      ? "text-white! font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
-                      : "text-white/65! hover:text-white! hover:[text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_16px_var(--color-primary-dark),0_0_22px_var(--color-glow-outer)]"
+                      ? "text-glow-white! font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
+                      : "text-base-content/65! hover:text-glow-white! hover:[text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_16px_var(--color-primary-dark),0_0_22px_var(--color-glow-outer)]"
                   }`}
                 >
                   {item.label}
@@ -126,14 +126,14 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
           <TextLink
             href="#Greetings"
             onClick={(e) => handleNavClick(e, "#Greetings")}
-            className="flex items-center gap-2.5 no-underline select-none text-white! hover:no-underline"
+            className="flex items-center gap-2.5 no-underline select-none text-base-content! hover:no-underline"
             aria-label="RexOne Home"
           >
             <Asset
               asset={icons.logo}
-              className="h-8 w-8 shrink-0 select-none drop-shadow-[0_0_8px_rgba(225,29,72,0.6)]"
+              className="h-8 w-8 shrink-0 select-none drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.6)]"
             />
-            <span className="font-display text-xl font-bold tracking-wider text-white [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary)]">
+            <span className="font-display text-xl font-bold tracking-wider text-glow-white [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary)]">
               RexOne
             </span>
           </TextLink>
@@ -155,7 +155,7 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
               variant={ButtonVariants.TERTIARY}
               aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-1! text-white bg-transparent! border-0 shadow-none hover:bg-transparent! focus:outline-none"
+              className="p-1! text-base-content bg-transparent! border-0 shadow-none hover:bg-transparent! focus:outline-none"
             >
               {isMobileMenuOpen ? (
                 <iconsLib.close className="w-8 h-8 text-primary drop-shadow-[0_0_8px_var(--color-primary)]" />
@@ -180,8 +180,8 @@ export const LandingNav: React.FC<ILandingNavProps> = ({
                   onClick={(e) => handleNavClick(e, item.href)}
                   className={`py-2 transition-all duration-300 hover:no-underline ${
                     isActive
-                      ? "text-white! font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
-                      : "text-white/70! hover:text-white!"
+                      ? "text-glow-white! font-bold [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark),0_0_30px_var(--color-glow-outer)]"
+                      : "text-base-content/70! hover:text-glow-white!"
                   }`}
                 >
                   {item.label}

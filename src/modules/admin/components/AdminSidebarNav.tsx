@@ -292,7 +292,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                                 ? "h-11 gap-3 px-3 text-body-m justify-start"
                                 : "h-10 w-10 p-0 mx-auto justify-center lg:h-11 lg:w-full lg:px-3 lg:gap-3 lg:justify-start text-body-m",
                               isActive
-                                ? "bg-primary text-navy-900 shadow-sm"
+                                ? "bg-primary text-primary-content shadow-sm"
                                 : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
                             )
                           }

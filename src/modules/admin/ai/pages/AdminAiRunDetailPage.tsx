@@ -45,9 +45,19 @@ export const AdminAiRunDetailPage: React.FC = () => {
               : t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Ai.RunDetail.Title)}
-        description={t(AppLocales.Admin.Ai.RunDetail.Description)}
+        title={run?.model ? `${run.model} (${run.feature || "run"})` : t(AppLocales.Admin.Ai.RunDetail.Title)}
+        description={run?.feature ? `Feature: ${run.feature}` : t(AppLocales.Admin.Ai.RunDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={run ? <StatusBadge status={run.status} label={run.status.toUpperCase()} /> : undefined}
+        entityId={run?.id}
+        timestamps={
+          run
+            ? {
+                createdAt: run.created_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (

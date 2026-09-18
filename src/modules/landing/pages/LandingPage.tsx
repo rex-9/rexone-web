@@ -135,7 +135,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
     <div
       data-page="landing"
       data-theme="night"
-      className="min-h-screen w-full text-glow-white font-primary selection:bg-primary selection:text-white bg-repeat bg-fixed"
+      className="min-h-screen w-full text-glow-white font-primary selection:bg-primary selection:text-primary-content bg-repeat bg-fixed"
       style={{
         backgroundImage: `url(${images.darkBrickWall.src})`,
         cursor: `url(${images.spotCursor.src}) 15 15, auto`,
@@ -164,7 +164,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
         <NeonSign id="Greetings" />
 
         {/* 3. Catchphrase & Social Profiles */}
-        <section className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
+        <section className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-glow-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
           <p>Champion, Welcome! 🌟</p>
           <p>Rex is an Architect tempered by stillness since age 14. 🧘‍♂️</p>
           <p>
@@ -186,7 +186,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
             variant={ButtonVariants.TERTIARY}
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
-            className="w-10! h-10! p-0! rounded-full border border-primary text-primary hover:text-white! hover:border-primary-light! hover:shadow-neon! transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
+            className="w-10! h-10! p-0! rounded-full border border-primary text-primary hover:text-primary-content! hover:border-primary-light! hover:shadow-neon! transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
           >
             <iconsLib.chevronDown className="w-5 h-5" />
           </Button>
@@ -244,7 +244,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
               variant={ButtonVariants.TERTIARY}
               aria-label="Previous Testimonial"
               onClick={handlePrevTestimonial}
-              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6),0_0_30px_rgba(var(--color-primary-rgb),0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronLeft className="w-5 h-5 stroke-[2.5]" />
             </Button>
@@ -266,7 +266,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
               variant={ButtonVariants.TERTIARY}
               aria-label="Next Testimonial"
               onClick={handleNextTestimonial}
-              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(255,34,56,0.6),0_0_30px_rgba(255,34,56,0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
+              className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-glow-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6),0_0_30px_rgba(var(--color-primary-rgb),0.25)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
             >
               <iconsLib.chevronRight className="w-5 h-5 stroke-[2.5]" />
             </Button>
@@ -297,7 +297,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
               Support & Sponsor
             </h2>
-            <p className="text-body-m text-white/70 max-w-2xl mx-auto">
+            <p className="text-body-m text-base-content/70 max-w-2xl mx-auto">
               Fuel the evolution of sovereign open-source engineering. Sponsoring
               sustains the development of RexOne—keeping foundations pristine,
               battle-tested, and freely accessible to developers worldwide.
@@ -343,12 +343,12 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
           </div>
 
           {/* Divider matching Rex9 */}
-          <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(255,94,98,0.3)]" />
+          <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(var(--color-primary-rgb),0.3)]" />
 
           {/* Footer Social Profiles */}
           <footer className="text-center">
             <SocialProfiles profiles={LANDING_DATA.profiles} />
-            <p className="text-xs text-white/50 font-medium">
+            <p className="text-xs text-base-content/50 font-medium">
               © {new Date().getFullYear()} Rex9. Engineered with Soul & Clarity.
             </p>
           </footer>

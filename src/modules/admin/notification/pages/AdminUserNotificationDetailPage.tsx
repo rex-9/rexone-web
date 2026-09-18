@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { useToast } from "../../../../contexts/ToastContext";
-import { Badge, Button, DateTime, DateTimeFormats } from "../../../../design";
+import { Badge, Button, DateTime, DateTimeFormats, StatusBadge } from "../../../../design";
 import {
   BadgeVariants,
   ButtonSizes,
@@ -168,11 +168,25 @@ export const AdminUserNotificationDetailPage: React.FC = () => {
               notification?.title || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Notifications.UserNotifications.Detail.Title)}
-        description={t(
+        title={notification?.title || t(AppLocales.Admin.Notifications.UserNotifications.Detail.Title)}
+        description={notification?.user_email || t(
           AppLocales.Admin.Notifications.UserNotifications.Detail.Description,
         )}
         backTo={listPath}
+        icon={iconsLib.bell}
+        statusBadge={
+          notification ? (
+            <StatusBadge status={notification.discarded_at ? "discarded" : notification.read_at ? "read" : "unread"} />
+          ) : undefined
+        }
+        entityId={notification?.id}
+        timestamps={
+          notification
+            ? {
+                createdAt: notification.created_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (

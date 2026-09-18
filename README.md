@@ -21,7 +21,7 @@ Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clea
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
+[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Design System](docs/DESIGN_SYSTEM.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
 
 </div>
 
@@ -208,7 +208,7 @@ The client admin panel architecture provides a protected workspace for managing 
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
-
+ 
 The design layer provides reusable:
 
 - Buttons, Google authentication actions, and text links.
@@ -218,7 +218,7 @@ The design layer provides reusable:
 - Color, typography, spacing, radius, shadow, and motion primitives.
 - Theme and language controls.
 
-Tailwind CSS, DaisyUI, Headless UI, Heroicons, and `tailwind-merge` provide the implementation substrate without owning the application architecture.
+Tailwind CSS v4, DaisyUI v5, and `tailwind-merge` provide the implementation substrate without owning the application architecture. For the complete token contracts, typography families (including monospace), color contrast matrices, and constitutional design laws, see the **[RexOne Design System Guide](docs/DESIGN_SYSTEM.md)**.
 
 ### State & application flow
 

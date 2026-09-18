@@ -184,7 +184,7 @@ export const AdminAiProfileCreatePage: React.FC = () => {
                     }}
                     className={`px-2 py-0.5 rounded text-caption font-mono transition-colors cursor-pointer ${
                       key === preset.value
-                        ? "bg-primary text-white font-semibold shadow-xs"
+                        ? "bg-primary text-primary-content font-semibold shadow-xs"
                         : "bg-base-200 text-base-content/70 hover:bg-base-300"
                     }`}
                   >

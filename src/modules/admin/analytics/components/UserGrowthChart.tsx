@@ -13,6 +13,7 @@ import {
 import { IAnalyticsTimeSeriesPoint } from "../types";
 import { formatUtcToLocalLabel } from "../helpers/analyticsDate.helper";
 import { ANALYTICS_GRAINS, type TAnalyticsGrain } from "../../constants";
+import { ANALYTICS_COLORS } from "../constants";
 
 interface IUserGrowthChartProps {
   data: IAnalyticsTimeSeriesPoint[];
@@ -50,8 +51,8 @@ export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
                 x2="0"
                 y2="1"
               >
-                <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
+                <stop offset="5%" stopColor={ANALYTICS_COLORS.ACCENT} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={ANALYTICS_COLORS.ACCENT} stopOpacity={0.0} />
               </linearGradient>
             </defs>
             <CartesianGrid
@@ -86,7 +87,7 @@ export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
                       <p className="text-caption font-semibold text-base-content opacity-80">
                         {formattedLabel}
                       </p>
-                      <p className="mt-1 text-body-m font-bold text-sky-400">
+                      <p className="mt-1 text-body-m font-bold text-info">
                         {item.new_users} new user
                         {item.new_users === 1 ? "" : "s"}
                       </p>
@@ -99,7 +100,7 @@ export const UserGrowthChart: React.FC<IUserGrowthChartProps> = ({
             <Area
               type="monotone"
               dataKey="new_users"
-              stroke="#38bdf8"
+              stroke={ANALYTICS_COLORS.ACCENT}
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#userGrowthGradient)"

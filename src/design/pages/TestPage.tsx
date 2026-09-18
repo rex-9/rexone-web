@@ -92,7 +92,7 @@ export const TestPage: React.FC = () => {
                 src={videoPlayback.delivery.url}
                 type={videoPlayback.media.content_type}
                 alt="Test video playback"
-                className="aspect-video w-full rounded-lg border border-base-300 bg-black object-contain"
+                className="aspect-video w-full rounded-lg border border-base-300 bg-base-300 object-contain"
                 tracks={videoPlayback.media.subtitles
                   .filter((s) => Boolean(s.url))
                   .map((s, i) => ({

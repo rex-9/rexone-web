@@ -45,9 +45,20 @@ export const AdminVersionDetailPage: React.FC = () => {
               version?.number || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Versions.Detail.Title)}
-        description={t(AppLocales.Admin.Versions.Detail.Description)}
+        title={version?.number ? `v${version.number}` : t(AppLocales.Admin.Versions.Detail.Title)}
+        description={version?.title || t(AppLocales.Admin.Versions.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.tag}
+        statusBadge={version ? <StatusBadge status={version.status} /> : undefined}
+        entityId={version?.id}
+        timestamps={
+          version
+            ? {
+                createdAt: version.created_at,
+                updatedAt: version.updated_at,
+              }
+            : undefined
+        }
       />
 
       {error ? (

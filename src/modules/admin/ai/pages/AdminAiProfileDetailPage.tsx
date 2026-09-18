@@ -64,6 +64,21 @@ export const AdminAiProfileDetailPage: React.FC = () => {
         title={profile?.name || t(AppLocales.Admin.Ai.ProfileDetail.Title)}
         description={t(AppLocales.Admin.Ai.ProfileDetail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={
+          profile ? (
+            <StatusBadge status={profile.enabled ? "active" : "disabled"} />
+          ) : undefined
+        }
+        entityId={profile?.id}
+        timestamps={
+          profile
+            ? {
+                createdAt: profile.created_at,
+                updatedAt: profile.updated_at,
+              }
+            : undefined
+        }
         action={
           profile && can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.AI_PROFILES) ? (
             <Button

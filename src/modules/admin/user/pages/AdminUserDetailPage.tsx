@@ -37,9 +37,24 @@ export const AdminUserDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Users.Title), to: listPath },
           { label: user?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Users.Detail.Title)}
-        description={t(AppLocales.Admin.Users.Detail.Description)}
+        title={user?.name || t(AppLocales.Admin.Users.Detail.Title)}
+        description={user?.username ? `@${user.username}` : t(AppLocales.Admin.Users.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.user}
+        statusBadge={
+          user ? (
+            <StatusBadge status={user.locked ? "locked" : user.confirmed ? "confirmed" : "unconfirmed"} />
+          ) : undefined
+        }
+        entityId={user?.id}
+        timestamps={
+          user
+            ? {
+                createdAt: user.created_at,
+                updatedAt: user.updated_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState
@@ -51,18 +66,19 @@ export const AdminUserDetailPage: React.FC = () => {
           <AdminDetailSection
             title={t(AppLocales.Admin.Users.Detail.Identity)}
             icon={iconsLib.user}
+            accent
           >
-            <div className="flex flex-col items-center gap-3 text-center">
-              <div className="h-24 w-24 overflow-hidden rounded-full border border-base-300 bg-base-200">
+            <div className="flex flex-col items-center gap-4 text-center py-2">
+              <div className="h-28 w-28 overflow-hidden rounded-2xl border-2 border-primary/30 bg-base-200 shadow-md p-1">
                 <Image
                   src={user.avatar_url || ""}
                   alt={user.name}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover rounded-xl"
                 />
               </div>
               <div>
-                <h2 className="text-title-2 font-semibold">{user.name}</h2>
-                <p className="text-base-content/60">@{user.username}</p>
+                <h2 className="text-xl font-bold tracking-tight text-base-content">{user.name}</h2>
+                <p className="text-xs font-mono font-medium text-primary mt-0.5">@{user.username}</p>
               </div>
             </div>
           </AdminDetailSection>
@@ -75,6 +91,9 @@ export const AdminUserDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={user.email}
+                copyable
+                mono
+                className="sm:col-span-2"
               />
               <AdminDetailField
                 label={t(AppLocales.Admin.Users.Detail.Provider)}

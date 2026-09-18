@@ -169,7 +169,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     onClick={() => setSelectedAsset(asset)}
                     className={`flex flex-col text-left p-2 h-auto rounded-xl border transition-all duration-200 ${
                       isSelected
-                        ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(255,94,98,0.25)] ring-2 ring-primary"
+                        ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)] ring-2 ring-primary"
                         : "border-base-200 bg-base-100 hover:border-primary/50 hover:bg-base-200/50"
                     }`}
                   >
@@ -180,7 +180,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                         className="w-full h-full object-cover"
                       />
                       {isSelected && (
-                        <div className="absolute top-1.5 right-1.5 bg-primary text-white rounded-full p-1 shadow-md">
+                        <div className="absolute top-1.5 right-1.5 bg-primary text-primary-content rounded-full p-1 shadow-md">
                           <iconsLib.checkr className="w-3 h-3 stroke-3" />
                         </div>
                       )}

@@ -6,6 +6,7 @@ import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
+import { iconsLib } from "../../../../assets";
 import {
   Dropdown,
   StatusBadge,
@@ -157,11 +158,21 @@ export const AdminFeedbackDetailPage: React.FC = () => {
             label: t(AppLocales.Admin.Feedback.Title),
             to: AppRoutes.client.protected.admin.FEEDBACK,
           },
-          { label: t(AppLocales.Admin.Feedback.Drawer.Title) },
+          { label: feedback?.user_name || t(AppLocales.Admin.Feedback.Drawer.Title) },
         ]}
-        title={t(AppLocales.Admin.Feedback.Drawer.Title)}
-        description={t(AppLocales.Admin.Feedback.Detail.Description)}
+        title={feedback?.user_name ? `${t(AppLocales.Admin.Feedback.Drawer.Title)}: ${feedback.user_name}` : t(AppLocales.Admin.Feedback.Drawer.Title)}
+        description={feedback?.user_email || t(AppLocales.Admin.Feedback.Detail.Description)}
         backTo={AppRoutes.client.protected.admin.FEEDBACK}
+        icon={iconsLib.feedback}
+        statusBadge={feedback?.status ? <StatusBadge status={feedback.status} /> : undefined}
+        entityId={feedback?.id}
+        timestamps={
+          feedback
+            ? {
+                createdAt: feedback.created_at,
+              }
+            : undefined
+        }
       />
 
       {error && !feedback ? (

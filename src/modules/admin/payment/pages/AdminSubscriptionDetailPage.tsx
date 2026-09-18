@@ -44,9 +44,19 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
               record?.product_name || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Subscriptions.Detail.Title)}
-        description={t(AppLocales.Admin.Subscriptions.Detail.Description)}
+        title={record?.product_name || t(AppLocales.Admin.Subscriptions.Detail.Title)}
+        description={record?.user_email || t(AppLocales.Admin.Subscriptions.Detail.Description)}
         backTo={list}
+        icon={iconsLib.banknotes}
+        statusBadge={record ? <StatusBadge status={record.status} /> : undefined}
+        entityId={record?.id}
+        timestamps={
+          record
+            ? {
+                createdAt: record.started_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState
@@ -58,8 +68,9 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
           <AdminDetailSection
             title={t(AppLocales.Admin.Subscriptions.Detail.Plan)}
             icon={iconsLib.banknotes}
+            accent
           >
-            <AdminDetailGrid>
+            <AdminDetailGrid columns={2}>
               <AdminDetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.Product)}
                 value={record.product_name}
@@ -79,6 +90,8 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Subscriptions.Detail.SubscriptionId)}
                 value={record.stripe_subscription_id}
+                copyable
+                mono
                 className="sm:col-span-2"
               />
               <AdminDetailField
@@ -88,6 +101,8 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Email)}
                 value={record.user_email}
+                copyable
+                mono
               />
             </AdminDetailGrid>
           </AdminDetailSection>

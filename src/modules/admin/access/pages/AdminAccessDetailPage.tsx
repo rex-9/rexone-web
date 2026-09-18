@@ -36,24 +36,34 @@ export const AdminAccessDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Accesses.Title), to: listPath },
           { label: access?.user_name || access?.user_email || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Accesses.Detail.Title)}
-        description={t(AppLocales.Admin.Accesses.Detail.Description)}
+        title={access?.user_name || access?.product_name || t(AppLocales.Admin.Accesses.Detail.Title)}
+        description={access?.user_email || t(AppLocales.Admin.Accesses.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.shieldCheck}
+        statusBadge={access ? <StatusBadge status={access.status} /> : undefined}
+        entityId={access?.id}
       />
       {error ? (
         <AdminState title={t(AppLocales.Admin.Common.State.ErrorTitle)} message={error} />
       ) : access ? (
         <div className="grid gap-6 lg:grid-cols-2">
           <AdminDetailSection title={t(AppLocales.Admin.Accesses.Detail.Holder)} icon={iconsLib.user}>
-            <AdminDetailGrid className="xl:grid-cols-2">
+            <AdminDetailGrid columns={2}>
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Name)}
                 value={access.user_name || access.username}
               />
-              <AdminDetailField label={t(AppLocales.Admin.Common.Detail.Email)} value={access.user_email} />
+              <AdminDetailField
+                label={t(AppLocales.Admin.Common.Detail.Email)}
+                value={access.user_email}
+                copyable
+                mono
+              />
               <AdminDetailField
                 label={t(AppLocales.Admin.Accesses.Detail.UserId)}
                 value={access.user_id}
+                copyable
+                mono
                 className="sm:col-span-2"
               />
             </AdminDetailGrid>

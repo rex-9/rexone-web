@@ -34,7 +34,7 @@ export const AdminKpiCard: React.FC<IAdminKpiCardProps> = ({
     <div
       onClick={onClick}
       className={cn(
-        "rounded-md border border-base-300 bg-base-100 p-4 shadow-sm transition-all hover:border-base-content/20 md:p-5",
+        "rounded-md border border-base-300 bg-base-100 p-4 shadow-sm transition-all hover:border-primary md:p-5",
         onClick && "cursor-pointer hover:shadow-md",
         className,
       )}

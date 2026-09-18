@@ -44,9 +44,19 @@ export const AdminTransactionDetailPage: React.FC = () => {
               record?.product_name || t(AppLocales.Admin.Common.Detail.Details),
           },
         ]}
-        title={t(AppLocales.Admin.Transactions.Detail.Title)}
-        description={t(AppLocales.Admin.Transactions.Detail.Description)}
+        title={record?.product_name || t(AppLocales.Admin.Transactions.Detail.Title)}
+        description={record?.user_email || t(AppLocales.Admin.Transactions.Detail.Description)}
         backTo={list}
+        icon={iconsLib.banknotes}
+        statusBadge={record ? <StatusBadge status={record.status} /> : undefined}
+        entityId={record?.id}
+        timestamps={
+          record
+            ? {
+                createdAt: record.created_at,
+              }
+            : undefined
+        }
       />
       {error ? (
         <AdminState
@@ -58,8 +68,9 @@ export const AdminTransactionDetailPage: React.FC = () => {
           <AdminDetailSection
             title={t(AppLocales.Admin.Transactions.Detail.Purchase)}
             icon={iconsLib.banknotes}
+            accent
           >
-            <AdminDetailGrid>
+            <AdminDetailGrid columns={2}>
               <AdminDetailField
                 label={t(AppLocales.Admin.Transactions.Table.Amount)}
                 value={amount(record.unit_amount, record.currency)}
@@ -75,6 +86,8 @@ export const AdminTransactionDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Transactions.Detail.ProductCode)}
                 value={record.product_code}
+                copyable
+                mono
               />
               <AdminDetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}

@@ -44,9 +44,14 @@ export const AdminRoleDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Roles.Title), to: listPath },
           { label: role?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Roles.Detail.Title)}
-        description={t(AppLocales.Admin.Roles.Detail.Description)}
+        title={role?.name || t(AppLocales.Admin.Roles.Detail.Title)}
+        description={role?.description || t(AppLocales.Admin.Roles.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.key}
+        statusBadge={
+          role ? <StatusBadge status={role.system ? "system" : "custom"} /> : undefined
+        }
+        entityId={role?.id}
       />
       {error ? (
         <AdminState

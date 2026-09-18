@@ -341,7 +341,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
         {/* Unread Count Badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[11px] font-bold text-white shadow-sm ring-2 ring-base-100 animate-pulse">
+          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[11px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}

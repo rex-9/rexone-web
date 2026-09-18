@@ -39,9 +39,16 @@ export const AdminProductDetailPage: React.FC = () => {
           { label: t(AppLocales.Admin.Products.Title), to: listPath },
           { label: product?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
-        title={t(AppLocales.Admin.Products.Detail.Title)}
-        description={t(AppLocales.Admin.Products.Detail.Description)}
+        title={product?.name || t(AppLocales.Admin.Products.Detail.Title)}
+        description={product?.description || t(AppLocales.Admin.Products.Detail.Description)}
         backTo={listPath}
+        icon={iconsLib.cube}
+        statusBadge={
+          product ? (
+            <StatusBadge status={product.active ? "active" : "inactive"} />
+          ) : undefined
+        }
+        entityId={product?.id}
       />
       {error ? (
         <AdminState
@@ -53,16 +60,19 @@ export const AdminProductDetailPage: React.FC = () => {
           <AdminDetailSection
             title={t(AppLocales.Admin.Products.Detail.Product)}
             icon={iconsLib.photo}
+            accent
           >
             {product.thumbnail_url && (
-              <Image
-                src={product.thumbnail_url}
-                alt={product.name}
-                className="mb-4 aspect-video w-full rounded-lg object-cover"
-              />
+              <div className="overflow-hidden rounded-xl border border-base-200 bg-base-200/50 p-2 shadow-inner mb-4">
+                <Image
+                  src={product.thumbnail_url}
+                  alt={product.name}
+                  className="aspect-video w-full rounded-lg object-cover"
+                />
+              </div>
             )}
-            <h2 className="text-title-2 font-semibold">{product.name}</h2>
-            <p className="mt-2 text-base-content/60">{product.description}</p>
+            <h2 className="text-xl font-bold tracking-tight text-base-content">{product.name}</h2>
+            <p className="mt-1.5 text-xs text-base-content/70">{product.description}</p>
           </AdminDetailSection>
           <AdminDetailSection
             title={t(AppLocales.Admin.Products.Detail.Pricing)}
@@ -73,6 +83,8 @@ export const AdminProductDetailPage: React.FC = () => {
               <AdminDetailField
                 label={t(AppLocales.Admin.Products.Table.Code)}
                 value={product.code}
+                copyable
+                mono
               />
               <AdminDetailField
                 label={t(AppLocales.Admin.Products.Table.Price)}

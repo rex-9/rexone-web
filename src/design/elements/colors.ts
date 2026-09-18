@@ -31,28 +31,58 @@ export const colors = {
     info: "#38BDF8",
   },
 
-  // Day Theme (Light Mode)
-  day: {
-    background: "#FAFAF8",
-    surface: "#FFFFFF",
-    card: "#F5F5F3",
-    border: "#E5E7EB",
-    divider: "#F3F4F6",
-    textPrimary: "#111827",
-    textSecondary: "#4B5563",
-    textMuted: "#9CA3AF",
+  // Centralized Text Tokens (Single Source of Truth)
+  text: {
+    day: {
+      primary: "#000000",
+      primaryRgb: "0, 0, 0",
+      secondary: "#000000",
+      muted: "#111827",
+    },
+    night: {
+      primary: "#FFFFFF",
+      primaryRgb: "255, 255, 255",
+      secondary: "#FFFFFF",
+      muted: "#F8FAFC",
+    },
   },
 
-  // Night Theme (Dark Mode - Rich Rex9 Aesthetic with clear brick visibility)
+  // Day Theme (White / Light Mode - Red & Black, Industrial Standard High Contrast)
+  day: {
+    primary: "#FF2238",
+    primaryRgb: "255, 34, 56",
+    primaryLight: "#FF5263",
+    primaryDark: "#CC1125",
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    card: "#F8F8FA",
+    border: "#E5E7EB",
+    divider: "#F3F4F6",
+    textPrimary: "#000000",
+    textSecondary: "#000000",
+    textMuted: "#111827",
+    glowWhite: "#FFF2F4",
+    glowOuter: "#5C0916",
+    glowOuterRgb: "92, 9, 22",
+  },
+
+  // Night Theme (Dark Mode - Rex9 Scarlet Red & Pure White, High Contrast)
   night: {
+    primary: "#FF2238",
+    primaryRgb: "255, 34, 56",
+    primaryLight: "#FF5263",
+    primaryDark: "#CC1125",
     background: "#160b11",
     surface: "#1f1018",
     card: "#26131e",
     border: "#3d1b28",
     divider: "#2c111c",
     textPrimary: "#FFFFFF",
-    textSecondary: "#E2D4D8",
-    textMuted: "#A39298",
+    textSecondary: "#FFFFFF",
+    textMuted: "#F8FAFC",
+    glowWhite: "#FFF2F4",
+    glowOuter: "#5C0916",
+    glowOuterRgb: "92, 9, 22",
   },
 
   // Rex9 Glassmorphism Tokens
