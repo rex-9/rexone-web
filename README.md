@@ -343,6 +343,7 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 - **Vitest** for automated unit and component tests (`npm run test:unit`).
 - **Playwright** for end-to-end user journey verification (`npm run test:e2e`).
 - **Continuous Integration (GitHub Actions)** for automated build validation (`npm run build`) and Vitest test execution on PR branch pushes.
+- **Pre-Commit Hook & Secret Scanner** (`./scripts/install_pre_commit.sh`) to block accidental secret leaks and run architecture and locale audits before git commits.
 - **Vite** production builds and local production preview.
 - Dependency and browser-baseline checks through the npm toolchain.
 
@@ -361,6 +362,7 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 git clone https://github.com/rex-9/rexone-web.git
 cd rexone-web
 cp .env.example .env
+./scripts/install_pre_commit.sh
 ```
 
 Set the Core HTTP and WebSocket URLs and provide a Google OAuth client ID if exercising Google sign-in.
@@ -481,12 +483,12 @@ Deployments across the ecosystem use consistent domain structures (supports ANY 
   - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.rexone.me`
 - **Product UAT Tier**:
   - `VITE_REACT_APP_CLIENT_BASE_URL=https://uat.rexone.me`
-  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.uat.rexone.me`
-  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.uat.rexone.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://uat.api.rexone.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://uat.api.rexone.me`
 - **Product Dev Tier**:
   - `VITE_REACT_APP_CLIENT_BASE_URL=https://dev.rexone.me`
-  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.dev.rexone.me`
-  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.dev.rexone.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://dev.api.rexone.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://dev.api.rexone.me`
 
 ## Client route surface
 
@@ -559,7 +561,9 @@ rexone-web/
 │   ├── dev.sh           # Local Vite development server
 │   ├── test.sh          # Full test suite runner (Unit + E2E)
 │   ├── test_unit.sh     # Vitest unit test runner
-│   └── test_e2e.sh      # Playwright E2E runner CLI
+│   ├── test_e2e.sh      # Playwright E2E runner CLI
+│   ├── check_secrets.sh # Pre-commit secret & credential scanner
+│   └── install_pre_commit.sh # Master git pre-commit hook installer
 ├── src/
 │   ├── assets/          # Static application media
 │   ├── constants/       # Storage keys, dialog steps, and route parameter constants

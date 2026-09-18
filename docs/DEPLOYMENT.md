@@ -30,9 +30,9 @@ The web application is packaged into a high-performance, minimal static containe
 | `WEB_CONTAINER_NAME`                | `prod-rexone-web`              | `uat-rexone-web`            | `demo-rexone-web`            | `dev-rexone-web`            |
 | `DOCKER_NETWORK`                    | `prod-rexone-net`              | `uat-rexone-net`            | `demo-rexone-net`            | `dev-rexone-net`            |
 | `VITE_REACT_APP_NAME`               | `rexone.me`                    | `uat.rexone.me`             | `rexone.rex9.me`             | `dev.rexone.me`             |
-| `VITE_REACT_APP_SERVER_BASE_URL`    | `https://api.rexone.me`        | `https://api.uat.rexone.me` | `https://api.rexone.rex9.me` | `https://api.dev.rexone.me` |
+| `VITE_REACT_APP_SERVER_BASE_URL`    | `https://api.rexone.me`        | `https://uat.api.rexone.me` | `https://api.rexone.rex9.me` | `https://dev.api.rexone.me` |
 | `VITE_REACT_APP_CLIENT_BASE_URL`    | `https://rexone.me`            | `https://uat.rexone.me`     | `https://rexone.rex9.me`     | `https://dev.rexone.me`     |
-| `VITE_REACT_APP_SERVER_WS_BASE_URL` | `wss://api.rexone.me`          | `wss://api.uat.rexone.me`   | `wss://api.rexone.rex9.me`   | `wss://api.dev.rexone.me`   |
+| `VITE_REACT_APP_SERVER_WS_BASE_URL` | `wss://api.rexone.me`          | `wss://uat.api.rexone.me`   | `wss://api.rexone.rex9.me`   | `wss://dev.api.rexone.me`   |
 | `VITE_REACT_APP_GOOGLE_CLIENT_ID`   | `<Google_Client_ID>`           | `<Google_Client_ID>`        | `<Google_Client_ID>`         | `<Google_Client_ID>`        |
 
 6. In the Traefik Domains section, assign your domain:

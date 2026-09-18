@@ -22,8 +22,8 @@ Across all three repositories, the architecture adheres to one uncompromising do
 >
 > - **Demo Tier**: `rexone.rex9.me` (Web) & `api.rexone.rex9.me` (API)
 > - **Product Prod**: `<product>.<tld>` (e.g. `rexone.me`) & `api.<product>.<tld>` (e.g. `api.rexone.me`)
-> - **Product UAT**: `uat.<product>.<tld>` (e.g. `uat.rexone.me`) & `api.uat.<product>.<tld>` (e.g. `api.uat.rexone.me`)
-> - **Product Dev**: `dev.<product>.<tld>` (e.g. `dev.rexone.me`) & `api.dev.<product>.<tld>` (e.g. `api.dev.rexone.me`)
+> - **Product UAT**: `uat.<product>.<tld>` (e.g. `uat.rexone.me`) & `uat.api.<product>.<tld>` (e.g. `uat.api.rexone.me`)
+> - **Product Dev**: `dev.<product>.<tld>` (e.g. `dev.rexone.me`) & `dev.api.<product>.<tld>` (e.g. `dev.api.rexone.me`)
 >
 > 🗺️ **Visual Walkthrough**: For the screenshot-driven, feature-by-feature tour of the ecosystem across Core, Web, Mobile, administration, and operations, see **[VISUAL_WALKTHROUGH.md](./docs/VISUAL_WALKTHROUGH.md)**.
 >
