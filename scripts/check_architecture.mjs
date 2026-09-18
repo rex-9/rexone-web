@@ -34,8 +34,11 @@ for (const file of sourceFiles) {
   const name = relative(file);
   const content = fs.readFileSync(file, "utf8");
 
-  if (/\b(?:localStorage|sessionStorage)\s*\./.test(content) && !exceptions.storage.has(name)) {
+  if (/\b(?:localStorage|sessionStorage)\s*(?:\.|\[)/.test(content) && !exceptions.storage.has(name)) {
     failures.push(`Direct browser storage access: ${name}`);
+  }
+  if (/\bdocument\.cookie\b/.test(content) && !exceptions.storage.has(name)) {
+    failures.push(`Direct document.cookie access: ${name}`);
   }
   if (/\bfetch\s*\(/.test(content) && !name.endsWith(".service.ts") && !exceptions.fetch.has(name)) {
     failures.push(`Direct fetch outside a service: ${name}`);

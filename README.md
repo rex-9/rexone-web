@@ -336,10 +336,12 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
 
 ## Quality toolchain
 
-- **TypeScript Project Builds** for strict compile-time type safety.
-- **ESLint** with React Hooks and React Refresh rules.
-- **Vitest** for automated unit and component tests.
-- **Playwright** for end-to-end user journey verification.
+- **TypeScript Project Builds** for strict compile-time type safety (`npm run build`).
+- **ESLint** with React Hooks and React Refresh rules (`npm run lint`).
+- **Architecture Validation** (`npm run check:architecture`) to enforce LAW.md invariants (centralized storage keys, direct cookie disallowance, etc.).
+- **Locales Parity & Fallback Check** (`npm run check:locales`) to verify zero loose strings or missing keys across i18n dictionaries.
+- **Vitest** for automated unit and component tests (`npm run test:unit`).
+- **Playwright** for end-to-end user journey verification (`npm run test:e2e`).
 - **Continuous Integration (GitHub Actions)** for automated build validation (`npm run build`) and Vitest test execution on PR branch pushes.
 - **Vite** production builds and local production preview.
 - Dependency and browser-baseline checks through the npm toolchain.
