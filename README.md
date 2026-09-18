@@ -208,7 +208,7 @@ The client admin panel architecture provides a protected workspace for managing 
 - **Data Handling**: Standardized data tables, forms, search filters, and recycle bins for discarded records.
 
 ### Design system
- 
+
 The design layer provides reusable:
 
 - Buttons, Google authentication actions, and text links.
@@ -466,6 +466,27 @@ The checked-in [`.env.example`](.env.example) documents the client settings.
 | `VITE_MEDIA_MAX_FILE_COUNT`           | Maximum batch upload count                                                                   | `30`                    |
 
 All frontend environment variables are centralized through [`src/AppConfig.tsx`](src/AppConfig.tsx) (`AppConfig.*`). Only variables prefixed with `VITE_` are exposed to browser code. Never place private credentials or provider secrets in them. In particular, Google client secrets belong on a trusted backend or provider configuration, not in a Vite application.
+
+### Multi-Environment Domain Presets
+
+Deployments across the ecosystem use consistent domain structures (supports ANY custom product domain and TLD):
+
+- **Demo Tier**:
+  - `VITE_REACT_APP_CLIENT_BASE_URL=https://rexone.rex9.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.rexone.rex9.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.rexone.rex9.me`
+- **Product Production Tier** (e.g. RexOne `rexone.me`):
+  - `VITE_REACT_APP_CLIENT_BASE_URL=https://rexone.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.rexone.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.rexone.me`
+- **Product UAT Tier**:
+  - `VITE_REACT_APP_CLIENT_BASE_URL=https://uat.rexone.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.uat.rexone.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.uat.rexone.me`
+- **Product Dev Tier**:
+  - `VITE_REACT_APP_CLIENT_BASE_URL=https://dev.rexone.me`
+  - `VITE_REACT_APP_SERVER_BASE_URL=https://api.dev.rexone.me`
+  - `VITE_REACT_APP_SERVER_WS_BASE_URL=wss://api.dev.rexone.me`
 
 ## Client route surface
 
