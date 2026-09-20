@@ -4,6 +4,7 @@ import { ButtonVariants } from "../constants";
 import { AssetController } from "../../modules/asset";
 import type { IAssetPlaybackResponse } from "../../models";
 import { DevTestButtons } from "../../modules/log/components/DevTestButtons";
+import AppConfig from "../../AppConfig";
 
 type PlaybackKind = "video" | "audio";
 
@@ -93,14 +94,31 @@ export const TestPage: React.FC = () => {
                 type={videoPlayback.media.content_type}
                 alt="Test video playback"
                 className="aspect-video w-full rounded-lg border border-base-300 bg-base-300 object-contain"
+                // Subtitle tracks configuration:
+                // 1. Fast Path (In-Memory): Uses `subtitle.content` directly to create a WebVTT Data URI.
+                // 2. Fallback Path (HTTP): If `content` is ever omitted, routes to Core API server using `core_url`.
                 tracks={videoPlayback.media.subtitles
-                  .filter((s) => Boolean(s.url))
-                  .map((s, i) => ({
-                    src: s.url,
-                    kind: "subtitles",
-                    label: s.name || "Subtitle",
-                    default: i === 0,
-                  }))}
+                  .filter((subtitle) =>
+                    Boolean(
+                      subtitle.content || subtitle.core_url || subtitle.url,
+                    ),
+                  )
+                  .map((subtitle, index) => {
+                    const fallbackUrl = subtitle.core_url
+                      ? subtitle.core_url.startsWith("http")
+                        ? subtitle.core_url
+                        : `${AppConfig.SERVER_BASE_URL}${subtitle.core_url}`
+                      : subtitle.url;
+
+                    return {
+                      src: fallbackUrl,
+                      content: subtitle.content,
+                      kind: "subtitles" as const,
+                      label:
+                        subtitle.title || subtitle.name || `Subtitle ${index + 1}`,
+                      default: index === 0,
+                    };
+                  })}
               />
               <p className="break-all text-xs text-base-content/60">
                 Expires: {videoPlayback.delivery.expires_at}
@@ -140,11 +158,12 @@ export const TestPage: React.FC = () => {
                 title="Test audio playback"
                 className="w-full rounded-lg border border-base-300"
                 tracks={audioPlayback.media.subtitles
-                  .filter((s) => Boolean(s.url))
+                  .filter((s) => Boolean(s.url || s.content))
                   .map((s, i) => ({
                     src: s.url,
+                    content: s.content,
                     kind: "subtitles",
-                    label: s.name || "Subtitle",
+                    label: s.title || s.name || "Subtitle",
                     default: i === 0,
                   }))}
               />

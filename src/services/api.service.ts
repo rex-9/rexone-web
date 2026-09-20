@@ -10,7 +10,7 @@ import {
   IApiResponse,
   IJsonApiResource,
 } from "../models";
-import { DialogAuthSteps, DialogParams } from "../modules/auth";
+import { AUTH_HEADERS, DialogAuthSteps, DialogParams } from "../modules/auth";
 import { HTTP_METHODS } from "../modules/log";
 
 const PLATFORM_HEADER_VALUE = Platform.WEB;
@@ -63,21 +63,21 @@ axiosInstance.interceptors.request.use(
     const headers = AxiosHeaders.from(config.headers);
 
     // Always send platform so backend can enforce one active session per platform
-    headers.set("X-Platform", PLATFORM_HEADER_VALUE);
+    headers.set(AUTH_HEADERS.PLATFORM, PLATFORM_HEADER_VALUE);
 
     // RexOne Core locale
-    headers.set("X-Locale", getApiLocale());
+    headers.set(AUTH_HEADERS.LOCALE, getApiLocale());
 
     if (config.data instanceof FormData) {
-      headers.delete("Content-Type");
-      headers.set("Content-Type", "multipart/form-data");
+      headers.delete(AUTH_HEADERS.CONTENT_TYPE);
+      headers.set(AUTH_HEADERS.CONTENT_TYPE, "multipart/form-data");
     } else if (config.data && typeof config.data === "object") {
-      headers.set("Content-Type", "application/json");
+      headers.set(AUTH_HEADERS.CONTENT_TYPE, "application/json");
     }
 
     const token = getStoredToken();
     if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+      headers.set(AUTH_HEADERS.AUTHORIZATION, `Bearer ${token}`);
     }
 
     config.headers = headers;

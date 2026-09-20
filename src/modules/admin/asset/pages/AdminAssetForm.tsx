@@ -798,32 +798,44 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
               </FormContainer>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-2 xl:grid-cols-5">
+              <div className="rounded-xl border border-base-300 bg-base-100 p-5 shadow-sm space-y-3">
+                <div className="flex items-center justify-between border-b border-base-200 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <iconsLib.cube className="h-5 w-5 text-primary" />
+                    <h4 className="text-body-s font-bold uppercase tracking-wider text-base-content">
+                      {t(AppLocales.Admin.Assets.Table.Actions)}
+                    </h4>
+                  </div>
+                  <span className="text-xs text-base-content/60 font-mono font-medium">
+                    {asset.format?.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2.5">
                   {onDownload && (
                     <Button
-                      variant={ButtonVariants.SECONDARY}
+                      variant={ButtonVariants.TERTIARY}
                       size={ComponentSizes.SM}
-                      className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                      className="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                       onClick={onDownload}
                     >
-                      <iconsLib.download className="w-4 h-4" />
-                      {t(AppLocales.Admin.Assets.Download.Action)}
+                      <iconsLib.download className="w-4 h-4 text-base-content/70" />
+                      <span>{t(AppLocales.Admin.Assets.Download.Action)}</span>
                     </Button>
                   )}
 
                   {asset.format === ASSET_FORMATS.VIDEO &&
                     onRegenerateThumbnail && (
                       <Button
-                        variant={ButtonVariants.SECONDARY}
+                        variant={ButtonVariants.TERTIARY}
                         size={ComponentSizes.SM}
-                        className="flex items-center justify-center gap-1.5 whitespace-nowrap"
+                        className="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onClick={onRegenerateThumbnail}
                         isLoading={isUpdatingThumbnail}
                         disabled={isUpdatingThumbnail}
                       >
-                        <iconsLib.arrowPath className="w-4 h-4" />
-                        {t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}
+                        <iconsLib.arrowPath className="w-4 h-4 text-base-content/70" />
+                        <span>{t(AppLocales.Admin.Assets.Thumbnail.Regenerate)}</span>
                       </Button>
                     )}
 
@@ -833,17 +845,23 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       <FileInput
                         accept="image/*"
                         disabled={isUpdatingThumbnail}
+                        fullWidth={false}
+                        size={ComponentSizes.SM}
+                        variant={ButtonVariants.TERTIARY}
+                        buttonClassName="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (file) void onUploadThumbnail(file);
                         }}
                         buttonText={
                           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                            <iconsLib.upload className="w-4 h-4" />
-                            {t(
-                              isUpdatingThumbnail
-                                ? AppLocales.Admin.Assets.Thumbnail.Uploading
-                                : AppLocales.Admin.Assets.Thumbnail.Upload,
-                            )}
+                            <iconsLib.upload className="w-4 h-4 text-base-content/70" />
+                            <span>
+                              {t(
+                                isUpdatingThumbnail
+                                  ? AppLocales.Admin.Assets.Thumbnail.Uploading
+                                  : AppLocales.Admin.Assets.Thumbnail.Upload,
+                              )}
+                            </span>
                           </span>
                         }
                       />
@@ -855,6 +873,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       <FileInput
                         accept=".srt"
                         disabled={isUpdatingSubtitle}
+                        fullWidth={false}
+                        size={ComponentSizes.SM}
+                        variant={ButtonVariants.TERTIARY}
+                        buttonClassName="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (!file) return;
                           if (!isSrtSubtitleFile(file)) {
@@ -877,12 +899,14 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                         }}
                         buttonText={
                           <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-                            <iconsLib.upload className="w-4 h-4" />
-                            {t(
-                              isUpdatingSubtitle
-                                ? AppLocales.Admin.Assets.Subtitle.Uploading
-                                : AppLocales.Admin.Assets.Subtitle.Upload,
-                            )}
+                            <iconsLib.upload className="w-4 h-4 text-base-content/70" />
+                            <span>
+                              {t(
+                                isUpdatingSubtitle
+                                  ? AppLocales.Admin.Assets.Subtitle.Uploading
+                                  : AppLocales.Admin.Assets.Subtitle.Upload,
+                              )}
+                            </span>
                           </span>
                         }
                       />
@@ -892,14 +916,14 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     asset.status !== ASSET_STATUSES.OPTIMAL &&
                     asset.status !== ASSET_STATUSES.PROCESSING && (
                       <Button
-                        variant={ButtonVariants.SECONDARY}
+                        variant={ButtonVariants.PRIMARY}
                         size={ComponentSizes.SM}
                         className="flex items-center justify-center gap-1.5 whitespace-nowrap"
                         onClick={onCompress}
                         isLoading={isCompressing}
                         disabled={isCompressing}
                       >
-                        <iconsLib.sparkles className="w-4 h-4 text-primary" />
+                        <iconsLib.sparkles className="w-4 h-4" />
                         <span>
                           {t(AppLocales.Admin.Assets.Compression.Compress)}
                         </span>

@@ -50,7 +50,18 @@ export interface IAssetChild {
   discarded_at?: string | null;
   undiscarded_at?: string | null;
   created_at: IAsset["created_at"];
-  updated_at: IAsset["updated_at"];
+  /**
+   * Pre-fetched raw subtitle text content (FAST PATH).
+   * When present, the player converts this directly into an in-memory WebVTT Data URI,
+   * avoiding secondary HTTP roundtrips, CORS restrictions, and network latency.
+   */
+  content?: string | null;
+  /**
+   * Fallback HTTP streaming endpoint on RexOne Core (e.g. /v1/assets/:id/subtitles/:subtitle_id).
+   * Used when `content` is absent or when an external client (VLC, standalone player)
+   * requires a direct HTTP URL with CORS headers.
+   */
+  core_url?: string | null;
 }
 
 export interface IAssetUploadResponse {

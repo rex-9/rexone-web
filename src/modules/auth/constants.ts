@@ -28,3 +28,16 @@ export const AUTH_PROVIDERS = {
   EMAIL: "email",
   GOOGLE: "google",
 } as const;
+
+export const AUTH_HEADERS = {
+  PLATFORM: "X-Platform",
+  LOCALE: "X-Locale",
+  ACCEPT_LANGUAGE: "Accept-Language",
+  AUTHORIZATION: "Authorization",
+  CONTENT_TYPE: "Content-Type",
+  FORWARDED_HOST: "X-Forwarded-Host",
+  FORWARDED_FOR: "X-Forwarded-For",
+  FORWARDED_PROTO: "X-Forwarded-Proto",
+  HOST: "Host",
+} as const;
+

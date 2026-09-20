@@ -3,7 +3,12 @@
 import React, { useRef } from "react";
 import { cn } from "../../helpers";
 import { Button } from "../button";
-import { ButtonVariants, ComponentSizes } from "../../constants";
+import {
+  ButtonVariant,
+  ButtonVariants,
+  ComponentSize,
+  ComponentSizes,
+} from "../../constants";
 
 export interface IFileInputProps {
   label?: string;
@@ -16,6 +21,9 @@ export interface IFileInputProps {
   className?: string;
   multiple?: boolean;
   trigger?: React.ReactNode;
+  size?: ComponentSize;
+  variant?: ButtonVariant;
+  buttonClassName?: string;
   onChange?: (file: File | null) => void;
   onFilesChange?: (files: File[]) => void;
 }
@@ -31,6 +39,9 @@ export const FileInput: React.FC<IFileInputProps> = ({
   className,
   multiple = false,
   trigger,
+  size = ComponentSizes.MD,
+  variant = ButtonVariants.SECONDARY,
+  buttonClassName,
   onChange,
   onFilesChange,
 }) => {
@@ -68,11 +79,11 @@ export const FileInput: React.FC<IFileInputProps> = ({
     </div>
   ) : (
     <Button
-      variant={ButtonVariants.SECONDARY}
-      size={ComponentSizes.MD}
+      variant={variant}
+      size={size}
       disabled={disabled}
       onClick={handleClick}
-      className="w-full sm:w-auto"
+      className={cn(fullWidth ? "w-full sm:w-auto" : "w-auto", buttonClassName)}
     >
       {buttonText}
     </Button>
@@ -80,7 +91,11 @@ export const FileInput: React.FC<IFileInputProps> = ({
 
   return (
     <div
-      className={cn("flex flex-col gap-1", fullWidth && "w-full", className)}
+      className={cn(
+        "flex flex-col gap-1",
+        fullWidth ? "w-full" : "w-auto",
+        className,
+      )}
     >
       {label && (
         <span className="text-body-s font-medium text-base-content">
