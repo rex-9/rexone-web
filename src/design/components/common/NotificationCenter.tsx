@@ -118,7 +118,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
@@ -134,10 +134,12 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
@@ -347,14 +349,25 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
         )}
       </Button>
 
+      {/* Mobile Backdrop Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs transition-opacity sm:hidden"
+          onClick={() => setIsOpen(false)}
+          onTouchEnd={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Popover Dropdown Panel */}
       {isOpen && (
         <div
           role="dialog"
           aria-label={translate(AppLocales.Notifications.Title)}
           className={cn(
-            "absolute right-0 top-12 z-50 mt-1 w-84 sm:w-96 rounded-2xl border border-base-300 bg-base-100 shadow-2xl overflow-hidden flex flex-col font-primary",
-            "max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
+            "fixed inset-x-3 top-16 mt-2 z-50 mx-auto max-w-sm sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:mt-1 sm:w-96 sm:max-w-none sm:mx-0",
+            "rounded-2xl border border-base-300 bg-base-100 shadow-2xl overflow-hidden flex flex-col font-primary",
+            "max-h-[calc(100dvh-5rem)] sm:max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
           )}
         >
           {/* Header */}
@@ -387,6 +400,14 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   </span>
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="p-1 text-base-content/60 hover:text-base-content rounded-lg transition-colors cursor-pointer sm:hidden"
+                aria-label="Close"
+              >
+                <iconsLib.close className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -407,7 +428,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
 
           {/* Notifications List */}
-          <div className="flex-1 overflow-y-auto divide-y divide-base-200/60 min-h-40 max-h-115">
+          <div className="flex-1 overflow-y-auto divide-y divide-base-200/60 min-h-40 max-h-[calc(100dvh-13rem)] sm:max-h-115">
             {isLoading ? (
               <div className="p-4 space-y-3">
                 {[1, 2, 3].map((i) => (
@@ -481,7 +502,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   <button
                     type="button"
                     onClick={(e) => handleDelete(e, item.id)}
-                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-base-200/80 transition-colors opacity-0 group-hover:opacity-100 cursor-pointer"
+                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-base-200/80 transition-colors opacity-70 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
                     title={translate(AppLocales.Notifications.Delete)}
                     aria-label={translate(AppLocales.Notifications.Delete)}
                   >

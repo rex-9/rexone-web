@@ -8,7 +8,7 @@ import { iconsLib } from "../../../assets";
 import { useAuth } from "../../../contexts/AuthContext";
 import { Button } from "../../../design/components/button";
 import { ButtonTypes, ButtonVariants } from "../../../design/constants";
-import { HeadNavbar } from "../../../design/components/common";
+import { HeadNavbarBrand } from "../../../design/components/common";
 import { AdminSidebarNav } from "./AdminSidebarNav";
 import { cn } from "../../../design/helpers";
 
@@ -36,8 +36,8 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const sidebar = (
     <aside
       className={cn(
-        "fixed bottom-0 left-0 top-0 z-40 flex flex-col border-r border-base-300 bg-base-100 transition-[width] duration-200 lg:w-72",
-        isSidebarOpen ? "w-72" : "w-16",
+        "fixed bottom-0 left-0 top-0 flex flex-col border-r border-base-300 bg-base-100 transition-[width] duration-200 lg:w-72",
+        isSidebarOpen ? "w-72 z-40" : "w-16 z-20",
       )}
     >
       <div
@@ -48,7 +48,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
             : "px-3 justify-center lg:px-6 lg:justify-between",
         )}
       >
-        <HeadNavbar
+        <HeadNavbarBrand
           isAdmin
           className={cn(
             "min-w-0 flex-1",
