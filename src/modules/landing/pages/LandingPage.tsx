@@ -14,8 +14,10 @@ import {
   DoctrineCard,
 } from "../components";
 import { Button } from "../../../design/components/button";
+import { TextLink } from "../../../design/components/common/TextLink";
 import { ButtonVariants, ComponentSizes } from "../../../design/constants";
 import { images, iconsLib } from "../../../assets";
+import AppRoutes from "../../../AppRoutes";
 
 export interface ILandingPageProps {
   hideEnter?: boolean;
@@ -345,9 +347,24 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
           {/* Divider matching Rex9 */}
           <div className="w-4/5 max-w-5xl h-px mx-auto my-9 bg-linear-to-r from-transparent via-primary to-transparent shadow-[0_0_6px_rgba(var(--color-primary-rgb),0.3)]" />
 
-          {/* Footer Social Profiles */}
-          <footer className="text-center">
+          {/* Footer Social Profiles & Legal Links */}
+          <footer className="text-center space-y-3 pb-8">
             <SocialProfiles profiles={LANDING_DATA.profiles} />
+            <div className="flex items-center justify-center gap-5 text-xs text-base-content/60 font-medium">
+              <TextLink
+                to={AppRoutes.client.public.PRIVACY_POLICY}
+                className="text-base-content/60 hover:text-primary transition-colors text-xs tracking-wider no-underline hover:underline"
+              >
+                Privacy Policy
+              </TextLink>
+              <span className="text-base-content/30">•</span>
+              <TextLink
+                to={AppRoutes.client.public.TERMS_AND_CONDITIONS}
+                className="text-base-content/60 hover:text-primary transition-colors text-xs tracking-wider no-underline hover:underline"
+              >
+                Terms & Conditions
+              </TextLink>
+            </div>
             <p className="text-xs text-base-content/50 font-medium">
               © {new Date().getFullYear()} Rex9. Engineered with Soul & Clarity.
             </p>

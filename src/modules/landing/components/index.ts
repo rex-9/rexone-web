@@ -9,3 +9,4 @@ export { TestimonialCard } from "./TestimonialCard";
 export { ContactForm } from "./ContactForm";
 export { SponsorCard } from "./SponsorCard";
 export { DoctrineCard } from "./DoctrineCard";
+export { LegalLayout } from "./LegalLayout";

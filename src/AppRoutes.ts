@@ -27,6 +27,8 @@ class AppRoutes {
       FORGOT_PASSWORD: "/password/forgot",
       RESET_PASSWORD: "/password/reset",
       ANAPANA: "/anapana",
+      PRIVACY_POLICY: "/privacy",
+      TERMS_AND_CONDITIONS: "/terms",
       ROOT: "/",
     },
 

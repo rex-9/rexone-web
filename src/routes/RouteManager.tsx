@@ -22,6 +22,7 @@ import {
 } from "../design/pages";
 import { UserPage } from "../modules/user";
 import { AnapanaRoute } from "../modules/anapana/pages";
+import { PrivacyPolicyPage, TermsPage } from "../modules/landing";
 import {
   AuthDialog,
   ConfirmEmailPage,
@@ -121,6 +122,14 @@ const router = createBrowserRouter(
         <Route
           path={AppRoutes.client.public.ANAPANA}
           element={<AnapanaRoute />}
+        />
+        <Route
+          path={AppRoutes.client.public.PRIVACY_POLICY}
+          element={<PrivacyPolicyPage />}
+        />
+        <Route
+          path={AppRoutes.client.public.TERMS_AND_CONDITIONS}
+          element={<TermsPage />}
         />
 
         {/* Public Routes */}
