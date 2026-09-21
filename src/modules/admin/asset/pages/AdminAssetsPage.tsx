@@ -92,7 +92,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const statusFilter = searchParams.get(ADMIN_ASSET_FILTERS.STATUS) || "";
   const recordScopeFilter =
     searchParams.get(ADMIN_ASSET_FILTERS.RECORD_SCOPE) ||
-    ASSET_RECORD_SCOPES.PARENTS;
+    (isActive ? ASSET_RECORD_SCOPES.PARENTS : ASSET_RECORD_SCOPES.ALL);
 
   const { sortBy, sortOrder, handleSort } = useSort({
     defaultSortBy: isActive
@@ -861,7 +861,10 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
               onValueChange={(val) =>
                 updateSearchParams({
                   [ADMIN_ASSET_FILTERS.RECORD_SCOPE]:
-                    val || ASSET_RECORD_SCOPES.PARENTS,
+                    val ||
+                    (isActive
+                      ? ASSET_RECORD_SCOPES.PARENTS
+                      : ASSET_RECORD_SCOPES.ALL),
                   page: "1",
                 })
               }
