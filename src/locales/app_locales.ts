@@ -1096,6 +1096,9 @@ export const AppLocales = {
         IncludeTransactionalTooltip:
           "admin.notifications.labels.include_transactional_tooltip",
         ChannelNotConfigured: "admin.notifications.labels.channel_not_configured",
+        CtaText: "admin.notifications.labels.cta_text",
+        CtaTextTooltip: "admin.notifications.labels.cta_text_tooltip",
+        CtaTextPlaceholder: "admin.notifications.labels.cta_text_placeholder",
         TemplateNoChannels: "admin.notifications.labels.template_no_channels",
         NotConfiguredBadge: "admin.notifications.labels.not_configured_badge",
       },
@@ -1875,5 +1878,7 @@ export const AppLocales = {
     Delete: "notifications.delete",
     DeleteSuccess: "notifications.delete_success",
     MarkReadSuccess: "notifications.mark_read_success",
+    OpenLink: "notifications.open_link",
+    ReadMore: "notifications.read_more",
   },
 } as const;

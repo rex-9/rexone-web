@@ -41,6 +41,7 @@ const emptyForm: IAdminNotificationTemplateFormValues = {
   description: "",
   category: NOTIFICATION_CATEGORIES.MARKETING,
   link: "",
+  cta_text: "",
   clients: [...DEFAULT_NOTIFICATION_CLIENTS],
   admin: true,
   in_app_title: "",
@@ -72,6 +73,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
           description: template.description || "",
           category: template.category || NOTIFICATION_CATEGORIES.MARKETING,
           link: template.link || "",
+          cta_text: template.cta_text || "",
           clients: template.clients || [...DEFAULT_NOTIFICATION_CLIENTS],
           admin: template.admin ?? true,
           in_app_title: template.in_app_title || "",
@@ -322,6 +324,22 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               onChange={(event) => handleChange("link", event.target.value)}
               pattern="https://.*"
               required
+            />
+          )}
+
+          {Boolean(formValues.link || linkSelection) && (
+            <TextInput
+              label={t(AppLocales.Admin.Notifications.Labels.CtaText)}
+              placeholder={t(
+                AppLocales.Admin.Notifications.Labels.CtaTextPlaceholder,
+              )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Labels.CtaTextTooltip,
+              )}
+              value={formValues.cta_text || ""}
+              onChange={(event) => handleChange("cta_text", event.target.value)}
+              maxLength={40}
+              helperText={`${(formValues.cta_text || "").length}/40`}
             />
           )}
 
@@ -583,6 +601,8 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 )}
                 value={formValues.in_app_title || ""}
                 onChange={(e) => handleChange("in_app_title", e.target.value)}
+                maxLength={100}
+                helperText={`${(formValues.in_app_title || "").length}/100`}
               />
               <TextArea
                 label={t(
@@ -619,6 +639,8 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 )}
                 value={formValues.push_title || ""}
                 onChange={(e) => handleChange("push_title", e.target.value)}
+                maxLength={60}
+                helperText={`${(formValues.push_title || "").length}/60 (recommended: 30-50)`}
               />
               <TextArea
                 label={t(
@@ -634,6 +656,8 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 )}
                 value={formValues.push_body || ""}
                 onChange={(e) => handleChange("push_body", e.target.value)}
+                maxLength={250}
+                helperText={`${(formValues.push_body || "").length}/250 (recommended: 90-140)`}
                 rows={4}
               />
               <TextInput
@@ -673,6 +697,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 )}
                 value={formValues.email_subject || ""}
                 onChange={(e) => handleChange("email_subject", e.target.value)}
+                helperText={`${(formValues.email_subject || "").length} chars (recommended: 60-70)${(formValues.email_subject || "").length > 90 ? " ⚠️ High spam risk (>90)" : ""}`}
               />
               <TextArea
                 label={t(

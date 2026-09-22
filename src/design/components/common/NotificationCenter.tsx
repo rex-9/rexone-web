@@ -21,6 +21,7 @@ import socketService, {
   ISocketMessage,
 } from "../../../services/socket.service";
 import { Button } from "../button";
+import { Dialog } from "../overlay/Dialog";
 import { Dropdown, DropdownSizes } from "../form/Dropdown";
 import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../constants";
 import { cn } from "../../helpers";
@@ -50,7 +51,17 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [detailNotification, setDetailNotification] =
+    useState<IUserNotification | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const isNotificationOverflowing = (item: IUserNotification) => {
+    return (
+      item.message.length > 85 ||
+      item.message.includes("\n") ||
+      item.title.length > 50
+    );
+  };
 
   useEffect(() => {
     notificationsRef.current = notifications;
@@ -260,6 +271,13 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       return;
     }
 
+    // If message has overflow/is long, show detail modal instead of directly navigating
+    if (isNotificationOverflowing(item)) {
+      setDetailNotification(item);
+      return;
+    }
+
+    // Otherwise, direct navigation flow for compact notifications
     if (item.link) {
       setIsOpen(false);
       if (isExternalNotificationLink(item.link)) {
@@ -268,6 +286,17 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       }
       navigate(resolveNotificationRoute(item.link));
     }
+  };
+
+  const handleDetailActionClick = (item: IUserNotification) => {
+    if (!item.link) return;
+    setDetailNotification(null);
+    setIsOpen(false);
+    if (isExternalNotificationLink(item.link)) {
+      window.open(item.link, "_blank", "noopener,noreferrer");
+      return;
+    }
+    navigate(resolveNotificationRoute(item.link));
   };
 
   // Mark all as read
@@ -482,7 +511,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   <div className="flex-1 min-w-0 pr-6">
                     <h4
                       className={cn(
-                        "text-body-s line-clamp-1",
+                        "text-body-s line-clamp-2",
                         item.read
                           ? "font-medium text-base-content/80"
                           : "font-bold text-base-content",
@@ -493,9 +522,16 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                     <p className="text-caption text-base-content/70 line-clamp-2 mt-0.5 leading-relaxed">
                       {item.message}
                     </p>
-                    <span className="text-[11px] text-base-content/40 mt-1.5 block">
-                      <DateTime value={item.created_at} />
-                    </span>
+                    <div className="flex items-center justify-between mt-1.5">
+                      <span className="text-[11px] text-base-content/40">
+                        <DateTime value={item.created_at} />
+                      </span>
+                      {isNotificationOverflowing(item) && (
+                        <span className="text-[11px] font-medium text-primary hover:underline">
+                          {translate(AppLocales.Notifications.ReadMore)}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Delete Button */}
@@ -535,6 +571,50 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
         </div>
       )}
+
+      {/* Long Notification Detail Modal */}
+      <Dialog
+        isOpen={Boolean(detailNotification)}
+        onClose={() => setDetailNotification(null)}
+        title={
+          detailNotification?.title || translate(AppLocales.Notifications.Title)
+        }
+        footer={
+          <div className="flex items-center justify-end gap-2 w-full">
+            <Button
+              type={ButtonTypes.BUTTON}
+              variant={ButtonVariants.TERTIARY}
+              size={ComponentSizes.SM}
+              onClick={() => setDetailNotification(null)}
+            >
+              {translate(AppLocales.Common.Cancel)}
+            </Button>
+            {detailNotification?.link && (
+              <Button
+                type={ButtonTypes.BUTTON}
+                variant={ButtonVariants.PRIMARY}
+                size={ComponentSizes.SM}
+                onClick={() => handleDetailActionClick(detailNotification)}
+              >
+                {((detailNotification.metadata as Record<string, unknown>)
+                  ?.cta_text as string) ||
+                  translate(AppLocales.Notifications.OpenLink)}
+              </Button>
+            )}
+          </div>
+        }
+      >
+        <div className="space-y-4 pt-2">
+          <div className="text-body text-base-content/90 whitespace-pre-wrap wrap-break-word leading-relaxed">
+            {detailNotification?.message}
+          </div>
+          {detailNotification?.created_at && (
+            <div className="text-caption text-base-content/50 pt-2 border-t border-base-200">
+              <DateTime value={detailNotification.created_at} />
+            </div>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 };

@@ -1,0 +1,128 @@
+# RexOne: Full Architectural Specification & Developer Reference
+
+> **Tagline:** Start from One. Not from Zero.  
+> **Official Hub:** https://rexone.rex9.me  
+> **Documentation Version:** 2026.09.22  
+> **Author & System Architect:** Rex9 (Htet Naing)  
+> **Constitutional Charter:** `LAW.md`
+
+---
+
+## 1. Executive Summary & Value Proposition
+
+RexOne is the definitive, production-grade tri-platform application foundation built to eliminate the months-long burden of rebuilding foundational infrastructure. When an engineering team or solo founder embarks on creating a modern software product, they inevitably waste 3 to 6 months building the exact same fundamental prerequisites:
+- User authentication and session lifecycle management
+- Hierarchical role-based access control (RBAC) and permissions
+- Billing, Stripe checkout, recurring subscription state machines, and webhooks
+- S3 object storage gateways, pre-signed upload tickets, and media asset tracking
+- Real-time WebSocket connectivity, subscriptions, and bi-directional message routing
+- Multi-channel notification dispatchers (In-App modals, Push notifications, and branded Emails)
+- Background job processing, scheduled cron automation, and retry backoff policies
+- APM observability, performance logging, error telemetry, and diagnostic tracking
+- Responsive desktop web administration portals with design system fidelity
+- Native cross-platform mobile clients with biometrics, offline sync, and deep links
+
+RexOne delivers all of these foundation fundamentals out of the box, fully synchronized and battle-tested across three native codebases under an uncompromising constitutional engineering standard (`LAW.md`).
+
+---
+
+## 2. Constitutional Architecture Laws (`LAW.md`)
+
+RexOne is governed by strict architectural laws that forbid "vibe coding", loose shims, or technical debt:
+
+1. **Supreme Primacy of Constitutional Law:** `LAW.md` takes precedence over convenience or temporary shortcuts. Code that violates `LAW.md` is rewritten; laws are never degraded.
+2. **Omnipresent Documentation Synchronization:** `docs/SCHEMA.md`, `README.md`, and `ECOSYSTEM.md` must be updated synchronously in the exact same turn as any database migration, endpoint change, or cross-platform contract modification.
+3. **Storage Provider Standard:** Universal storage identifier is `storage_key`. Default self-hosted provider is Garage S3 running locally on port 3100, easily interchangeable with AWS S3.
+4. **Environment File & Secret Isolation:** Zero local secrets in source control. Strict `.env.example` maintenance with automated sanity scripts.
+5. **Zero Loose Code & Deterministic Contracts (Law U14):** Method signatures, controller actions, service gateways, and API payloads must have strictly defined, unambiguous parameters. No loose optional hashes, fallback chains, duplicate keys, or legacy shims.
+6. **Human-Readable Plain English (Law U15):** Variable and method names use compact, natural English without cryptic abbreviations or alien syntax.
+
+---
+
+## 3. Tri-Platform Ecosystem Details
+
+### 3.1. `rexone-core` (API Backbone)
+- **Framework:** Ruby on Rails 8 API mode with Ruby 3.4+.
+- **Database:** PostgreSQL 18 with UUID v4 primary keys (`gen_random_uuid()`).
+- **Data Safety:** Soft deletion via `Discard::Model` on all core business entities with default kept scopes. Auditing via `Auditable` concern recording `created_by_id`, `updated_by_id`, `discarded_by_id`, `undiscarded_by_id`.
+- **Authentication:** Devise with stateless JSON Web Tokens (JWT) and atomic JTI revocation lists. Supports Google OAuth and email/passcode flows.
+- **Hierarchical RBAC:** 23 canonical resources: `users`, `accesses`, `assets`, `notifications`, `feedbacks`, `analytics`, `speech`, `ai_profiles`, `ai_runs`, `chat_rooms`, `chat_messages`, `client_logs`, `client_versions`, `client_user_versions`, `iam_roles`, `iam_permissions`, `iam_user_roles`, `payment_products`, `payment_payments`, `payment_subscriptions`, `payment_transactions`, `payment_coupons`, `payment_user_coupons`.
+- **Stripe Billing Engine:** Native webhook processing, subscription tier state machines, one-time payment transactions, promo/referral coupon validation with atomic usage counters.
+- **ActiveJob & Concurrency:** Solid Queue for high-throughput background processing, recurring crons, and batch tasks.
+- **Glass-Box Telemetry:** Rails Pulse (real-time APM metrics, SQL performance, memory overhead) and Rails Error Dashboard (swallowed exceptions, stack trace grouping, diagnostics).
+
+### 3.2. `rexone-web` (Web Portal)
+- **Framework:** React 19, TypeScript 5.8+, Vite 8+.
+- **Design System:** TailwindCSS, DaisyUI 5, custom Scarlet Neon design tokens, glassmorphism, responsive data grids, accessible modal dialogs, and slide-over panels.
+- **State Management:** Reactive hooks, lightweight store modules, zero prop drilling.
+- **Real-Time Integration:** ActionCable WebSocket client for live in-app notifications, badges, chat messaging, and administrative broadcast alerts.
+- **Localization:** 100% key parity across English (`en.json`) and Myanmar (`my.json`) with automated pre-commit parity checks (`check_locales.ts`).
+- **Automated Testing:** Vitest and React Testing Library with 100% component and controller spec coverage.
+
+### 3.3. `rexone_mobile` (Mobile Flagship)
+- **Framework:** Flutter 3 with Dart 3+.
+- **Architecture:** Layered Clean Architecture (Presentation, Business Logic, Data Layers).
+- **State & Routing:** GetX reactive observables and declarative routing.
+- **Push & Telemetry:** OneSignal push notification integration, native biometric authentication (Face ID / Touch ID / Fingerprint), and offline cache synchronization.
+- **Notification Center:** Dynamic in-app bottom sheet detail modal for long overflowing messages, semantic badge indicators (error, warning, success, promo, system), and customizable CTA action chips.
+
+---
+
+## 4. Key Entities & Database Schema Overview
+
+| Table Name | Primary Responsibilities | Key Fields |
+| :--- | :--- | :--- |
+| `users` | Identity, authentication, Devise JWT, Stripe customer linking | `id`, `email`, `jti`, `confirmed_at`, `stripe_customer_id`, `role` |
+| `iam_roles` | System and custom roles | `id`, `name`, `description`, `system` |
+| `iam_permissions` | Atomic permissions across 23 resources | `id`, `name`, `resource`, `action` |
+| `payment_products` | Subscribable tiers and purchasable items | `id`, `name`, `code`, `amount`, `currency`, `billing_interval`, `stripe_price_id` |
+| `payment_subscriptions` | User subscription lifecycle | `id`, `user_id`, `product_id`, `status`, `current_period_end`, `stripe_subscription_id` |
+| `payment_transactions` | Individual charge and invoice records | `id`, `user_id`, `product_id`, `amount`, `currency`, `status`, `stripe_payment_intent_id` |
+| `coupons` | Promo codes & referral discounts | `id`, `code`, `coupon_type`, `amount`, `currency`, `max_usage`, `used_count`, `metadata` |
+| `assets` | Polymorphic media storage | `id`, `assetable_type`, `assetable_id`, `storage_key`, `file_type`, `file_size`, `metadata` |
+| `notifications` | Central notification template registry | `id`, `event`, `category`, `link`, `cta_text`, `clients`, `metadata`, `in_app_title`, `push_title`, `email_subject` |
+| `user_notifications` | User inbox items and read receipts | `id`, `user_id`, `notification_id`, `read`, `read_at`, `clients`, `metadata` |
+| `client_versions` | Mobile app release governance & force-update | `id`, `number`, `title`, `is_force_update`, `status`, `metadata`, `ios_build_number`, `android_build_number` |
+| `ai_profiles` | AI assistant configuration & context | `id`, `name`, `model`, `system_prompt`, `temperature`, `metadata` |
+| `feedbacks` | User bug reports & feature feedback | `id`, `user_id`, `category`, `message`, `status`, `attachments` |
+
+---
+
+## 5. Deployment & Production Operations
+
+- **Hosting Standard:** Fully optimized for self-hosted or cloud VPS environments managed with **Coolify** or Docker Compose.
+- **Storage:** Self-hosted Garage S3 cluster running locally or AWS S3 bucket.
+- **Automated Maintenance:** Safe weekly VPS cleanup script (`scripts/vps_cleanup.sh`) with configurable retention policies (168h image and builder cache pruning, zero volume deletion).
+- **Log Management:** Docker daemon log rotation configured with `max-size: 50m` and `max-file: 3`.
+
+---
+
+## 6. How to Get Started
+
+```bash
+# Clone the complete ecosystem
+git clone https://github.com/rex-9/rexone-core.git
+git clone https://github.com/rex-9/rexone-web.git
+git clone https://github.com/rex-9/rexone_mobile.git
+
+# Launch the core backend, database, and local S3 garage
+cd rexone-core
+cp .env.example .env
+docker compose -f docker-compose.dev.yaml up -d
+
+# Run database synchronization & seed super admin
+./scripts/db_backfill.sh
+./scripts/seed_super_admin.sh
+
+# Launch the web client
+cd ../rexone-web
+npm install
+npm run dev
+
+# Launch the mobile client
+cd ../rexone_mobile
+flutter pub get
+flutter run
+```
+
+Start from One. Never from Zero.

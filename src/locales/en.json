@@ -1273,6 +1273,9 @@
         "all_users": "All users",
         "audience": "Audience",
         "channel_not_configured": "This template has no content configured for this channel.",
+        "cta_text": "CTA Button Text",
+        "cta_text_placeholder": "e.g. Open RexOne, Verify Email, Continue",
+        "cta_text_tooltip": "Custom label for the call-to-action button in emails and in-app cards (e.g. Verify Email, Open Dashboard). Defaults to 'Open RexOne' if blank.",
         "delivery": "Delivery Channels",
         "email": "Email",
         "event": "Notification Event",
@@ -1851,6 +1854,8 @@
     "loading": "Loading notifications...",
     "delete": "Delete notification",
     "delete_success": "Notification deleted",
-    "mark_read_success": "Marked as read"
+    "mark_read_success": "Marked as read",
+    "open_link": "Open link",
+    "read_more": "Read more"
   }
 }

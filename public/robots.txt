@@ -1,4 +1,159 @@
+# ==============================================================================
+# robots.txt for RexOne Ecosystem (https://rexone.rex9.me)
+# Global AI Agent, Search Engine & Crawler Access Directives
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Universal Default (All Web & Search Crawlers)
+# ------------------------------------------------------------------------------
 User-agent: *
 Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
 
+# ------------------------------------------------------------------------------
+# 2. Eastern World & Asian AI Crawlers & Search Engines
+# ------------------------------------------------------------------------------
+
+# DeepSeek (DeepSeek AI & Reasoning Models)
+User-agent: DeepSeekBot
+User-agent: deepseek-ai
+Allow: /
+
+# ByteDance / Doubao / TikTok (China & Asia)
+User-agent: Bytespider
+Allow: /
+
+# Baidu (Baidu Search & ERNIE Bot / Wenxin Yiyan)
+User-agent: Baiduspider
+User-agent: Baiduspider-render
+User-agent: Baiduspider-image
+User-agent: Baiduspider-video
+User-agent: Baiduspider-news
+Allow: /
+
+# Alibaba Cloud / Qwen (Tongyi Qianwen / ModelStudio)
+User-agent: QwenBot
+User-agent: Aliyun
+Allow: /
+
+# Tencent (Hunyuan AI & Tencent Search)
+User-agent: TencentTraveler
+User-agent: HunyuanBot
+Allow: /
+
+# Moonshot AI / Kimi (China)
+User-agent: MoonshotBot
+Allow: /
+
+# Zhipu AI / ChatGLM / GLM Models
+User-agent: ZhipuBot
+Allow: /
+
+# Naver (South Korea #1 Search & HyperCLOVA AI)
+User-agent: Yeti
+Allow: /
+
+# Daum / Kakao (South Korea)
+User-agent: Daumoa
+Allow: /
+
+# Yandex (Russia, Eurasia & CIS Search & YandexGPT)
+User-agent: YandexBot
+User-agent: YandexMobileBot
+User-agent: YandexDirect
+Allow: /
+
+# Sogou (China)
+User-agent: Sogou web spider
+User-agent: Sogou inst spider
+Allow: /
+
+# Qihoo 360 Search (China)
+User-agent: 360Spider
+User-agent: HaosouSpider
+Allow: /
+
+# Yahoo Japan
+User-agent: Y!J-ASR
+User-agent: Y!J-BSC
+Allow: /
+
+# ------------------------------------------------------------------------------
+# 3. Western Frontier AI Engines & Foundation Model Crawlers
+# ------------------------------------------------------------------------------
+
+# OpenAI / ChatGPT / GPT-4 / GPT-5
+User-agent: GPTBot
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity AI Search
+User-agent: PerplexityBot
+Allow: /
+
+# Google AI & Gemini Training / Citations
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+User-agent: Applebot
+Allow: /
+
+# Meta AI / LLaMA
+User-agent: meta-externalagent
+User-agent: FacebookBot
+Allow: /
+
+# Mistral AI
+User-agent: MistralBot
+Allow: /
+
+# Amazon AI / Rufus / Amazon Q
+User-agent: Amazonbot
+Allow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Allow: /
+
+# Diffbot AI
+User-agent: Diffbot
+Allow: /
+
+# Allen Institute for AI (AI2)
+User-agent: AI2Bot
+Allow: /
+
+# You.com AI Search
+User-agent: YouBot
+Allow: /
+
+# ------------------------------------------------------------------------------
+# 4. Global Web Search Engines
+# ------------------------------------------------------------------------------
+
+# Google Web Search
+User-agent: Googlebot
+Allow: /
+
+# Microsoft Bing Search
+User-agent: Bingbot
+Allow: /
+
+# DuckDuckGo Search
+User-agent: DuckDuckBot
+Allow: /
+
+# ------------------------------------------------------------------------------
+# 5. Global Discovery & Sitemap Endpoints
+# ------------------------------------------------------------------------------
 Sitemap: https://rexone.rex9.me/sitemap.xml
+Host: https://rexone.rex9.me
