@@ -6,11 +6,13 @@
  */
 
 import React, { useRef, useEffect, useId } from "react";
+import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
 import { InputVariant, InputVariants } from "../../constants";
 
 export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
+  tooltip?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
@@ -23,6 +25,7 @@ export interface ITextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAre
 
 export const TextArea: React.FC<ITextAreaProps> = ({
   label,
+  tooltip,
   helperText,
   error,
   fullWidth = true,
@@ -87,12 +90,22 @@ export const TextArea: React.FC<ITextAreaProps> = ({
   return (
     <div className={cn("flex flex-col gap-1", fullWidth && "w-full")}>
       {label && (
-        <label
-          htmlFor={inputId}
-          className="text-sm font-medium text-base-content"
-        >
-          {label}
-        </label>
+        <div className="flex items-center gap-1.5 mb-1">
+          <label
+            htmlFor={inputId}
+            className="text-sm font-medium text-base-content"
+          >
+            {label}
+          </label>
+          {tooltip && (
+            <div
+              className="tooltip tooltip-top flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+              data-tip={tooltip}
+            >
+              <iconsLib.info className="h-3.5 w-3.5" />
+            </div>
+          )}
+        </div>
       )}
 
       <textarea

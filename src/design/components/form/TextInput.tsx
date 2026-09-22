@@ -41,15 +41,25 @@ export const TextInput: React.FC<ITextInputProps> = ({
   return (
     <div className={cn("flex flex-col", fullWidth && "w-full")}>
       {label && (
-        <label
-          htmlFor={inputId}
-          className={cn(
-            "text-body-s font-medium mb-1 text-base-content",
-            labelClassName,
+        <div className="flex items-center gap-1.5 mb-1">
+          <label
+            htmlFor={inputId}
+            className={cn(
+              "text-body-s font-medium text-base-content",
+              labelClassName,
+            )}
+          >
+            {label}
+          </label>
+          {tooltip && (
+            <div
+              className="tooltip tooltip-top flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+              data-tip={tooltip}
+            >
+              <iconsLib.info className="h-3.5 w-3.5" />
+            </div>
           )}
-        >
-          {label}
-        </label>
+        </div>
       )}
 
       <div className="relative flex items-center w-full">
@@ -62,7 +72,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
             isGlass
               ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-base-content/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
               : "px-4 py-3 rounded-md border-2 bg-base-100 text-base-content placeholder:text-base-content placeholder:opacity-40 focus:ring-2 focus:ring-primary focus:border-primary",
-            tooltip ? "pr-10" : "",
+            !label && tooltip ? "pr-10" : "",
             hasError &&
               (isGlass
                 ? "border-b-error focus:border-b-error"
@@ -76,7 +86,7 @@ export const TextInput: React.FC<ITextInputProps> = ({
           )}
         />
 
-        {tooltip && (
+        {!label && tooltip && (
           <div className="absolute right-3 flex items-center text-base-content/40 hover:text-base-content transition-colors z-10">
             <div
               className="tooltip tooltip-top flex items-center"
@@ -91,8 +101,8 @@ export const TextInput: React.FC<ITextInputProps> = ({
       {displayText && (
         <span
           className={cn(
-            "text-caption mt-1",
-            hasError ? "text-error" : "text-base-content opacity-60",
+            "text-caption text-xs mt-1",
+            hasError ? "text-error" : "text-base-content/60",
           )}
         >
           {displayText}

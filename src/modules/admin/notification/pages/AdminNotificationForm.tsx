@@ -97,6 +97,26 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
       : link;
   });
   const [alertMessage, setAlertMessage] = useState("");
+  const [copiedVar, setCopiedVar] = useState<string | null>(null);
+
+  const handleCopyVariable = async (variableName: string) => {
+    try {
+      await navigator.clipboard.writeText(variableName);
+      setCopiedVar(variableName);
+      setTimeout(() => setCopiedVar(null), 1800);
+    } catch {
+      const textarea = document.createElement("textarea");
+      textarea.value = variableName;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      setCopiedVar(variableName);
+      setTimeout(() => setCopiedVar(null), 1800);
+    }
+  };
 
   const categoryOptions = useMemo(
     () => [
@@ -169,7 +189,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
 
       if (!/^[a-z][a-z0-9_]*$/.test(formValues.event.trim())) {
         setAlertMessage(
-          "Event key must start with a lowercase letter and contain only lowercase letters, numbers, and underscores (e.g. promotional_campaign_fall).",
+          t(AppLocales.Admin.Notifications.Templates.Dialog.EventInvalid),
         );
         return;
       }
@@ -219,6 +239,9 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 AppLocales.Admin.Notifications.Templates.Dialog
                   .EventPlaceholder,
               )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Templates.Dialog.EventTooltip,
+              )}
               value={formValues.event}
               onChange={(e) => {
                 if (!isCreate) return;
@@ -230,11 +253,6 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               }}
               disabled={!isCreate}
               required={isCreate}
-              helperText={
-                !isCreate
-                  ? "Event identifier is unique and cannot be modified."
-                  : "Lowercase snake_case only (e.g. promotional_campaign_fall). Spaces and special characters are automatically converted."
-              }
             />
 
             <TextInput
@@ -243,6 +261,9 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               )}
               placeholder={t(
                 AppLocales.Admin.Notifications.Templates.Dialog.NamePlaceholder,
+              )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Templates.Dialog.NameTooltip,
               )}
               value={formValues.name}
               onChange={(e) => handleChange("name", e.target.value)}
@@ -255,6 +276,9 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               label={t(
                 AppLocales.Admin.Notifications.Templates.Dialog.CategoryLabel,
               )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Templates.Dialog.CategoryTooltip,
+              )}
               options={categoryOptions}
               value={formValues.category}
               onValueChange={(val) => handleChange("category", val)}
@@ -263,6 +287,9 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
             <Dropdown
               label={t(
                 AppLocales.Admin.Notifications.Templates.Dialog.LinkLabel,
+              )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Templates.Dialog.LinkTooltip,
               )}
               options={linkOptions}
               value={linkSelection}
@@ -287,6 +314,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 AppLocales.Admin.Notifications.Templates.Dialog
                   .ExternalUrlPlaceholder,
               )}
+              tooltip={t(
+                AppLocales.Admin.Notifications.Templates.Dialog
+                  .ExternalUrlTooltip,
+              )}
               value={formValues.link || ""}
               onChange={(event) => handleChange("link", event.target.value)}
               pattern="https://.*"
@@ -299,23 +330,59 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
             placeholder={t(
               AppLocales.Admin.Notifications.Templates.Dialog.DescPlaceholder,
             )}
+            tooltip={t(
+              AppLocales.Admin.Notifications.Templates.Dialog.DescTooltip,
+            )}
             value={formValues.description || ""}
             onChange={(e) => handleChange("description", e.target.value)}
             rows={2}
           />
 
-          <div className="pt-1">
-            <Checkbox
-              checked={formValues.admin}
-              onChange={(e) => handleChange("admin", e.target.checked)}
-            >
-              {t(AppLocales.Admin.Notifications.Templates.Dialog.AdminOnly)}
-            </Checkbox>
+          <div className="rounded-lg border border-base-200 bg-base-200/20 p-3 space-y-1">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={formValues.admin}
+                onChange={(e) => handleChange("admin", e.target.checked)}
+              >
+                {t(AppLocales.Admin.Notifications.Templates.Dialog.AdminOnly)}
+              </Checkbox>
+              <div
+                className="tooltip tooltip-right flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+                data-tip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .AdminOnlyTooltip,
+                )}
+              >
+                <iconsLib.info className="h-4 w-4 text-primary" />
+              </div>
+            </div>
+            <p className="text-caption text-xs text-base-content/60 pl-8">
+              {t(
+                AppLocales.Admin.Notifications.Templates.Dialog
+                  .AdminOnlyHelper,
+              )}
+            </p>
           </div>
 
           <div className="space-y-2 pt-1">
-            <p className="text-body-s font-semibold text-base-content">
-              {t(AppLocales.Admin.Notifications.Templates.Dialog.ClientsLabel)}
+            <div className="flex items-center gap-2">
+              <p className="text-body-s font-semibold text-base-content">
+                {t(AppLocales.Admin.Notifications.Templates.Dialog.ClientsLabel)}
+              </p>
+              <div
+                className="tooltip tooltip-right flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+                data-tip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .ClientsTooltip,
+                )}
+              >
+                <iconsLib.info className="h-4 w-4 text-primary" />
+              </div>
+            </div>
+            <p className="text-caption text-xs text-base-content/60">
+              {t(
+                AppLocales.Admin.Notifications.Templates.Dialog.ClientsHelper,
+              )}
             </p>
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {Object.values(NOTIFICATION_CLIENTS).map((client) => (
@@ -359,6 +426,101 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
             <span className="text-caption text-xs text-base-content/50">
               {t(AppLocales.Admin.Notifications.Templates.Dialog.VariablesHint)}
             </span>
+          </div>
+
+          {/* Dynamic Variables Guide Card */}
+          <div className="rounded-xl bg-base-200/40 border border-base-300 p-4 space-y-3">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <iconsLib.info className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-body-s font-bold text-base-content">
+                  {t(
+                    AppLocales.Admin.Notifications.Templates.Dialog
+                      .VariablesTitle,
+                  )}
+                </span>
+                <span className="badge badge-sm badge-outline badge-primary font-medium text-[11px]">
+                  {t(
+                    AppLocales.Admin.Notifications.Templates.Dialog
+                      .VariablesBadge,
+                  )}
+                </span>
+              </div>
+              <span className="text-caption text-xs text-base-content/60">
+                {copiedVar
+                  ? `${t(AppLocales.Admin.Notifications.Templates.Dialog.VariablesCopied)} ${copiedVar}`
+                  : t(
+                      AppLocales.Admin.Notifications.Templates.Dialog
+                        .VariablesClickToCopy,
+                    )}
+              </span>
+            </div>
+
+            <p className="text-caption text-xs text-base-content/70 leading-relaxed">
+              {t(
+                AppLocales.Admin.Notifications.Templates.Dialog
+                  .VariablesDescription,
+              )}
+            </p>
+
+            <div className="flex flex-wrap gap-2 pt-0.5">
+              <button
+                type="button"
+                onClick={() => handleCopyVariable("{{user_name}}")}
+                className="btn btn-xs btn-outline border-base-300 bg-base-100 hover:bg-primary hover:border-primary hover:text-primary-content gap-1.5 font-mono text-xs cursor-pointer transition-all"
+              >
+                {copiedVar === "{{user_name}}" ? (
+                  <iconsLib.checkr className="h-3.5 w-3.5 text-success stroke-[2.5]" />
+                ) : (
+                  <iconsLib.copy className="h-3.5 w-3.5 opacity-60" />
+                )}
+                <code>{"{{user_name}}"}</code>
+                <span className="text-[10px] opacity-75 font-sans">
+                  {t(
+                    AppLocales.Admin.Notifications.Templates.Dialog
+                      .VariablesUserNameDesc,
+                  )}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopyVariable("{{user_email}}")}
+                className="btn btn-xs btn-outline border-base-300 bg-base-100 hover:bg-primary hover:border-primary hover:text-primary-content gap-1.5 font-mono text-xs cursor-pointer transition-all"
+              >
+                {copiedVar === "{{user_email}}" ? (
+                  <iconsLib.checkr className="h-3.5 w-3.5 text-success stroke-[2.5]" />
+                ) : (
+                  <iconsLib.copy className="h-3.5 w-3.5 opacity-60" />
+                )}
+                <code>{"{{user_email}}"}</code>
+                <span className="text-[10px] opacity-75 font-sans">
+                  {t(
+                    AppLocales.Admin.Notifications.Templates.Dialog
+                      .VariablesUserEmailDesc,
+                  )}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleCopyVariable("{{link}}")}
+                className="btn btn-xs btn-outline border-base-300 bg-base-100 hover:bg-primary hover:border-primary hover:text-primary-content gap-1.5 font-mono text-xs cursor-pointer transition-all"
+              >
+                {copiedVar === "{{link}}" ? (
+                  <iconsLib.checkr className="h-3.5 w-3.5 text-success stroke-[2.5]" />
+                ) : (
+                  <iconsLib.copy className="h-3.5 w-3.5 opacity-60" />
+                )}
+                <code>{"{{link}}"}</code>
+                <span className="text-[10px] opacity-75 font-sans">
+                  {t(
+                    AppLocales.Admin.Notifications.Templates.Dialog
+                      .VariablesLinkDesc,
+                  )}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Channel Tabs */}
@@ -415,6 +577,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .InAppTitlePlaceholder,
                 )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .InAppTitleTooltip,
+                )}
                 value={formValues.in_app_title || ""}
                 onChange={(e) => handleChange("in_app_title", e.target.value)}
               />
@@ -425,6 +591,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 placeholder={t(
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .InAppBodyPlaceholder,
+                )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .InAppBodyTooltip,
                 )}
                 value={formValues.in_app_body || ""}
                 onChange={(e) => handleChange("in_app_body", e.target.value)}
@@ -443,6 +613,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .PushTitlePlaceholder,
                 )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .PushTitleTooltip,
+                )}
                 value={formValues.push_title || ""}
                 onChange={(e) => handleChange("push_title", e.target.value)}
               />
@@ -453,6 +627,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 placeholder={t(
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .PushBodyPlaceholder,
+                )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .PushBodyTooltip,
                 )}
                 value={formValues.push_body || ""}
                 onChange={(e) => handleChange("push_body", e.target.value)}
@@ -466,6 +644,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 placeholder={t(
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .PushTemplateIdPlaceholder,
+                )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .PushTemplateIdTooltip,
                 )}
                 value={formValues.push_template_id || ""}
                 onChange={(e) =>
@@ -485,6 +667,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .EmailSubjectPlaceholder,
                 )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .EmailSubjectTooltip,
+                )}
                 value={formValues.email_subject || ""}
                 onChange={(e) => handleChange("email_subject", e.target.value)}
               />
@@ -495,6 +681,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 placeholder={t(
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .EmailBodyPlaceholder,
+                )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .EmailBodyTooltip,
                 )}
                 value={formValues.email_body || ""}
                 onChange={(e) => handleChange("email_body", e.target.value)}
@@ -508,6 +698,10 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                 placeholder={t(
                   AppLocales.Admin.Notifications.Templates.Dialog
                     .EmailTemplateIdPlaceholder,
+                )}
+                tooltip={t(
+                  AppLocales.Admin.Notifications.Templates.Dialog
+                    .EmailTemplateIdTooltip,
                 )}
                 value={formValues.email_template_id || ""}
                 onChange={(e) =>

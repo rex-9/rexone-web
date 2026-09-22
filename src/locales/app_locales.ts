@@ -1161,14 +1161,20 @@ export const AppLocales = {
           EventLabel: "admin.notifications.templates.dialog.event_label",
           EventPlaceholder:
             "admin.notifications.templates.dialog.event_placeholder",
+          EventTooltip: "admin.notifications.templates.dialog.event_tooltip",
           NameLabel: "admin.notifications.templates.dialog.name_label",
           NamePlaceholder:
             "admin.notifications.templates.dialog.name_placeholder",
+          NameTooltip: "admin.notifications.templates.dialog.name_tooltip",
           DescLabel: "admin.notifications.templates.dialog.desc_label",
           DescPlaceholder:
             "admin.notifications.templates.dialog.desc_placeholder",
+          DescTooltip: "admin.notifications.templates.dialog.desc_tooltip",
           CategoryLabel: "admin.notifications.templates.dialog.category_label",
+          CategoryTooltip:
+            "admin.notifications.templates.dialog.category_tooltip",
           LinkLabel: "admin.notifications.templates.dialog.link_label",
+          LinkTooltip: "admin.notifications.templates.dialog.link_tooltip",
           LinkOptions: {
             None: "admin.notifications.templates.dialog.link_options.none",
             Home: "admin.notifications.templates.dialog.link_options.home",
@@ -1182,49 +1188,91 @@ export const AppLocales = {
             "admin.notifications.templates.dialog.external_url_label",
           ExternalUrlPlaceholder:
             "admin.notifications.templates.dialog.external_url_placeholder",
+          ExternalUrlTooltip:
+            "admin.notifications.templates.dialog.external_url_tooltip",
           AdminOnly: "admin.notifications.templates.dialog.admin_only",
+          AdminOnlyTooltip:
+            "admin.notifications.templates.dialog.admin_only_tooltip",
+          AdminOnlyHelper:
+            "admin.notifications.templates.dialog.admin_only_helper",
           ClientsLabel: "admin.notifications.templates.dialog.clients_label",
+          ClientsTooltip:
+            "admin.notifications.templates.dialog.clients_tooltip",
+          ClientsHelper: "admin.notifications.templates.dialog.clients_helper",
           ClientWeb: "admin.notifications.templates.dialog.client_web",
           ClientMobile: "admin.notifications.templates.dialog.client_mobile",
           ClientRequired: "admin.notifications.templates.dialog.client_required",
           ChannelContent:
             "admin.notifications.templates.dialog.channel_content",
           VariablesHint: "admin.notifications.templates.dialog.variables_hint",
+          VariablesTitle:
+            "admin.notifications.templates.dialog.variables_title",
+          VariablesBadge:
+            "admin.notifications.templates.dialog.variables_badge",
+          VariablesDescription:
+            "admin.notifications.templates.dialog.variables_description",
+          VariablesClickToCopy:
+            "admin.notifications.templates.dialog.variables_click_to_copy",
+          VariablesCopied:
+            "admin.notifications.templates.dialog.variables_copied",
+          VariablesUserNameDesc:
+            "admin.notifications.templates.dialog.variables_user_name_desc",
+          VariablesUserEmailDesc:
+            "admin.notifications.templates.dialog.variables_user_email_desc",
+          VariablesLinkDesc:
+            "admin.notifications.templates.dialog.variables_link_desc",
           InAppTab: "admin.notifications.templates.dialog.in_app_tab",
           PushTab: "admin.notifications.templates.dialog.push_tab",
           EmailTab: "admin.notifications.templates.dialog.email_tab",
           InAppTitle: "admin.notifications.templates.dialog.in_app_title",
           InAppTitlePlaceholder:
             "admin.notifications.templates.dialog.in_app_title_placeholder",
+          InAppTitleTooltip:
+            "admin.notifications.templates.dialog.in_app_title_tooltip",
           InAppBody: "admin.notifications.templates.dialog.in_app_body",
           InAppBodyPlaceholder:
             "admin.notifications.templates.dialog.in_app_body_placeholder",
+          InAppBodyTooltip:
+            "admin.notifications.templates.dialog.in_app_body_tooltip",
           PushTitle: "admin.notifications.templates.dialog.push_title",
           PushTitlePlaceholder:
             "admin.notifications.templates.dialog.push_title_placeholder",
+          PushTitleTooltip:
+            "admin.notifications.templates.dialog.push_title_tooltip",
           PushBody: "admin.notifications.templates.dialog.push_body",
           PushBodyPlaceholder:
             "admin.notifications.templates.dialog.push_body_placeholder",
+          PushBodyTooltip:
+            "admin.notifications.templates.dialog.push_body_tooltip",
           PushTemplateId:
             "admin.notifications.templates.dialog.push_template_id",
           PushTemplateIdPlaceholder:
             "admin.notifications.templates.dialog.push_template_id_placeholder",
+          PushTemplateIdTooltip:
+            "admin.notifications.templates.dialog.push_template_id_tooltip",
           PushTemplateIdHelper:
             "admin.notifications.templates.dialog.push_template_id_helper",
           EmailSubject: "admin.notifications.templates.dialog.email_subject",
           EmailSubjectPlaceholder:
             "admin.notifications.templates.dialog.email_subject_placeholder",
+          EmailSubjectTooltip:
+            "admin.notifications.templates.dialog.email_subject_tooltip",
           EmailBody: "admin.notifications.templates.dialog.email_body",
           EmailBodyPlaceholder:
             "admin.notifications.templates.dialog.email_body_placeholder",
+          EmailBodyTooltip:
+            "admin.notifications.templates.dialog.email_body_tooltip",
           EmailTemplateId:
             "admin.notifications.templates.dialog.email_template_id",
           EmailTemplateIdPlaceholder:
             "admin.notifications.templates.dialog.email_template_id_placeholder",
+          EmailTemplateIdTooltip:
+            "admin.notifications.templates.dialog.email_template_id_tooltip",
           Cancel: "admin.notifications.templates.dialog.cancel",
           Save: "admin.notifications.templates.dialog.save",
           Create: "admin.notifications.templates.dialog.create",
           EventRequired: "admin.notifications.templates.dialog.event_required",
+          EventInvalid: "admin.notifications.templates.dialog.event_invalid",
           NameRequired: "admin.notifications.templates.dialog.name_required",
         },
       },

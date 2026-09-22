@@ -1,6 +1,7 @@
 // src/design/components/form/Dropdown.tsx
 
 import React from "react";
+import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
 import { DropdownSizes, type DropdownSize } from "../../constants";
 
@@ -16,6 +17,7 @@ export interface IDropdownOption {
 interface IDropdownBaseProps {
   options: IDropdownOption[];
   label?: string;
+  tooltip?: string;
   error?: string;
   placeholder?: string;
   className?: string;
@@ -51,6 +53,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   value,
   onValueChange,
   label,
+  tooltip,
   error,
   placeholder,
   className,
@@ -91,9 +94,19 @@ export const Dropdown: React.FC<IDropdownProps> = ({
   return (
     <div className={cn(fullWidth ? "w-full" : "w-auto", containerClassName)}>
       {label && (
-        <label className="block text-body-s font-medium text-base-content/70 mb-1">
-          {label}
-        </label>
+        <div className="flex items-center gap-1.5 mb-1">
+          <label className="block text-body-s font-medium text-base-content/70">
+            {label}
+          </label>
+          {tooltip && (
+            <div
+              className="tooltip tooltip-top flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+              data-tip={tooltip}
+            >
+              <iconsLib.info className="h-3.5 w-3.5" />
+            </div>
+          )}
+        </div>
       )}
       <div className="relative flex items-center">
         {icon && (
