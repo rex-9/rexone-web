@@ -34,7 +34,10 @@ import {
   Tabs,
   type ITabItem,
 } from "../../components";
-import { AdminNotificationTemplatesTab } from "../components";
+import {
+  AdminNotificationTemplatesTab,
+  AdminNotificationPreview,
+} from "../components";
 import { AdminUserNotificationsPage } from "./AdminUserNotificationsPage";
 import {
   Checkbox,
@@ -996,40 +999,15 @@ export const AdminNotificationsPage: React.FC = () => {
                   </span>
                 </div>
 
-                {selectedTemplate ? (
+                <AdminNotificationPreview
+                  template={selectedTemplate}
+                  sendSocket={values.send_socket}
+                  sendPush={values.send_push}
+                  sendEmail={values.send_email}
+                />
+
+                {selectedTemplate && (
                   <div className="space-y-3">
-                    {/* Visual In-App Card Mockup */}
-                    <div className="rounded-lg bg-base-200/50 border border-base-300/80 p-3.5 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-                            <iconsLib.bell className="w-3.5 h-3.5 text-primary" />
-                          </div>
-                          <span className="font-semibold text-xs text-base-content">
-                            {selectedTemplate.in_app_title ||
-                              selectedTemplate.name}
-                          </span>
-                        </div>
-                        <span className="text-[10px] text-base-content/50">
-                          Just now
-                        </span>
-                      </div>
-
-                      <p className="text-caption text-xs text-base-content/80 pl-8 leading-relaxed">
-                        {selectedTemplate.in_app_body ||
-                          selectedTemplate.description ||
-                          "No message body specified."}
-                      </p>
-
-                      {selectedTemplate.link && (
-                        <div className="pl-8 pt-0.5">
-                          <span className="text-[10px] text-primary hover:underline font-mono">
-                            Target: {selectedTemplate.link}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
                     {/* Broadcast Meta Summary */}
                     <div className="space-y-1.5 text-xs text-base-content/70 bg-base-200/30 rounded-lg p-2.5 border border-base-300/40">
                       <div className="flex items-center justify-between">
@@ -1080,10 +1058,6 @@ export const AdminNotificationsPage: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="p-6 text-center text-caption text-base-content/50 text-xs">
-                    Select a template to view the live dispatch preview.
                   </div>
                 )}
 

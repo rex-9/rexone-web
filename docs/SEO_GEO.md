@@ -198,4 +198,13 @@ curl -s https://rexone.rex9.me/sitemap.xml | grep "llms"
 # 5. Test Schema.org Rich Results & FAQ markup
 # Submit https://rexone.rex9.me to Google's Rich Results Test tool:
 # https://search.google.com/test/rich-results
+
+# 6. Trigger Instant IndexNow Ping (Bing, Yandex, Naver, Seznam)
+./scripts/submit_indexnow.sh
 ```
+
+---
+
+## 🌍 Global Registration & Webmaster Consoles
+
+For full instructions on registering and verifying RexOne with **Google Search Console**, **Bing Webmaster Tools**, **Yandex**, **Naver**, **IndexNow**, and major developer catalogs, see the **[Worldwide Webmaster Registration & Verification Guide](WORLDWIDE_REGISTRATION.md)**.

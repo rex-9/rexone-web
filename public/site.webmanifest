@@ -1,0 +1,22 @@
+{
+  "name": "RexOne Sovereign Ecosystem",
+  "short_name": "RexOne",
+  "description": "Start from One. Not from Zero. Sovereign tri-platform application foundation & full-stack masterclass.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#160b11",
+  "theme_color": "#160b11",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/logo.png",
+      "sizes": "864x492",
+      "type": "image/png"
+    }
+  ]
+}
