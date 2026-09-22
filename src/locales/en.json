@@ -1272,14 +1272,19 @@
         "all": "All",
         "all_users": "All users",
         "audience": "Audience",
+        "channel_not_configured": "This template has no content configured for this channel.",
         "delivery": "Delivery Channels",
         "email": "Email",
         "event": "Notification Event",
         "in_app": "In-App",
+        "include_transactional": "Include Transactional / System Events",
+        "include_transactional_tooltip": "Transactional events (e.g. payment confirmations, invoices) rely on dynamic objects from webhooks. Manual broadcasts without these payloads may send incomplete copy.",
+        "not_configured_badge": "Not configured",
         "push": "Push",
         "recipients": "Recipients",
         "selected_roles": "Selected roles",
-        "selected_users": "Selected users"
+        "selected_users": "Selected users",
+        "template_no_channels": "This template does not have any delivery channels configured."
       },
       "actions": {
         "clear_all_roles": "Clear all roles",

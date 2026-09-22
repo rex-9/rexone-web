@@ -1092,6 +1092,12 @@ export const AppLocales = {
         Push: "admin.notifications.labels.push",
         Email: "admin.notifications.labels.email",
         All: "admin.notifications.labels.all",
+        IncludeTransactional: "admin.notifications.labels.include_transactional",
+        IncludeTransactionalTooltip:
+          "admin.notifications.labels.include_transactional_tooltip",
+        ChannelNotConfigured: "admin.notifications.labels.channel_not_configured",
+        TemplateNoChannels: "admin.notifications.labels.template_no_channels",
+        NotConfiguredBadge: "admin.notifications.labels.not_configured_badge",
       },
       Actions: {
         Send: "admin.notifications.actions.send",

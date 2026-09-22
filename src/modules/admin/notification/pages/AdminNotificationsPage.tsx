@@ -37,6 +37,7 @@ import {
 import { AdminNotificationTemplatesTab } from "../components";
 import { AdminUserNotificationsPage } from "./AdminUserNotificationsPage";
 import {
+  Checkbox,
   Dropdown,
   FormContainer,
   SearchInput,
@@ -49,6 +50,11 @@ import {
   ButtonVariants,
   DropdownSizes,
 } from "../../../../design/constants";
+import {
+  filterAndSortBroadcastTemplates,
+  getTemplateConfiguredChannels,
+  getTemplateDropdownGroup,
+} from "../helpers";
 import { iconsLib } from "../../../../assets";
 
 const initialValues: IAdminNotificationFormValues = {
@@ -92,6 +98,7 @@ export const AdminNotificationsPage: React.FC = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [roles, setRoles] = useState<IAdminRole[]>([]);
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
+  const [includeTransactional, setIncludeTransactional] = useState(false);
   const [values, setValues] =
     useState<IAdminNotificationFormValues>(initialValues);
   const [recipientQuery, setRecipientQuery] = useState("");
@@ -174,11 +181,20 @@ export const AdminNotificationsPage: React.FC = () => {
 
       if (templateRes.success) {
         setTemplates(templateRes.templates);
-        const firstAvailable = templateRes.templates.find(
-          (t) => t.admin === true,
-        );
-        if (firstAvailable) {
-          setValues((v) => ({ ...v, event: firstAvailable.event }));
+        const broadcast = templateRes.templates.filter((t) => t.admin === true);
+        const available = filterAndSortBroadcastTemplates(broadcast, {
+          includeTransactional: false,
+        });
+        if (available.length > 0) {
+          const firstTpl = available[0];
+          const channels = getTemplateConfiguredChannels(firstTpl);
+          setValues((v) => ({
+            ...v,
+            event: firstTpl.event,
+            send_socket: channels.send_socket,
+            send_push: channels.send_push,
+            send_email: channels.send_email,
+          }));
         }
       } else {
         setError(
@@ -251,14 +267,22 @@ export const AdminNotificationsPage: React.FC = () => {
     [templates],
   );
 
+  const availableTemplates = useMemo(
+    () =>
+      filterAndSortBroadcastTemplates(broadcastTemplates, {
+        includeTransactional,
+      }),
+    [broadcastTemplates, includeTransactional],
+  );
+
   const templateOptions = useMemo(
     () =>
-      broadcastTemplates.map((template) => ({
+      availableTemplates.map((template) => ({
         value: template.event,
         label: `${template.name} (${template.event})`,
-        group: template.category ? template.category.toUpperCase() : undefined,
+        group: getTemplateDropdownGroup(template),
       })),
-    [broadcastTemplates],
+    [availableTemplates],
   );
 
   const audienceOptions = useMemo(
@@ -284,18 +308,66 @@ export const AdminNotificationsPage: React.FC = () => {
   );
 
   const selectedTemplate = useMemo(
-    () => broadcastTemplates.find((t) => t.event === values.event),
-    [broadcastTemplates, values.event],
+    () => availableTemplates.find((t) => t.event === values.event),
+    [availableTemplates, values.event],
   );
 
   useEffect(() => {
-    if (broadcastTemplates.length > 0) {
-      const exists = broadcastTemplates.some((t) => t.event === values.event);
+    if (availableTemplates.length > 0) {
+      const exists = availableTemplates.some((t) => t.event === values.event);
       if (!exists) {
-        setValues((v) => ({ ...v, event: broadcastTemplates[0].event }));
+        setValues((v) => ({ ...v, event: availableTemplates[0].event }));
       }
     }
-  }, [broadcastTemplates, values.event]);
+  }, [availableTemplates, values.event]);
+
+  const configuredChannels = useMemo(
+    () => getTemplateConfiguredChannels(selectedTemplate),
+    [selectedTemplate],
+  );
+
+  const availableChannelsCount = [
+    configuredChannels.send_push,
+    configuredChannels.send_socket,
+    configuredChannels.send_email,
+  ].filter(Boolean).length;
+
+  // Auto-sync channels when switching templates
+  const prevEventRef = React.useRef<string | null>(null);
+  useEffect(() => {
+    if (!selectedTemplate) return;
+
+    if (prevEventRef.current !== selectedTemplate.event) {
+      prevEventRef.current = selectedTemplate.event;
+      setValues((prev) => ({
+        ...prev,
+        send_socket: configuredChannels.send_socket,
+        send_push: configuredChannels.send_push,
+        send_email: configuredChannels.send_email,
+      }));
+    }
+  }, [selectedTemplate, configuredChannels]);
+
+  // Ensure unconfigured channels cannot remain true in form state
+  useEffect(() => {
+    setValues((prev) => {
+      let hasChange = false;
+      const next = { ...prev };
+      if (!configuredChannels.send_socket && prev.send_socket) {
+        next.send_socket = false;
+        hasChange = true;
+      }
+      if (!configuredChannels.send_push && prev.send_push) {
+        next.send_push = false;
+        hasChange = true;
+      }
+      if (!configuredChannels.send_email && prev.send_email) {
+        next.send_email = false;
+        hasChange = true;
+      }
+      return hasChange ? next : prev;
+    });
+  }, [configuredChannels]);
 
   const selectedRoleIds = values.role_ids;
   const selectedUserIds = values.user_ids;
@@ -399,6 +471,13 @@ export const AdminNotificationsPage: React.FC = () => {
       return;
     }
 
+    if (availableChannelsCount === 0) {
+      setAlertMessage(
+        t(AppLocales.Admin.Notifications.Labels.TemplateNoChannels),
+      );
+      return;
+    }
+
     if (selectedChannelsCount === 0) {
       setAlertMessage(
         t(AppLocales.Admin.Notifications.Validation.DeliveryChannelRequired),
@@ -445,9 +524,14 @@ export const AdminNotificationsPage: React.FC = () => {
       toast.success(
         result.message || t(AppLocales.Admin.Notifications.Toasts.SendSuccess),
       );
+      const nextTemplate = availableTemplates[0] || null;
+      const nextChannels = getTemplateConfiguredChannels(nextTemplate);
       setValues({
         ...initialValues,
-        event: broadcastTemplates[0]?.event || "",
+        event: nextTemplate?.event || "",
+        send_socket: nextChannels.send_socket,
+        send_push: nextChannels.send_push,
+        send_email: nextChannels.send_email,
       });
     } else {
       setAlertMessage(
@@ -512,17 +596,43 @@ export const AdminNotificationsPage: React.FC = () => {
 
                 {/* Field 1: Template */}
                 <div className="space-y-1.5">
-                  <label className="text-caption font-semibold text-base-content/80 flex items-center justify-between">
-                    <span>
-                      {t(AppLocales.Admin.Notifications.Labels.Event)}
-                    </span>
-                    {selectedTemplate && (
-                      <span className="font-mono text-xs opacity-60">
-                        {selectedTemplate.event}
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <label className="text-caption font-semibold text-base-content/80 flex items-center gap-1.5">
+                      <iconsLib.document className="h-3.5 w-3.5 text-primary" />
+                      <span>
+                        {t(AppLocales.Admin.Notifications.Labels.Event)}
                       </span>
-                    )}
-                  </label>
-                  {broadcastTemplates.length === 0 ? (
+                    </label>
+
+                    <div className="flex items-center gap-1.5">
+                      <Checkbox
+                        checked={includeTransactional}
+                        onChange={(e) =>
+                          setIncludeTransactional(e.target.checked)
+                        }
+                        containerClassName="border-0 px-0 py-0 hover:bg-transparent text-xs text-base-content/70 hover:text-base-content gap-1.5"
+                        className="checkbox-xs"
+                      >
+                        <span>
+                          {t(
+                            AppLocales.Admin.Notifications.Labels
+                              .IncludeTransactional,
+                          )}
+                        </span>
+                      </Checkbox>
+                      <div
+                        className="tooltip tooltip-left flex items-center text-base-content/50 hover:text-base-content transition-colors cursor-help"
+                        data-tip={t(
+                          AppLocales.Admin.Notifications.Labels
+                            .IncludeTransactionalTooltip,
+                        )}
+                      >
+                        <iconsLib.info className="h-3.5 w-3.5" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {availableTemplates.length === 0 ? (
                     <div className="p-3 rounded-lg bg-base-200/60 border border-base-300 text-caption text-base-content/70 text-xs">
                       No broadcast templates available. Create or enable
                       &quot;Broadcast&quot; on templates in the Templates tab.
@@ -745,7 +855,11 @@ export const AdminNotificationsPage: React.FC = () => {
                       {t(AppLocales.Admin.Notifications.Labels.Delivery)}
                     </label>
                     <span className="text-caption text-base-content/50 text-xs">
-                      {selectedChannelsCount} of 3 active
+                      {availableChannelsCount > 0 ? (
+                        `${selectedChannelsCount} of ${availableChannelsCount} active`
+                      ) : (
+                        <span className="text-warning font-medium">0 active</span>
+                      )}
                     </span>
                   </div>
 
@@ -753,6 +867,7 @@ export const AdminNotificationsPage: React.FC = () => {
                     {NOTIFICATION_DELIVERY_FIELDS.map(
                       ({ field, channel, label }) => {
                         const isChecked = Boolean(values[field]);
+                        const isConfigured = Boolean(configuredChannels[field]);
                         const icon =
                           channel === NOTIFICATION_DELIVERY_CHANNELS.SOCKET ? (
                             <iconsLib.chat className="h-4 w-4" />
@@ -770,55 +885,100 @@ export const AdminNotificationsPage: React.FC = () => {
                               : "text-info";
 
                         return (
-                          <Button
+                          <div
                             key={field}
-                            type="button"
-                            variant={ButtonVariants.TERTIARY}
-                            onClick={() => updateValue(field, !isChecked)}
-                            className={`flex! w-full! items-center! justify-between! px-3! py-2.5! rounded-lg border! text-left transition-all ${
-                              isChecked
-                                ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content"
-                                : "border-base-300 bg-base-100 hover:bg-base-200/60 text-base-content/60"
-                            }`}
+                            className={
+                              !isConfigured
+                                ? "tooltip tooltip-top w-full"
+                                : "w-full"
+                            }
+                            data-tip={
+                              !isConfigured
+                                ? t(
+                                    AppLocales.Admin.Notifications.Labels
+                                      .ChannelNotConfigured,
+                                  )
+                                : undefined
+                            }
                           >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span
-                                className={
-                                  isChecked
-                                    ? activeColor
-                                    : "text-base-content/40"
+                            <Button
+                              type="button"
+                              variant={ButtonVariants.TERTIARY}
+                              disabled={!isConfigured}
+                              onClick={() => {
+                                if (isConfigured) {
+                                  updateValue(field, !isChecked);
                                 }
-                              >
-                                {icon}
-                              </span>
-                              <span className="text-body-s font-medium truncate">
-                                {t(label)}
-                              </span>
-                            </div>
-                            <span
-                              className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all ${
-                                isChecked
-                                  ? "bg-primary text-primary-content"
-                                  : "border border-base-300 bg-base-200/50"
+                              }}
+                              className={`flex! w-full! items-center! justify-between! px-3! py-2.5! rounded-lg border! text-left transition-all ${
+                                !isConfigured
+                                  ? "opacity-50 cursor-not-allowed bg-base-200/40 border-base-300 text-base-content/40 hover:bg-base-200/40 pointer-events-auto"
+                                  : isChecked
+                                    ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content"
+                                    : "border-base-300 bg-base-100 hover:bg-base-200/60 text-base-content/60"
                               }`}
                             >
-                              {isChecked && (
-                                <iconsLib.checkr className="w-2.5 h-2.5" />
-                              )}
-                            </span>
-                          </Button>
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span
+                                  className={
+                                    !isConfigured
+                                      ? "text-base-content/30"
+                                      : isChecked
+                                        ? activeColor
+                                        : "text-base-content/40"
+                                  }
+                                >
+                                  {icon}
+                                </span>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-body-s font-medium truncate">
+                                    {t(label)}
+                                  </span>
+                                  {!isConfigured && (
+                                    <span className="text-[10px] text-base-content/40 font-normal truncate">
+                                      {t(
+                                        AppLocales.Admin.Notifications.Labels
+                                          .NotConfiguredBadge,
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <span
+                                className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all ${
+                                  !isConfigured
+                                    ? "border border-base-300/60 bg-base-200/30 opacity-40"
+                                    : isChecked
+                                      ? "bg-primary text-primary-content"
+                                      : "border border-base-300 bg-base-200/50"
+                                }`}
+                              >
+                                {isConfigured && isChecked && (
+                                  <iconsLib.checkr className="w-2.5 h-2.5" />
+                                )}
+                              </span>
+                            </Button>
+                          </div>
                         );
                       },
                     )}
                   </div>
-                  {selectedChannelsCount === 0 && (
+
+                  {availableChannelsCount === 0 ? (
+                    <div className="text-caption text-warning text-xs">
+                      {t(
+                        AppLocales.Admin.Notifications.Labels
+                          .TemplateNoChannels,
+                      )}
+                    </div>
+                  ) : selectedChannelsCount === 0 ? (
                     <div className="text-caption text-error text-xs">
                       {t(
                         AppLocales.Admin.Notifications.Validation
                           .DeliveryChannelRequired,
                       )}
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -915,7 +1075,7 @@ export const AdminNotificationsPage: React.FC = () => {
                             </span>
                           )}
                           {selectedChannelsCount === 0 && (
-                            <span className="text-error">None</span>
+                            <span className="text-error font-medium">None active</span>
                           )}
                         </div>
                       </div>
@@ -938,6 +1098,7 @@ export const AdminNotificationsPage: React.FC = () => {
                       isLoading ||
                       !values.event ||
                       selectedChannelsCount === 0 ||
+                      availableChannelsCount === 0 ||
                       (values.audience_type ===
                         NOTIFICATION_AUDIENCE_TYPES.ROLES &&
                         selectedRoleIds.length === 0) ||
