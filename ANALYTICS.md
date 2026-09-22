@@ -4,12 +4,11 @@
 
 ---
 
-> [!IMPORTANT]
-> **🏛️ Architectural Law**: The backend computes all analytics in pure **UTC** using grouped SQL aggregations. Timezone localization is strictly executed on the frontend client (`rexone-web`) using the administrator's local browser timezone.
->
-> **🚫 Non-Duplication Law**: The Analytics module focuses strictly on **business and user domain telemetry** (revenue, subscriptions, user acquisition, AI usage, client crashes, user feedbacks). Never duplicate server infrastructure metrics (CPU, RAM, DB query latency, queue depth) here—those belong in Rails Pulse / RED dashboards.
->
-> **🏷️ Constants Law**: Never use raw string literals. All period ranges and time grains are centralized in `AnalyticsConstants::Period` and `AnalyticsConstants::Grain`.
+### 🏛️ Core Architectural Invariants
+
+- **🏛️ Architectural Law**: The backend computes all analytics in pure **UTC** using grouped SQL aggregations. Timezone localization is strictly executed on the frontend client (`rexone-web`) using the administrator's local browser timezone.
+- **🚫 Non-Duplication Law**: The Analytics module focuses strictly on **business and user domain telemetry** (revenue, subscriptions, user acquisition, AI usage, client crashes, user feedbacks). Never duplicate server infrastructure metrics (CPU, RAM, DB query latency, queue depth) here—those belong in Rails Pulse / RED dashboards.
+- **🏷️ Constants Law**: Never use raw string literals. All period ranges and time grains are centralized in `AnalyticsConstants::Period` and `AnalyticsConstants::Grain`.
 
 ---
 

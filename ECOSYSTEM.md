@@ -8,28 +8,30 @@ A unified, production-grade architectural blueprint spanning **RexOne Core** (Ba
 
 Across all three repositories, the architecture adheres to one uncompromising doctrine:
 
-> [!IMPORTANT]
-> **Start from One. Not from Zero.**
->
-> _"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."_
+### *"Start from One. Not from Zero."*
+**"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."**
 
-> 📜 **Constitutional Law**: For strict repository-specific engineering constraints and architectural rules, see **[LAW.md](LAW.md)**. All applications and derivative products built upon the **RexOne Ecosystem** (`rex-9`) must strictly adhere to these rules and protocols without exception. Developers are warmly encouraged to preserve ecosystem credit to support the project.
->
-> 🌐 **Live Web Demo**: Explore the production web application preview at **[rexone.rex9.me](https://rexone.rex9.me)** (API: `api.rexone.rex9.me`).
->
-> 🌐 **Multi-Environment Domain Strategy**:
-> Standardized across the ecosystem for any derivative product (any custom TLD):
->
-> - **Demo Tier**: `rexone.rex9.me` (Web) & `api.rexone.rex9.me` (API)
-> - **Product Prod**: `<product>.<tld>` (e.g. `rexone.me`) & `api.<product>.<tld>` (e.g. `api.rexone.me`)
-> - **Product UAT**: `uat.<product>.<tld>` (e.g. `uat.rexone.me`) & `uat.api.<product>.<tld>` (e.g. `uat.api.rexone.me`)
-> - **Product Dev**: `dev.<product>.<tld>` (e.g. `dev.rexone.me`) & `dev.api.<product>.<tld>` (e.g. `dev.api.rexone.me`)
->
-> 🗺️ **Visual Walkthrough**: For the screenshot-driven, feature-by-feature tour of the ecosystem across Core, Web, Mobile, administration, and operations, see **[VISUAL_WALKTHROUGH.md](./docs/VISUAL_WALKTHROUGH.md)**.
->
-> 🛡️ **Production Operations**: Use the **[Production Deployment Guide](docs/DEPLOYMENT.md)** together with **[DDoS and API Abuse Protection](docs/DDOS.md)**. Cloudflare, origin isolation, proxy limits, Rack Attack, and bounded application resources form one defense system.
->
-> 🎞️ **Media Playback**: Stored audio/video delivery uses Core-authorized short-lived provider URLs. See **[Media Playback](docs/MEDIA_PLAYBACK.md)**; future HLS/adaptive work stays in **[Media Streaming Roadmap](docs/roadmaps/MEDIA_STREAMING.md)**.
+---
+
+### 🏛️ Essential Governance & Operations
+
+| Resource | Scope & Canonical Specification |
+| :--- | :--- |
+| 📜 **Constitutional Law** | Strict repository-specific engineering constraints and architectural rules: **[LAW.md](LAW.md)** *(Zero exceptions)* |
+| 🌐 **Live Web Demo** | Production web application preview: **[rexone.rex9.me](https://rexone.rex9.me)** (API: `api.rexone.rex9.me`) |
+| 🗺️ **Visual Walkthrough** | Screenshot-driven tour of RexOne across Core, Web, Mobile, and operations: **[VISUAL_WALKTHROUGH.md](./docs/VISUAL_WALKTHROUGH.md)** |
+| 🛡️ **Production Operations** | Production hardening, Cloudflare edge defense, and DDoS protection: **[Production Deployment Guide](docs/DEPLOYMENT.md)** & **[DDoS Protection](docs/DDOS.md)** |
+| 🌐 **AI Discovery & GEO** | Machine-readable context files (`/llms.txt`, `/llms-full.txt`), East/West crawler policies: **[AI Discovery & GEO Guide](../rexone-web/docs/SEO_GEO.md)** |
+| 🎞️ **Media Playback** | Short-lived signed provider URLs and streaming roadmaps: **[Media Playback](docs/MEDIA_PLAYBACK.md)** & **[Roadmap](docs/roadmaps/MEDIA_STREAMING.md)** |
+
+#### 🌐 Multi-Environment Domain Strategy
+Standardized across the ecosystem for any derivative product (any custom TLD):
+- **Demo Tier**: `rexone.rex9.me` (Web) & `api.rexone.rex9.me` (API)
+- **Product Prod**: `<product>.<tld>` (e.g. `rexone.me`) & `api.<product>.<tld>` (e.g. `api.rexone.me`)
+- **Product UAT**: `uat.<product>.<tld>` (e.g. `uat.rexone.me`) & `uat.api.<product>.<tld>` (e.g. `uat.api.rexone.me`)
+- **Product Dev**: `dev.<product>.<tld>` (e.g. `dev.rexone.me`) & `dev.api.<product>.<tld>` (e.g. `dev.api.rexone.me`)
+
+---
 
 The RexOne platform provides a unified, battle-tested foundation where **any modern digital product** can be rapidly developed on top of ready-made capabilities: Identity & IAM, Commerce & Subscriptions, Background Queues, Asset Management, Real-Time WebSockets, Queued AI, Push Notifications, Product Analytics, Client Telemetry, In-App Upgrades, and Multi-Language Localization.
 
@@ -124,7 +126,7 @@ All tables use **UUID** primary keys (`gen_random_uuid()`), utilize **Discard** 
 | **Media**            | `Asset`                                                                                                                                | Unified media metadata (`name`, human-friendly `title`, optional `description`, `storage_key` for Garage/S3/Cloudinary/Local — user objects under `user/{user_id}/`, platform objects under `admin/`; format, size_bytes, original_size_bytes, compressed_size_bytes, compression_ratio, compression_passes, status enum: `pending`/`processing`/`ready`/`optimal`, duration_secs, type, polymorphic `assetable_type`/`assetable_id`), and `parent_asset_id` for generated video thumbnails, uploaded covers, and `.srt` subtitle children on compressible video or audio parents.                                                                                                                                                                                                                                                |
 | **Telemetry**        | `Client::Log`                                                                                                                          | Frontend error ingest (stack traces, device, OS, browser, URL, severity, occurrences, local/session storage keys, cookies, resolution status). Ingest still sends `app_version`; Core stores nullable `version_id`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | **Feedback**         | `Feedback`                                                                                                                             | Intelligent in-place feedback (1-10 rating, auto-inferred category: `bug`/`feature_request`/`improvement`/`general`, priority: `low`/`normal`/`high`/`urgent`, status, automated device/route telemetry). Ingest still sends `app_version`; Core stores nullable `version_id`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| **Notifications**    | `Notification`, `UserNotification`                                                                                                     | Multi-channel notification repository (In-App, Push, Email) with dynamic variable interpolation; persistent user in-app inbox receipts with immutable snapshots, read tracking, and Pagy pagination.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| **Notifications**    | `Notification`, `UserNotification`                                                                                                     | Multi-channel notification repository (In-App, Push, Email) with dynamic variable interpolation (strictly canonical `user_name`, `user_email`, `link`, alongside domain entities `product_name`, `amount`, etc.; zero loose alias strings); persistent user in-app inbox receipts with immutable snapshots, read tracking, and Pagy pagination.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | **App versions**     | `Client::Version`, `Client::UserVersion`                                                                                               | Global marketing versions (`draft` / `published` / `yanked`; publishing yanks every other kept published row) and one current user-version snapshot per user per platform. Public `GET /v1/client/versions/current` computes `update_required` (client behind the live version) and `must_update` (live version is force and greater than the client). Signed-in `POST /v1/client/versions/user-version` records the device. JSON admin `/v1/admin/client/versions` is super-admin only (discard/undiscard, `install_count`). `GET /v1/admin/client/versions/user_versions` lists all current snapshots (not nested under a version id). Administrate `/admin/client/versions` is super-admin only; user versions are `/admin/client/user_versions`. The user show page lists only `latest_user_version` (newest `last_seen_at`). |
 
 ### ⚙️ Services & Background Jobs (Solid Queue / Waka / Media)
@@ -146,7 +148,7 @@ Heavy or external provider operations sit behind clean service interfaces and ex
 
 Unlike legacy systems that force users through frustrating decision trees ("Do you want to log in or sign up?", "Select SSO vs Email", "Enter password vs request magic link"), RexOne's authentication engine eliminates decision fatigue entirely:
 
-- **Unified Single-Field Entry**: The user simply enters their email or username. The system dynamically queries the account state (`/peek`) to infer whether to proceed with registration, prompt for their 6-digit passcode, route through email verification, or apply rate-limited security cooldowns.
+- **Unified Single-Field Entry**: The user simply enters their email or username. The system dynamically queries the account state (`/peek`, protected by a strict 12 req/min IP rate limiter to block user enumeration) to infer whether to proceed with registration, prompt for their 6-digit passcode, route through email verification, or apply rate-limited security cooldowns.
 - **Frictionless Google SSO & Challenge Flows**: Seamlessly links OAuth accounts and requests password setup only when necessary, smoothly converting unconfirmed dropped registrations without jarring interruptions.
 - **Tri-Platform Concurrent Isolation**: Supports 3 distinct active sessions simultaneously (Web, Android, iOS) without logging users out across devices.
 
@@ -189,9 +191,9 @@ The `/v1/admin/` namespace provides comprehensive management capabilities protec
 - **Product Management**: `GET/POST/PATCH/DELETE /v1/admin/payment/products` (Stripe sync, discard/undiscard).
 - **App Versions**: Super-admin only. `GET/POST /v1/admin/client/versions`, `GET /v1/admin/client/versions?discarded=true`, `GET/PUT /v1/admin/client/versions/:id`, discard/undiscard, and `GET /v1/admin/client/versions/:id/user_versions`. Client::Version payloads include `install_count`.
 - **User Versions**: Super-admin only. `GET /v1/admin/client/versions/user_versions` lists all current user+platform snapshots (optional `platform` filter).
-- **Asset Management**: `GET /v1/assets` lists stored assets with optional `type` filter (`avatar`, `thumbnail`, `subtitle`, `audio`, `video`, `attachment`, `general`) and pagination. `POST /v1/assets/upload` handles client uploads, and `GET /v1/assets/:id/playback` returns Core-authorized progressive playback URLs for ready audio/video assets. `GET/PUT/DELETE /v1/admin/assets` (environment-agnostic CRUD + upload + discard/undiscard/destroy across the complete assets table, search, filter by type/format/source, Garage-owned storage partitioning with singular `user/{user_id}/...` and `admin/...` namespaces beneath each environment prefix, dynamic in-place S3 rename on type update, super-admin-only `GET /v1/admin/assets/storage_stats` with complete database totals, per-environment Garage object/byte usage, and bucket/VPS disk metrics, real-time ActionCable compression status updates, secondary compression pass trigger with 2-pass safeguard).
+- **Asset Management**: `GET /v1/assets` lists stored assets with optional `type` filter (`avatar`, `thumbnail`, `subtitle`, `audio`, `video`, `attachment`, `general`) and pagination. `POST /v1/assets/upload` handles client uploads, and `GET /v1/assets/:id/playback` returns Core-authorized progressive playback URLs for ready audio/video assets (dynamically presigned against client host, e.g. `10.0.2.2:3100` or `localhost:3100`, via S3 SigV4). `GET /v1/assets/:id/subtitles/:subtitle_id` serves CORS-enabled raw VTT/SRT text inline. `GET/PUT/DELETE /v1/admin/assets` (environment-agnostic CRUD + upload + discard/undiscard/destroy across the complete assets table, search, filter by type/format/source, Garage-owned storage partitioning with singular `user/{user_id}/...` and `admin/...` namespaces beneath each environment prefix, dynamic in-place S3 rename on type update, child asset parent assignment with `:parent_asset_id` and automatic parent thumbnail replacement for seamless main-to-child transitions, super-admin-only `GET /v1/admin/assets/storage_stats` with complete database totals, per-environment Garage object/byte usage, and bucket/VPS disk metrics, real-time ActionCable compression status updates, secondary compression pass trigger with 2-pass safeguard).
 - **Video Thumbnail Contract**: Core generates canonical WebP thumbnails in the `media` queue, links each thumbnail `Asset` to its source through `parent_asset_id`, exposes `thumbnail` on serialized source assets, and emits `asset_thumbnail_generated` with `{ asset_id, thumbnail }`. Admin clients may regenerate a video thumbnail (`POST /v1/admin/assets/:id/thumbnail/regenerate`) or upload an image replacement for a compressible video or audio parent (`POST /v1/admin/assets/:id/thumbnail/upload`). Uploaded SVG thumbnails are stored first, converted to PNG by `Media::ConvertImageJob`, and passed through the normal image-compression pass policy; no image processing runs in the API process. Core remains responsible for persistence and cleanup of superseded Garage objects.
-- **Subtitle Contract**: Admin clients may attach `.srt` subtitle children to a compressible video or audio parent (`POST /v1/admin/assets/:id/subtitle/upload`). Core stores each child as `type`/`format` `subtitle`, Garage `resource_type: raw`, `status: ready`, and does not enqueue the media queue. Serialized parents expose compact `child_assets`/`subtitles` data for display and playback.
+- **Subtitle Contract**: Admin clients may attach `.srt` subtitle children to a compressible video or audio parent (`POST /v1/admin/assets/:id/subtitle/upload`). Core stores each child as `type`/`format` `subtitle`, Garage `resource_type: raw`, `status: ready`, and does not enqueue the media queue. Serialized parents expose compact `child_assets`/`subtitles` data for display and playback. `GET /v1/assets/:id/playback` enriches subtitles with `content` (pre-fetched from storage) and `core_url` (`/v1/assets/:id/subtitles/:subtitle_id`) to bypass browser CORS restrictions and support seamless closed captions across Web (in-memory Blob track URLs) and Mobile (synced SRT parsers), gracefully supporting 0, 1, or multiple subtitle files.
 - **Notification Broadcasts & Receipts**: `GET /v1/admin/notifications`, `POST /v1/admin/notifications`, `POST /v1/admin/notifications/dispatch` (audience targeting via roles/users/all, multi-channel fanout), and `GET /v1/admin/user_notifications` (lifecycle CRUD: active, recycle bin, individual and batch `discard`/`undiscard`/`destroy`, and empty recycle bin `DELETE /v1/admin/user_notifications/bin`).
 
 ---
@@ -220,11 +222,12 @@ Defined under `src/design/`:
 ### 🧩 Domain Modules & Flows
 
 - **Auth**: URL-driven dialog navigation (`?dialog=auth&step=...`). Passwords are held purely in memory and never leaked into URL params or persistent storage.
-- **Commerce & Stripe**: Fetches products, validates promo/referral coupons (`/v1/payment/coupons/validate`), applies discount to Stripe Checkout Session (`/v1/payment/session`), bypasses payment gateway for 100% free coupons with immediate entitlement provisioning, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations. Admin portal provides complete Coupon CRUD, batch code generator (`/v1/admin/payment/coupons/batch`), and redemptions audit ledger.
+- **Commerce & Stripe**: Fetches products, validates promo/referral coupons (`/v1/payment/coupons/validate`), applies discount to Stripe Checkout Session (`/v1/payment/session`), bypasses payment gateway for 100% free coupons with immediate entitlement provisioning, handles success/cancel redirects, manages active subscriptions and transactions, and provides modal confirmation for cancellations. Admin portal provides complete Coupon CRUD, batch code generator (`/v1/admin/payment/coupons/batch`), redemptions audit ledger, recycle bin lifecycle operations (`/v1/admin/payment/coupons/bin`, single and batch destroy), and discarded coupon inspection.
 - **AI Workspace**: Non-blocking queued chat. Submits message, displays thinking state, receives completion or event over WebSocket (`useAiSocket`), auto-refreshes room history. Includes utilities for translation, summarization, and sentiment analysis.
 - **Speech & Audio**: Plays raw binary MP3 audio streams directly from `/v1/speech/tts` without base64 wrapper overhead, handles chat message TTS audio playback, and integrates live audio recognition.
-- **Asset Control Center**: Dedicated operational asset management under `/admin/assets`. Features a live Storage & VPS Capacity dashboard (`AdminAssetStorageStats`) showing real-time Garage bucket occupied space, object count, and host VPS disk capacity with low-disk alerts; a multi-file batch upload dialog with optimistic row prepending; out-of-order socket reconciliation (`pendingSocketUpdates`); real-time compression badges (`optimal`, `ready`, `processing`, `pending`); disabled action buttons during in-flight processing; and manual secondary compression pass triggers.
+- **Asset Control Center**: Dedicated operational asset management under `/admin/assets`. Features a live Storage & VPS Capacity dashboard (`AdminAssetStorageStats`) showing real-time Garage bucket occupied space, object count, and host VPS disk capacity with low-disk alerts; a multi-file batch upload dialog with optimistic row prepending; searchable parent asset assignment dropdown (`AdminParentAssetSelect`) for child asset types (`thumbnail`, `subtitle`) with name/title dual-search, parent-only filtering, and warning confirmation alert for existing thumbnail replacement; out-of-order socket reconciliation (`pendingSocketUpdates`); real-time compression badges (`optimal`, `ready`, `processing`, `pending`); disabled action buttons during in-flight processing; and manual secondary compression pass triggers.
 - **Admin AI Control Panel**: Dedicated AI operations under `/admin/ai/profiles` and `/admin/ai/runs`. Governed by granular RBAC permissions (`ai_profiles:read`, `ai_profiles:create`, `ai_profiles:update`, `ai_runs:read`). Features AI profile creation and editing (`AdminAiProfileCreatePage`, `AdminAiProfileEditPage`) with type-safe dropdown selections for Provider (`deepseek`, `gemini`) and dynamic Model Identifier (with custom model fallback), profile key presets bar, list table with row-click navigation, multi-attribute sorting, and top filter toolbar (`status`, `provider`, `model`, `search`). Detail page exposes full configurations (model selection, temperature, token boundaries, context max tokens, history window, timeout, system prompt editor, and settings JSON viewer). Alongside profiles, an AI execution audit log (`AdminAiRunsPage`, `AdminAiRunDetailPage`) displays execution telemetry, latency, token breakdown (prompt/completion/total), error traces, request metadata, top filter toolbar (`status`, `provider`, `model`, `feature`), and multi-attribute sorting.
+- **AI Discovery & Generative Engine Optimization (GEO)**: Sovereign discovery architecture for conversational LLMs (DeepSeek, ChatGPT, Claude, Perplexity, Gemini, Doubao, Qwen, Kimi, Yandex, etc.) and search engines targeting both builders (who refuse to start from zero) and engineers (learning full-stack software development from the strongest basics with clean architecture and zero technical debt). Driven by standardized `/llms.txt`, technical `/llms-full.txt` (llmstxt.org standard), comprehensive Eastern & Western crawler authorization in `robots.txt`, Schema.org `SoftwareApplication` (9.9/10) and `FAQPage` rich results in `index.html`, and `sitemap.xml`. Documented in [`rexone-web/docs/SEO_GEO.md`](../rexone-web/docs/SEO_GEO.md).
 - **Client Admin Panel & RBAC Governance**: Admin UI module under `src/modules/admin/` with sidebar navigation, route guards (`AdminRootRoute`, `AdminHomeRoute`), and client-side RBAC evaluation (`usePermissions`).
   - **Non-Admin Portal Isolation**: Users with only non-admin roles (`user`) cannot access `/admin/*` under any circumstance.
   - **Admin Role Scoping**: Capabilities within `/admin/*` evaluate only permissions mapped from active admin roles (`super_admin`, `admin`, `*_admin`). Base `user` permissions never leak into the admin portal.
@@ -253,13 +256,15 @@ RexOne Mobile has a strictly governed design system accessible via `lib/design/d
 
 - **Auth Flow**: Complete parity with Web & Core (email check, 6-digit password, OTP verification, Google OAuth challenge, session replacement). Zero hardcoded string literals.
 - **Push Notifications**: Powered by OneSignal (`PushNotiService`). Automatically syncs user IDs and tags on sign-in/session restore and clears state on sign-out. Destructive notification deletions (both swipe dismiss and button tap) are strictly confirmed via `AppDialog.confirm()`.
-- **Email Delivery**: Powered by Brevo by default (`EmailService`).
+- **Email Delivery**: Powered by Brevo or OneSignal (`EmailService`). All transactional, notification, and broadcast emails render through the unified cyber-glass **Alert Center Master Shell** (`TemplateRenderer`), dynamically supporting campaign variables, highlight code callouts, structured key-value detail tables, and CTA buttons without hardcoding. Relative links (e.g. `/home`, `/payment`) are automatically normalized to fully qualified client base URLs (`AppConfig.client_url`) to ensure email client links resolve properly, with static HTML templates 100% eliminated.
 - **Product Analytics**: Web and Mobile use separate Firebase streams in one GA4 property. Both emit the constantized `action_noun` contract `sign_up`, `sign_in`, `sign_out`, `begin_onboarding`, `complete_onboarding`, `view_page`, `view_product`, `purchase_product`, and `open_notification`, distinguished by `platform` (`web`, `android`, or `ios`). Core remains the source of authoritative business metrics and does not ingest raw behavioral events.
 - **Purchase & Notification Identity**: `purchase_product` uses `purchase_id` (a Core transaction ID for one-time payments or Core subscription ID for subscription creation) and integer-minor-unit `unit_amount`. `open_notification.notification_id` is always the persisted Core `UserNotification` ID; every push is also persisted and delivered in-app.
 - **In-App Upgrader**: Powered by `upgrader`. Wraps root app builder with `UpgradeAlert` to notify users of critical or optional Play Store / App Store updates.
 - **Stripe & Billing**: In-app Stripe Checkout WebView (`CheckoutPage`), subscription state cards, billing history, and confirmation-guarded cancellation/resumption.
 - **AI Assistant**: Persistent multi-room conversational interface with dual-fallback JSON:API envelope parsing (`data.attributes`, root keys, and `ApiResponse.meta`), optimistic message reconciliation with server-assigned message IDs, top-level and meta `room_id` routing, room renaming (`renameRoom`), background processing indicators, real-time completion toasts via WebSocket, and chat history management.
 - **Real-Time WebSockets**: Action Cable client (`SocketService`) paired with `SocketController` for global notification dispatching and deduplication.
+- **Media Playback**: Unified `lib/modules/media/` module — one mixed paginated playlist from `GET /v1/assets`, signed stream URLs from `GET /v1/assets/:id/playback` at play time (cached in `MediaService` until near `expires_at`, ~60s), display titles via API `title` / `displayTitle`, background audio with mini player, inline video via `media_kit`, standard `AppPage` with unified `AppBar` across playlist and video player, mixed next/previous across audio and video, and `children.subtitles[]` / playback `media.subtitles[]` (SRT) with per-track selection for closed captions and synced lyrics. Playback prefers the offline decrypted cache when a download is `ready`.
+- **Offline Media Downloads & Drift SQLite**: Per-item AES-GCM sandbox downloads (`MediaDownloadService`). Fully backed by a local **Drift (SQLite)** database (`rexone_offline`, documented in `rexone_mobile/docs/CLIENT_DATABASE.md`) mirroring the backend polymorphic `assets` schema (`assetable_type`, `assetable_id`, `parent_asset_id`). Features offline playlist mode (displaying clear empty message when empty and downloaded items when available), local-first playback (always plays from offline storage even when online), single icon-space trailing UX, and storage transparency (size, progress, and freed storage dialog).
 - **Client Telemetry**: Automatic global capture of Flutter errors and platform dispatcher errors dispatched to Core's `POST /v1/client/logs`.
 - **Localization**: 100% translated in English (`en_US`), Spanish (`es_ES`), and Burmese (`my_MM`). Synchronizes `X-Locale` and `Accept-Language` headers on every HTTP request.
 
@@ -304,6 +309,7 @@ All three pillars of the RexOne platform are fully aligned at **100% feature par
 | **Admin AI Control Panel (Profiles & Runs Telemetry)**                    |      ✅       |          ✅          |           N/A            |
 | **In-App Client::Version Upgrader**                                       |      ✅       |          ✅          |            ✅            |
 | **Automated Localization Parity Test Suite**                              |      N/A      |         N/A          |            ✅            |
+| **AI Discovery & Generative Engine Optimization (GEO)**                  |      N/A      |          ✅          |           N/A            |
 
 ---
 
@@ -427,17 +433,16 @@ Clients keep sending `"app_version": "1.0.0"`. Core looks up a kept `Client::Ver
     - Commerce Catalogue (Product creation, Free vs. Premium rules, entitlements).
     - User Feedback Inbox & Triage (Ratings, category taxonomy, priority levels, status workflows).
     - Client Telemetry (`Client::Log` capturing browser/mobile JS crashes that never touch Rails RED).
-- **Strict Non-Duplication Rule**: Never duplicate server CPU/memory, queue depths, or database query telemetry inside the Client Admin Panel. Prioritize business domain operations and client-side observability.
 
 ### 6. Coupon & Referral System Protocol
 
 - **Validation Contract (`POST /v1/payment/coupons/validate`)**:
   - Request: `{ "code": "SAVE20", "product_id": "UUID" }` (Bearer auth required).
-  - Response (200):
+  - Response (200 OK):
     ```json
     {
       "code": 200,
-      "message": "Coupon applied successfully.",
+      "message": "Coupon is valid.",
       "data": {
         "valid": true,
         "coupon": {
@@ -455,6 +460,38 @@ Clients keep sending `"app_version": "1.0.0"`. Core looks up a kept `Client::Ver
       }
     }
     ```
+  - Response (422 Unprocessable Content — Invalid code):
+    ```json
+    {
+      "code": 422,
+      "message": "Coupon is invalid.",
+      "error": "Coupon is invalid.",
+      "data": {
+        "remaining_attempts": 2,
+        "cooldown_remaining": 0
+      }
+    }
+    ```
+  - Response (429 Too Many Requests — Cooldown Active):
+    ```json
+    {
+      "code": 429,
+      "message": "Coupon is invalid.",
+      "error": "Too many invalid coupon attempts. Please wait 30 seconds before trying again.",
+      "data": {
+        "remaining_attempts": 0,
+        "cooldown_remaining": 30
+      }
+    }
+    ```
+  - **Security & Anti-Brute-Force Protection**:
+    - **Uniform Error Masking**: Non-existing codes, expired codes, max global usage limits, and per-user redemption limits all uniformly return `COUPON_INVALID` ("Coupon is invalid.") to eliminate coupon probing.
+    - **Progressive Cooldown Ladder (`CouponService`)**: Enforces progressive per-user cooldowns backed by Redis/SolidCache (`coupon:attempts:#{user_id}` and `coupon:cooldown:#{user_id}`):
+      - 3 attempts -> 30s cooldown
+      - 6 attempts -> 60s cooldown
+      - 9 attempts -> 120s cooldown
+      - 12+ attempts -> 300s (5-minute) cooldown
+    - **Successful Redemption Reset**: Redeeming a valid coupon or completing checkout immediately clears attempt and cooldown counters.
 - **Checkout Integration (`POST /v1/payment/session`)**:
   - Request: `{ "product_id": "UUID", "coupon_code": "SAVE20", "success_url": "...", "cancel_url": "..." }`
   - Flow:
@@ -473,6 +510,11 @@ Clients keep sending `"app_version": "1.0.0"`. Core looks up a kept `Client::Ver
 - **Atomic Concurrency & Reconciliation**:
   - Increments `used_count` atomically via PostgreSQL `UPDATE coupons SET used_count = used_count + 1 WHERE id = :id AND (max_usage = 0 OR used_count < max_usage)`.
   - Weekly `DataSyncService.sync_all!` job recalculates `used_count` against `user_coupons` to guarantee reconciliation.
+- **Recycle Bin & Lifecycle Management**:
+  - Soft-delete (`POST /v1/admin/payment/coupons/:id/discard`, `POST /v1/admin/payment/coupons/discard_batch`) moves coupons to the recycle bin.
+  - Restore (`POST /v1/admin/payment/coupons/:id/undiscard`, `POST /v1/admin/payment/coupons/undiscard_batch`) restores coupons to active status.
+  - Hard-delete (`DELETE /v1/admin/payment/coupons/:id`, `POST /v1/admin/payment/coupons/destroy_batch`, `DELETE /v1/admin/payment/coupons/bin`) permanently purges coupons and their dependent redemption records (`has_many :user_coupons, dependent: :destroy`).
+  - Discarded coupons remain fully inspectable via `/v1/admin/payment/coupons/:id` and `/v1/admin/payment/coupons/:id/redemptions` using `with_discarded`.
 
 ---
 

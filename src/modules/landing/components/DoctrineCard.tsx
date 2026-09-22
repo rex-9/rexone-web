@@ -66,7 +66,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
   pillText = "The Sovereign Doctrine",
   pillIcon,
   quote = "“Start from One. Not from Zero.”",
-  description = "Every new endeavor shouldn't mean burning money repetitively by wasting AI tokens on weak architecture or rebuilding foundation from scratch. RexOne unifies backend, web, and mobile into an immutable, battle-tested trinity—forged under Constitutional Law with zero technical debt.",
+  description = "Whether you are launching an ambitious product without burning months rebuilding foundation basics from scratch, or learning professional full-stack development with the strongest, cleanest, and most disciplined engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested trinity forged under Constitutional Law with zero technical debt.",
   tags = DEFAULT_TAGS,
   className = "",
 }) => {
@@ -119,7 +119,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
         {/* Foundation Fundamentals Grid (Never Rebuild from Scratch) */}
         <div className="pt-6 border-t border-glass-border/60">
           <h3 className="text-xs uppercase tracking-widest font-bold text-primary mb-4">
-            Foundational Fundamentals Delivered on Day One
+            Foundational Fundamentals Delivered on Day One • Full-Stack Masterclass Reference
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-left">
             {FOUNDATION_PILLARS.map((pillar, idx) => {

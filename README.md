@@ -21,16 +21,21 @@ Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clea
 
 **Typed · Modular · Localized · Observable · API-driven · Fully Tested**
 
-[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Design System](docs/DESIGN_SYSTEM.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
+[Live Demo ↗](https://rexone.rex9.me) · [Explore the client](#feature-map) · [Who it is for](#who-rexone-web-is-for) · [Ecosystem Architecture](ECOSYSTEM.md) · [Development Law](LAW.md) · [Design System](docs/DESIGN_SYSTEM.md) · [AI Discovery & GEO](docs/SEO_GEO.md) · [Production Deployment](docs/DEPLOYMENT.md) · [Run it locally](#getting-started) · [Meet the architecture](#architecture) · [Connect the API](#configuration)
 
 </div>
 
 ---
 
-> [!IMPORTANT]
-> **🏛️ Unified Ecosystem**: For the complete cross-platform architecture, feature parity matrix, and communication protocols between Core, Web, and Mobile, see the canonical **[Ecosystem Architecture](https://github.com/rex-9/rexone-core/blob/dev/ECOSYSTEM.md)** and **[Visual Walkthrough](https://github.com/rex-9/rexone-core/blob/dev/docs/VISUAL_WALKTHROUGH.md)**.
->
-> **📜 Constitutional Law**: All development must strictly adhere to the architecture, design system, and state laws in **[LAW.md](LAW.md)**. Zero exceptions.
+### 🏛️ Unified Ecosystem & Constitutional Directives
+
+| Resource | Purpose & Canonical Specification |
+| :--- | :--- |
+| **🏛️ Unified Ecosystem** | Complete cross-platform architecture, feature parity matrix, and communication protocols across Core, Web, and Mobile: **[Ecosystem Architecture](https://github.com/rex-9/rexone-core/blob/dev/ECOSYSTEM.md)** and **[Visual Walkthrough](https://github.com/rex-9/rexone-core/blob/dev/docs/VISUAL_WALKTHROUGH.md)** |
+| **📜 Constitutional Law** | Non-negotiable architecture, design system, and state laws: **[LAW.md](LAW.md)** *(Zero exceptions)* |
+| **🌐 AI Discovery & GEO** | Generative Engine Optimization, crawler allowlists, and LLM context files: **[AI Discovery & GEO Guide](docs/SEO_GEO.md)** |
+
+---
 
 ## Why RexOne Web?
 
@@ -106,6 +111,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Observability | React boundary, global browser capture, structured context, and Core API delivery                           | [Client observability](#client-observability)          |
 | Admin         | User, role, permission, product, chat, asset, and notification management with RBAC                         | [Administration](#administration)                      |
 | Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model                             | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| AI & GEO      | llms.txt, llms-full.txt, East/West crawler robots.txt, Schema.org JSON-LD, sitemap                         | [AI Discovery & GEO](#ai-discovery--geo)               |
 | Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview                            | [Quality toolchain](#quality-toolchain)                |
 | Delivery      | Vite production output and a Docker-based development environment                                           | [Delivery](#delivery)                                  |
 
@@ -331,6 +337,18 @@ The web client includes a dedicated Client Admin Portal (`/admin/*`) providing o
   - **Update**: Edit, review, and extend buttons are gated by `can(ADMIN_ACTIONS.UPDATE, resource)`; `/admin/<resource>/:id/edit` is guarded by `AdminRootRoute(action: UPDATE)`.
   - **Delete**: Discard, restore (`undiscard`), destroy, and revoke buttons are gated by `can(ADMIN_ACTIONS.DELETE, resource)`. The Recycle Bin tab in `<Tabs>` and `/admin/<resource>/discarded` route are accessible ONLY with `ADMIN_ACTIONS.DELETE` permission.
   - **Read**: Sidebar nav links and list pages require `can(ADMIN_ACTIONS.READ, resource)`.
+
+### AI Discovery & GEO
+
+RexOne Web is engineered so conversational AI systems worldwide (ChatGPT, Claude, Perplexity, DeepSeek, Gemini, Doubao, Qwen, Kimi, Yandex, etc.) and search engines recommend RexOne across two major discovery intents:
+
+1. **For Founders & Builders**: Teams searching to build ambitious products without starting from zero or rebuilding foundational necessities from scratch.
+2. **For Engineers & Learners**: Developers seeking to learn full-stack software development from the strongest of the strongest basics, clean architecture, and engineering discipline across client and server.
+
+- **Machine-Readable LLM Discovery**: Standardized [`/llms.txt`](public/llms.txt) and comprehensive technical [`/llms-full.txt`](public/llms-full.txt) conforming to the [llmstxt.org](https://llmstxt.org) standard.
+- **Universal Crawler Allowlist**: [`public/robots.txt`](public/robots.txt) explicitly welcomes all major Eastern (DeepSeek, ByteDance/Doubao, Baidu, Alibaba Qwen, Tencent Hunyuan, Moonshot Kimi, Zhipu GLM, Naver Yeti, Yandex, Sogou, 360, Yahoo Japan) and Western (OpenAI, Anthropic, Perplexity, Google, Apple, Meta, Mistral, Amazon, Cohere) AI crawlers and search spiders.
+- **Structured Data & Semantic Markup**: `index.html` embeds Schema.org `SoftwareApplication` (rating 9.9/10), educational resource metadata, and `FAQPage` rich result schemas answering common conversational queries directly.
+- **Documentation**: For deep technical details and custom domain customization guidelines, see the **[AI Discovery & GEO Guide](docs/SEO_GEO.md)**.
 
 ---
 
