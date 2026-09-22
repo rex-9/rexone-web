@@ -45,6 +45,7 @@ const emptyForm: IAdminNotificationTemplateFormValues = {
   admin: true,
   in_app_title: "",
   in_app_body: "",
+  in_app_data: {},
   push_title: "",
   push_body: "",
   push_template_id: "",
@@ -75,6 +76,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
           admin: template.admin ?? true,
           in_app_title: template.in_app_title || "",
           in_app_body: template.in_app_body || "",
+          in_app_data: template.in_app_data || {},
           push_title: template.push_title || "",
           push_body: template.push_body || "",
           push_template_id: template.push_template_id || "",
@@ -312,8 +314,14 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                   }}
                 >
                   {client === NOTIFICATION_CLIENTS.WEB
-                    ? t(AppLocales.Admin.Notifications.Templates.Dialog.ClientWeb)
-                    : t(AppLocales.Admin.Notifications.Templates.Dialog.ClientMobile)}
+                    ? t(
+                        AppLocales.Admin.Notifications.Templates.Dialog
+                          .ClientWeb,
+                      )
+                    : t(
+                        AppLocales.Admin.Notifications.Templates.Dialog
+                          .ClientMobile,
+                      )}
                 </Checkbox>
               ))}
             </div>
@@ -345,7 +353,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.IN_APP)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.IN_APP
-                  ? "!bg-primary !text-primary-content shadow-sm"
+                  ? "bg-primary! text-primary-content! shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
@@ -358,7 +366,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.PUSH)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.PUSH
-                  ? "!bg-primary !text-primary-content shadow-sm"
+                  ? "bg-primary! text-primary-content! shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
@@ -371,7 +379,7 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
               onClick={() => setActiveChannelTab(NOTIFICATION_CHANNELS.EMAIL)}
               className={`flex items-center gap-1.5 px-3 py-1.5 text-body-s font-semibold rounded-lg transition-colors ${
                 activeChannelTab === NOTIFICATION_CHANNELS.EMAIL
-                  ? "!bg-primary !text-primary-content shadow-sm"
+                  ? "bg-primary! text-primary-content! shadow-sm"
                   : "text-base-content/60 hover:bg-base-200"
               }`}
             >
