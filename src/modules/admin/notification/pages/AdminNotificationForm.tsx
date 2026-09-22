@@ -159,11 +159,20 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isCreate && !formValues.event.trim()) {
-      setAlertMessage(
-        t(AppLocales.Admin.Notifications.Templates.Dialog.EventRequired),
-      );
-      return;
+    if (isCreate) {
+      if (!formValues.event.trim()) {
+        setAlertMessage(
+          t(AppLocales.Admin.Notifications.Templates.Dialog.EventRequired),
+        );
+        return;
+      }
+
+      if (!/^[a-z][a-z0-9_]*$/.test(formValues.event.trim())) {
+        setAlertMessage(
+          "Event key must start with a lowercase letter and contain only lowercase letters, numbers, and underscores (e.g. promotional_campaign_fall).",
+        );
+        return;
+      }
     }
 
     if (!formValues.name.trim()) {
@@ -211,13 +220,20 @@ export const AdminNotificationForm: React.FC<IAdminNotificationFormProps> = ({
                   .EventPlaceholder,
               )}
               value={formValues.event}
-              onChange={(e) => handleChange("event", e.target.value)}
+              onChange={(e) => {
+                if (!isCreate) return;
+                const sanitized = e.target.value
+                  .toLowerCase()
+                  .replace(/[\s-]+/g, "_")
+                  .replace(/[^a-z0-9_]/g, "");
+                handleChange("event", sanitized);
+              }}
               disabled={!isCreate}
               required={isCreate}
               helperText={
                 !isCreate
                   ? "Event identifier is unique and cannot be modified."
-                  : undefined
+                  : "Lowercase snake_case only (e.g. promotional_campaign_fall). Spaces and special characters are automatically converted."
               }
             />
 
