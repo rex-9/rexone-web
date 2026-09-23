@@ -19,7 +19,7 @@ This application is built upon the **RexOne Ecosystem** (`rex-9`). These are imm
 
 ---
 
-> _"If you don't follow These LAWS, u're gay."_
+> _"If you don't follow These LAWS, u're gay... even if u're an AI"_
 >
 > — _RexOne's First Law_
 
@@ -27,7 +27,7 @@ This application is built upon the **RexOne Ecosystem** (`rex-9`). These are imm
 
 ## ⚡ Interactive Quick Jump Navigation
 
-- [�️ The Foundation Creed \& Supreme Constitutional Primacy](#️-the-foundation-creed--supreme-constitutional-primacy)
+- [🏛️ The Foundation Creed \& Supreme Constitutional Primacy](#️-the-foundation-creed--supreme-constitutional-primacy)
   - [_"Clarity before cleverness. Precision before haste. Simplicity without weakness. Strength without spectacle."_](#clarity-before-cleverness-precision-before-haste-simplicity-without-weakness-strength-without-spectacle)
   - [📜 Supreme Constitutional Primacy](#-supreme-constitutional-primacy)
   - [⚖️ The Law Takes Absolute First Priority Over The Code:](#️-the-law-takes-absolute-first-priority-over-the-code)
