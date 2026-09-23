@@ -3,16 +3,17 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
-import {
-  Button,
-  Dropdown,
-} from "../../../../design";
+import { Button, Dialog, Dropdown } from "../../../../design";
 import {
   ButtonSizes,
   ButtonVariants,
   ComponentSizes,
 } from "../../../../design/constants";
-import { TextInput, TextArea, Checkbox } from "../../../../design/components/form";
+import {
+  TextInput,
+  TextArea,
+  Checkbox,
+} from "../../../../design/components/form";
 import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
 import { AppLocales } from "../../../../locales/app_locales";
@@ -21,7 +22,7 @@ import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../../constants";
 import PaymentController from "../payment.controller";
 import ClientPaymentController from "../../../payment/payment.controller";
 import RoleController from "../../role/role.controller";
-import type { IProduct } from "../../../payment/types";
+import type { ICoupon, IProduct } from "../../../payment/types";
 import type { IAdminRole } from "../../role/types";
 import { useToast } from "../../../../contexts/ToastContext";
 import {
@@ -43,6 +44,9 @@ export const AdminCouponCreatePage: React.FC = () => {
   const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
 
   const [isBatch, setIsBatch] = useState(false);
+  const [createdBatchCoupons, setCreatedBatchCoupons] = useState<
+    ICoupon[] | null
+  >(null);
 
   // Form Fields
   const [title, setTitle] = useState("");
@@ -50,7 +54,9 @@ export const AdminCouponCreatePage: React.FC = () => {
   const [code, setCode] = useState("");
   const [batchCount, setBatchCount] = useState(10);
   const [batchPrefix, setBatchPrefix] = useState("PROMO");
-  const [couponType, setCouponType] = useState<TCouponType>(COUPON_TYPES.PERCENTAGE);
+  const [couponType, setCouponType] = useState<TCouponType>(
+    COUPON_TYPES.PERCENTAGE,
+  );
   const [amount, setAmount] = useState<number>(20);
   const [currency, setCurrency] = useState<string>(PAYMENT_CURRENCIES.USD);
   const [maxUsage, setMaxUsage] = useState<number>(0);
@@ -87,7 +93,10 @@ export const AdminCouponCreatePage: React.FC = () => {
     }
 
     if (!isBatch) {
-      const cleanCode = code.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const cleanCode = code
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
       if (!cleanCode) {
         toastError(t(AppLocales.Admin.Coupons.Form.CodeLabel));
         return;
@@ -103,7 +112,10 @@ export const AdminCouponCreatePage: React.FC = () => {
       return;
     }
 
-    if (couponType === COUPON_TYPES.PERCENTAGE && amount > MAX_PERCENTAGE_DISCOUNT) {
+    if (
+      couponType === COUPON_TYPES.PERCENTAGE &&
+      amount > MAX_PERCENTAGE_DISCOUNT
+    ) {
       toastError(t(AppLocales.Admin.Coupons.Form.PercentagePlaceholder));
       return;
     }
@@ -120,11 +132,18 @@ export const AdminCouponCreatePage: React.FC = () => {
       .map((entry) => entry.trim())
       .filter((entry) => entry.length > 0);
 
-    const targetUserEmails = parsedTargetUsers.filter((entry) => entry.includes("@"));
-    const targetUserIds = parsedTargetUsers.filter((entry) => !entry.includes("@"));
+    const targetUserEmails = parsedTargetUsers.filter((entry) =>
+      entry.includes("@"),
+    );
+    const targetUserIds = parsedTargetUsers.filter(
+      (entry) => !entry.includes("@"),
+    );
 
     // Minor units for fixed discounts (e.g. $10 -> 1000 cents), or raw integer percentage
-    const finalAmount = couponType === COUPON_TYPES.PERCENTAGE ? Math.round(amount) : Math.round(amount * 100);
+    const finalAmount =
+      couponType === COUPON_TYPES.PERCENTAGE
+        ? Math.round(amount)
+        : Math.round(amount * 100);
 
     const basePayload = {
       title: title.trim(),
@@ -138,26 +157,37 @@ export const AdminCouponCreatePage: React.FC = () => {
       target_role_ids: canReadRoles ? selectedRoleIds : [],
       target_product_ids: selectedProductIds,
       target_user_ids: targetUserIds.length > 0 ? targetUserIds : undefined,
-      target_user_emails: targetUserEmails.length > 0 ? targetUserEmails : undefined,
+      target_user_emails:
+        targetUserEmails.length > 0 ? targetUserEmails : undefined,
     };
 
     if (isBatch) {
-      const cleanPrefix = batchPrefix.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const cleanPrefix = batchPrefix
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
+      const clampedBatchCount = Math.min(Math.max(1, batchCount), 100);
       const result = await PaymentController.createBatchCoupons({
-        count: batchCount,
+        count: clampedBatchCount,
         prefix: cleanPrefix,
         coupon: basePayload,
       });
       setLoading(false);
 
-      if (result.success) {
+      if (result.success && result.coupons.length > 0) {
+        success(t(AppLocales.Admin.Coupons.Toasts.BatchCreateSuccess));
+        setCreatedBatchCoupons(result.coupons);
+      } else if (result.success) {
         success(t(AppLocales.Admin.Coupons.Toasts.BatchCreateSuccess));
         navigate(AppRoutes.client.protected.admin.COUPONS);
       } else {
         toastError(result.error || t(AppLocales.Admin.Coupons.Errors.Create));
       }
     } else {
-      const cleanCode = code.trim().toUpperCase().replace(/[^A-Z0-9]/g, "");
+      const cleanCode = code
+        .trim()
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "");
       const result = await PaymentController.createCoupon({
         ...basePayload,
         code: cleanCode,
@@ -175,7 +205,9 @@ export const AdminCouponCreatePage: React.FC = () => {
 
   const toggleRoleSelection = (roleId: string) => {
     setSelectedRoleIds((prev) =>
-      prev.includes(roleId) ? prev.filter((id) => id !== roleId) : [...prev, roleId],
+      prev.includes(roleId)
+        ? prev.filter((id) => id !== roleId)
+        : [...prev, roleId],
     );
   };
 
@@ -187,7 +219,37 @@ export const AdminCouponCreatePage: React.FC = () => {
     );
   };
 
-  if (!permissionsLoading && !can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.PAYMENT_COUPONS)) {
+  const handleCopyAllCodes = () => {
+    if (!createdBatchCoupons || createdBatchCoupons.length === 0) return;
+    const codes = createdBatchCoupons.map((c) => c.code).join("\n");
+    void navigator.clipboard.writeText(codes);
+    success("All coupon codes copied to clipboard!");
+  };
+
+  const handleDownloadCodes = () => {
+    if (!createdBatchCoupons || createdBatchCoupons.length === 0) return;
+    const header = "Code,Type,Amount,Currency,ExpiresAt\n";
+    const rows = createdBatchCoupons
+      .map(
+        (c) =>
+          `"${c.code}","${c.coupon_type}","${c.amount}","${c.currency || ""}","${c.expires_at || ""}"`,
+      )
+      .join("\n");
+    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `coupons_batch_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  if (
+    !permissionsLoading &&
+    !can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.PAYMENT_COUPONS)
+  ) {
     return (
       <div className="text-center py-12 text-error">
         {t(AppLocales.Admin.Coupons.Errors.Create)}
@@ -227,7 +289,9 @@ export const AdminCouponCreatePage: React.FC = () => {
           <div className="flex bg-base-200 p-1 rounded-lg gap-1">
             <Button
               type="button"
-              variant={!isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY}
+              variant={
+                !isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY
+              }
               size={ComponentSizes.SM}
               onClick={() => setIsBatch(false)}
             >
@@ -235,7 +299,9 @@ export const AdminCouponCreatePage: React.FC = () => {
             </Button>
             <Button
               type="button"
-              variant={isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY}
+              variant={
+                isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY
+              }
               size={ComponentSizes.SM}
               onClick={() => setIsBatch(true)}
             >
@@ -263,7 +329,9 @@ export const AdminCouponCreatePage: React.FC = () => {
           <div>
             <TextArea
               label={t(AppLocales.Admin.Coupons.Form.DescriptionLabel)}
-              placeholder={t(AppLocales.Admin.Coupons.Form.DescriptionPlaceholder)}
+              placeholder={t(
+                AppLocales.Admin.Coupons.Form.DescriptionPlaceholder,
+              )}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}
@@ -276,7 +344,11 @@ export const AdminCouponCreatePage: React.FC = () => {
                 label={`${t(AppLocales.Admin.Coupons.Form.CodeLabel)} *`}
                 placeholder={t(AppLocales.Admin.Coupons.Form.CodePlaceholder)}
                 value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                onChange={(e) =>
+                  setCode(
+                    e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""),
+                  )
+                }
                 helperText={t(AppLocales.Admin.Coupons.Form.CodeHelper)}
                 className="font-mono uppercase tracking-wider"
                 required
@@ -287,9 +359,15 @@ export const AdminCouponCreatePage: React.FC = () => {
               <div>
                 <TextInput
                   label={t(AppLocales.Admin.Coupons.Form.BatchPrefixLabel)}
-                  placeholder={t(AppLocales.Admin.Coupons.Form.BatchPrefixPlaceholder)}
+                  placeholder={t(
+                    AppLocales.Admin.Coupons.Form.BatchPrefixPlaceholder,
+                  )}
                   value={batchPrefix}
-                  onChange={(e) => setBatchPrefix(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
+                  onChange={(e) =>
+                    setBatchPrefix(
+                      e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""),
+                    )
+                  }
                   helperText={t(AppLocales.Admin.Coupons.Form.BatchHelper)}
                   className="font-mono uppercase"
                 />
@@ -299,7 +377,7 @@ export const AdminCouponCreatePage: React.FC = () => {
                   label={t(AppLocales.Admin.Coupons.Form.BatchCountLabel)}
                   type="number"
                   min={1}
-                  max={500}
+                  max={100}
                   value={batchCount}
                   onChange={(e) => setBatchCount(Number(e.target.value))}
                   required
@@ -324,8 +402,14 @@ export const AdminCouponCreatePage: React.FC = () => {
                 value={couponType}
                 onValueChange={(val) => setCouponType(val as TCouponType)}
                 options={[
-                  { value: COUPON_TYPES.PERCENTAGE, label: t(AppLocales.Admin.Coupons.Form.TypePercentage) },
-                  { value: COUPON_TYPES.FIXED, label: t(AppLocales.Admin.Coupons.Form.TypeFixed) },
+                  {
+                    value: COUPON_TYPES.PERCENTAGE,
+                    label: t(AppLocales.Admin.Coupons.Form.TypePercentage),
+                  },
+                  {
+                    value: COUPON_TYPES.FIXED,
+                    label: t(AppLocales.Admin.Coupons.Form.TypeFixed),
+                  },
                 ]}
               />
             </div>
@@ -335,7 +419,11 @@ export const AdminCouponCreatePage: React.FC = () => {
                 label={`${t(AppLocales.Admin.Coupons.Form.AmountLabel)} *`}
                 type="number"
                 min={1}
-                max={couponType === COUPON_TYPES.PERCENTAGE ? MAX_PERCENTAGE_DISCOUNT : 100000}
+                max={
+                  couponType === COUPON_TYPES.PERCENTAGE
+                    ? MAX_PERCENTAGE_DISCOUNT
+                    : 100000
+                }
                 step={couponType === COUPON_TYPES.PERCENTAGE ? 1 : 0.01}
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
@@ -370,7 +458,9 @@ export const AdminCouponCreatePage: React.FC = () => {
                 min={0}
                 value={maxUsage}
                 onChange={(e) => setMaxUsage(Number(e.target.value))}
-                placeholder={t(AppLocales.Admin.Coupons.Form.MaxUsagePlaceholder)}
+                placeholder={t(
+                  AppLocales.Admin.Coupons.Form.MaxUsagePlaceholder,
+                )}
                 tooltip={t(AppLocales.Admin.Coupons.Form.MaxUsageTooltip)}
               />
             </div>
@@ -382,7 +472,9 @@ export const AdminCouponCreatePage: React.FC = () => {
                 min={1}
                 value={maxUsagePerUser}
                 onChange={(e) => setMaxUsagePerUser(Number(e.target.value))}
-                placeholder={t(AppLocales.Admin.Coupons.Form.MaxPerUserPlaceholder)}
+                placeholder={t(
+                  AppLocales.Admin.Coupons.Form.MaxPerUserPlaceholder,
+                )}
               />
             </div>
 
@@ -455,9 +547,12 @@ export const AdminCouponCreatePage: React.FC = () => {
                     onChange={() => toggleProductSelection(prod.id)}
                   />
                   <div className="truncate">
-                    <span className="font-bold block truncate">{prod.name}</span>
+                    <span className="font-bold block truncate">
+                      {prod.name}
+                    </span>
                     <span className="text-base-content/60">
-                      {prod.price} {prod.recurring ? `/${prod.period_label}` : ""}
+                      {prod.price}{" "}
+                      {prod.recurring ? `/${prod.period_label}` : ""}
                     </span>
                   </div>
                 </label>
@@ -469,7 +564,9 @@ export const AdminCouponCreatePage: React.FC = () => {
           <div>
             <TextArea
               label={t(AppLocales.Admin.Coupons.Detail.TargetUsers)}
-              placeholder={t(AppLocales.Admin.Coupons.Form.TargetUsersPlaceholder)}
+              placeholder={t(
+                AppLocales.Admin.Coupons.Form.TargetUsersPlaceholder,
+              )}
               value={targetUserEmailsInput}
               onChange={(e) => setTargetUserEmailsInput(e.target.value)}
               helperText={t(AppLocales.Admin.Coupons.Form.TargetUsersHelper)}
@@ -501,8 +598,76 @@ export const AdminCouponCreatePage: React.FC = () => {
           </Button>
         </div>
       </form>
+
+      {/* Post-Batch Generation Results Modal */}
+      <Dialog
+        isOpen={Boolean(createdBatchCoupons && createdBatchCoupons.length > 0)}
+        onClose={() => {
+          setCreatedBatchCoupons(null);
+          navigate(AppRoutes.client.protected.admin.COUPONS);
+        }}
+        title={`${createdBatchCoupons?.length ?? 0} Coupons Generated`}
+        className="max-w-lg"
+        footer={
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={ButtonVariants.SECONDARY}
+                size={ButtonSizes.SM}
+                onClick={handleCopyAllCodes}
+                className="gap-1.5"
+              >
+                <iconsLib.copy className="h-4 w-4" />
+                Copy All
+              </Button>
+              <Button
+                type="button"
+                variant={ButtonVariants.SECONDARY}
+                size={ButtonSizes.SM}
+                onClick={handleDownloadCodes}
+                className="gap-1.5"
+              >
+                <iconsLib.download className="h-4 w-4" />
+                Export CSV
+              </Button>
+            </div>
+            <Button
+              type="button"
+              variant={ButtonVariants.PRIMARY}
+              size={ButtonSizes.SM}
+              onClick={() => {
+                setCreatedBatchCoupons(null);
+                navigate(AppRoutes.client.protected.admin.COUPONS);
+              }}
+            >
+              {t(AppLocales.Admin.Common.Actions.Done)}
+            </Button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-xs text-base-content/70">
+            {t(AppLocales.Admin.Coupons.Toasts.BatchCreateSuccess)}
+          </p>
+          <div className="max-h-60 overflow-y-auto rounded-lg border border-base-300 bg-base-200/50 p-3 font-mono text-xs text-base-content space-y-1">
+            {createdBatchCoupons?.map((c) => (
+              <div
+                key={c.id || c.code}
+                className="flex justify-between items-center py-1 border-b border-base-300/40 last:border-0"
+              >
+                <span className="font-semibold text-primary">{c.code}</span>
+                <span className="text-base-content/60">
+                  {c.coupon_type === COUPON_TYPES.PERCENTAGE
+                    ? `${c.amount}% off`
+                    : `$${(c.amount / 100).toFixed(2)}`}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
 export default AdminCouponCreatePage;
-

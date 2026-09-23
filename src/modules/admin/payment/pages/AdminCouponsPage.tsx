@@ -46,6 +46,8 @@ import {
   ADMIN_COUPON_COLUMNS,
   ADMIN_COUPON_FILTERS,
   ADMIN_COUPON_SORT_KEYS,
+  COUPON_METADATA_KEYS,
+  COUPON_SYNC_STATUS,
   COUPON_TYPES,
 } from "../constants";
 import PaymentController from "../payment.controller";
@@ -326,24 +328,47 @@ export const AdminCouponsPage: React.FC = () => {
         key: ADMIN_COUPON_COLUMNS.CODE,
         header: t(AppLocales.Admin.Coupons.Table.Code),
         sortKey: ADMIN_COUPON_SORT_KEYS.CODE,
-        render: (coupon) => (
-          <div className="flex items-center gap-2">
-            <Badge
-              variant={
-                coupon.active ? BadgeVariants.PRIMARY : BadgeVariants.DEFAULT
-              }
-              size={ComponentSizes.MD}
-              className="font-mono font-bold tracking-wider"
-            >
-              {coupon.code}
-            </Badge>
-            {coupon.referrer_id && (
-              <Badge variant={BadgeVariants.INFO} size={ComponentSizes.SM}>
-                {t(AppLocales.Admin.Coupons.Table.Referral)}
+        render: (coupon) => {
+          const syncStatus = coupon.metadata?.[COUPON_METADATA_KEYS.STATUS]
+            ?.toString()
+            .toLowerCase();
+          const syncError = coupon.metadata?.[COUPON_METADATA_KEYS.SYNC_ERROR]
+            ? String(coupon.metadata[COUPON_METADATA_KEYS.SYNC_ERROR])
+            : undefined;
+
+          return (
+            <div className="flex items-center gap-2">
+              <Badge
+                variant={
+                  coupon.active ? BadgeVariants.PRIMARY : BadgeVariants.DEFAULT
+                }
+                size={ComponentSizes.MD}
+                className="font-mono font-bold tracking-wider"
+              >
+                {coupon.code}
               </Badge>
-            )}
-          </div>
-        ),
+              {syncStatus === COUPON_SYNC_STATUS.PROCESSING && (
+                <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.SM}>
+                  {t(AppLocales.Admin.Coupons.Status.Processing)}
+                </Badge>
+              )}
+              {syncStatus === COUPON_SYNC_STATUS.FAILED && (
+                <Badge
+                  variant={BadgeVariants.ERROR}
+                  size={ComponentSizes.SM}
+                  title={syncError}
+                >
+                  {t(AppLocales.Admin.Coupons.Status.Failed)}
+                </Badge>
+              )}
+              {coupon.referrer_id && (
+                <Badge variant={BadgeVariants.INFO} size={ComponentSizes.SM}>
+                  {t(AppLocales.Admin.Coupons.Table.Referral)}
+                </Badge>
+              )}
+            </div>
+          );
+        },
       },
       {
         key: ADMIN_COUPON_COLUMNS.TITLE,

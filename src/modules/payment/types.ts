@@ -175,6 +175,7 @@ export interface ICoupon {
   created_at: string;
   updated_at: string;
   discarded_at?: string | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export type TPurchaseType = "trx" | "sbs";

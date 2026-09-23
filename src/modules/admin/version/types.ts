@@ -22,6 +22,7 @@ export interface IAdminVersion {
   discarded_at?: Date | string | null;
   undiscarded_at?: Date | string | null;
   install_count?: number;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface IAdminVersionFormValues {

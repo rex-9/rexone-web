@@ -51,5 +51,11 @@ export const ADMIN_COUPON_FILTERS = {
   VIEW: "view",
 } as const;
 
-export { COUPON_TYPES, type TCouponType } from "../../payment/constants";
+export {
+  COUPON_TYPES,
+  COUPON_SYNC_STATUS,
+  COUPON_METADATA_KEYS,
+  type TCouponType,
+  type TCouponSyncStatus,
+} from "../../payment/constants";
 

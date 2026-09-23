@@ -30,6 +30,10 @@ import {
   ADMIN_RESOURCES,
   ADMIN_VIEW_MODES,
 } from "../../constants";
+import {
+  COUPON_METADATA_KEYS,
+  COUPON_SYNC_STATUS,
+} from "../constants";
 import PaymentController from "../payment.controller";
 import type { ICoupon } from "../../../payment/types";
 import { useToast } from "../../../../contexts/ToastContext";
@@ -152,6 +156,16 @@ export const AdminCouponDetailPage: React.FC = () => {
               <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
                 {t(AppLocales.Admin.Coupons.Tabs.RecycleBin)}
               </Badge>
+            ) : coupon.metadata?.[COUPON_METADATA_KEYS.STATUS] ===
+              COUPON_SYNC_STATUS.PROCESSING ? (
+              <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Status.Processing)}
+              </Badge>
+            ) : coupon.metadata?.[COUPON_METADATA_KEYS.STATUS] ===
+              COUPON_SYNC_STATUS.FAILED ? (
+              <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
+                {t(AppLocales.Admin.Coupons.Status.Failed)}
+              </Badge>
             ) : coupon.exhausted ? (
               <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
                 {t(AppLocales.Admin.Coupons.Detail.RemainingUsage)}: 0
@@ -223,6 +237,27 @@ export const AdminCouponDetailPage: React.FC = () => {
         />
       ) : coupon ? (
         <div className="space-y-6">
+          {coupon.metadata?.[COUPON_METADATA_KEYS.STATUS] ===
+            COUPON_SYNC_STATUS.FAILED && (
+            <div className="rounded-2xl border border-error/30 bg-error/10 p-5 text-error flex items-start gap-3">
+              <iconsLib.warning className="w-5 h-5 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <span className="font-bold text-sm block">
+                  {t(AppLocales.Admin.Coupons.Status.SyncFailedTitle)}
+                </span>
+                <p className="text-xs text-error/90">
+                  {String(
+                    coupon.metadata?.[COUPON_METADATA_KEYS.SYNC_ERROR] ||
+                      t(AppLocales.Admin.Coupons.Status.Failed),
+                  )}
+                </p>
+                <span className="text-xs text-error/70 block mt-1">
+                  {t(AppLocales.Admin.Coupons.Status.SyncFailedHelper)}
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Top Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
@@ -275,6 +310,16 @@ export const AdminCouponDetailPage: React.FC = () => {
                 {coupon.discarded_at ? (
                   <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
                     {t(AppLocales.Admin.Coupons.Tabs.RecycleBin)}
+                  </Badge>
+                ) : coupon.metadata?.[COUPON_METADATA_KEYS.STATUS] ===
+                  COUPON_SYNC_STATUS.PROCESSING ? (
+                  <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
+                    {t(AppLocales.Admin.Coupons.Status.Processing)}
+                  </Badge>
+                ) : coupon.metadata?.[COUPON_METADATA_KEYS.STATUS] ===
+                  COUPON_SYNC_STATUS.FAILED ? (
+                  <Badge variant={BadgeVariants.ERROR} size={ComponentSizes.MD}>
+                    {t(AppLocales.Admin.Coupons.Status.Failed)}
                   </Badge>
                 ) : coupon.exhausted ? (
                   <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.MD}>
@@ -354,6 +399,18 @@ export const AdminCouponDetailPage: React.FC = () => {
               />
             </DetailGrid>
           </DetailSection>
+
+          {/* Metadata */}
+          {coupon.metadata && Object.keys(coupon.metadata).length > 0 && (
+            <DetailSection
+              title={t(AppLocales.Admin.Common.Detail.Metadata)}
+              icon={iconsLib.cube}
+            >
+              <pre className="overflow-x-auto rounded-lg bg-surface-raised p-4 font-mono text-xs text-text-primary">
+                {JSON.stringify(coupon.metadata, null, 2)}
+              </pre>
+            </DetailSection>
+          )}
 
           {/* Redemptions Table */}
           <DetailSection

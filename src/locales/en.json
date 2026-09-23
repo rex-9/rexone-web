@@ -372,7 +372,8 @@
         "updated": "Updated",
         "source": "Source",
         "format": "Format",
-        "size": "Size"
+        "size": "Size",
+        "metadata": "Metadata"
       },
       "actions": {
         "create": "Create",
@@ -396,7 +397,8 @@
         "clear_all": "Clear All",
         "apply_filter": "Apply Filter",
         "reset_filter": "Reset Filter",
-        "open_recycle_bin": "Open recycle bin"
+        "open_recycle_bin": "Open recycle bin",
+        "done": "Done"
       },
       "recycle_bin": {
         "empty_button": "Empty Recycle Bin",
@@ -770,6 +772,13 @@
         "batch_restore": "Failed to batch restore coupons",
         "batch_destroy": "Failed to batch delete coupons",
         "empty_recycle_bin": "Failed to empty recycle bin"
+      },
+      "status": {
+        "processing": "Processing",
+        "failed": "Failed",
+        "succeeded": "Succeeded",
+        "sync_failed_title": "Stripe Synchronization Failed",
+        "sync_failed_helper": "This coupon remains inactive and cannot be activated. Inspect the error and delete the coupon if necessary."
       }
     },
     "user_coupons": {

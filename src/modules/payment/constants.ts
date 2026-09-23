@@ -76,3 +76,20 @@ export type TCouponType = (typeof COUPON_TYPES)[keyof typeof COUPON_TYPES];
 
 export const MAX_PERCENTAGE_DISCOUNT = 100;
 
+export const COUPON_SYNC_STATUS = {
+  PENDING: "pending",
+  PROCESSING: "processing",
+  SUCCEEDED: "succeeded",
+  FAILED: "failed",
+} as const;
+
+export type TCouponSyncStatus =
+  (typeof COUPON_SYNC_STATUS)[keyof typeof COUPON_SYNC_STATUS];
+
+export const COUPON_METADATA_KEYS = {
+  STATUS: "status",
+  SYNC_ERROR: "sync_error",
+  SYNCED_AT: "synced_at",
+  FAILED_AT: "failed_at",
+} as const;
+

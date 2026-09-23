@@ -189,6 +189,7 @@ export const AppLocales = {
         ApplyFilter: "admin.common.actions.apply_filter",
         ResetFilter: "admin.common.actions.reset_filter",
         OpenRecycleBin: "admin.common.actions.open_recycle_bin",
+        Done: "admin.common.actions.done",
       },
       RecycleBin: {
         EmptyButton: "admin.common.recycle_bin.empty_button",
@@ -274,6 +275,7 @@ export const AppLocales = {
         Source: "admin.common.detail.source",
         Format: "admin.common.detail.format",
         Size: "admin.common.detail.size",
+        Metadata: "admin.common.detail.metadata",
       },
       SearchBy: "admin.common.search_by",
     },
@@ -578,6 +580,13 @@ export const AppLocales = {
         BatchRestore: "admin.coupons.errors.batch_restore",
         BatchDestroy: "admin.coupons.errors.batch_destroy",
         EmptyRecycleBin: "admin.coupons.errors.empty_recycle_bin",
+      },
+      Status: {
+        Processing: "admin.coupons.status.processing",
+        Failed: "admin.coupons.status.failed",
+        Succeeded: "admin.coupons.status.succeeded",
+        SyncFailedTitle: "admin.coupons.status.sync_failed_title",
+        SyncFailedHelper: "admin.coupons.status.sync_failed_helper",
       },
     },
     UserCoupons: {

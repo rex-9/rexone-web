@@ -160,6 +160,17 @@ export const AdminVersionDetailPage: React.FC = () => {
           >
             <AdminUserVersionsPage embedded />
           </DetailSection>
+
+          {version.metadata && Object.keys(version.metadata).length > 0 && (
+            <DetailSection
+              title={t(AppLocales.Admin.Common.Detail.Metadata)}
+              icon={iconsLib.cube}
+            >
+              <pre className="overflow-x-auto rounded-lg bg-surface-raised p-4 font-mono text-xs text-text-primary">
+                {JSON.stringify(version.metadata, null, 2)}
+              </pre>
+            </DetailSection>
+          )}
         </>
       ) : null}
     </div>
