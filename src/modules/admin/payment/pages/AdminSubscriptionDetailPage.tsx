@@ -165,6 +165,45 @@ export const AdminSubscriptionDetailPage: React.FC = () => {
               />
             </DetailGrid>
           </DetailSection>
+          {record.coupon && (
+            <DetailSection
+              title={t(AppLocales.Admin.Coupons.Detail.AppliedCouponTitle)}
+              icon={iconsLib.tag}
+              className="lg:col-span-2"
+            >
+              <DetailGrid columns={4}>
+                <DetailField
+                  label={t(AppLocales.Admin.Coupons.Detail.CouponCode)}
+                  value={
+                    <span className="badge badge-primary font-mono font-semibold">
+                      {record.coupon.code}
+                    </span>
+                  }
+                  copyable
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Coupons.Detail.OriginalPrice)}
+                  value={amount(record.coupon.original_amount, record.coupon.currency)}
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Coupons.Detail.DiscountDeducted)}
+                  value={
+                    <span className="text-success font-semibold">
+                      -{amount(record.coupon.discount_amount, record.coupon.currency)}
+                    </span>
+                  }
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Coupons.Detail.NetAmountCharged)}
+                  value={
+                    <span className="font-bold text-base-content">
+                      {amount(record.coupon.final_amount, record.coupon.currency)}
+                    </span>
+                  }
+                />
+              </DetailGrid>
+            </DetailSection>
+          )}
         </div>
       ) : null}
     </div>

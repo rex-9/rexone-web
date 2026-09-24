@@ -16,6 +16,7 @@ export const ADMIN_USER_TABLE_HEADERS = {
 
 export const ADMIN_USER_TABLE_KEYS = {
   ACTIONS: "actions",
+  CONFIRMED: "confirmed",
   EMAIL: "email",
   IDENTITY: "identity",
   LIFECYCLE_DATE: "lifecycle_date",

@@ -76,6 +76,20 @@ export interface ISubscription {
   product_name: string | null;
   price: string | null;
   period_label: string | null;
+
+  // Coupon & discounts
+  coupon?: IPurchaseCoupon | null;
+}
+
+export interface IPurchaseCoupon {
+  id?: string;
+  code: string;
+  title?: string;
+  coupon_type: string | number;
+  discount_amount: number;
+  original_amount: number;
+  final_amount: number;
+  currency: string;
 }
 
 export interface ITransaction {
@@ -123,6 +137,9 @@ export interface ITransaction {
 
   // Product details
   product_name: string | null;
+
+  // Coupon & discounts
+  coupon?: IPurchaseCoupon | null;
 }
 
 export interface IAccess {

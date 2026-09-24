@@ -12,9 +12,7 @@ import {
   Image,
   StatusBadge,
 } from "../../../../design";
-import {
-  AdminState,
-} from "../../components";
+import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import UserController from "../user.controller";
@@ -30,6 +28,7 @@ export const AdminUserDetailPage: React.FC = () => {
   const t = useTranslate();
   const { record: user, error } = useAdminDetail<IAdminUser>(id, loadUser);
   const listPath = AppRoutes.client.protected.admin.USERS;
+
   return (
     <div className="space-y-6">
       <DetailHeader
@@ -42,12 +41,24 @@ export const AdminUserDetailPage: React.FC = () => {
           { label: user?.name || t(AppLocales.Admin.Common.Detail.Details) },
         ]}
         title={user?.name || t(AppLocales.Admin.Users.Detail.Title)}
-        description={user?.username ? `@${user.username}` : t(AppLocales.Admin.Users.Detail.Description)}
+        description={
+          user?.username
+            ? `@${user.username}`
+            : t(AppLocales.Admin.Users.Detail.Description)
+        }
         backTo={listPath}
         icon={iconsLib.user}
         statusBadge={
           user ? (
-            <StatusBadge status={user.locked ? "locked" : user.confirmed ? "confirmed" : "unconfirmed"} />
+            <StatusBadge
+              status={
+                user.locked
+                  ? "locked"
+                  : user.confirmed
+                    ? "confirmed"
+                    : "unconfirmed"
+              }
+            />
           ) : undefined
         }
         entityId={user?.id}
@@ -81,8 +92,12 @@ export const AdminUserDetailPage: React.FC = () => {
                 />
               </div>
               <div>
-                <h2 className="text-xl font-bold tracking-tight text-base-content">{user.name}</h2>
-                <p className="text-xs font-mono font-medium text-primary mt-0.5">@{user.username}</p>
+                <h2 className="text-xl font-bold tracking-tight text-base-content">
+                  {user.name}
+                </h2>
+                <p className="text-xs font-mono font-medium text-primary mt-0.5">
+                  @{user.username}
+                </p>
               </div>
             </div>
           </DetailSection>

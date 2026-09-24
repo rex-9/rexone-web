@@ -5,7 +5,12 @@ import { useToast } from "../../../contexts/ToastContext";
 import atoms from "../../../atoms";
 import { AppLocales, useTranslate } from "../../../locales";
 import { sounds } from "../../../assets";
-import { Dropdown, Button, TextInput } from "../../../design/components";
+import {
+  Dropdown,
+  Button,
+  DateTimePicker,
+  NumberInput,
+} from "../../../design/components";
 import {
   MARKER_TIME_UNITS,
   type TMarkerTimeUnit,
@@ -81,33 +86,35 @@ export const MarkerPopup: React.FC = () => {
       </div>
 
       <div className="w-full mt-2">
-        <TextInput
+        <DateTimePicker
           id="start-time"
-          label={t(AppLocales.Anapana.StartTime)}
           type="time"
+          label={t(AppLocales.Anapana.StartTime)}
           value={startTime}
-          onChange={(e) => setStartTime(e.target.value)}
+          onChange={setStartTime}
         />
       </div>
 
       <div className="w-full mt-2">
-        <TextInput
+        <DateTimePicker
           id="end-time"
-          label={t(AppLocales.Anapana.EndTime)}
           type="time"
+          label={t(AppLocales.Anapana.EndTime)}
           value={endTime}
-          onChange={(e) => setEndTime(e.target.value)}
+          onChange={setEndTime}
         />
       </div>
 
       <div className="w-full flex items-center justify-between gap-2">
         <div className="w-1/2">
-          <TextInput
+          <NumberInput
             id="interval"
             label={t(AppLocales.Anapana.Interval)}
-            type="number"
-            value={interval.toString()}
-            onChange={(e) => setInterval(Number(e.target.value))}
+            min={1}
+            step={1}
+            allowDecimals={false}
+            value={interval}
+            onChange={(val) => setInterval(val ?? 1)}
             placeholder="Enter interval"
           />
         </div>

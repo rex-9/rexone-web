@@ -16,7 +16,7 @@ import {
   TextArea,
   TextInput,
 } from "../../components";
-import { StatusBadge } from "../../../../design/components";
+import { StatusBadge, NumberInput } from "../../../../design/components";
 import { ADMIN_ACTIONS } from "../../constants";
 import { DateTime, DateTimeFormats } from "../../../../design";
 
@@ -270,14 +270,13 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
 
                   {durationOption === ADMIN_ACCESS_DURATION_OPTIONS.CUSTOM && (
                     <div className="pt-2">
-                      <TextInput
+                      <NumberInput
                         label="Custom Duration (Days)"
-                        type="number"
-                        value={customDays.toString()}
-                        onChange={(e) =>
-                          setCustomDays(parseInt(e.target.value, 10) || 0)
-                        }
                         min={1}
+                        step={1}
+                        allowDecimals={false}
+                        value={customDays}
+                        onChange={(val) => setCustomDays(val ?? 1)}
                         required
                         helperText="Specify the exact number of validity days for this grant."
                       />
@@ -381,7 +380,7 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
                     </h3>
                   </div>
 
-                  <TextInput
+                  <NumberInput
                     label={t(
                       AppLocales.Admin.Accesses.ExtendDialog.AdditionalDaysLabel,
                     )}
@@ -389,12 +388,11 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
                       AppLocales.Admin.Accesses.ExtendDialog
                         .AdditionalDaysPlaceholder,
                     )}
-                    type="number"
-                    value={extendDays.toString()}
-                    onChange={(e) =>
-                      setExtendDays(parseInt(e.target.value, 10) || 0)
-                    }
                     min={1}
+                    step={1}
+                    allowDecimals={false}
+                    value={extendDays}
+                    onChange={(val) => setExtendDays(val ?? 1)}
                     required
                     helperText="Number of additional days to add to the existing expiry date."
                   />

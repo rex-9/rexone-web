@@ -1,6 +1,8 @@
 // src/modules/admin/analytics/pages/AdminAnalyticsPage.tsx
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import { useDocumentTitle } from "../../../../hooks";
 import { ANALYTICS_PERIODS, ANALYTICS_PERIOD_LABELS } from "../../constants";
@@ -20,6 +22,7 @@ import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminAnalyticsPage: React.FC = () => {
   const t = useTranslate();
+  const navigate = useNavigate();
   useDocumentTitle(`${t(AppLocales.Admin.Analytics.Title)} | Admin`);
 
   const [selectedOption, setSelectedOption] = useState<ISelectedPeriodOption>(
@@ -131,6 +134,9 @@ export const AdminAnalyticsPage: React.FC = () => {
           deltaPct={kpis.revenue_delta_pct}
           icon={iconsLib.banknotes}
           subtitle={`All-time: $${kpis.total_revenue.toLocaleString()}`}
+          onClick={() =>
+            navigate(AppRoutes.client.protected.admin.TRANSACTIONS)
+          }
         />
 
         <AdminKpiCard
@@ -139,6 +145,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           deltaPct={kpis.users_delta_pct}
           icon={iconsLib.userGroup}
           subtitle={`Total: ${kpis.total_users.toLocaleString()}`}
+          onClick={() => navigate(AppRoutes.client.protected.admin.USERS)}
         />
 
         <AdminKpiCard
@@ -146,6 +153,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           value={kpis.active_subscriptions.toLocaleString()}
           icon={iconsLib.cube}
           subtitle={`${kpis.period_transactions} ${t(AppLocales.Admin.Analytics.Kpis.ThisMonth)}`}
+          onClick={() => navigate(AppRoutes.client.protected.admin.PRODUCTS)}
         />
 
         <AdminKpiCard
@@ -154,12 +162,16 @@ export const AdminAnalyticsPage: React.FC = () => {
           deltaPct={kpis.messages_delta_pct}
           icon={iconsLib.chatBubbleLeftRight}
           subtitle={`${kpis.user_messages} / ${kpis.ai_messages}`}
+          onClick={() => navigate(AppRoutes.client.protected.admin.AI_RUNS)}
         />
       </div>
 
       {/* Secondary Metrics Bar */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="flex items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          onClick={() => navigate(AppRoutes.client.protected.admin.LOGS)}
+          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-rose-500/50 hover:shadow-md"
+        >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
               {t(AppLocales.Admin.Analytics.Kpis.ErrorTelemetry)}
@@ -173,7 +185,10 @@ export const AdminAnalyticsPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm">
+        <div
+          onClick={() => navigate(AppRoutes.client.protected.admin.FEEDBACK)}
+          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-primary hover:shadow-md"
+        >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
               {t(AppLocales.Admin.Nav.Items.Feedback)}
@@ -187,7 +202,27 @@ export const AdminAnalyticsPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="flex items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm">
+        <div
+          onClick={() => navigate(AppRoutes.client.protected.admin.COUPONS)}
+          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md"
+        >
+          <div>
+            <p className="text-caption font-medium text-base-content opacity-60">
+              Coupons Redeemed
+            </p>
+            <p className="text-body-l font-bold text-emerald-500">
+              {kpis.coupons_used ?? 0}
+            </p>
+          </div>
+          <span className="rounded bg-emerald-500/10 px-2 py-1 text-caption font-semibold text-emerald-500">
+            -${((kpis.period_discounts ?? 0)).toFixed(2)}
+          </span>
+        </div>
+
+        <div
+          onClick={() => navigate(AppRoutes.client.protected.admin.AI_RUNS)}
+          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-purple-500/50 hover:shadow-md"
+        >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
               {t(AppLocales.Admin.Analytics.Charts.ChatTitle)}

@@ -128,7 +128,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | ------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | Identity      | Email/passcode flows, confirmation, recovery, Google sign-in, session expiry                                | [Authentication & security](#authentication--security) |
 | Navigation    | Public and protected routes with centralized route definitions                                              | [Routing & access](#routing--access)                   |
-| Design        | Reusable inputs, buttons, dialogs, overlays, media, themes, and typography                                  | [Design system](#design-system)                        |
+| Design        | Reusable inputs (including DateTimePicker, NumberInput), buttons, dialogs, overlays, media, themes, and typography | [Design system](docs/DESIGN_SYSTEM.md)                 |
 | State         | React contexts, Jotai atoms, and deliberate browser persistence                                             | [State & application flow](#state--application-flow)   |
 | Commerce      | Product selection, Stripe Checkout handoff, success, and cancellation flows                                 | [Payments & entitlements](#payments--entitlements)     |
 | Media         | Real-time compression tracking, 10MB image / 100MB video uploads, thumbnails, progressive video/audio streaming with SRT subtitles and optimal badges | [Media & assets](#media--assets)                       |
@@ -137,7 +137,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Real time     | Action Cable-compatible WebSocket lifecycle and reconnect handling                                          | [Real-time delivery](#real-time-delivery)              |
 | Localization  | English, Spanish, and Burmese resources with organized typed keys                                           | [Localization](#localization)                          |
 | Observability | React boundary, global browser capture, structured context, and Core API delivery                           | [Client observability](#client-observability)          |
-| Admin         | User, role, permission, product, chat, asset, and notification management with RBAC                         | [Administration](#administration)                      |
+| Admin         | User (with confirmation status auditing), role, permission, product (with access inspection), chat, asset, and notification management with RBAC | [Administration](#administration--operational-consoles) |
 | Governance    | Constitutional Architecture (LAW.md) & AI Agent Operational Rules (AGENTS.md)                                | [LAW.md](LAW.md) · [AGENTS.md](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md) |
 | Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model                             | [End-to-End Testing](#end-to-end-testing-playwright)   |
 | AI & GEO      | llms.txt, llms-full.txt, East/West crawler robots.txt, Schema.org JSON-LD, sitemap                         | [AI Discovery & GEO](#ai-discovery--geo)               |
@@ -226,9 +226,10 @@ The client enforces a synchronized three-tier administrative hierarchy:
 
 The client provides a permission-governed operational administration portal (`src/modules/admin/`). Instead of scattered modals or ad-hoc dialogs, administrative workflows are organized into dedicated operational consoles:
 
-- **Modular Domain Consoles**: Full-page, searchable workflows for Users, Roles & Permissions (IAM), Products & Pricing, Notifications & Broadcasts, Entitlements (Accesses), Media Asset Control, Version Catalogues, Chat Moderation, and Feedback Telemetry.
-- **Unified Form & Table Contracts**: Reusable entity forms (`CREATE` and `EDIT` modes), compact action buttons, deep filterable tables, and dedicated recycle bins for recovering soft-deleted records.
+- **Modular Domain Consoles**: Full-page, searchable workflows for Users (with quick confirmation for unconfirmed accounts), Roles & Permissions (IAM), Products & Pricing (with access grants user inspection), Coupons (with discount audits and batch generation), Notifications & Broadcasts, Entitlements (Accesses), Media Asset Control, Version Catalogues, Chat Moderation, and Feedback Telemetry.
+- **Unified Form & Table Contracts**: Reusable entity forms (`CREATE` and `EDIT` modes), compact action buttons, deep filterable tables, and dedicated recycle bins for recovering soft-deleted records. Form molecules include specialized controls such as `DateTimePicker` and `NumberInput` (with automated leading-zero sanitization).
 - **Dynamic Client-Side RBAC**: Route guards and sidebar navigation adapt dynamically to the authenticated user's permissions, ensuring non-admin users or partial admins only access authorized modules.
+- **Interactive Analytics**: Overview dashboard KPI cards link directly to corresponding operational tables, while revenue charts incorporate coupon redemptions count and period discounts with accurate current-day metrics.
 
 ## ⚡ Quick Start
 
@@ -254,7 +255,7 @@ By default, the client is immediately available at **[http://localhost:4000](htt
 RexOne Web enforces high engineering discipline with strict compile-time checks and dual-layer automated testing:
 
 ```bash
-# 1. Run all unit tests (Vitest) - 35 suites, 312 tests
+# 1. Run all unit tests (Vitest) - 37 suites, 330 tests
 npm test
 
 # 2. Run Playwright End-to-End user journeys (headless)

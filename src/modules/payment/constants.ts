@@ -93,3 +93,40 @@ export const COUPON_METADATA_KEYS = {
   FAILED_AT: "failed_at",
 } as const;
 
+/**
+ * Official Stripe minimum charge amounts in minor currency units
+ * Reference: https://docs.stripe.com/currencies#minimum-and-maximum-charge-amounts
+ */
+export const STRIPE_MINIMUM_AMOUNTS: Record<string, number> = {
+  usd: 50, // $0.50 USD
+  sgd: 50, // $0.50 SGD
+  eur: 50, // €0.50 EUR
+  gbp: 30, // £0.30 GBP
+  aud: 50, // $0.50 AUD
+  cad: 50, // $0.50 CAD
+  chf: 50, // 0.50 CHF
+  jpy: 50, // ¥50 JPY
+  hkd: 400, // $4.00 HKD
+  myr: 200, // 2.00 MYR
+  thb: 1000, // 10.00 THB
+  nzd: 50, // $0.50 NZD
+  sek: 300, // 3.00 SEK
+  nok: 300, // 3.00 NOK
+  dkk: 250, // 2.50 DKK
+  pln: 200, // 2.00 PLN
+  inr: 50, // ₹0.50 INR
+  brl: 50, // R$0.50 BRL
+  mxn: 1000, // $10.00 MXN
+  aed: 200, // 2.00 AED
+  czk: 1500, // 15.00 CZK
+  huf: 17500, // 175.00 HUF
+  ron: 200, // 2.00 RON
+  bgn: 100, // 1.00 BGN
+  mmk: 50, // Fallback
+};
+
+export const getStripeMinimumAmount = (currency?: string): number => {
+  if (!currency) return 50;
+  return STRIPE_MINIMUM_AMOUNTS[currency.toLowerCase()] ?? 50;
+};
+

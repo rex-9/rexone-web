@@ -13,6 +13,8 @@ import {
   TextInput,
   TextArea,
   Checkbox,
+  DateTimePicker,
+  NumberInput,
 } from "../../../../design/components/form";
 import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
@@ -153,7 +155,7 @@ export const AdminCouponCreatePage: React.FC = () => {
       currency: currency || undefined,
       max_usage: maxUsage >= 0 ? maxUsage : 0,
       max_usage_per_user: maxUsagePerUser > 0 ? maxUsagePerUser : 1,
-      expires_at: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+      expires_at: expiresAt || undefined,
       target_role_ids: canReadRoles ? selectedRoleIds : [],
       target_product_ids: selectedProductIds,
       target_user_ids: targetUserIds.length > 0 ? targetUserIds : undefined,
@@ -373,13 +375,14 @@ export const AdminCouponCreatePage: React.FC = () => {
                 />
               </div>
               <div>
-                <TextInput
+                <NumberInput
                   label={t(AppLocales.Admin.Coupons.Form.BatchCountLabel)}
-                  type="number"
                   min={1}
                   max={100}
+                  step={1}
+                  allowDecimals={false}
                   value={batchCount}
-                  onChange={(e) => setBatchCount(Number(e.target.value))}
+                  onChange={(val) => setBatchCount(val ?? 1)}
                   required
                 />
               </div>
@@ -415,18 +418,18 @@ export const AdminCouponCreatePage: React.FC = () => {
             </div>
 
             <div>
-              <TextInput
+              <NumberInput
                 label={`${t(AppLocales.Admin.Coupons.Form.AmountLabel)} *`}
-                type="number"
-                min={1}
+                min={couponType === COUPON_TYPES.PERCENTAGE ? 1 : 0.01}
                 max={
                   couponType === COUPON_TYPES.PERCENTAGE
                     ? MAX_PERCENTAGE_DISCOUNT
                     : 100000
                 }
                 step={couponType === COUPON_TYPES.PERCENTAGE ? 1 : 0.01}
+                allowDecimals={couponType !== COUPON_TYPES.PERCENTAGE}
                 value={amount}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(val) => setAmount(val ?? 0)}
                 required
               />
             </div>
@@ -452,12 +455,13 @@ export const AdminCouponCreatePage: React.FC = () => {
 
           <div className="grid grid-cols-3 gap-4 items-start">
             <div>
-              <TextInput
+              <NumberInput
                 label={t(AppLocales.Admin.Coupons.Form.MaxUsageLabel)}
-                type="number"
                 min={0}
+                step={1}
+                allowDecimals={false}
                 value={maxUsage}
-                onChange={(e) => setMaxUsage(Number(e.target.value))}
+                onChange={(val) => setMaxUsage(val ?? 0)}
                 placeholder={t(
                   AppLocales.Admin.Coupons.Form.MaxUsagePlaceholder,
                 )}
@@ -466,12 +470,13 @@ export const AdminCouponCreatePage: React.FC = () => {
             </div>
 
             <div>
-              <TextInput
+              <NumberInput
                 label={t(AppLocales.Admin.Coupons.Form.MaxPerUserLabel)}
-                type="number"
                 min={1}
+                step={1}
+                allowDecimals={false}
                 value={maxUsagePerUser}
-                onChange={(e) => setMaxUsagePerUser(Number(e.target.value))}
+                onChange={(val) => setMaxUsagePerUser(val ?? 1)}
                 placeholder={t(
                   AppLocales.Admin.Coupons.Form.MaxPerUserPlaceholder,
                 )}
@@ -479,11 +484,12 @@ export const AdminCouponCreatePage: React.FC = () => {
             </div>
 
             <div>
-              <TextInput
+              <DateTimePicker
                 label={t(AppLocales.Admin.Coupons.Form.ExpiresLabel)}
                 type="datetime-local"
                 value={expiresAt}
-                onChange={(e) => setExpiresAt(e.target.value)}
+                onChange={setExpiresAt}
+                min={new Date().toISOString()}
               />
             </div>
           </div>

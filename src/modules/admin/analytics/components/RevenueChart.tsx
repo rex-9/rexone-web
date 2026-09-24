@@ -83,6 +83,11 @@ export const RevenueChart: React.FC<IRevenueChartProps> = ({
                       <p className="mt-1 text-body-m font-bold text-primary">
                         ${item.revenue.toFixed(2)} USD
                       </p>
+                      {typeof item.discounts === "number" && item.discounts > 0 ? (
+                        <p className="text-caption text-emerald-500 font-medium">
+                          -${item.discounts.toFixed(2)} in discounts
+                        </p>
+                      ) : null}
                       <p className="text-caption text-base-content opacity-70">
                         {item.transactions} transaction
                         {item.transactions === 1 ? "" : "s"}

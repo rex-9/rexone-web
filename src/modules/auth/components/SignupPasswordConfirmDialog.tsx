@@ -90,6 +90,7 @@ export const SignupPasswordConfirmDialog: React.FC<
           { replace: true },
         );
       } else {
+        setConfirmPassword("");
         setError(
           result.error || t(AppLocales.Auth.SignUpPasscodeConfirm.ResetFailed),
         );
@@ -117,12 +118,14 @@ export const SignupPasswordConfirmDialog: React.FC<
           setGoogleChallengeToken(null);
           navigate(AppRoutes.client.protected.HOME, { replace: true });
         } else {
+          setConfirmPassword("");
           setError(
             result.errorMessage ||
               t(AppLocales.Auth.SignUpPasscodeConfirm.GoogleSignInFailed),
           );
         }
       } catch (err: unknown) {
+        setConfirmPassword("");
         setError(
           err instanceof Error
             ? err.message

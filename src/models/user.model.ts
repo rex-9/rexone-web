@@ -20,6 +20,8 @@ export interface IUser {
   provider: string;
   bio?: string;
   avatar_url?: string;
+  confirmed?: boolean;
+  confirmed_at?: Date | string | null;
   iam?: IUserIam;
   created_at: Date | string;
   updated_at: Date | string;

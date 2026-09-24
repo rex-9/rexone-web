@@ -65,6 +65,7 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
       );
       navigate(AppRoutes.client.protected.HOME);
     } else {
+      setOtp("");
       setError(result.error || "Failed to confirm email code.");
     }
   };

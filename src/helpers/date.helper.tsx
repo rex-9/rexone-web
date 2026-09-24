@@ -68,6 +68,25 @@ export const utcToLocalDateTimeInput = (value: TDateTimeValue): string => {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
 
+/** Convert a Core UTC timestamp into a browser `date` input value (YYYY-MM-DD in local time). */
+export const utcToLocalDateInput = (value: TDateTimeValue): string => {
+  const date = parseUtcDate(value);
+  if (!date) return "";
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+/** Convert a value from a browser `date` input into UTC ISO string (start of local day in UTC). */
+export const localDateInputToUtcIso = (value: string): string | null => {
+  if (!value) return null;
+  const parts = value.split("-").map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+  const date = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+};
+
 export const getUtcNowIso = (): string => new Date().toISOString();
 
 export const formatLocalDate = (

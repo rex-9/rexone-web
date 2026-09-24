@@ -15,3 +15,7 @@ export { RatingSlider } from "./RatingSlider";
 export { FileInput } from "./FileInput";
 export { SearchInput } from "./SearchInput";
 export type { ISearchInputProps } from "./SearchInput";
+export { DateTimePicker } from "./DateTimePicker";
+export type { IDateTimePickerProps, DateTimePickerType } from "./DateTimePicker";
+export { NumberInput, sanitizeNumericInput } from "./NumberInput";
+export type { INumberInputProps } from "./NumberInput";

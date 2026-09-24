@@ -520,6 +520,11 @@ export const AppLocales = {
         RedemptionHistory: "admin.coupons.detail.redemption_history",
         NoRedemptions: "admin.coupons.detail.no_redemptions",
         RestrictedCount: "admin.coupons.detail.restricted_count",
+        AppliedCouponTitle: "admin.coupons.detail.applied_coupon_title",
+        CouponCode: "admin.coupons.detail.coupon_code",
+        OriginalPrice: "admin.coupons.detail.original_price",
+        DiscountDeducted: "admin.coupons.detail.discount_deducted",
+        NetAmountCharged: "admin.coupons.detail.net_amount_charged",
       },
       Form: {
         SingleMode: "admin.coupons.form.single_mode",

@@ -258,6 +258,8 @@ Entire DOM updates styles natively in CSS in < 1ms
 - **`Checkbox` & `Radio`**: High-contrast styled checkboxes and radios with `checked:bg-primary` and `hover:border-primary`.
 - **`Toggle`**: Accessible toggle switch with smooth slide animation.
 - **`FileInput`**: Stylized file upload with file type constraints and trigger buttons.
+- **`DateTimePicker`**: DaisyUI-styled date and time picker supporting `datetime-local`, `date`, and `time` modes, clear action, min/max range constraints, and field-level error messages.
+- **`NumberInput`**: DaisyUI-styled numeric input with automatic sanitization stripping invalid leading zeroes (e.g. `05` $\rightarrow$ `5`, `00` $\rightarrow$ `0`, while preserving decimals like `0.5`), min/max bounds clamping, stepper controls, and prefix/suffix adornments.
 
 ### Overlays & Dialogs
 - **`Dialog`**: Accessible modal with focus containment, ESC key dismissal, click-outside backdrop (`.modal-backdrop`), and smooth transitions.

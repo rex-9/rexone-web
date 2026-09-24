@@ -710,7 +710,12 @@
         "target_products": "သတ်မှတ် ထုတ်ကုန် ID များ",
         "redemption_history": "ကူပွန် အသုံးပြုမှု မှတ်တမ်း",
         "no_redemptions": "အသုံးပြုမှု မှတ်တမ်း မရှိသေးပါ",
-        "restricted_count": "{{count}} ခု သတ်မှတ်ထားသည်"
+        "restricted_count": "{{count}} ခု သတ်မှတ်ထားသည်",
+        "applied_coupon_title": "အသုံးပြုထားသော ကူပွန်နှင့် လျှော့စျေးများ",
+        "coupon_code": "ကူပွန်ကုဒ်",
+        "original_price": "မူရင်းစျေးနှုန်း",
+        "discount_deducted": "နှုတ်ယူထားသော လျှော့စျေး",
+        "net_amount_charged": "အသားတင် ကျသင့်ငွေ"
       },
       "form": {
         "single_mode": "ကူပွန်တစ်ခုတည်း",

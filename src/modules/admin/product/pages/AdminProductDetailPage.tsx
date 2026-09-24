@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import {
@@ -18,6 +18,8 @@ import {
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import ProductController from "../product.controller";
+import AccessController from "../../access/access.controller";
+import type { IAdminAccess } from "../../access/types";
 import type { IAdminProduct } from "../types";
 
 const loadProduct = async (id: string) => {
@@ -26,11 +28,32 @@ const loadProduct = async (id: string) => {
 };
 export const AdminProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const t = useTranslate();
   const { record: product, error } = useAdminDetail<IAdminProduct>(
     id,
     loadProduct,
   );
+  const [accesses, setAccesses] = useState<IAdminAccess[]>([]);
+  const [loadingAccesses, setLoadingAccesses] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    let active = true;
+    const fetchAccesses = async () => {
+      setLoadingAccesses(true);
+      const res = await AccessController.getAccesses({ product_id: id, limit: 50 });
+      if (active && res.success) {
+        setAccesses(res.accesses);
+      }
+      if (active) setLoadingAccesses(false);
+    };
+    void fetchAccesses();
+    return () => {
+      active = false;
+    };
+  }, [id]);
+
   const listPath = AppRoutes.client.protected.admin.PRODUCTS;
   return (
     <div className="space-y-6">
@@ -124,6 +147,91 @@ export const AdminProductDetailPage: React.FC = () => {
                 }
               />
             </DetailGrid>
+          </DetailSection>
+
+          {/* Users with Access */}
+          <DetailSection
+            title="Users with Access"
+            icon={iconsLib.userGroup}
+            className="lg:col-span-3"
+          >
+            {loadingAccesses ? (
+              <div className="py-6 text-center text-sm text-base-content/60">
+                Loading access entitlements...
+              </div>
+            ) : accesses.length === 0 ? (
+              <div className="py-6 text-center text-sm text-base-content/60">
+                No users hold access to this product yet.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="table table-zebra table-sm w-full">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Email</th>
+                      <th className="text-center">Status</th>
+                      <th className="text-center">Granted</th>
+                      <th className="text-center">Expires</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {accesses.map((access) => (
+                      <tr
+                        key={access.id}
+                        className="hover cursor-pointer"
+                        onClick={() =>
+                          access.user_id &&
+                          navigate(
+                            AppRoutes.withId(
+                              AppRoutes.client.protected.admin.USER_DETAIL,
+                              access.user_id,
+                            ),
+                          )
+                        }
+                      >
+                        <td>
+                          <div className="font-semibold text-base-content">
+                            {access.user_name || access.username || "—"}
+                          </div>
+                          {access.username && (
+                            <div className="text-xs text-base-content/50">
+                              @{access.username}
+                            </div>
+                          )}
+                        </td>
+                        <td className="text-xs font-mono">{access.user_email || "—"}</td>
+                        <td className="text-center">
+                          <StatusBadge status={access.status} />
+                        </td>
+                        <td className="text-center text-xs">
+                          {access.granted_at ? (
+                            <DateTime
+                              value={access.granted_at}
+                              format={DateTimeFormats.ADMIN}
+                            />
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                        <td className="text-center text-xs">
+                          {access.expires_at ? (
+                            <DateTime
+                              value={access.expires_at}
+                              format={DateTimeFormats.ADMIN}
+                            />
+                          ) : (
+                            <span className="badge badge-ghost badge-sm font-semibold">
+                              Lifetime
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </DetailSection>
         </div>
       ) : null}

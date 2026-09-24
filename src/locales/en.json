@@ -711,7 +711,12 @@
         "target_products": "Target Product IDs",
         "redemption_history": "Redemption History",
         "no_redemptions": "No redemptions recorded yet",
-        "restricted_count": "{{count}} restricted"
+        "restricted_count": "{{count}} restricted",
+        "applied_coupon_title": "Applied Coupon & Discounts",
+        "coupon_code": "Coupon Code",
+        "original_price": "Original Price",
+        "discount_deducted": "Discount Deducted",
+        "net_amount_charged": "Net Amount Charged"
       },
       "form": {
         "single_mode": "Single Coupon",

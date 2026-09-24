@@ -17,6 +17,7 @@ import {
   Button,
   Badge,
   SearchInput,
+  StatusBadge,
   getRoleBadgeVariant,
 } from "../../../../design";
 import UserController from "../user.controller";
@@ -232,6 +233,16 @@ export const AdminUsersPage: React.FC<IAdminUsersPageProps> = ({
         key: ADMIN_USER_TABLE_KEYS.ROLE,
         header: t(AppLocales.Admin.Users.Table.Roles),
         render: (user) => renderUserRoles(user, "Unassigned"),
+      },
+      {
+        key: ADMIN_USER_TABLE_KEYS.CONFIRMED,
+        header: t(AppLocales.Admin.Users.Table.Confirmed),
+        className: "text-center",
+        render: (user) => (
+          <StatusBadge
+            status={user.confirmed ? "confirmed" : "unconfirmed"}
+          />
+        ),
       },
       {
         key: ADMIN_USER_TABLE_KEYS.LIFECYCLE_DATE,
