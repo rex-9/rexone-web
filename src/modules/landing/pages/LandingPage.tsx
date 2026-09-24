@@ -171,8 +171,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/50 bg-black/60 backdrop-blur-md shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.35)] transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)]">
             <iconsLib.sparkles className="w-4 h-4 text-primary animate-pulse drop-shadow-[0_0_6px_var(--color-primary)]" />
             <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
-              Pioneering Discipline-Driven Development{" "}
-              <span className="text-primary-light font-extrabold tracking-wider">(DDD)</span>
+              Pioneering{" "}
+              <span className="text-primary-light font-extrabold tracking-wider">
+                Discipline-Driven Development
+              </span>
             </span>
           </div>
 
@@ -184,29 +186,20 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
           {/* Creator Attribution: High-contrast, clean readable typography */}
           <p className="text-base sm:text-lg font-medium tracking-wide text-white/90 font-primary">
             Architected &amp; Forged by{" "}
-            <span className="font-bold text-white underline decoration-primary decoration-2 underline-offset-4 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
-              Htet Naing
-            </span>{" "}
-            <span className="text-white/80">
-              (
-              <span className="text-primary-light font-bold drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.6)]">
-                Rex9
-              </span>{" "}
-              /{" "}
-              <span className="text-white/80 font-mono text-sm">
-                @rex-9
-              </span>
-              )
+            <span className="text-primary-light font-bold drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.6)]">
+              Rex9
             </span>
           </p>
 
           {/* Subtitle & Value Proposition */}
           <p className="text-sm sm:text-base text-base-content/90 max-w-2xl mx-auto leading-relaxed font-primary">
-            The sovereign product foundation and architectural constitution for humans and AI coding agents.
-            Forging clean, disciplined ground where clarity meets code, and simplicity meets soul. 🛡️✨
+            The sovereign product foundation and architectural constitution for
+            humans and AI coding agents. Forging clean, disciplined ground where
+            clarity meets code, and simplicity meets soul. 🛡️✨
           </p>
           <p className="text-xs sm:text-sm text-base-content/70 italic font-primary">
-            No journey is walked alone. Let&apos;s conquer greatness &amp; stillness together. 🏹
+            No journey is walked alone. Let&apos;s conquer greatness &amp;
+            stillness together. 🏹
           </p>
         </section>
 
@@ -268,9 +261,13 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                 Discipline-Driven Development (DDD)
               </h3>
               <p className="text-sm sm:text-base text-base-content/80 leading-relaxed font-primary">
-                <span className="italic font-medium text-white">“You bring the idea. AI writes the code. RexOne keeps both of you from destroying the foundation.”</span>
+                <span className="italic font-medium text-white">
+                  “You bring the idea. AI writes the code. RexOne keeps both of
+                  you from destroying the foundation.”
+                </span>
                 <br />
-                The industry loves to sell quick fixes and hype. Here are the brutal engineering truths tech gurus hesitate to reveal:
+                The industry loves to sell quick fixes and hype. Here are the
+                brutal engineering truths tech gurus hesitate to reveal:
               </p>
             </div>
 
@@ -280,7 +277,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>⚡ 1. The Vibe-Coding Delusion</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Generating 10,000 lines in minutes without an immutable constitution isn&apos;t velocity; it&apos;s compounding debt at 100x speed. Speed without discipline is just accelerating toward a brick wall.
+                  Generating 10,000 lines in minutes without an immutable
+                  constitution isn&apos;t velocity; it&apos;s compounding debt
+                  at 100x speed. Speed without discipline is just accelerating
+                  toward a brick wall.
                 </p>
               </div>
 
@@ -289,7 +289,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>🪤 2. The BaaS Lock-in Trap</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Serverless &ldquo;5-minute backends&rdquo; lure you in with toys, then hand you a $5,000/mo bill and a proprietary SDK hostage crisis. Real sovereignty runs PostgreSQL, native job queues, and self-hosted S3.
+                  Serverless &ldquo;5-minute backends&rdquo; lure you in with
+                  toys, then hand you a $5,000/mo bill and a proprietary SDK
+                  hostage crisis. Real sovereignty runs PostgreSQL, native job
+                  queues, and self-hosted S3.
                 </p>
               </div>
 
@@ -298,7 +301,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>📦 3. The Full-Stack Monolith Lie</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Cramming API handlers, database queries, background tasks, and DOM hydration into a single node runtime creates fragile houses of cards. True engineering enforces client-server separation.
+                  Cramming API handlers, database queries, background tasks, and
+                  DOM hydration into a single node runtime creates fragile
+                  houses of cards. True engineering enforces client-server
+                  separation.
                 </p>
               </div>
 
@@ -307,7 +313,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>📱 4. The Webview Wrapper Cop-Out</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Wrapping a website in a webview shell is lazy and disrespectful to mobile users. Real mobile experiences demand native 60fps rendering, hardware media focus, and offline-first SQLite persistence.
+                  Wrapping a website in a webview shell is lazy and
+                  disrespectful to mobile users. Real mobile experiences demand
+                  native 60fps rendering, hardware media focus, and
+                  offline-first SQLite persistence.
                 </p>
               </div>
 
@@ -316,7 +325,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>🛡️ 5. Zero Zombie Code &amp; Shims</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Retaining dead code, backwards-compatibility shims, and duplicate parameter aliases is cowardice. Under Constitutional Law U14, if code is replaced, the old code is wiped out completely.
+                  Retaining dead code, backwards-compatibility shims, and
+                  duplicate parameter aliases is cowardice. Under Constitutional
+                  Law U14, if code is replaced, the old code is wiped out
+                  completely.
                 </p>
               </div>
 
@@ -325,7 +337,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   <span>💎 6. 100% Free Sovereignty</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Unlike commercial boilerplates charging $300–$800 for basic auth or gating features behind &ldquo;pro tiers&rdquo;, RexOne is 100% free, MIT/open, and sovereign. You own your code, data, and destiny.
+                  Unlike commercial boilerplates charging $300–$800 for basic
+                  auth or gating features behind &ldquo;pro tiers&rdquo;, RexOne
+                  is 100% free, MIT/open, and sovereign. You own your code,
+                  data, and destiny.
                 </p>
               </div>
             </div>
@@ -407,9 +422,10 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
               Support & Sponsor
             </h2>
             <p className="text-body-m text-base-content/70 max-w-2xl mx-auto">
-              Fuel the evolution of sovereign open-source engineering. Sponsoring
-              sustains the development of RexOne—keeping foundations pristine,
-              battle-tested, and freely accessible to developers worldwide.
+              Fuel the evolution of sovereign open-source engineering.
+              Sponsoring sustains the development of RexOne—keeping foundations
+              pristine, battle-tested, and freely accessible to developers
+              worldwide.
             </p>
           </div>
 
