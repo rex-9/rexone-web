@@ -230,7 +230,7 @@ cp .env.example .env
 ./scripts/dev.sh
 ```
 
-By default, the client is immediately available at **[http://localhost:4000](http://localhost:4000)** (or [http://localhost:5173](http://localhost:5173) if running native Vite via `npm run dev`).
+By default, the client is immediately available at **[http://localhost:4000](http://localhost:4000)** (both in Docker and when running native Vite via `npm run dev`).
 
 ---
 

@@ -47,7 +47,7 @@ All quality checks, linters, and test runners are exposed through standard npm s
 
 | Command | Purpose | Target |
 | :--- | :--- | :--- |
-| `npm run dev` | Launches local Vite development server with Hot Module Replacement (HMR) | `http://localhost:5173` |
+| `npm run dev` | Launches local Vite development server with Hot Module Replacement (HMR) | `http://localhost:4000` |
 | `npm run build` | Executes TypeScript typecheck (`tsc -b`) and bundles production assets | `dist/` |
 | `npm run test` | Executes full Vitest unit test suite (35 suites, 312 tests) | Terminal |
 | `npm run test:e2e` | Runs automated Playwright end-to-end user journey tests | Chromium / WebKit |
