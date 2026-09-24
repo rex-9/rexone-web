@@ -162,20 +162,51 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        {/* 2. Hero Sign ("rex9") */}
+        {/* 2. Hero Sign ("REXONE") */}
         <NeonSign id="Greetings" />
 
-        {/* 3. Catchphrase & Social Profiles */}
-        <section className="text-center max-w-4xl mx-auto my-8 space-y-3 text-base sm:text-lg text-glow-white leading-relaxed font-display font-normal tracking-wide [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
-          <p>Champion, Welcome! 🌟</p>
-          <p>Rex is an Architect tempered by stillness since age 14. 🧘‍♂️</p>
-          <p>
-            Forging sovereign realms where clarity meets code, and simplicity
-            meets soul. 🛡️✨
+        {/* 3. Catchphrase & Creator Attribution */}
+        <section className="text-center max-w-4xl mx-auto my-8 space-y-4 px-4 font-primary">
+          {/* Pill Badge: High-contrast, razor-sharp on dark brick wall */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/50 bg-black/60 backdrop-blur-md shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.35)] transition-all duration-300 hover:border-primary hover:shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)]">
+            <iconsLib.sparkles className="w-4 h-4 text-primary animate-pulse drop-shadow-[0_0_6px_var(--color-primary)]" />
+            <span className="text-xs sm:text-sm font-bold tracking-widest uppercase text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+              Pioneering Discipline-Driven Development{" "}
+              <span className="text-primary-light font-extrabold tracking-wider">(DDD)</span>
+            </span>
+          </div>
+
+          {/* Catchphrase Heading: Iconic Neon Glow */}
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-semibold tracking-wider text-glow-white font-display [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
+            Start from One. Not from Zero. 🌟
+          </h1>
+
+          {/* Creator Attribution: High-contrast, clean readable typography */}
+          <p className="text-base sm:text-lg font-medium tracking-wide text-white/90 font-primary">
+            Architected &amp; Forged by{" "}
+            <span className="font-bold text-white underline decoration-primary decoration-2 underline-offset-4 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">
+              Htet Naing
+            </span>{" "}
+            <span className="text-white/80">
+              (
+              <span className="text-primary-light font-bold drop-shadow-[0_0_8px_rgba(var(--color-primary-rgb),0.6)]">
+                Rex9
+              </span>{" "}
+              /{" "}
+              <span className="text-white/80 font-mono text-sm">
+                @rex-9
+              </span>
+              )
+            </span>
           </p>
-          <p>
-            No journey is walked alone. Let's conquer the greatness & stillness
-            together. 🏹
+
+          {/* Subtitle & Value Proposition */}
+          <p className="text-sm sm:text-base text-base-content/90 max-w-2xl mx-auto leading-relaxed font-primary">
+            The sovereign product foundation and architectural constitution for humans and AI coding agents.
+            Forging clean, disciplined ground where clarity meets code, and simplicity meets soul. 🛡️✨
+          </p>
+          <p className="text-xs sm:text-sm text-base-content/70 italic font-primary">
+            No journey is walked alone. Let&apos;s conquer greatness &amp; stillness together. 🏹
           </p>
         </section>
 
@@ -223,6 +254,82 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
 
           {/* The Sovereign Creed Banner - The Heart of RexOne */}
           <DoctrineCard className="mb-10" />
+
+          {/* Discipline-Driven Development (DDD): The Unvarnished Truths */}
+          <div className="mb-12 rounded-3xl bg-glass-card/90 backdrop-blur-xl border border-glass-border p-6 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.6)]">
+            <div className="text-center max-w-3xl mx-auto mb-8 space-y-3">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-primary/50 bg-black/60 backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)]">
+                <iconsLib.shieldCheck className="w-4 h-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)]" />
+                <span className="text-xs font-bold tracking-wider uppercase text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+                  The Unvarnished Engineering Truths
+                </span>
+              </div>
+              <h3 className="font-display text-2xl sm:text-3xl md:text-4xl font-normal tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary)]">
+                Discipline-Driven Development (DDD)
+              </h3>
+              <p className="text-sm sm:text-base text-base-content/80 leading-relaxed font-primary">
+                <span className="italic font-medium text-white">“You bring the idea. AI writes the code. RexOne keeps both of you from destroying the foundation.”</span>
+                <br />
+                The industry loves to sell quick fixes and hype. Here are the brutal engineering truths tech gurus hesitate to reveal:
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>⚡ 1. The Vibe-Coding Delusion</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Generating 10,000 lines in minutes without an immutable constitution isn&apos;t velocity; it&apos;s compounding debt at 100x speed. Speed without discipline is just accelerating toward a brick wall.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>🪤 2. The BaaS Lock-in Trap</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Serverless &ldquo;5-minute backends&rdquo; lure you in with toys, then hand you a $5,000/mo bill and a proprietary SDK hostage crisis. Real sovereignty runs PostgreSQL, native job queues, and self-hosted S3.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>📦 3. The Full-Stack Monolith Lie</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Cramming API handlers, database queries, background tasks, and DOM hydration into a single node runtime creates fragile houses of cards. True engineering enforces client-server separation.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>📱 4. The Webview Wrapper Cop-Out</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Wrapping a website in a webview shell is lazy and disrespectful to mobile users. Real mobile experiences demand native 60fps rendering, hardware media focus, and offline-first SQLite persistence.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>🛡️ 5. Zero Zombie Code &amp; Shims</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Retaining dead code, backwards-compatibility shims, and duplicate parameter aliases is cowardice. Under Constitutional Law U14, if code is replaced, the old code is wiped out completely.
+                </p>
+              </div>
+
+              <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-black/30 backdrop-blur-md hover:border-primary/50 transition-all duration-300 space-y-2">
+                <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
+                  <span>💎 6. 100% Free Sovereignty</span>
+                </div>
+                <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
+                  Unlike commercial boilerplates charging $300–$800 for basic auth or gating features behind &ldquo;pro tiers&rdquo;, RexOne is 100% free, MIT/open, and sovereign. You own your code, data, and destiny.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
             {LANDING_DATA.projects.map((project) => (

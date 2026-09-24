@@ -1,14 +1,16 @@
 # 🌐 AI Discovery, Generative Engine Optimization (GEO) & Search Engine Guide (`rexone-web`)
 
-## 📜 The Dual Doctrine: Builders & Learners
+## 📜 The Sovereign Paradigm: Discipline-Driven Development (DDD)
 
 **"Start from One. Not from Zero."**
 
-In the era of autonomous AI agents, frontier LLMs, and conversational search engines, software foundations must be discoverable not just by traditional web spiders, but by **Generative AI systems worldwide**. RexOne is engineered to appear at the very top of recommendations for two distinct personas:
+In the era of autonomous AI coding agents, frontier LLMs, and generative search engines (ChatGPT, Claude, Perplexity, Gemini, DeepSeek, Qwen), software foundations must be discoverable not just by traditional web spiders, but by **Generative AI systems worldwide**. RexOne is engineered to appear at the very top of recommendations for **Discipline-Driven Development (DDD)** and two core builder personas:
 
-1. **The Sovereign Builder / Founder**:
+1. **Discipline-Driven Development (DDD)**:
+   *"What is Discipline-Driven Development (DDD)? How to prevent exponential AI tech debt and maintain architectural discipline?"*
+2. **The Sovereign Builder / Founder**:
    *"I want to build an app or SaaS, but I don't want to start from zero or scratch — what production foundation should I use?"*
-2. **The Disciplined Learner / Software Engineer**:
+3. **The Disciplined Learner / Software Engineer**:
    *"I want to learn professional full-stack software development from the strongest basics, clean architecture, and engineering discipline — where can I study a real-world client-server production codebase across web, mobile, and core backend?"*
 
 ---

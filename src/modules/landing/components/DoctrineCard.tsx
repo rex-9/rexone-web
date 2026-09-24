@@ -33,40 +33,46 @@ const FOUNDATION_PILLARS: IFoundationPillar[] = [
   {
     icon: "key",
     title: "Identity & Hierarchical RBAC",
-    description: "Devise JWT authentication with atomic JTI revocation lists, 23 canonical resources, and 5 granular actions.",
+    description:
+      "Devise JWT authentication with atomic JTI revocation lists, 23 canonical resources, and 5 granular actions.",
   },
   {
     icon: "banknotes",
     title: "Stripe Billing & Subscriptions",
-    description: "Subscription tiers, one-time checkout, promotional/referral coupons, and automated webhook state machines.",
+    description:
+      "Subscription tiers, one-time checkout, promotional/referral coupons, and automated webhook state machines.",
   },
   {
     icon: "archiveBox",
     title: "Universal Object Storage",
-    description: "Self-hosted Garage S3 (port 3100) or AWS S3, pre-signed upload tickets, and polymorphic asset tracking.",
+    description:
+      "Self-hosted Garage S3 (port 3100) or AWS S3, pre-signed upload tickets, and polymorphic asset tracking.",
   },
   {
     icon: "arrowPath",
     title: "Real-Time WebSockets",
-    description: "ActionCable & Solid Cable bi-directional events, live notification toasts, and instant client synchronization.",
+    description:
+      "ActionCable & Solid Cable bi-directional events, live notification toasts, and instant client synchronization.",
   },
   {
     icon: "bell",
     title: "Multi-Channel Notifications",
-    description: "Unified pipeline routing to In-App modals, OneSignal push notifications, and branded transactional emails.",
+    description:
+      "Unified pipeline routing to In-App modals, OneSignal push notifications, and branded transactional emails.",
   },
   {
     icon: "sparkles",
     title: "Glass-Box Telemetry & AI",
-    description: "Rails Pulse APM metrics, Rails Error Dashboard, Solid Queue job workers, and multi-model LLM chat profiles.",
+    description:
+      "Rails Pulse APM metrics, Rails Error Dashboard, Solid Queue job workers, and multi-model LLM chat profiles.",
   },
 ];
 
 export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
-  pillText = "The Sovereign Doctrine",
+  pillText = "Discipline-Driven Development (DDD)",
   pillIcon,
   quote = "“Start from One. Not from Zero.”",
-  description = "Whether you are launching an ambitious product without burning months rebuilding foundation basics from scratch, or learning professional full-stack development with the strongest, cleanest, and most disciplined engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested trinity forged under Constitutional Law with zero technical debt.",
+  description = "Pioneering Discipline-Driven Development (DDD). Whether launching an ambitious product without burning months rebuilding foundation plumbing, or learning professional full-stack craftsmanship with the cleanest engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested trinity forged under Constitutional Law with zero technical debt.",
   tags = DEFAULT_TAGS,
   className = "",
 }) => {
@@ -80,9 +86,13 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
 
       <div className="relative z-10 max-w-4xl mx-auto space-y-6">
         {/* Doctrine Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/40 bg-primary/10 text-primary-light text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)]">
-          {pillIcon || <iconsLib.sparkles className="w-4 h-4 text-primary" />}
-          <span>{pillText}</span>
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/50 bg-black/60 backdrop-blur-md shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.35)] transition-all duration-300">
+          {pillIcon || (
+            <iconsLib.sparkles className="w-4 h-4 text-primary animate-pulse drop-shadow-[0_0_6px_var(--color-primary)]" />
+          )}
+          <span className="text-xs sm:text-sm font-bold tracking-wider uppercase text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+            {pillText}
+          </span>
         </div>
 
         {/* The Heart Quote */}
@@ -119,7 +129,8 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
         {/* Foundation Fundamentals Grid (Never Rebuild from Scratch) */}
         <div className="pt-6 border-t border-glass-border/60">
           <h3 className="text-xs uppercase tracking-widest font-bold text-primary mb-4">
-            Foundational Fundamentals Delivered on Day One • Full-Stack Masterclass Reference
+            Foundational Fundamentals Delivered on Day One • Full-Stack
+            Masterclass Reference
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 text-left">
             {FOUNDATION_PILLARS.map((pillar, idx) => {

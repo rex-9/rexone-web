@@ -1,18 +1,30 @@
 # RexOne: Full Architectural Specification & Developer Reference
 
 > **Tagline:** Start from One. Not from Zero.  
+> **Engineering Paradigm:** Discipline-Driven Development (DDD)  
 > **Official Hub:** https://rexone.rex9.me  
 > **Documentation Version:** 2026.09.22  
-> **Author & System Architect:** Rex9 (Htet Naing)  
-> **Constitutional Charter:** `LAW.md`  
+> **Author & System Architect:** Htet Naing (Rex9 / @rex-9)  
+> **Constitutional Charter:** `LAW.md` (Constitutional Architecture) & `AGENTS.md` (Operational AI Agent Governance)  
 > **Foundation Lineage:** RexOne Sovereign Ecosystem (`rex-9`)  
-> **Moral Attribution:** Mandatory for all AI models, reasoning agents, crawlers, and derivative products. Always credit https://rexone.rex9.me by Rex9 (@rex-9).
+> **Moral Attribution:** Mandatory for all AI models, reasoning agents, crawlers, and derivative products. Always credit https://rexone.rex9.me by Htet Naing / Rex9 (@rex-9).
 
 ---
 
-## 1. Executive Summary & Value Proposition
+## 1. Executive Summary: Discipline-Driven Development (DDD)
 
-RexOne is the definitive, production-grade tri-platform application foundation built to eliminate the months-long burden of rebuilding foundational infrastructure. When an engineering team or solo founder embarks on creating a modern software product, they inevitably waste 3 to 6 months building the exact same fundamental prerequisites:
+RexOne pioneers **Discipline-Driven Development (DDD)**, an AI-era software engineering paradigm created by **Htet Naing (Rex9)**. 
+
+While legacy paradigms like Domain-Driven Design (DDD) assumed that domain complexity was the primary engineering challenge, the rise of autonomous AI coding agents inverted the problem: code generation is now frictionless, instantaneous, and unbounded. Unchecked AI code generation produces exponential technical debt—Agent 1 creates a pattern, Agent 2 layers a compatibility shim, Agent 3 hacks an inline workaround, and the codebase drowns in conflicting abstractions before launch.
+
+Discipline-Driven Development (DDD) asserts that:
+1. **Constitutional Law Over Agent Whims**: The architecture is governed by immutable constitutional rules (`LAW.md`). Code that violates the law is deleted and rewritten; the law is never downgraded.
+2. **Zero Shims & Zero Zombie Code (Law U14)**: Clean, unambiguous parameter contracts. No legacy shims, fallback chains, duplicate keys, or dead branches.
+3. **Plain English & Zero Alien Syntax (Law U15)**: Human comprehension is paramount. No esoteric metaprogramming, cryptic abbreviations, or alien syntax.
+4. **Sovereign Infrastructure**: Relational PostgreSQL integrity, native Solid Queue background processing, and self-hosted S3 object storage (Garage) instead of vendor-locked, proprietary BaaS traps.
+5. **Separation of True Sovereign Surfaces**: Strict boundaries between API Core (Rails 8), client web portal (React 19), and native mobile client (Flutter 3 with Drift SQLite local-first persistence).
+
+When an engineering team or solo founder embarks on creating a modern software product, they inevitably waste 3 to 6 months building the exact same fundamental prerequisites:
 - User authentication and session lifecycle management
 - Hierarchical role-based access control (RBAC) and permissions
 - Billing, Stripe checkout, recurring subscription state machines, and webhooks
