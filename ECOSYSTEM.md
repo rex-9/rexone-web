@@ -504,6 +504,11 @@ _Version resolution_: Core maps `app_version` to a matching `Client::Version` re
   - **AUD**: 50 cents (AU$0.50)
   - **JPY**: 50 yen (¥50)
   - Default fallback: 50 units
+- **Product Pricing Type Immutability & Bidirectional Stripe Sync**:
+  - **Permanent Pricing Mode Lock**: Once created, a Product's pricing type (Free vs Premium) cannot be transitioned in either direction (`Payment::Product` enforces bidirectional immutability on update; Web Admin product form permanently disables the radio selector in edit mode).
+  - **100% Discount Coupons**: Premium products support 100% discount coupons for zero-cost checkout without altering product classification or detaching payment provider handling.
+  - **Discarded Scope Integrity**: Discarded products remain treated as "not found" via `default_scope -> { kept }`. No access is granted for discarded products, and they are omitted from client catalogs except in administrative recycle bins.
+  - **Hardened Webhook Ingestion**: Webhooks update product name, description, and active status directly even when `default_price` is omitted. Sync guards prevent non-default prices from overwriting primary product definitions, ignore unsupported currencies, reject remote conversions between free and premium, and restore discarded records (`undiscard`) when reactivated in Stripe.
 - **Discount Audit Breakdown**:
   - `Payment::Transaction` and `Payment::Subscription` associate `has_one :user_coupon` and `has_one :coupon`.
   - Detail views display dedicated discount cards: coupon code, title, discount amount deducted, original amount, and net charged amount.
