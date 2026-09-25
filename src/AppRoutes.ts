@@ -163,6 +163,7 @@ class AppRoutes {
 
       // Payments
       PAYMENT_SESSION: AppRoutes.api("/payment/session"), // POST
+      PAYMENT_SESSION_STATUS: AppRoutes.api("/payment/session/:id"), // GET
       PAYMENT_PRODUCTS: AppRoutes.api("/payment/products"), // GET
       PAYMENT_SUBSCRIPTIONS: AppRoutes.api("/payment/subscriptions"), // GET, POST
       PAYMENT_SUBSCRIPTION_CANCEL: AppRoutes.api(
@@ -357,6 +358,25 @@ class AppRoutes {
     }
 
     return `${AppRoutes.client.public.ROOT}?${searchParams.toString()}`;
+  }
+
+  // Authentication endpoints that do not require or must not send Authorization headers
+  static readonly AUTH_ENDPOINTS: readonly string[] = [
+    AppRoutes.server.public.PEEK_USER,
+    AppRoutes.server.public.SIGN_UP,
+    AppRoutes.server.public.SIGN_IN_EMAIL,
+    AppRoutes.server.public.SIGN_IN_TOKEN,
+    AppRoutes.server.public.SIGN_IN_GOOGLE,
+    AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE,
+    AppRoutes.server.public.SEND_EMAIL_CODE,
+    AppRoutes.server.public.CONFIRM_CODE,
+    AppRoutes.server.public.FORGOT_PASSWORD,
+    AppRoutes.server.public.RESET_PASSWORD,
+  ];
+
+  static isAuthEndpoint(url?: string): boolean {
+    if (!url) return false;
+    return AppRoutes.AUTH_ENDPOINTS.some((endpoint) => url.includes(endpoint));
   }
 }
 

@@ -271,6 +271,29 @@ class PaymentController {
       ),
     };
   }
+
+  async getSessionStatus(sessionId: string): Promise<{
+    success: boolean;
+    status?: string;
+    paymentStatus?: string;
+    error?: string;
+  }> {
+    const response = await PaymentService.getSessionStatus(sessionId);
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      return {
+        success: true,
+        status: data.status,
+        paymentStatus: data.payment_status,
+      };
+    }
+
+    return {
+      success: false,
+      error: getApiError(response, "Failed to verify payment session"),
+    };
+  }
 }
 
 export default new PaymentController();

@@ -20,7 +20,16 @@ import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 import { ADMIN_ACTIONS } from "../../constants";
 import { PRODUCT_CURRENCY, PRODUCT_INTERVAL, PRODUCT_TYPE } from "../constants";
-import { getStripeMinimumAmount } from "../../../payment/constants";
+import {
+  PAYMENT_CURRENCY_OPTIONS,
+  getStripeMinimumAmount,
+} from "../../../payment/constants";
+import {
+  formatPriceFeedback,
+  getCurrencyDecimals,
+  toMajorUnits,
+  toSmallestUnits,
+} from "../currency.utils";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { AdminAssetSelectDialog } from "../../asset/components/AdminAssetSelectDialog";
 import { ASSET_TYPES } from "../../asset/constants";
@@ -73,6 +82,15 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       ? PRODUCT_TYPE.FREE
       : PRODUCT_TYPE.PREMIUM,
   );
+  const isFree = priceMode === PRODUCT_TYPE.FREE;
+  const [majorAmount, setMajorAmount] = useState<number>(() =>
+    product?.free || product?.unit_amount === 0
+      ? 0
+      : toMajorUnits(
+          product?.unit_amount ?? initialValues.unit_amount,
+          product?.currency || PRODUCT_CURRENCY.USD,
+        ),
+  );
   const [descriptionError, setDescriptionError] = useState("");
   const [codeError, setCodeError] = useState("");
   const [priceError, setPriceError] = useState("");
@@ -85,7 +103,6 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   const isEditMode = mode === ADMIN_ACTIONS.EDIT;
-  const isFree = priceMode === PRODUCT_TYPE.FREE;
   const minLimit = getStripeMinimumAmount(values.currency);
 
   const updateValue = (
@@ -102,14 +119,17 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
 
     setPriceMode(nextMode);
     setPriceError("");
+    const nextSmallest =
+      nextMode === PRODUCT_TYPE.FREE
+        ? 0
+        : values.unit_amount >= minLimit
+          ? values.unit_amount
+          : Math.max(initialValues.unit_amount, minLimit);
+
+    setMajorAmount(toMajorUnits(nextSmallest, values.currency));
     setValues((current) => ({
       ...current,
-      unit_amount:
-        nextMode === PRODUCT_TYPE.FREE
-          ? 0
-          : current.unit_amount >= minLimit
-            ? current.unit_amount
-            : Math.max(initialValues.unit_amount, minLimit),
+      unit_amount: nextSmallest,
       interval:
         nextMode === PRODUCT_TYPE.FREE
           ? PRODUCT_INTERVAL.ONE_TIME
@@ -134,11 +154,15 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       return;
     }
 
-    if (!isFree && Number(values.unit_amount) < minLimit) {
+    const smallestAmount = isFree
+      ? 0
+      : toSmallestUnits(majorAmount, values.currency);
+
+    if (!isFree && smallestAmount < minLimit) {
       setPriceError(
         t(AppLocales.Admin.Products.Form.MinPriceError, {
           amount: minLimit,
-          formatted: `${(minLimit / 100).toFixed(2)} ${values.currency.toUpperCase()}`,
+          formatted: `${toMajorUnits(minLimit, values.currency)} ${values.currency.toUpperCase()}`,
         }),
       );
       return;
@@ -152,7 +176,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       code: code || undefined,
       name: values.name.trim(),
       description,
-      unit_amount: isFree ? 0 : Number(values.unit_amount),
+      unit_amount: smallestAmount,
       currency: values.currency,
       interval: isFree
         ? PRODUCT_INTERVAL.ONE_TIME
@@ -286,28 +310,40 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           )}
         </div>
 
-        <NumberInput
-          label={t(AppLocales.Admin.Products.Form.PriceLabel)}
-          min={isFree ? 0 : minLimit}
-          step={1}
-          value={isFree ? 0 : values.unit_amount}
-          required={!isFree}
-          disabled={isFree}
-          allowDecimals={false}
-          error={priceError}
-          helperText={
-            isFree
-              ? undefined
-              : t(AppLocales.Admin.Products.Form.MinPriceHelper, {
-                  amount: minLimit,
-                  formatted: `${(minLimit / 100).toFixed(2)} ${values.currency.toUpperCase()}`,
-                })
-          }
-          onChange={(val) => {
-            updateValue("unit_amount", val ?? 0);
-            if (priceError) setPriceError("");
-          }}
-        />
+        <div className="flex flex-col">
+          <NumberInput
+            label={t(AppLocales.Admin.Products.Form.PriceLabel)}
+            min={isFree ? 0 : toMajorUnits(minLimit, values.currency)}
+            step={getCurrencyDecimals(values.currency) === 0 ? 1 : 0.01}
+            value={isFree ? 0 : majorAmount}
+            required={!isFree}
+            disabled={isFree}
+            allowDecimals={getCurrencyDecimals(values.currency) > 0}
+            error={priceError}
+            helperText={
+              isFree
+                ? undefined
+                : t(AppLocales.Admin.Products.Form.MinPriceHelper, {
+                    amount: minLimit,
+                    formatted: `${toMajorUnits(minLimit, values.currency)} ${values.currency.toUpperCase()}`,
+                  })
+            }
+            onChange={(val) => {
+              const nextMajor = val ?? 0;
+              setMajorAmount(nextMajor);
+              updateValue(
+                "unit_amount",
+                toSmallestUnits(nextMajor, values.currency),
+              );
+              if (priceError) setPriceError("");
+            }}
+          />
+          {!isFree && (
+            <div className="mt-1 text-xs text-base-content/70 font-mono">
+              💡 {formatPriceFeedback(majorAmount, values.currency)}
+            </div>
+          )}
+        </div>
 
         <TextInput
           label={t(AppLocales.Admin.Products.Form.DescriptionLabel)}
@@ -324,11 +360,24 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         <Dropdown
           label={t(AppLocales.Admin.Products.Form.CurrencyLabel)}
           value={values.currency}
+          disabled={isEditMode}
           onValueChange={(val) => {
             updateValue("currency", val);
+            const nextMin = getStripeMinimumAmount(val);
+            const currentSmallest = toSmallestUnits(majorAmount, val);
+            if (currentSmallest < nextMin) {
+              const defaultMajor = toMajorUnits(nextMin, val);
+              setMajorAmount(defaultMajor);
+              updateValue("unit_amount", nextMin);
+            } else {
+              updateValue("unit_amount", currentSmallest);
+            }
             if (priceError) setPriceError("");
           }}
-          options={[{ value: PRODUCT_CURRENCY.USD, label: "USD" }]}
+          options={PAYMENT_CURRENCY_OPTIONS.map((opt) => ({
+            value: opt.value,
+            label: opt.label,
+          }))}
         />
 
         <div>

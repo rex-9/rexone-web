@@ -3,3 +3,4 @@ export { default as ProductService } from "./product.service";
 export * from "./constants";
 export * from "./pages";
 export * from "./types";
+export * from "./currency.utils";

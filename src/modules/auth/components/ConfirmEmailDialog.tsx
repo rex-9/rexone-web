@@ -66,6 +66,7 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
       navigate(AppRoutes.client.protected.HOME);
     } else {
       setOtp("");
+      updateUrl({ otp: null });
       setError(result.error || "Failed to confirm email code.");
     }
   };
@@ -174,9 +175,6 @@ export const ConfirmEmailDialog: React.FC<IConfirmEmailDialogProps> = ({
 
         {message && (
           <p className="text-caption text-success text-center">{message}</p>
-        )}
-        {error && (
-          <p className="text-caption text-error text-center">{error}</p>
         )}
       </div>
     </Dialog>

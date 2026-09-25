@@ -114,4 +114,41 @@ test.describe("Authentication > Sign up", () => {
 
     await expect(page.getByText(/Username must be at least 3 characters/i)).toBeVisible();
   });
+
+  test("entering wrong OTP keeps dialog open, clears inputs, and does not show session expired", async ({ page }) => {
+    const user = generateTestUser("wrongotp");
+    await authPage.goto();
+    await authPage.enterEmail(user.email);
+    await authPage.submit();
+
+    await signUpPasswordPage.waitForCreate();
+    await signUpPasswordPage.enterPassword(user.password);
+
+    await signUpPasswordPage.waitForConfirm();
+    await signUpPasswordPage.enterPassword(user.password);
+
+    await signUpInfoPage.waitForVisible();
+    await signUpInfoPage.enterInfo(user.name, user.username);
+    await signUpInfoPage.submit();
+
+    await confirmEmailPage.waitForVisible();
+
+    // Enter wrong 6-digit OTP
+    await confirmEmailPage.enterOtp("999999");
+
+    // Verify error is displayed inside dialog
+    await expect(page.getByText(/Invalid confirmation code|Confirmation code is invalid|Failed to confirm email code/i).first()).toBeVisible();
+
+    // Verify inputs are cleared
+    await expect(confirmEmailPage.inputs.first()).toHaveValue("");
+
+    // Verify dialog remains open
+    await expect(confirmEmailPage.heading).toBeVisible();
+
+    // Verify "session has expired" is NOT displayed and step remains confirm-email
+    await expect(page.getByText(/session has expired/i)).not.toBeVisible();
+    expect(page.url()).toContain("step=confirm-email");
+
+    await cleanupUser(user.email);
+  });
 });

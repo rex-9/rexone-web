@@ -110,11 +110,14 @@ class PaymentService {
     cancelUrl?: string,
     couponCode?: string,
   ): Promise<IApiResponse<IApiEnvelope<ICheckoutResponse>>> {
+    const defaultSuccessUrl =
+      window.location.origin +
+      AppRoutes.client.protected.PAYMENT_SUCCESS +
+      "?session_id={CHECKOUT_SESSION_ID}";
+
     const payload: Record<string, unknown> = {
       product_id: productId,
-      success_url:
-        successUrl ||
-        window.location.origin + AppRoutes.client.protected.PAYMENT_SUCCESS,
+      success_url: successUrl || defaultSuccessUrl,
       cancel_url:
         cancelUrl ||
         window.location.origin + AppRoutes.client.protected.PAYMENT_CANCEL,
@@ -126,6 +129,20 @@ class PaymentService {
     const response = await api.post<ICheckoutResponse>(
       AppRoutes.server.protected.PAYMENT_SESSION,
       payload,
+    );
+    return response;
+  }
+
+  async getSessionStatus(
+    sessionId: string,
+  ): Promise<
+    IApiResponse<IApiEnvelope<{ status: string; payment_status: string }>>
+  > {
+    const response = await api.get<{ status: string; payment_status: string }>(
+      AppRoutes.withId(
+        AppRoutes.server.protected.PAYMENT_SESSION_STATUS,
+        sessionId,
+      ),
     );
     return response;
   }

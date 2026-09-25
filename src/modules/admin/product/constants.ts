@@ -1,6 +1,6 @@
 import AppRoutes from "../../../AppRoutes";
 import { ADMIN_RESOURCES, IAdminPageMeta } from "../constants";
-import { BILLING_INTERVALS } from "../../payment/constants";
+import { BILLING_INTERVALS, PAYMENT_CURRENCIES } from "../../payment/constants";
 
 export const ADMIN_PRODUCT_PAGE_TITLES = {
   CREATE: "Create Product",
@@ -71,6 +71,4 @@ export const PRODUCT_INTERVAL = {
   ...BILLING_INTERVALS,
 } as const;
 
-export const PRODUCT_CURRENCY = {
-  USD: "usd",
-} as const;
+export const PRODUCT_CURRENCY = PAYMENT_CURRENCIES;

@@ -38,6 +38,11 @@ const handleUnauthorized = () => {
   localStorage.removeItem(StorageKeys.TOKEN);
   localStorage.removeItem(StorageKeys.USER);
 
+  // If already interacting with an auth or modal dialog, do not violently navigate away
+  if (window.location.search.includes(DialogParams.DIALOG)) {
+    return;
+  }
+
   const nextUrl = new URL(
     window.location.origin + AppRoutes.client.public.ROOT,
   );
@@ -76,7 +81,7 @@ axiosInstance.interceptors.request.use(
     }
 
     const token = getStoredToken();
-    if (token) {
+    if (token && !AppRoutes.isAuthEndpoint(config.url)) {
       headers.set(AUTH_HEADERS.AUTHORIZATION, `Bearer ${token}`);
     }
 
@@ -91,10 +96,13 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error?.response?.status === 401) {
-      const token = getStoredToken();
-      // If we had a stored token that the backend rejected as 401, automatically log out and redirect
-      if (token) {
-        handleUnauthorized();
+      const url = error.config?.url || "";
+      if (!AppRoutes.isAuthEndpoint(url)) {
+        const token = getStoredToken();
+        // If we had a stored token that the backend rejected as 401, automatically log out and redirect
+        if (token) {
+          handleUnauthorized();
+        }
       }
     }
     return Promise.reject(error);
