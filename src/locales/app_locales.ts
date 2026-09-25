@@ -678,6 +678,8 @@ export const AppLocales = {
         SaveProduct: "admin.products.form.save_product",
         CreateProduct: "admin.products.form.create_product",
         Saving: "admin.products.form.saving",
+        MinPriceHelper: "admin.products.form.min_price_helper",
+        MinPriceError: "admin.products.form.min_price_error",
       },
       Toasts: {
         CreateSuccess: "admin.products.toasts.create_success",

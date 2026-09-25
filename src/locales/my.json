@@ -868,7 +868,9 @@
         "remove_thumbnail": "ဖယ်ရှားမည်",
         "save_product": "ထုတ်ကုန် သိမ်းမည်",
         "create_product": "ထုတ်ကုန် ဖန်တီးမည်",
-        "saving": "သိမ်းနေဆဲ..."
+        "saving": "သိမ်းနေဆဲ...",
+        "min_price_helper": "Stripe အတွက် အနည်းဆုံး {{amount}} ယူနစ် ({{formatted}}) လိုအပ်ပါသည်။",
+        "min_price_error": "Stripe အနည်းဆုံး သတ်မှတ်ချက်အရ ဈေးနှုန်းသည် အနည်းဆုံး {{amount}} ယူနစ် ({{formatted}}) ရှိရပါမည်။"
       },
       "toasts": {
         "create_success": "ထုတ်ကုန် ဖန်တီးပြီးပါပြီ",

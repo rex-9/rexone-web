@@ -15,11 +15,12 @@ import {
   Radio,
   TextInput,
 } from "../../components";
-import { Button, Image } from "../../../../design";
+import { Button, Image, NumberInput } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 import { ADMIN_ACTIONS } from "../../constants";
 import { PRODUCT_CURRENCY, PRODUCT_INTERVAL, PRODUCT_TYPE } from "../constants";
+import { getStripeMinimumAmount } from "../../../payment/constants";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { AdminAssetSelectDialog } from "../../asset/components/AdminAssetSelectDialog";
 import { ASSET_TYPES } from "../../asset/constants";
@@ -74,6 +75,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   );
   const [descriptionError, setDescriptionError] = useState("");
   const [codeError, setCodeError] = useState("");
+  const [priceError, setPriceError] = useState("");
   const [thumbnailAssetId, setThumbnailAssetId] = useState<string | null>(
     product?.thumbnail_asset_id ?? null,
   );
@@ -86,6 +88,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     mode === ADMIN_ACTIONS.EDIT &&
     (product?.free || product?.unit_amount === 0);
   const isFree = priceMode === PRODUCT_TYPE.FREE;
+  const minLimit = getStripeMinimumAmount(values.currency);
 
   const updateValue = (
     field: keyof IAdminProductFormValues,
@@ -100,14 +103,15 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
     }
 
     setPriceMode(nextMode);
+    setPriceError("");
     setValues((current) => ({
       ...current,
       unit_amount:
         nextMode === PRODUCT_TYPE.FREE
           ? 0
-          : current.unit_amount > 0
+          : current.unit_amount >= minLimit
             ? current.unit_amount
-            : initialValues.unit_amount,
+            : Math.max(initialValues.unit_amount, minLimit),
       interval:
         nextMode === PRODUCT_TYPE.FREE
           ? PRODUCT_INTERVAL.ONE_TIME
@@ -132,8 +136,19 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
       return;
     }
 
+    if (!isFree && Number(values.unit_amount) < minLimit) {
+      setPriceError(
+        t(AppLocales.Admin.Products.Form.MinPriceError, {
+          amount: minLimit,
+          formatted: `${(minLimit / 100).toFixed(2)} ${values.currency.toUpperCase()}`,
+        }),
+      );
+      return;
+    }
+
     setDescriptionError("");
     setCodeError("");
+    setPriceError("");
 
     onSubmit({
       code: code || undefined,
@@ -279,17 +294,27 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           )}
         </div>
 
-        <TextInput
+        <NumberInput
           label={t(AppLocales.Admin.Products.Form.PriceLabel)}
-          type="number"
-          min={isFree ? 0 : 1}
+          min={isFree ? 0 : minLimit}
           step={1}
           value={isFree ? 0 : values.unit_amount}
           required={!isFree}
           disabled={isFree}
-          onChange={(event) =>
-            updateValue("unit_amount", Number(event.target.value))
+          allowDecimals={false}
+          error={priceError}
+          helperText={
+            isFree
+              ? undefined
+              : t(AppLocales.Admin.Products.Form.MinPriceHelper, {
+                  amount: minLimit,
+                  formatted: `${(minLimit / 100).toFixed(2)} ${values.currency.toUpperCase()}`,
+                })
           }
+          onChange={(val) => {
+            updateValue("unit_amount", val ?? 0);
+            if (priceError) setPriceError("");
+          }}
         />
 
         <TextInput
@@ -307,7 +332,10 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
         <Dropdown
           label={t(AppLocales.Admin.Products.Form.CurrencyLabel)}
           value={values.currency}
-          onValueChange={(val) => updateValue("currency", val)}
+          onValueChange={(val) => {
+            updateValue("currency", val);
+            if (priceError) setPriceError("");
+          }}
           options={[{ value: PRODUCT_CURRENCY.USD, label: "USD" }]}
         />
 

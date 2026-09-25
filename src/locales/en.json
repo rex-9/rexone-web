@@ -869,7 +869,9 @@
         "remove_thumbnail": "Remove Thumbnail",
         "save_product": "Save Product",
         "create_product": "Create Product",
-        "saving": "Saving..."
+        "saving": "Saving...",
+        "min_price_helper": "Minimum {{amount}} minor units ({{formatted}}) required by Stripe.",
+        "min_price_error": "Price must be at least {{amount}} minor units ({{formatted}}) to satisfy Stripe minimum charge limits."
       },
       "toasts": {
         "create_success": "Product created successfully",
