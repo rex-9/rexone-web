@@ -84,7 +84,7 @@ describe("ChatController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { room: mockRoom },
+          data: mockRoom,
         },
       };
 
@@ -108,7 +108,7 @@ describe("ChatController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Room updated" },
-          data: { room: { id: "room_1", title: "Renamed Room" } },
+          data: { id: "room_1", title: "Renamed Room" },
         },
       };
 
@@ -217,7 +217,7 @@ describe("ChatController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { message: mockMessage },
+          data: mockMessage,
         },
       };
 
@@ -244,7 +244,7 @@ describe("ChatController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { message: { id: "msg_1", content: "Updated message content" } },
+          data: { id: "msg_1", content: "Updated message content" },
         },
       };
 

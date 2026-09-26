@@ -1,6 +1,6 @@
 import { PaymentService } from ".";
 import { AppLocales, translate } from "../../locales";
-import { getApiError, parsePagyList } from "../../services/api.service";
+import { getApiError, parsePagyList, parseRecord } from "../../services/api.service";
 import {
   IAccess,
   ICouponValidationResult,
@@ -126,7 +126,7 @@ class PaymentController {
     if (status?.success && data) {
       return {
         success: true,
-        subscription: data,
+        subscription: parseRecord<ISubscription>(data),
         message: status.message || "Subscription canceled successfully",
       };
     }
@@ -152,7 +152,7 @@ class PaymentController {
     if (status?.success && data) {
       return {
         success: true,
-        subscription: data,
+        subscription: parseRecord<ISubscription>(data),
         message: status.message || "Subscription resumed successfully",
       };
     }
@@ -204,7 +204,7 @@ class PaymentController {
     cooldown_remaining?: number;
   }> {
     const response = await PaymentService.validateCoupon(code, productId);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
     if (status?.success && data?.valid) {
       return {
@@ -219,8 +219,8 @@ class PaymentController {
         response,
         translate(AppLocales.Payment.CheckoutDialog.InvalidCode),
       ),
-      remaining_attempts: data?.remaining_attempts,
-      cooldown_remaining: data?.cooldown_remaining,
+      remaining_attempts: meta?.remaining_attempts,
+      cooldown_remaining: meta?.cooldown_remaining,
     };
   }
 

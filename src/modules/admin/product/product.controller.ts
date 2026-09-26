@@ -47,10 +47,9 @@ class ProductController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw = "attributes" in data ? data : (data as { product?: IAdminProduct }).product ?? data;
       return {
         success: true,
-        product: parseRecord<IAdminProduct>(raw as IJsonApiResource<IAdminProduct>),
+        product: parseRecord<IAdminProduct>(data as IJsonApiResource<IAdminProduct>),
       };
     }
 
@@ -98,16 +97,10 @@ class ProductController {
     const { status, data } = response.data || {};
 
     if (status?.success) {
-      const raw = data
-        ? "attributes" in data
-          ? data
-          : (data as { product?: IAdminProduct }).product ?? data
-        : undefined;
-
       return {
         success: true,
-        product: raw
-          ? parseRecord<IAdminProduct>(raw as IJsonApiResource<IAdminProduct>)
+        product: data
+          ? parseRecord<IAdminProduct>(data as IJsonApiResource<IAdminProduct>)
           : undefined,
         message: status.message,
       };
@@ -135,10 +128,9 @@ class ProductController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw = "attributes" in data ? data : (data as { product?: IAdminProduct }).product ?? data;
       return {
         success: true,
-        product: parseRecord<IAdminProduct>(raw as IJsonApiResource<IAdminProduct>),
+        product: parseRecord<IAdminProduct>(data as IJsonApiResource<IAdminProduct>),
         message: status.message,
       };
     }

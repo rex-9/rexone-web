@@ -13,9 +13,6 @@ import {
   IAdminChatListParams,
 } from "./types";
 
-type AdminChatRoomResponse = IAdminChatRoom | { room: IAdminChatRoom };
-type AdminChatMessageResponse = IAdminChatMessage | { message: IAdminChatMessage };
-
 class ChatService {
   async getRooms(
     params?: IAdminChatListParams,
@@ -28,8 +25,8 @@ class ChatService {
 
   async getRoom(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
-    return api.get<AdminChatRoomResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>>>> {
+    return api.get<IJsonApiResource<IAdminChatRoom>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
     );
   }
@@ -37,8 +34,8 @@ class ChatService {
   async updateRoom(
     id: string,
     values: IAdminChatRoomFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
-    return api.put<AdminChatRoomResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>>>> {
+    return api.put<IJsonApiResource<IAdminChatRoom>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_DETAIL, id),
       { room: values },
     );
@@ -52,8 +49,8 @@ class ChatService {
 
   async undiscardRoom(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatRoomResponse>>> {
-    return api.post<AdminChatRoomResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatRoom>>>> {
+    return api.post<IJsonApiResource<IAdminChatRoom>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_ROOM_UNDISCARD, id),
     );
   }
@@ -77,8 +74,8 @@ class ChatService {
 
   async getMessage(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
-    return api.get<AdminChatMessageResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatMessage>>>> {
+    return api.get<IJsonApiResource<IAdminChatMessage>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
     );
   }
@@ -86,8 +83,8 @@ class ChatService {
   async updateMessage(
     id: string,
     values: IAdminChatMessageFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
-    return api.put<AdminChatMessageResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatMessage>>>> {
+    return api.put<IJsonApiResource<IAdminChatMessage>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.CHAT_MESSAGE_DETAIL, id),
       { message: values },
     );
@@ -101,8 +98,8 @@ class ChatService {
 
   async undiscardMessage(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminChatMessageResponse>>> {
-    return api.post<AdminChatMessageResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminChatMessage>>>> {
+    return api.post<IJsonApiResource<IAdminChatMessage>>(
       AppRoutes.withId(
         AppRoutes.server.protected.admin.CHAT_MESSAGE_UNDISCARD,
         id,

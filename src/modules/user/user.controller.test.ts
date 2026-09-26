@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import UserController from "./user.controller";
 import UserService from "./user.service";
 import { USER_PEEK_STATUS } from "./constants";
-import { IUser, IAssetUploadResponse } from "../../models";
+import { IUser } from "../../models";
 import { AppLocales, translate } from "../../locales";
 
 vi.mock("./user.service", () => ({
@@ -97,9 +97,9 @@ describe("UserController", () => {
       vi.mocked(UserService.getCurrentUser).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { user: mockUser, token: "tok-1" },
+          data: mockUser,
         },
-      });
+      } as never);
 
       const user = await UserController.getCurrentUser();
       expect(user).toEqual(mockUser);
@@ -116,7 +116,7 @@ describe("UserController", () => {
   });
 
   describe("updateCurrentUser", () => {
-    it("returns the updated user from data.user", async () => {
+    it("returns the updated user from data", async () => {
       const updatedUser = {
         ...mockUser,
         name: "Alice Updated",
@@ -126,7 +126,7 @@ describe("UserController", () => {
       vi.mocked(UserService.updateCurrentUser).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Updated" },
-          data: { user: updatedUser },
+          data: updatedUser,
         },
       } as never);
 
@@ -169,20 +169,30 @@ describe("UserController", () => {
 
   describe("uploadImage", () => {
     it("uploads image file and returns upload response", async () => {
-      const mockUploadResponse: IAssetUploadResponse = {
+      const mockAsset = {
+        id: "a1",
         url: "https://assets.rexone.test/avatar.png",
       } as any;
+      const mockStorageDetails = {
+        storage_key: "users/avatars/a1.png",
+        bytes: 1234,
+        format: "png",
+      };
 
       vi.mocked(UserService.uploadImage).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Uploaded" },
-          data: mockUploadResponse,
+          data: mockAsset,
+          meta: { storage_details: mockStorageDetails },
         },
       });
 
       const file = new File(["dummy"], "avatar.png", { type: "image/png" });
       const result = await UserController.uploadImage(file);
-      expect(result).toEqual(mockUploadResponse);
+      expect(result).toEqual({
+        asset: mockAsset,
+        storage_details: mockStorageDetails,
+      });
     });
   });
 });

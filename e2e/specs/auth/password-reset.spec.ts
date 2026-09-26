@@ -34,7 +34,7 @@ test.describe("Authentication > Password reset", () => {
 
   test("shows a cooldown timer after requesting a reset", async ({ page }) => {
     await authPage.goto();
-    await authPage.enterEmail(users.existing.email);
+    await authPage.enterEmail(users.superAdmin.email);
     await authPage.submit();
 
     await signInPage.waitForVisible();

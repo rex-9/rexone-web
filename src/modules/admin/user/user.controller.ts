@@ -46,7 +46,7 @@ class UserController {
     if (status?.success && data) {
       return {
         success: true,
-        user: parseRecord("user" in data ? data.user : data),
+        user: parseRecord<IAdminUser>(data),
       };
     }
 
@@ -95,7 +95,7 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const user = parseRecord<IAdminUser>("user" in data ? data.user : data);
+      const user = parseRecord<IAdminUser>(data);
       const roleError = await this.syncRoles(
         user.id,
         user.iam?.roles.map((role) => role.id) ?? [],
@@ -134,7 +134,7 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const user = parseRecord<IAdminUser>("user" in data ? data.user : data);
+      const user = parseRecord<IAdminUser>(data);
       const roleError = await this.syncRoles(
         id,
         user.iam?.roles.map((role) => role.id) ?? [],
@@ -216,10 +216,9 @@ class UserController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const roles = Array.isArray(data) ? data : data.roles;
       return {
         success: true,
-        roles: roles.map(parseRecord),
+        roles: data.map(parseRecord),
       };
     }
 

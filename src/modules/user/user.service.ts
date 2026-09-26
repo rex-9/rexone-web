@@ -5,8 +5,9 @@ import {
   IApiEnvelope,
   IApiResponse,
   IUser,
-  IAssetUploadResponse,
+  IAsset,
   IAssetUploadOptions,
+  IJsonApiResource,
 } from "../../models";
 import { api } from "../../services";
 import type { ICurrentUserUpdateValues } from "./types";
@@ -27,17 +28,17 @@ class UserService {
   }
 
   async getCurrentUser(): Promise<
-    IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<IUser>>>
   > {
-    return await api.get<{ user: IUser; token: string }>(
+    return await api.get(
       AppRoutes.server.protected.CURRENT_USER,
     );
   }
 
   async updateCurrentUser(
     values: ICurrentUserUpdateValues,
-  ): Promise<IApiResponse<IApiEnvelope<{ user: IUser }>>> {
-    return api.put<{ user: IUser }>(AppRoutes.server.protected.CURRENT_USER, {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser>>>> {
+    return api.put(AppRoutes.server.protected.CURRENT_USER, {
       user: values,
     });
   }
@@ -45,7 +46,7 @@ class UserService {
   async uploadImage(
     file: File,
     options?: IAssetUploadOptions,
-  ): Promise<IApiResponse<IApiEnvelope<IAssetUploadResponse>>> {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAsset>>>> {
     const formData = new FormData();
     formData.append("file", file);
     if (options?.type) formData.append("type", options.type);
@@ -57,7 +58,7 @@ class UserService {
       formData.append("duration_secs", String(options.duration_secs));
     if (options?.folder) formData.append("folder", options.folder);
 
-    const response = await api.post<IAssetUploadResponse>(
+    const response = await api.post<IJsonApiResource<IAsset>>(
       AppRoutes.server.protected.UPLOAD_ASSET,
       formData,
       {

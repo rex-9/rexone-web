@@ -8,15 +8,6 @@ import {
 } from "./types";
 import { IAdminRole } from "../role";
 
-export type AdminUserResponse =
-  | IJsonApiResource<IAdminUser>
-  | IAdminUser
-  | { user: IAdminUser };
-
-export type AdminUserRoleListResponse =
-  | IJsonApiResource<IAdminRole>[]
-  | { roles: IJsonApiResource<IAdminRole>[] };
-
 class UserService {
   async getUsers(
     params?: IAdminUserListParams,
@@ -37,8 +28,8 @@ class UserService {
 
   async getUser(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.get<AdminUserResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>>>> {
+    return api.get<IJsonApiResource<IAdminUser>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
     );
   }
@@ -61,8 +52,8 @@ class UserService {
 
   async createUser(
     values: Omit<IAdminUserFormValues, "role_ids">,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.post<AdminUserResponse>(AppRoutes.server.protected.admin.USERS, {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>>>> {
+    return api.post<IJsonApiResource<IAdminUser>>(AppRoutes.server.protected.admin.USERS, {
       user: values,
     });
   }
@@ -70,8 +61,8 @@ class UserService {
   async updateUser(
     id: string,
     values: Omit<IAdminUserFormValues, "role_ids">,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.put<AdminUserResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>>>> {
+    return api.put<IJsonApiResource<IAdminUser>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.USER_DETAIL, id),
       {
         user: values,
@@ -81,24 +72,24 @@ class UserService {
 
   async discardUser(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.post<AdminUserResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>>>> {
+    return api.post<IJsonApiResource<IAdminUser>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.USER_DISCARD, id),
     );
   }
 
   async undiscardUser(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminUserResponse>>> {
-    return api.post<AdminUserResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminUser>>>> {
+    return api.post<IJsonApiResource<IAdminUser>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.USER_UNDISCARD, id),
     );
   }
 
   async getRoles(): Promise<
-    IApiResponse<IApiEnvelope<AdminUserRoleListResponse>>
+    IApiResponse<IApiEnvelope<IJsonApiResource<IAdminRole>[]>>
   > {
-    return api.get<AdminUserRoleListResponse>(
+    return api.get<IJsonApiResource<IAdminRole>[]>(
       AppRoutes.server.protected.admin.USER_ROLES,
     );
   }

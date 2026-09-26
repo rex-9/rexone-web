@@ -1,4 +1,4 @@
-import { parsePagyList, getApiError } from "../../../services/api.service";
+import { parsePagyList, parseRecord, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type {
   IAdminAccess,
@@ -40,7 +40,7 @@ class AccessController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, access: body.attributes };
+      return { success: true, access: parseRecord<IAdminAccess>(body) };
     }
 
     return {
@@ -60,7 +60,7 @@ class AccessController {
     if (status?.success && Array.isArray(body)) {
       return {
         success: true,
-        accesses: body.map((item) => item.attributes),
+        accesses: body.map((item) => parseRecord<IAdminAccess>(item)),
       };
     }
 
@@ -83,7 +83,7 @@ class AccessController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, access: body.attributes };
+      return { success: true, access: parseRecord<IAdminAccess>(body) };
     }
 
     return {

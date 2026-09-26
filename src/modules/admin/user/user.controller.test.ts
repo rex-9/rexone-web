@@ -102,7 +102,7 @@ describe("UserController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { user: mockUser },
+          data: mockUser,
         },
       };
 
@@ -175,7 +175,7 @@ describe("UserController", () => {
       const mockResponse = {
         data: {
           status: { code: 201, success: true, message: "User created" },
-          data: { user: { id: "u3", email: "new@example.com" } },
+          data: { id: "u3", email: "new@example.com" },
         },
       };
 
@@ -206,7 +206,7 @@ describe("UserController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "User updated" },
-          data: { user: { id: "u1", email: "updated@example.com" } },
+          data: { id: "u1", email: "updated@example.com" },
         },
       };
 
@@ -269,7 +269,7 @@ describe("UserController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { roles: mockRoles },
+          data: mockRoles,
         },
       };
 

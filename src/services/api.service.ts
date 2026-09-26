@@ -221,6 +221,8 @@ export const parseRecord = <T extends object>(
   record: IJsonApiResource<T> | T,
 ): T & { id: string } => {
   if (
+    record &&
+    typeof record === "object" &&
     "attributes" in record &&
     "type" in record &&
     typeof record.attributes === "object" &&
@@ -247,5 +249,3 @@ export const parsePagyList = <T extends object>(
     pagination: envelope?.meta?.pagination ?? null,
   };
 };
-
-export const parsePaginatedResponse = parsePagyList;

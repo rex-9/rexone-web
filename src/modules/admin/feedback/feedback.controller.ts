@@ -1,5 +1,5 @@
 // src/modules/admin/feedback/feedback.controller.ts
-import { parsePagyList, getApiError } from "../../../services/api.service";
+import { parsePagyList, parseRecord, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type {
   IAdminFeedback,
@@ -40,7 +40,7 @@ class FeedbackController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, feedback: body.attributes };
+      return { success: true, feedback: parseRecord<IAdminFeedback>(body) };
     }
 
     return {
@@ -61,7 +61,7 @@ class FeedbackController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, feedback: body.attributes };
+      return { success: true, feedback: parseRecord<IAdminFeedback>(body) };
     }
 
     return {

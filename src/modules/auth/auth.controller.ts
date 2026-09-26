@@ -1,12 +1,9 @@
 // src/controllers/auth.controller.ts
 
-import AuthService, {
-  type IGoogleSignInCompleteData,
-  type IGoogleSignInStartData,
-} from "./auth.service";
+import AuthService from "./auth.service";
 import { AppLocales, translate } from "../../locales";
-import { IApiResponseStatus, IUser } from "../../models";
-import { getApiError } from "../../services";
+import { IApiMeta, IApiResponseStatus, IJsonApiResource, IUser } from "../../models";
+import { getApiError, parseRecord } from "../../services/api.service";
 import { IGoogleSignInCompleteResult, IGoogleSignInStartResult } from "./types";
 import { AUTH_ERRORS } from "./constants";
 
@@ -19,13 +16,13 @@ class AuthController {
     error?: string;
   }> {
     const response = await AuthService.signInWithToken(token);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
-    if (status?.success && data?.token && data?.user) {
+    if (status?.success && meta?.token && data) {
       return {
         success: true,
-        token: data.token,
-        user: data.user,
+        token: meta.token,
+        user: parseRecord<IUser>(data),
       };
     }
 
@@ -54,10 +51,10 @@ class AuthController {
       signinKey,
       password,
     );
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
     // OTP sent (unconfirmed user)
-    if (status?.code === 200 && data?.otp_sent) {
+    if (status?.code === 200 && meta?.otp_sent) {
       return {
         success: false,
         otpSent: true,
@@ -68,11 +65,11 @@ class AuthController {
     }
 
     // Successful sign in
-    if (status?.success && data?.token && data?.user) {
+    if (status?.success && meta?.token && data) {
       return {
         success: true,
-        token: data.token,
-        user: data.user,
+        token: meta.token,
+        user: parseRecord<IUser>(data),
         message: status.message,
       };
     }
@@ -84,15 +81,16 @@ class AuthController {
         response,
         translate(AppLocales.Auth.Shared.SignInFailed),
       ),
-      remainingAttempts: data?.remaining_attempts,
-      cooldownRemaining: data?.cooldown_remaining,
+      remainingAttempts: meta?.remaining_attempts,
+      cooldownRemaining: meta?.cooldown_remaining,
     };
   }
 
   // Shared response handler
   private _handleAuthResponse(
     status: IApiResponseStatus | undefined,
-    data: IGoogleSignInStartData | IGoogleSignInCompleteData | undefined,
+    data: IJsonApiResource<IUser> | null | undefined,
+    meta: IApiMeta | undefined,
     passwordRequired: boolean,
     challengeToken?: string,
   ) {
@@ -110,7 +108,7 @@ class AuthController {
           statusCode: status.code,
           passwordRequired: true,
           challengeToken,
-          user: data?.user,
+          user: data ? parseRecord<IUser>(data) : undefined,
         };
       }
 
@@ -118,8 +116,8 @@ class AuthController {
         success: true,
         statusCode: status.code,
         passwordRequired: false,
-        user: data?.user,
-        token: data?.token,
+        user: data ? parseRecord<IUser>(data) : undefined,
+        token: meta?.token,
       };
     }
 
@@ -134,14 +132,15 @@ class AuthController {
   // Google sign in (NO password attempt limiter)
   async signInWithGoogle(token: string): Promise<IGoogleSignInStartResult> {
     const response = await AuthService.signInWithGoogle(token);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
-    const passwordRequired = data?.password_required === true;
-    const challengeToken = data?.challenge_token || "";
+    const passwordRequired = meta?.password_required === true;
+    const challengeToken = meta?.challenge_token || "";
 
     return this._handleAuthResponse(
       status,
       data,
+      meta,
       passwordRequired,
       challengeToken,
     );
@@ -156,9 +155,9 @@ class AuthController {
       password,
       challengeToken,
     );
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
-    const result = this._handleAuthResponse(status, data, false);
+    const result = this._handleAuthResponse(status, data, meta, false);
     return {
       success: result.success,
       statusCode: result.statusCode,
@@ -242,13 +241,13 @@ class AuthController {
       emailOrUsername,
       confirmationCode,
     );
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
 
-    if (status?.success && data?.token && data?.user) {
+    if (status?.success && meta?.token && data) {
       return {
         success: true,
-        token: data.token,
-        user: data.user,
+        token: meta.token,
+        user: parseRecord<IUser>(data),
         message: status.message,
       };
     }
@@ -267,7 +266,7 @@ class AuthController {
     cooldownRemaining?: number;
   }> {
     const response = await AuthService.sendForgotPasswordMail(email);
-    const { status, data } = response.data || {};
+    const { status, meta } = response.data || {};
 
     if (status?.success) {
       return {
@@ -277,8 +276,8 @@ class AuthController {
     }
 
     const cooldownRemaining =
-      typeof data?.cooldown_remaining === "number"
-        ? data.cooldown_remaining
+      typeof meta?.cooldown_remaining === "number"
+        ? meta.cooldown_remaining
         : undefined;
 
     return {

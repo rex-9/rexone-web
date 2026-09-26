@@ -90,7 +90,7 @@ describe("ProductController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { product: mockProduct },
+          data: mockProduct,
         },
       };
 
@@ -151,7 +151,7 @@ describe("ProductController", () => {
       const mockResponse = {
         data: {
           status: { code: 201, success: true, message: "Product created" },
-          data: { product: { id: "p3", name: "Enterprise" } },
+          data: { id: "p3", name: "Enterprise" },
         },
       };
 
@@ -182,7 +182,7 @@ describe("ProductController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Product updated" },
-          data: { product: { id: "p3", name: "Enterprise Updated" } },
+          data: { id: "p3", name: "Enterprise Updated" },
         },
       };
 

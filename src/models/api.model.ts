@@ -9,6 +9,24 @@ export interface IApiPagination {
 
 export interface IApiMeta {
   pagination?: IApiPagination;
+  token?: string;
+  cooldown_remaining?: number;
+  remaining_attempts?: number;
+  otp_sent?: boolean;
+  password_required?: boolean;
+  challenge_token?: string;
+  storage_details?: {
+    storage_key: string;
+    bytes: number;
+    format: string;
+  };
+  operation_id?: string;
+  operation_type?: string;
+  operation_status?: string;
+  link?: string;
+  room_id?: string;
+  user_id?: string;
+  [key: string]: unknown;
 }
 
 export interface IApiEnvelope<T = unknown> {

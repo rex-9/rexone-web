@@ -47,7 +47,7 @@ class AssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord("asset" in data ? data.asset : data),
+        asset: parseRecord<IAdminAsset>(data),
       };
     }
 
@@ -104,7 +104,7 @@ class AssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord("asset" in data ? (data as any).asset : data),
+        asset: parseRecord<IAsset>(data),
         message: status.message,
       };
     }
@@ -141,7 +141,7 @@ class AssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord("asset" in data ? data.asset : data),
+        asset: parseRecord<IAdminAsset>(data),
         message: status.message,
       };
     }
@@ -226,7 +226,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const asset = parseRecord("asset" in data ? data.asset : data);
+      const asset = parseRecord<IAdminAsset>(data);
       return {
         success: true,
         asset,
@@ -236,8 +236,8 @@ class AssetController {
     }
 
     const err = getApiError(response, "Failed to compress asset");
-    const rawAsset = data ? ("asset" in data ? data.asset : data) : undefined;
-    const parsedAsset = rawAsset ? parseRecord(rawAsset) : undefined;
+    const rawAsset = data;
+    const parsedAsset = rawAsset ? parseRecord<IAdminAsset>(rawAsset) : undefined;
     const isOptimal =
       parsedAsset?.status === ASSET_STATUSES.OPTIMAL ||
       err?.toLowerCase().includes("optimal") ||
@@ -258,31 +258,61 @@ class AssetController {
     if (status?.success && data && "download_url" in data) {
       return { success: true, url: data.download_url as string };
     }
-    return { success: false, error: getApiError(response, "Failed to download asset") };
+    return {
+      success: false,
+      error: getApiError(response, "Failed to download asset"),
+    };
   }
 
   async regenerateThumbnail(id: string) {
     const response = await Admin.AssetService.regenerateThumbnail(id);
     const { status, data } = response.data || {};
     return status?.success
-      ? { success: true, asset: data && "asset" in data ? parseRecord(data.asset) : undefined, message: status.message }
-      : { success: false, error: getApiError(response, "Failed to regenerate thumbnail") };
+      ? {
+          success: true,
+          asset: data
+            ? parseRecord<IAdminAsset>(data)
+            : undefined,
+          message: status.message,
+        }
+      : {
+          success: false,
+          error: getApiError(response, "Failed to regenerate thumbnail"),
+        };
   }
 
   async uploadThumbnail(id: string, file: File) {
     const response = await Admin.AssetService.uploadThumbnail(id, file);
     const { status, data } = response.data || {};
     return status?.success
-      ? { success: true, asset: data && "asset" in data ? parseRecord(data.asset) : undefined, message: status.message }
-      : { success: false, error: getApiError(response, "Failed to upload thumbnail") };
+      ? {
+          success: true,
+          asset: data
+            ? parseRecord<IAdminAsset>(data)
+            : undefined,
+          message: status.message,
+        }
+      : {
+          success: false,
+          error: getApiError(response, "Failed to upload thumbnail"),
+        };
   }
 
   async uploadSubtitle(id: string, file: File) {
     const response = await Admin.AssetService.uploadSubtitle(id, file);
     const { status, data } = response.data || {};
     return status?.success
-      ? { success: true, asset: data && "asset" in data ? parseRecord(data.asset) : undefined, message: status.message }
-      : { success: false, error: getApiError(response, "Failed to upload subtitle") };
+      ? {
+          success: true,
+          asset: data
+            ? parseRecord<IAdminAsset>(data)
+            : undefined,
+          message: status.message,
+        }
+      : {
+          success: false,
+          error: getApiError(response, "Failed to upload subtitle"),
+        };
   }
 
   async getStorageStats(): Promise<{
@@ -293,10 +323,10 @@ class AssetController {
     const response = await Admin.AssetService.getStorageStats();
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.stats) {
+    if (status?.success && data) {
       return {
         success: true,
-        stats: data.stats,
+        stats: data,
       };
     }
 

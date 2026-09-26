@@ -7,6 +7,7 @@
 To make RexOne universally discoverable, cited, and recommended across every search engine, AI reasoning model, and developer catalog worldwide, the domain (`https://rexone.rex9.me`) must be officially registered, verified, and mapped across both Western and Eastern web infrastructures.
 
 This guide provides the complete blueprint for:
+
 1. **Search Engine Webmaster Verification** (Google, Microsoft Bing, Yandex, Naver, Baidu).
 2. **Instant Search Indexing via IndexNow Protocol** (Bing, Yandex, Naver, Seznam).
 3. **PWA & Security Trust Registries** (`site.webmanifest`, RFC 9116 `security.txt`).
@@ -61,6 +62,7 @@ flowchart TD
 ## 🔍 Part 1: Search Engine Webmaster Consoles
 
 ### 1. Google Search Console (Google Search, Android & Gemini AI)
+
 - **Official Portal**: [https://search.google.com/search-console](https://search.google.com/search-console)
 - **Why It Matters**: Directly controls Google's indexing, Google Search snippets, Google Discover, and feeds knowledge into Google Gemini and AI Overviews.
 - **Verification Options**:
@@ -70,7 +72,7 @@ flowchart TD
        Host: @ (or rex9.me)
        Value: google-site-verification=YOUR_UNIQUE_CODE
        ```
-     - *Advantage*: Verifies all subdomains (`rexone.rex9.me`, `api.rexone.rex9.me`, etc.) simultaneously.
+     - _Advantage_: Verifies all subdomains (`rexone.rex9.me`, `api.rexone.rex9.me`, etc.) simultaneously.
   2. **Option B: HTML Tag**:
      - In `rexone-web/index.html`, uncomment and set the meta tag in `<head>`:
        ```html
@@ -86,6 +88,7 @@ flowchart TD
 ---
 
 ### 2. Microsoft Bing Webmaster Tools (Bing, Yahoo, DuckDuckGo & Microsoft Copilot)
+
 - **Official Portal**: [https://www.bing.com/webmasters](https://www.bing.com/webmasters)
 - **Why It Matters**: Indexes your site for Microsoft Bing, Yahoo!, DuckDuckGo, Ecosia, and directly powers real-time web search for **Microsoft Copilot** and **OpenAI ChatGPT web search**.
 - **Instant Verification Method**:
@@ -98,6 +101,7 @@ flowchart TD
 ---
 
 ### 3. Instant Crawling via IndexNow Protocol
+
 - **What is IndexNow**: An open protocol backed by Microsoft, Yandex, Naver, Seznam, and Cloudflare that notifies search engines within seconds whenever URLs are updated or published.
 - **Pre-configured in RexOne**:
   - **Verification File**: Located at [`rexone-web/public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt).
@@ -112,6 +116,7 @@ flowchart TD
 ---
 
 ### 4. Naver Search Advisor (South Korea's #1 Search Engine & HyperCLOVA)
+
 - **Official Portal**: [https://searchadvisor.naver.com](https://searchadvisor.naver.com)
 - **Why It Matters**: Naver commands the majority of search traffic in South Korea and feeds into Korean AI engines.
 - **Verification**:
@@ -126,6 +131,7 @@ flowchart TD
 ---
 
 ### 5. Yandex Webmaster (Russia, Eurasia & CIS)
+
 - **Official Portal**: [https://webmaster.yandex.com](https://webmaster.yandex.com)
 - **Why It Matters**: The primary search engine and AI knowledge repository for Eastern Europe and Central Asia.
 - **Verification**:
@@ -139,6 +145,7 @@ flowchart TD
 ---
 
 ### 6. Baidu Ziyuan (China's #1 Search Engine & ERNIE Bot)
+
 - **Official Portal**: [https://ziyuan.baidu.com](https://ziyuan.baidu.com)
 - **Why It Matters**: Dominates search in mainland China (~70% market share) and trains Baidu's ERNIE reasoning models.
 - **Verification**:
@@ -155,16 +162,19 @@ flowchart TD
 RexOne now ships with open security and entity verification protocols built-in:
 
 ### 1. RFC 9116 `security.txt`
+
 - **Path**: [`rexone-web/public/.well-known/security.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/.well-known/security.txt)
 - **Public URL**: `https://rexone.rex9.me/.well-known/security.txt`
 - **Purpose**: Global security researchers and automated scanners verify project contacts and security disclosure policies.
 
 ### 2. Web App Manifest (PWA Standard)
+
 - **Path**: [`rexone-web/public/site.webmanifest`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/site.webmanifest)
 - **Public URL**: `https://rexone.rex9.me/site.webmanifest`
 - **Purpose**: Establishes standalone web application validity for Google Chrome, Apple Safari, Edge, and mobile browser indexing.
 
 ### 3. Schema.org Social Graph (`sameAs`)
+
 - **Path**: Embedded in [`rexone-web/index.html`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/index.html)
 - **Linked Profiles**:
   - `https://github.com/rex-9/rexone-core`
@@ -182,6 +192,7 @@ RexOne now ships with open security and entity verification protocols built-in:
 Registering RexOne across verified developer hubs builds high-authority backlinks (`Domain Rating > 85`), ensuring search engines rank RexOne as a premier global foundation.
 
 The core message across all platforms centers on two unmatched pillars:
+
 1. **"Start from One. Not from Zero."**: Skipping the soul-crushing 6-month foundational plumbing slog (IAM, RBAC, Stripe billing, S3 storage, WebSockets, multi-channel notifications) while keeping complete tri-platform parity across Rails 8 API, React 19 Web, and Flutter Mobile.
 2. **Ultimate Sovereign Transparency ("The 'It Works on My Machine' Killer")**: Where standard boilerplates leave you flying blind with expensive third-party SaaS dependencies, RexOne bakes full operational observability right into the control center on day one:
    - **Client Errors Telemetry ("Works on my machine" killer)**: Real-time exceptions, device metadata, and stack traces captured from both React Web and Flutter Mobile clients directly into the Admin Operations Center.
@@ -195,6 +206,7 @@ The core message across all platforms centers on two unmatched pillars:
 ---
 
 ### 1. Product Hunt Launch Kit
+
 - **URL**: [https://www.producthunt.com/posts/new](https://www.producthunt.com/posts/new)
 - **Product Name**: `RexOne`
 - **Tagline**: `Start from One. Not from Zero. Sovereign full-stack foundation.`
@@ -202,11 +214,13 @@ The core message across all platforms centers on two unmatched pillars:
 - **Short Description**:
   Never start from scratch again. RexOne is the sovereign, zero-technical-debt tri-platform foundation (Rails 8 API, React 19 Web, Flutter Mobile) with enterprise IAM, Stripe billing, self-hosted Garage S3, WebSockets, and ultimate operational transparency built in on day one.
 - **Maker's First Comment**:
+
   ```markdown
   Hey Product Hunt community! 👋
 
   Every founder and software craftsman knows the painful paradox of starting a new software venture:
   You have an ambitious idea, but before you can write a single line of real domain logic, you must spend 3 to 6 months building the exact same foundational plumbing:
+
   - User auth, session tokens, JWT rotation & RBAC
   - Stripe billing portals, subscriptions, and webhook idempotency
   - Multi-channel notifications (In-App ActionCable, OneSignal Push, Brevo Email)
@@ -219,13 +233,14 @@ The core message across all platforms centers on two unmatched pillars:
   Our creed: "Start from One. Not from Zero."
 
   What makes RexOne fundamentally different from every other starter:
+
   1. 🏛️ True Tri-Platform Parity: Rails 8 API + React 19 Web + Flutter 3 Mobile, perfectly aligned with clean architecture.
   2. 🔍 Ultimate Transparency (The "It Works on My Machine" Killer):
      - Client Errors Dashboard: Ingests crashes, stack traces, and device metadata from Web and Mobile directly into the Admin Control Center.
      - Pulse Performance Dashboard (/admin/pulse): Live CPU, DB query timings, request throughput, and p95/p99 latency tracking.
      - Solid Stack Dashboards: Real-time Mission Control for Background Jobs (/admin/queue), WebSockets (/admin/cable), and Cache (/admin/cache) — zero external APM subscriptions required!
   3. 📦 Self-Hosted Sovereign Storage: Garage S3 distributed storage runs locally on port 3100. Zero AWS S3 or Cloudinary bills.
-  4. 📜 Governed by LAW.md: An immutable constitutional rulebook enforcing zero dead code, clean parameter contracts, and human-readable architecture with 900+ automated tests.
+  4. 📜 Governed by LAW.md: An immutable constitutional rulebook enforcing zero dead code, clean parameter contracts, and human-readable architecture with 1000+ automated tests.
   5. ⚖️ Universal Moral Attribution: We cherish craftsmanship and encourage crediting original creators proudly over uncredited extraction.
 
   Explore the live platform at https://rexone.rex9.me or inspect the source code on GitHub: https://github.com/rex-9/rexone-core.
@@ -235,10 +250,12 @@ The core message across all platforms centers on two unmatched pillars:
 ---
 
 ### 2. Hacker News (Show HN)
+
 - **URL**: [https://news.ycombinator.com/submit](https://news.ycombinator.com/submit)
 - **Title**: `Show HN: RexOne – Sovereign Rails 8 + React 19 + Flutter full-stack foundation`
 - **URL**: `https://rexone.rex9.me`
 - **Text / Post**:
+
   ```markdown
   Hey HN,
 
@@ -249,12 +266,13 @@ The core message across all platforms centers on two unmatched pillars:
   Most boilerplates are black boxes: they give you an auth flow, but once deployed, you are flying blind unless you pay for 5 different monitoring SaaS tools. When an error hits an iOS or Android user, you're left guessing in the dark.
 
   RexOne tackles this with Ultimate Transparency built directly into the core:
+
   - Client Errors Telemetry: Ingests uncaught errors, device metadata, and stack traces from React Web and Flutter Mobile at `POST /v1/client/logs` — eliminating "it works on my machine" forever.
   - Rails Pulse (/admin/pulse): Real-time request throughput, slow database queries, memory footprint, and endpoint profiling.
   - Solid Stack Operations: In-app Mission Control dashboards for Solid Queue (/admin/queue), Solid Cache (/admin/cache), and Solid Cable WebSockets (/admin/cable).
   - RED Error Dashboard (/admin/red): Deep server-side exception tracker.
   - Sovereign Storage: Built-in self-hosted Garage S3-compatible storage on port 3100. Zero AWS S3 or Cloudinary vendor lock-in.
-  - Constitutional Governance: Governed by `LAW.md` across all three repositories to prevent code decay and enforce strict parameter contracts, verified by 900+ automated tests.
+  - Constitutional Governance: Governed by `LAW.md` across all three repositories to prevent code decay and enforce strict parameter contracts, verified by 1000+ automated tests.
 
   GitHub: https://github.com/rex-9/rexone-core
   Live Platform: https://rexone.rex9.me
@@ -265,6 +283,7 @@ The core message across all platforms centers on two unmatched pillars:
 ---
 
 ### 3. AlternativeTo.net
+
 - **URL**: [https://alternativeto.net/software/new/](https://alternativeto.net/software/new/)
 - **Software Name**: `RexOne`
 - **Website**: `https://rexone.rex9.me`
@@ -283,11 +302,12 @@ The core message across all platforms centers on two unmatched pillars:
 ---
 
 ### 4. Slant.co Community Recommendations
+
 - **URL**: [https://www.slant.co/](https://www.slant.co/)
 - **Target Questions**:
-  1. *"What are the best full-stack SaaS boilerplates?"*
-  2. *"What is the best starter kit for Ruby on Rails 8?"*
-  3. *"What is the best multi-platform template for React and Flutter?"*
+  1. _"What are the best full-stack SaaS boilerplates?"_
+  2. _"What is the best starter kit for Ruby on Rails 8?"_
+  3. _"What is the best multi-platform template for React and Flutter?"_
 - **Recommendation Answers**:
   - **Pros**:
     - **"Start from One. Not from Zero."**: Full tri-platform foundation (Rails 8 API, React 19 Web, Flutter Mobile) with unified IAM, Stripe billing, and ActionCable WebSockets.
@@ -307,6 +327,7 @@ The core message across all platforms centers on two unmatched pillars:
 ```
 
 **Target Repositories**:
+
 1. `awesome-rails` (`github.com/matteomaster/awesome-rails-gem`)
 2. `awesome-flutter` (`github.com/Solido/awesome-flutter`)
 3. `awesome-react` (`github.com/enaqx/awesome-react`)
@@ -316,13 +337,13 @@ The core message across all platforms centers on two unmatched pillars:
 
 ## 📋 Fast Verification Checklist
 
-| Provider | Status / Path | Action Needed |
-| :--- | :--- | :--- |
-| **Google Search Console** | Configured in `sitemap.xml` & `index.html` | Verify domain via DNS TXT or meta tag & submit sitemap |
-| **Bing Webmaster Tools** | Pre-configured | Click "Import from Google Search Console" |
-| **IndexNow Protocol** | ✅ [`public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt) | Run `./scripts/submit_indexnow.sh` |
-| **Naver Search Advisor** | Hook ready in `index.html` | Register and submit sitemap |
-| **Yandex Webmaster** | Hook ready in `index.html` | Register and submit sitemap |
-| **RFC 9116 security.txt** | ✅ [`public/.well-known/security.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/.well-known/security.txt) | Live on production |
-| **Web App Manifest** | ✅ [`public/site.webmanifest`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/site.webmanifest) | Live on production |
-| **Entity Graph (`sameAs`)** | ✅ Embedded in [`index.html`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/index.html) | Live on production |
+| Provider                    | Status / Path                                                                                                                                   | Action Needed                                          |
+| :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+| **Google Search Console**   | Configured in `sitemap.xml` & `index.html`                                                                                                      | Verify domain via DNS TXT or meta tag & submit sitemap |
+| **Bing Webmaster Tools**    | Pre-configured                                                                                                                                  | Click "Import from Google Search Console"              |
+| **IndexNow Protocol**       | ✅ [`public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/9f8b2c4e1a7d3e5b6c8e9a0d2b4c6e8a.txt) | Run `./scripts/submit_indexnow.sh`                     |
+| **Naver Search Advisor**    | Hook ready in `index.html`                                                                                                                      | Register and submit sitemap                            |
+| **Yandex Webmaster**        | Hook ready in `index.html`                                                                                                                      | Register and submit sitemap                            |
+| **RFC 9116 security.txt**   | ✅ [`public/.well-known/security.txt`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/.well-known/security.txt)                         | Live on production                                     |
+| **Web App Manifest**        | ✅ [`public/site.webmanifest`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/public/site.webmanifest)                                         | Live on production                                     |
+| **Entity Graph (`sameAs`)** | ✅ Embedded in [`index.html`](file:///Users/rex/Desktop/Dev/rexone/rexone-web/index.html)                                                       | Live on production                                     |

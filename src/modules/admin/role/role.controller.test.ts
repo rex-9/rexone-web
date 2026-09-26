@@ -78,7 +78,7 @@ describe("RoleController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { role: mockRole },
+          data: mockRole,
         },
       };
 
@@ -134,7 +134,7 @@ describe("RoleController", () => {
       const mockResponse = {
         data: {
           status: { code: 201, success: true, message: "Role created" },
-          data: { role: { id: "r2", name: "Support Specialist" } },
+          data: { id: "r2", name: "Support Specialist" },
         },
       };
 
@@ -163,7 +163,7 @@ describe("RoleController", () => {
       const mockResponse = {
         data: {
           status: { code: 200, success: true, message: "Role updated" },
-          data: { role: { id: "r2", name: "Support Lead" } },
+          data: { id: "r2", name: "Support Lead" },
         },
       };
 

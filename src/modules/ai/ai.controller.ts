@@ -11,6 +11,7 @@ import {
   IApiEnvelope,
   IApiPagination,
   IApiResponse,
+  IApiResponseStatus,
   IJsonApiResource,
 } from "../../models";
 import { AppLocales, translate } from "../../locales";
@@ -198,24 +199,43 @@ class AiController {
     }
 
     const response = await AiService.chat(request);
-    const { status, data } = response.data || {};
+    const envelope = response.data || {};
+    const { status, data, meta } = envelope as {
+      status?: IApiResponseStatus;
+      data?: any;
+      meta?: any;
+    };
 
     if (status?.success && data) {
-      const rawList = data.messages || data.meta?.messages;
+      const envelopeAny = envelope as Record<string, any>;
+      const rawList =
+        data.messages ||
+        meta?.messages ||
+        data.meta?.messages ||
+        envelopeAny.messages;
       let parsedMessages: IMessage[] = [];
 
-      if (rawList && rawList.length > 0) {
-        parsedMessages = rawList.map((m) => parseRecord<IMessage>(m));
+      if (Array.isArray(rawList) && rawList.length > 0) {
+        parsedMessages = rawList.map((m: any) => parseRecord<IMessage>(m));
+      } else if (Array.isArray(data)) {
+        parsedMessages = data.map((m: any) => parseRecord<IMessage>(m));
       } else if (data.data) {
         const single = parseRecord<IMessage>(data.data);
+        if (single) {
+          parsedMessages = [single];
+        }
+      } else {
+        const single = parseRecord<IMessage>(data);
         if (single) {
           parsedMessages = [single];
         }
       }
 
       const resolvedRoomId =
+        meta?.room_id ||
         data.meta?.room_id ||
         data.room_id ||
+        envelopeAny.room_id ||
         parsedMessages[0]?.room_id ||
         roomId ||
         this.currentRoomId ||

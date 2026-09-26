@@ -253,9 +253,11 @@ describe("PaymentController", () => {
           status: { code: 422, success: false, message: "Invalid coupon" },
           data: {
             valid: false,
+          },
+          meta: {
             remaining_attempts: 2,
             cooldown_remaining: 0,
-          } as any,
+          },
         },
       });
 
@@ -272,9 +274,11 @@ describe("PaymentController", () => {
           status: { code: 429, success: false, message: "Too many attempts" },
           data: {
             valid: false,
+          },
+          meta: {
             remaining_attempts: 0,
             cooldown_remaining: 30,
-          } as any,
+          },
         },
       });
 

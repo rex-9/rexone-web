@@ -4,6 +4,7 @@ import { useToast } from "../contexts/ToastContext";
 import { getSocketToast, SOCKET_MESSAGE_TYPES } from "../helpers/socket.helpers";
 import { getUtcNowIso } from "../helpers";
 import SocketService, { ISocketMessage } from "../services/socket.service";
+import { NOTIFICATION_SOCKET_TYPES } from "../modules/notification";
 import { ToastTypes } from "../constants";
 
 export interface INotification {
@@ -14,7 +15,7 @@ export interface INotification {
 }
 
 export const useSocket = () => {
-  const { token, isAuthenticated } = useAuth();
+  const { token, isAuthenticated, refreshCurrentUser } = useAuth();
   const { success, error, info, warning } = useToast();
   const [notifications, setNotifications] = useState<INotification[]>([]);
 
@@ -26,6 +27,20 @@ export const useSocket = () => {
     }
 
     const handleNotification = (data: ISocketMessage) => {
+      const payloadType = (data.data?.type as string) || data.type;
+      const isEntitlementEvent =
+        payloadType === NOTIFICATION_SOCKET_TYPES.PAYMENT_SUCCESS ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CREATED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_RESUMED ||
+        payloadType === NOTIFICATION_SOCKET_TYPES.SUBSCRIPTION_CANCELED ||
+        payloadType === "access_granted" ||
+        payloadType === "access_revoked" ||
+        payloadType === "payment_intent_succeeded";
+
+      if (isEntitlementEvent) {
+        void refreshCurrentUser();
+      }
+
       const toast = getSocketToast(data);
       if (!toast) {
         return;

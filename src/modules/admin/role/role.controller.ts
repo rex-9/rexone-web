@@ -45,10 +45,9 @@ class RoleController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw = "role" in data ? data.role : data;
       return {
         success: true,
-        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+        role: parseRecord<IAdminRole>(data as IJsonApiResource<IAdminRole>),
       };
     }
 
@@ -92,10 +91,9 @@ class RoleController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw = "role" in data ? data.role : data;
       return {
         success: true,
-        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+        role: parseRecord<IAdminRole>(data as IJsonApiResource<IAdminRole>),
       };
     }
 
@@ -117,10 +115,9 @@ class RoleController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw = "role" in data ? data.role : data;
       return {
         success: true,
-        role: parseRecord<IAdminRole>(raw as IJsonApiResource<IAdminRole>),
+        role: parseRecord<IAdminRole>(data as IJsonApiResource<IAdminRole>),
       };
     }
 

@@ -3,7 +3,7 @@
 import NotificationService from "./notification.service";
 import { INotificationListParams, IUserNotification } from "./types";
 import {
-  parsePaginatedResponse,
+  parsePagyList,
   parseRecord,
 } from "../../services/api.service";
 
@@ -13,7 +13,7 @@ export class NotificationController {
    */
   static async getNotifications(params?: INotificationListParams) {
     const response = await NotificationService.getNotifications(params);
-    return parsePaginatedResponse<IUserNotification>(response);
+    return parsePagyList<IUserNotification>(response);
   }
 
   /**

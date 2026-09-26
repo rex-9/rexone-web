@@ -1,7 +1,8 @@
 export {
   api,
   getApiError,
-  parsePaginatedResponse,
+  parseRecord,
+  parsePagyList,
 } from "./api.service";
 export { default as AtomService } from "./atom.service";
 export { default as SocketService } from "./socket.service";

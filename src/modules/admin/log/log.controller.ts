@@ -1,5 +1,5 @@
 import AdminLogService from "./log.service";
-import { parsePagyList, getApiError } from "../../../services/api.service";
+import { parsePagyList, parseRecord, getApiError } from "../../../services/api.service";
 import type { IApiPagination } from "../../../models";
 import type { IAdminLog, IAdminLogFilters } from "./types";
 
@@ -35,7 +35,7 @@ class AdminLogController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, log: body.attributes };
+      return { success: true, log: parseRecord<IAdminLog>(body) };
     }
 
     return {
@@ -53,7 +53,7 @@ class AdminLogController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, log: body.attributes };
+      return { success: true, log: parseRecord<IAdminLog>(body) };
     }
 
     return {
@@ -71,7 +71,7 @@ class AdminLogController {
     const { status, data: body } = response.data || {};
 
     if (status?.success && body) {
-      return { success: true, log: body.attributes };
+      return { success: true, log: parseRecord<IAdminLog>(body) };
     }
 
     return {

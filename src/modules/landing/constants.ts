@@ -130,7 +130,7 @@ export const LANDING_DATA = {
       ],
       details: [
         "The Sovereign Foundation: multi-platform API core built under Constitutional Law (LAW.md)",
-        "900+ RSpec core invariant specs, zero-latency ActionCable WebSockets & Stripe billing",
+        "1000+ RSpec core invariant specs, zero-latency ActionCable WebSockets & Stripe billing",
         "Glass-box telemetry: Performance, Error, Sidekiq Queue, Cache & Cable dashboards",
         "Hierarchical RBAC permission engine & unified Web/Mobile client error logging",
       ],

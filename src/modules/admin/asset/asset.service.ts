@@ -3,7 +3,7 @@ import {
   IApiEnvelope,
   IApiResponse,
   IAsset,
-  IAssetUploadResponse,
+  IJsonApiResource,
 } from "../../../models";
 import { api } from "../../../services";
 import type { IAdminAsset, IStorageStats } from "./types";
@@ -20,8 +20,8 @@ class AssetService {
 
   async getAsset(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.get<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.get<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_DETAIL, id),
     );
   }
@@ -46,12 +46,13 @@ class AssetService {
       parent_asset_id?: string;
       folder?: string;
     },
-  ): Promise<IApiResponse<IApiEnvelope<IAssetUploadResponse>>> {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAsset>>>> {
     const formData = new FormData();
     formData.append("file", file);
     if (options?.type) formData.append("type", options.type);
     if (options?.title) formData.append("title", options.title);
-    if (options?.description) formData.append("description", options.description);
+    if (options?.description)
+      formData.append("description", options.description);
     if (options?.assetable_type)
       formData.append("assetable_type", options.assetable_type);
     if (options?.assetable_id)
@@ -60,7 +61,7 @@ class AssetService {
       formData.append("parent_asset_id", options.parent_asset_id);
     if (options?.folder) formData.append("folder", options.folder);
 
-    return api.post<IAssetUploadResponse>(
+    return api.post<IJsonApiResource<IAsset>>(
       AppRoutes.server.protected.admin.ASSET_UPLOAD,
       formData,
       { headers: { "Content-Type": "multipart/form-data" } },
@@ -81,8 +82,8 @@ class AssetService {
         | "parent_asset_id"
       >
     >,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.put<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.put<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_DETAIL, id),
       { asset: data },
     );
@@ -90,16 +91,16 @@ class AssetService {
 
   async discardAsset(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.post<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_DISCARD, id),
     );
   }
 
   async undiscardAsset(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.post<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_UNDISCARD, id),
     );
   }
@@ -112,8 +113,8 @@ class AssetService {
 
   async compressAsset(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.post<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.ASSET_COMPRESS, id),
     );
   }
@@ -128,8 +129,8 @@ class AssetService {
 
   async regenerateThumbnail(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
-    return api.post<{ asset: IAdminAsset }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(
         AppRoutes.server.protected.admin.ASSET_THUMBNAIL_REGENERATE,
         id,
@@ -140,10 +141,10 @@ class AssetService {
   async uploadThumbnail(
     id: string,
     file: File,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
     const formData = new FormData();
     formData.append("file", file);
-    return api.post<{ asset: IAdminAsset }>(
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(
         AppRoutes.server.protected.admin.ASSET_THUMBNAIL_UPLOAD,
         id,
@@ -156,14 +157,14 @@ class AssetService {
   async uploadSubtitle(
     id: string,
     file: File,
-  ): Promise<IApiResponse<IApiEnvelope<{ asset: IAdminAsset }>>> {
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>>>> {
     const formData = new FormData();
     const srtFile =
       file.type === "text/plain"
         ? file
         : new File([file], file.name, { type: "text/plain" });
     formData.append("file", srtFile);
-    return api.post<{ asset: IAdminAsset }>(
+    return api.post<IJsonApiResource<IAdminAsset>>(
       AppRoutes.withId(
         AppRoutes.server.protected.admin.ASSET_SUBTITLE_UPLOAD,
         id,
@@ -174,9 +175,9 @@ class AssetService {
   }
 
   async getStorageStats(): Promise<
-    IApiResponse<IApiEnvelope<{ stats: IStorageStats }>>
+    IApiResponse<IApiEnvelope<IStorageStats>>
   > {
-    return api.get<{ stats: IStorageStats }>(
+    return api.get<IStorageStats>(
       AppRoutes.server.protected.admin.ASSET_STORAGE_STATS,
     );
   }

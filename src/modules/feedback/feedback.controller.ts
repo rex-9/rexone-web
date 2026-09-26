@@ -6,7 +6,7 @@ import {
   IFeedback,
   IFeedbackListParams,
 } from "./types";
-import { parsePaginatedResponse } from "../../services/api.service";
+import { parsePagyList } from "../../services/api.service";
 import {
   BROWSER_NAMES,
   OS_NAMES,
@@ -110,7 +110,7 @@ export class FeedbackController {
    */
   static async getAdminFeedbacks(params?: IFeedbackListParams) {
     const response = await feedbackService.getAdminFeedbacks(params);
-    return parsePaginatedResponse<IFeedback>(response);
+    return parsePagyList<IFeedback>(response);
   }
 }
 

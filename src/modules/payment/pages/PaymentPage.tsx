@@ -13,9 +13,11 @@ import { PaymentController } from "..";
 import { CheckoutDialog } from "../components";
 import { AnalyticsService } from "../../../services";
 import { useTranslate, AppLocales } from "../../../locales";
+import { useAccess } from "../../../hooks";
 
 export const PaymentPage: React.FC = () => {
   const t = useTranslate();
+  const { hasAccess: hasEntitlementAccess, refresh: refreshAccesses } = useAccess();
   const { setLoading } = useLoading();
   const { success, error } = useToast();
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -76,7 +78,7 @@ export const PaymentPage: React.FC = () => {
     if (result.success) {
       if (result.freeAccessGranted) {
         success("Free access claimed successfully! 🎉");
-        await fetchData();
+        await Promise.all([fetchData(), refreshAccesses()]);
         return;
       }
 
@@ -122,7 +124,10 @@ export const PaymentPage: React.FC = () => {
   };
 
   const hasActiveAccess = (productId: string) => {
-    return accesses.some((a) => a.product_id === productId && a.active);
+    return (
+      hasEntitlementAccess(productId) ||
+      accesses.some((a) => a.product_id === productId && a.active)
+    );
   };
 
   const getActiveSubscription = (productId: string) => {

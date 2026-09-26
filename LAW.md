@@ -369,7 +369,7 @@ Transport Layer   (src/services/api.service.ts)
 
 ### W8. Centralized API Response Parsing (`ApiService`)
 
-- ALWAYS use centralized parsers from `src/services/api.service.ts` (`parseResponse`, `parsePaginatedResponse`, `parseFromList`, `apiHandler`). Zero manual axios parsing.
+- ALWAYS use centralized parsers: `parseRecord`, `parsePagyList`, and `getApiError` from `src/services/api.service.ts` on Web, and `ApiService` (`parseRecord`, `parsePagyList`) on Mobile. Zero manual HTTP client or axios parsing.
 
 ### W9. End-to-End (E2E) Testing Law (Playwright Page Object Models)
 
@@ -470,7 +470,7 @@ Transport Layer   (lib/services/api.service.dart)
 | **Async Loading**         | ActiveJob (`SolidQueue`) background queues          | Universal `LoadingContext` (`useLoading()`)                | `ApiService` with loading overlay                             |
 | **Design System**         | N/A (Headless JSON API)                             | `src/design/` (Zero components outside)                    | `lib/design/` (Tokens, `Design.space.*`)                      |
 | **Media & Storage**       | Centralized `assets` table, `storage_key`           | `src/assets/index.ts`, `iconsLib`, `Asset`                 | Distributed `assets` link, semantic widgets                   |
-| **Pagination**            | `pagy, records = pagy(collection)` via `PagyHelper` | Standard paginated envelope parsing                        | `parsePaginatedResponse<T>` via `ApiService`                  |
+| **Pagination**            | `pagy, records = pagy(collection)` via `PagyHelper` | `parsePagyList<T>` via `api.service.ts`                    | `parsePagyList<T>` via `ApiService`                           |
 | **Lifecycle Deletion**    | `discard` (soft) & `undiscard` (restore)            | `handleDiscard` (active), `handleDestroy` (bin)            | `AppDialog.confirm` discard / recycle bin                     |
 | **Administrative Access** | `super_admin`, `admin`, `*_admin` scoping           | Granular CUD UI buttons & `AdminRootRoute`                 | Role-aware screens and action gates                           |
 | **Localization**          | `config/locales/` (`MessageService::*`)             | `src/locales/` (`AppLocales.*`)                            | `lib/locales/` (`AppLocales.*.tr`)                            |

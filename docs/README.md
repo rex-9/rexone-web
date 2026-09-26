@@ -49,8 +49,8 @@ All quality checks, linters, and test runners are exposed through standard npm s
 | :--- | :--- | :--- |
 | `npm run dev` | Launches local Vite development server with Hot Module Replacement (HMR) | `http://localhost:4000` |
 | `npm run build` | Executes TypeScript typecheck (`tsc -b`) and bundles production assets | `dist/` |
-| `npm run test` | Executes full Vitest unit test suite (35 suites, 312 tests) | Terminal |
-| `npm run test:e2e` | Runs automated Playwright end-to-end user journey tests | Chromium / WebKit |
+| `npm run test` | Executes full Vitest unit test suite (43 suites, 370 tests) | Terminal |
+| `npm run test:e2e` | Runs automated Playwright end-to-end user journey tests (21 specs across 6 auth flows) | Chromium / WebKit |
 | `npm run check:architecture` | Verifies zero LAW.md violations (storage key conventions, direct cookies) | AST Scanner |
 | `npm run check:locales` | Audits translation dictionaries for missing or unreferenced keys | Locale Validator |
 | `npm run lint` | Runs ESLint with React Hooks and React Refresh rules | Codebase |

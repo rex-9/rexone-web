@@ -111,7 +111,7 @@ class ChatController {
     if (status?.success && data) {
       return {
         success: true,
-        room: parseRecord("room" in data ? data.room : data),
+        room: parseRecord<IAdminChatRoom>(data),
       };
     }
 
@@ -138,7 +138,7 @@ class ChatController {
     if (status?.success && data) {
       return {
         success: true,
-        room: parseRecord("room" in data ? data.room : data),
+        room: parseRecord<IAdminChatRoom>(data),
       };
     }
 
@@ -247,7 +247,7 @@ class ChatController {
     if (status?.success && data) {
       return {
         success: true,
-        message: parseRecord("message" in data ? data.message : data),
+        message: parseRecord<IAdminChatMessage>(data),
       };
     }
 
@@ -274,7 +274,7 @@ class ChatController {
     if (status?.success && data) {
       return {
         success: true,
-        message: parseRecord("message" in data ? data.message : data),
+        message: parseRecord<IAdminChatMessage>(data),
       };
     }
 

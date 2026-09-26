@@ -126,12 +126,10 @@ describe("AdminAssetController", () => {
         data: {
           status: { code: 200, success: true, message: "OK" },
           data: {
-            asset: {
-              id: "a1",
-              name: "dev/admin/avatar.png",
-              url: "https://example.com/avatar.png",
-              type: "avatar",
-            },
+            id: "a1",
+            name: "dev/admin/avatar.png",
+            url: "https://example.com/avatar.png",
+            type: "avatar",
           },
         },
       };
@@ -220,26 +218,24 @@ describe("AdminAssetController", () => {
         data: {
           status: { code: 200, success: true, message: "Subtitle uploaded" },
           data: {
-            asset: {
-              id: "a-video",
-              name: "lesson.mp4",
-              type: "video",
-              format: "video",
-              children: {
-                subtitles: [
-                  {
-                    id: "a-sub",
-                    name: "captions.srt",
-                    url: "https://example.com/captions.srt",
-                    type: "subtitle",
-                    format: "subtitle",
-                    status: "ready",
-                    size_bytes: 128,
-                    created_at: "2026-09-15T00:00:00Z",
-                    updated_at: "2026-09-15T00:00:00Z",
-                  },
-                ],
-              },
+            id: "a-video",
+            name: "lesson.mp4",
+            type: "video",
+            format: "video",
+            children: {
+              subtitles: [
+                {
+                  id: "a-sub",
+                  name: "captions.srt",
+                  url: "https://example.com/captions.srt",
+                  type: "subtitle",
+                  format: "subtitle",
+                  status: "ready",
+                  size_bytes: 128,
+                  created_at: "2026-09-15T00:00:00Z",
+                  updated_at: "2026-09-15T00:00:00Z",
+                },
+              ],
             },
           },
         },
@@ -359,11 +355,9 @@ describe("AdminAssetController", () => {
             message: "Asset is already at optimal compression size.",
           },
           data: {
-            asset: {
-              id: "a5",
-              name: "icon.png",
-              status: "optimal",
-            },
+            id: "a5",
+            name: "icon.png",
+            status: "optimal",
           },
         },
       };
@@ -413,7 +407,7 @@ describe("AdminAssetController", () => {
             success: true,
             message: "Storage statistics retrieved successfully",
           },
-          data: { stats: mockStats },
+          data: mockStats,
         },
       };
 

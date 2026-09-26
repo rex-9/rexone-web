@@ -1,35 +1,13 @@
 import AppRoutes from "../../AppRoutes";
 import { api } from "../../services/api.service";
-import { IApiEnvelope, IApiResponse, IUser } from "../../models";
-
-export interface ISignInResponseData {
-  user?: IUser;
-  token?: string;
-  otp_sent?: boolean;
-  remaining_attempts?: number;
-  cooldown_remaining?: number;
-  failed_attempts?: number;
-}
-
-export interface IGoogleSignInStartData {
-  password_required: boolean;
-  challenge_token?: string;
-  user?: IUser;
-  token?: string;
-  existing_user?: boolean;
-}
-
-export interface IGoogleSignInCompleteData {
-  user: IUser;
-  token: string;
-}
+import { IApiEnvelope, IApiResponse, IJsonApiResource, IUser } from "../../models";
 
 class AuthService {
   async signInWithEmailOrUsername(
     signinKey: string,
     password: string,
-  ): Promise<IApiResponse<IApiEnvelope<ISignInResponseData>>> {
-    const response = await api.post<ISignInResponseData>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser> | null>>> {
+    const response = await api.post<IJsonApiResource<IUser> | null>(
       AppRoutes.server.public.SIGN_IN_EMAIL,
       {
         user: { signin_key: signinKey, password },
@@ -40,8 +18,8 @@ class AuthService {
 
   async signInWithToken(
     token: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>> {
-    const response = await api.post<{ user: IUser; token: string }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser>>>> {
+    const response = await api.post<IJsonApiResource<IUser>>(
       AppRoutes.server.public.SIGN_IN_TOKEN,
       { token },
     );
@@ -50,8 +28,8 @@ class AuthService {
 
   async signInWithGoogle(
     token: string,
-  ): Promise<IApiResponse<IApiEnvelope<IGoogleSignInStartData>>> {
-    const response = await api.post<IGoogleSignInStartData>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser> | null>>> {
+    const response = await api.post<IJsonApiResource<IUser> | null>(
       AppRoutes.server.public.SIGN_IN_GOOGLE,
       { token },
     );
@@ -61,8 +39,8 @@ class AuthService {
   async completeGoogleSignIn(
     passcode: string,
     challengeToken: string,
-  ): Promise<IApiResponse<IApiEnvelope<IGoogleSignInCompleteData>>> {
-    const response = await api.post<IGoogleSignInCompleteData>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser>>>> {
+    const response = await api.post<IJsonApiResource<IUser>>(
       AppRoutes.server.public.SIGN_IN_GOOGLE_COMPLETE,
       {
         password: passcode,
@@ -97,8 +75,8 @@ class AuthService {
   async confirmEmailWithCode(
     emailOrUsername: string,
     confirmationCode: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ user: IUser; token: string }>>> {
-    const response = await api.post<{ user: IUser; token: string }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IUser>>>> {
+    const response = await api.post<IJsonApiResource<IUser>>(
       `${AppRoutes.server.public.CONFIRM_CODE}`,
       {
         signin_key: emailOrUsername,
@@ -120,8 +98,8 @@ class AuthService {
 
   async sendForgotPasswordMail(
     email: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ cooldown_remaining?: number }>>> {
-    const response = await api.post<{ cooldown_remaining?: number }>(
+  ): Promise<IApiResponse<IApiEnvelope<null>>> {
+    const response = await api.post<null>(
       AppRoutes.server.public.FORGOT_PASSWORD,
       { email },
     );

@@ -10,7 +10,9 @@ export interface ISponsorCardProps {
   className?: string;
 }
 
-export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => {
+export const SponsorCard: React.FC<ISponsorCardProps> = ({
+  className = "",
+}) => {
   const sponsorUrl = "https://github.com/sponsors/rex-9";
   const githubUrl = "https://github.com/rex-9";
 
@@ -102,7 +104,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({ className = "" }) => 
           </div>
           <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">🛡️</span>
-            <span>900+ Invariant Specs & Testing</span>
+            <span>1000+ Invariant Specs & Testing</span>
           </div>
           <div className="flex items-center gap-2 p-2 rounded-lg bg-base-300/30 border border-glass-border/50">
             <span className="text-primary font-bold">💎</span>

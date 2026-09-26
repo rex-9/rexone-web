@@ -1,6 +1,6 @@
 import AppRoutes from "../../AppRoutes";
 import { IApiEnvelope, IApiResponse, IAssetPlaybackResponse } from "../../models";
-import { api } from "../../services";
+import { api } from "../../services/api.service";
 
 class AssetService {
   async getPlayback(

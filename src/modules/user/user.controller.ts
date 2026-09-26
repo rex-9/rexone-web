@@ -1,14 +1,13 @@
 import UserService from "./user.service";
 import { USER_PEEK_STATUS, type TUserPeekStatus } from "./constants";
 import {
-  IApiEnvelope,
-  IApiResponse,
   IUser,
+  IAsset,
   IAssetUploadResponse,
   IAssetUploadOptions,
 } from "../../models";
 import { AppLocales, translate } from "../../locales";
-import { getApiError } from "../../services/api.service";
+import { getApiError, parseRecord } from "../../services/api.service";
 import type { ICurrentUserUpdateValues } from "./types";
 
 class UserController {
@@ -41,7 +40,9 @@ class UserController {
 
   async getCurrentUser(): Promise<IUser | null> {
     const response = await UserService.getCurrentUser();
-    return response.data?.data?.user || null;
+    const data = response.data?.data;
+    if (!data) return null;
+    return parseRecord<IUser>(data);
   }
 
   async updateCurrentUser(values: ICurrentUserUpdateValues): Promise<{
@@ -53,10 +54,10 @@ class UserController {
     const response = await UserService.updateCurrentUser(values);
     const { status, data } = response.data || {};
 
-    if (status?.success && data?.user) {
+    if (status?.success && data) {
       return {
         success: true,
-        user: data.user,
+        user: parseRecord<IUser>(data),
         message: status.message,
       };
     }
@@ -74,9 +75,17 @@ class UserController {
     file: File,
     options?: IAssetUploadOptions,
   ): Promise<IAssetUploadResponse | null> {
-    const response: IApiResponse<IApiEnvelope<IAssetUploadResponse>> =
-      await UserService.uploadImage(file, options);
-    return response.data?.data || null;
+    const response = await UserService.uploadImage(file, options);
+    const { status, data, meta } = response.data || {};
+    if (!status?.success || !data) return null;
+    return {
+      asset: parseRecord<IAsset>(data),
+      storage_details: meta?.storage_details || {
+        storage_key: "",
+        bytes: 0,
+        format: "",
+      },
+    };
   }
 }
 

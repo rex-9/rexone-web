@@ -36,7 +36,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithToken).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { token: "tok-123", user: mockUser },
+          data: mockUser as any,
+          meta: { token: "tok-123" },
         },
       });
 
@@ -67,7 +68,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithEmailOrUsername).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Signed in" },
-          data: { token: "jwt-token", user: mockUser },
+          data: mockUser as any,
+          meta: { token: "jwt-token" },
         },
       });
 
@@ -84,7 +86,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithEmailOrUsername).mockResolvedValue({
         data: {
           status: { code: 200, success: false, message: "Verification code sent" },
-          data: { otp_sent: true },
+          data: null,
+          meta: { otp_sent: true },
         },
       });
 
@@ -97,7 +100,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithEmailOrUsername).mockResolvedValue({
         data: {
           status: { code: 401, success: false, message: "Invalid credentials", error: "Wrong password" },
-          data: { remaining_attempts: 2, cooldown_remaining: 0 },
+          data: null,
+          meta: { remaining_attempts: 2, cooldown_remaining: 0 },
         },
       });
 
@@ -112,7 +116,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithGoogle).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { user: mockUser, token: "google-jwt", password_required: false },
+          data: mockUser as any,
+          meta: { token: "google-jwt", password_required: false },
         },
       });
 
@@ -126,7 +131,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.signInWithGoogle).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Passcode required" },
-          data: { user: mockUser, password_required: true, challenge_token: "chal-123" },
+          data: mockUser as any,
+          meta: { password_required: true, challenge_token: "chal-123" },
         },
       });
 
@@ -142,7 +148,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.completeGoogleSignIn).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Complete" },
-          data: { user: mockUser, token: "complete-jwt" },
+          data: mockUser as any,
+          meta: { token: "complete-jwt" },
         },
       });
 
@@ -224,7 +231,8 @@ describe("AuthController", () => {
       vi.mocked(AuthService.confirmEmailWithCode).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Confirmed" },
-          data: { token: "auth-token", user: mockUser },
+          data: mockUser as any,
+          meta: { token: "auth-token" },
         },
       });
 

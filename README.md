@@ -139,7 +139,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Observability | React boundary, global browser capture, structured context, and Core API delivery                           | [Client observability](#client-observability)          |
 | Admin         | User (with confirmation status auditing), role, permission, product (with access inspection), chat, asset, and notification management with RBAC | [Administration](#administration--operational-consoles) |
 | Governance    | Constitutional Architecture (LAW.md) & AI Agent Operational Rules (AGENTS.md)                                | [LAW.md](LAW.md) · [AGENTS.md](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md) |
-| Testing (E2E) | 19 real user journey specs across 6 auth flows via Playwright Page Object Model                             | [End-to-End Testing](#end-to-end-testing-playwright)   |
+| Testing (E2E) | 21 real user journey specs across 6 auth flows via Playwright Page Object Model                             | [End-to-End Testing](#end-to-end-testing-playwright)   |
 | AI & GEO      | llms.txt, llms-full.txt, East/West crawler robots.txt, Schema.org JSON-LD, sitemap                         | [AI Discovery & GEO](#ai-discovery--geo)               |
 | Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview                            | [Quality toolchain](#quality-toolchain)                |
 | Delivery      | Vite production output and a Docker-based development environment                                           | [Delivery](#delivery)                                  |
@@ -255,7 +255,7 @@ By default, the client is immediately available at **[http://localhost:4000](htt
 RexOne Web enforces high engineering discipline with strict compile-time checks and dual-layer automated testing:
 
 ```bash
-# 1. Run all unit tests (Vitest) - 37 suites, 330 tests
+# 1. Run all unit tests (Vitest) - 43 suites, 370 tests
 npm test
 
 # 2. Run Playwright End-to-End user journeys (headless)

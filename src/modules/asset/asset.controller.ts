@@ -1,5 +1,5 @@
 import { IAssetPlaybackResponse } from "../../models";
-import { getApiError } from "../../services";
+import { getApiError } from "../../services/api.service";
 import AssetService from "./asset.service";
 
 class AssetController {

@@ -3,7 +3,7 @@
 import NotificationService from "./notification.service";
 import {
   getApiError,
-  parsePaginatedResponse,
+  parsePagyList,
   parseRecord,
 } from "../../../services/api.service";
 import { translate, AppLocales } from "../../../locales";
@@ -40,7 +40,7 @@ class NotificationController {
       }
 
       const parsed =
-        parsePaginatedResponse<IAdminNotificationTemplate>(response);
+        parsePagyList<IAdminNotificationTemplate>(response);
       return {
         success: true,
         templates: parsed.records,
@@ -211,7 +211,7 @@ class NotificationController {
         };
       }
 
-      const parsed = parsePaginatedResponse<IAdminUserNotification>(response);
+      const parsed = parsePagyList<IAdminUserNotification>(response);
       return {
         success: true,
         notifications: parsed.records,

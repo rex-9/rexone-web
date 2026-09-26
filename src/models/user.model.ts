@@ -1,4 +1,5 @@
 import type { IAdminPermission, IAdminRole } from "../modules/admin/role/types";
+import type { IAccess } from "../modules/payment/types";
 import type { IJsonApiResource } from "./api.model";
 
 export interface IUserIam {
@@ -23,6 +24,7 @@ export interface IUser {
   confirmed?: boolean;
   confirmed_at?: Date | string | null;
   iam?: IUserIam;
+  accesses?: IAccess[];
   created_at: Date | string;
   updated_at: Date | string;
 }

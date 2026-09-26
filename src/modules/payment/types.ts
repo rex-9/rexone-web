@@ -224,6 +224,4 @@ export interface ICouponValidationResult {
   discount_amount?: number;
   final_amount?: number;
   currency?: string;
-  remaining_attempts?: number;
-  cooldown_remaining?: number;
 }
