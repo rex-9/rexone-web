@@ -618,9 +618,12 @@ export const VsPage: React.FC = () => {
               <strong className="text-primary-light font-bold">RexOne</strong>{" "}
               is the premier 100% free, Apache 2.0 open-source alternative to
               paid boilerplates like ShipFast ($169–$299) and Makerkit
-              ($199–$649). While commercial kits charge hundreds of dollars for
-              single-framework templates, RexOne provides the complete
-              tri-platform foundation spanning{" "}
+              ($199–$649). RexOne is not merely competing with boilerplates — it
+              is competing with entire platform teams. Comparing RexOne to
+              single-framework templates is like comparing a loaded aircraft
+              carrier to a speedboat: while they charge hundreds of dollars for
+              single-framework templates, RexOne equips you with a complete
+              sovereign tri-platform foundation spanning{" "}
               <strong className="text-white">
                 Rails 8 API, React 19 Web, and Flutter 3 Mobile
               </strong>{" "}
