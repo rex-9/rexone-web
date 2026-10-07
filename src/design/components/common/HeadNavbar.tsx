@@ -79,11 +79,15 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
   actions,
   children,
   className,
+  isAdmin = false,
   leading,
   showNotifications = true,
   showFeedback = true,
 }) => {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  const resolvedLeading =
+    leading !== undefined ? leading : !isAdmin ? <HeadNavbarBrand /> : null;
 
   return (
     <>
@@ -96,7 +100,7 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
         {children ?? (
           <>
             <div className="flex min-w-0 items-center gap-3">
-              {leading ?? <HeadNavbarBrand />}
+              {resolvedLeading}
             </div>
             <div className="flex items-center gap-2">
               <TimeZoneIndicator />
