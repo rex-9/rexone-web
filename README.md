@@ -345,15 +345,14 @@ For the complete Coolify deployment guide, see **[`docs/DEPLOYMENT.md`](docs/DEP
 
 ## 🎨 Rebranding
 
-RexOne Web can be rebranded directly via the master rebranding engine in `rexone-core` or standalone:
+RexOne Web is rebranded across the entire ecosystem via the master rebranding engine in `rexone-core`:
 
 ```bash
-# 1. From rexone-core (rebrands all 3 repositories):
-cd ../rexone-core && ./scripts/rebrand.sh
-
-# 2. Local variables in .env.*:
-VITE_APP_NAME="My New App Name"
+# Rebrand Core, Web, and Mobile simultaneously from rexone-core:
+cd ../rexone-core && ./scripts/rebrand.sh brand.config.json
 ```
+
+For the comprehensive guide, automated file matrix, and manual checklist, see **[Ecosystem Rebranding Guide (rexone-core/docs/REBRANDING.md)](https://github.com/rex-9/rexone-core/blob/dev/docs/REBRANDING.md)**.
 
 > [!NOTE]
 > The rebranding script intentionally leaves the **landing module** (`src/modules/landing`) and **SEO / AI discovery assets** (`index.html` metadata/Schema.org, `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`) completely untouched. RexOne SEO belongs to the foundation architecture; product-specific landing and SEO design are 100% the developer's responsibility.
