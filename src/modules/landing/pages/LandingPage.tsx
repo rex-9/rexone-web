@@ -216,9 +216,9 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
 
           {/* Subtitle & Value Proposition */}
           <p className="text-sm sm:text-base text-base-content/90 max-w-2xl mx-auto leading-relaxed font-primary">
-            The sovereign product foundation and architectural constitution for
-            humans and AI coding agents. Forging clean, disciplined ground where
-            clarity meets code, and <br /> simplicity meets soul. 🛡️✨
+            The battle-hardened architectural foundation and engineering standard for
+            humans and AI coding agents. Neither an extreme monolith nor an overrated microservice—forging
+            clean, disciplined ground where clarity meets code, and <br /> simplicity meets soul. 🛡️✨
           </p>
           <p className="text-sm sm:text-base font-display text-glow-white [text-shadow:0_0_6px_var(--color-glow-white),0_0_15px_rgba(var(--color-primary-rgb),0.8),0_0_30px_rgba(var(--color-primary-rgb),0.4)] italic tracking-wider py-1">
             No journey is walked alone. Let&apos;s conquer greatness &amp;
@@ -265,7 +265,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
           </div>
         </section>
 
-        {/* 5. Features Section (8 Sovereign Pillars + Master Feature Matrix) */}
+        {/* 5. Features Section (8 Core Architectural Pillars + Master Feature Matrix) */}
         <FeatureShowcase id="Features" />
 
         {/* 6. Projects Section */}
@@ -276,7 +276,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
             </h2>
           </div>
 
-          {/* The Sovereign Creed Banner - The Heart of RexOne */}
+          {/* The Architecture Creed Banner - The Heart of RexOne */}
           <DoctrineCard className="mb-10" />
 
           {/* Discipline-Driven Development (DDD): The Unvarnished Truths */}
@@ -322,20 +322,20 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
                   Serverless &ldquo;5-minute backends&rdquo; lure you in with
                   toys, then hand you a $5,000/mo bill and a proprietary SDK
-                  hostage crisis. Real sovereignty runs PostgreSQL, native job
+                  hostage crisis. Real production engineering runs PostgreSQL, native job
                   queues, and self-hosted S3.
                 </p>
               </div>
 
               <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-glass-card/90 backdrop-blur-xl hover:border-primary/50 hover:bg-glass-card-hover hover:shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.25)] transition-all duration-300 space-y-2">
                 <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
-                  <span>📦 3. The Full-Stack Monolith Lie</span>
+                  <span>📦 3. Monolith &amp; Microservice Extremes</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
-                  Cramming API handlers, database queries, background tasks, and
-                  DOM hydration into a single node runtime creates fragile
-                  houses of cards. True engineering enforces client-server
-                  separation.
+                  Cramming API, DB, and DOM into one single-process runtime creates
+                  fragile single-point failures. Conversely, microservices cause
+                  distributed transaction hell. RexOne delivers the sweet spot:
+                  modular Rails 8 core with container isolation and decoupled clients.
                 </p>
               </div>
 
@@ -365,13 +365,13 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
 
               <div className="p-4 sm:p-5 rounded-2xl border border-glass-border bg-glass-card/90 backdrop-blur-xl hover:border-primary/50 hover:bg-glass-card-hover hover:shadow-[0_8px_30px_rgba(var(--color-primary-rgb),0.25)] transition-all duration-300 space-y-2">
                 <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide">
-                  <span>💎 6. 100% Free Sovereignty</span>
+                  <span>💎 6. 100% Free &amp; Open Source</span>
                 </div>
                 <p className="text-xs sm:text-sm text-base-content/75 leading-relaxed">
                   Unlike commercial boilerplates charging $300–$800 for basic
                   auth or gating features behind &ldquo;pro tiers&rdquo;, RexOne
-                  is 100% free, Apache 2.0 open-source, and sovereign. You own
-                  your code, data, and destiny.
+                  is 100% free under the Apache 2.0 license. You own your code,
+                  your data, and your infrastructure.
                 </p>
               </div>
             </div>
@@ -468,7 +468,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
               Support &amp; Sponsor
             </h2>
             <p className="text-body-m text-base-content/70 max-w-2xl mx-auto">
-              Fuel the evolution of sovereign open-source engineering.
+              Fuel the evolution of disciplined open-source engineering.
               Sponsoring sustains the development of RexOne—keeping foundations
               pristine, battle-tested, and freely accessible to developers
               worldwide.

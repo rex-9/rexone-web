@@ -97,7 +97,7 @@ const PILLARS: IFeaturePillar[] = [
       "Short-lived signed playback URLs (/playback) with expiration TTL",
     ],
     differentiator:
-      "100% sovereign object storage with zero egress fees; dedicated media container prevents CPU lockup.",
+      "100% self-hosted object storage with zero egress fees; dedicated media container prevents CPU lockup.",
   },
   {
     id: "ai",
@@ -814,7 +814,7 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-primary/40 bg-primary/15 text-primary-light backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)]">
             <iconsLib.sparkles className="w-4 h-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)]" />
             <span className="text-xs font-bold tracking-wider uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
-              Sovereign Tri-Platform Capabilities
+              Tri-Platform Architectural Capabilities
             </span>
           </div>
 
@@ -841,7 +841,7 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
                   : "text-base-content/70 hover:text-white hover:bg-glass-card-hover"
               }`}
             >
-              <span>⚡ 8 Sovereign Pillars</span>
+              <span>⚡ 8 Core Pillars</span>
               <span
                 className={`text-[10px] px-2 py-0.5 rounded-full ${
                   activeTab === "pillars"
@@ -876,7 +876,7 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
           </div>
         </div>
 
-        {/* TAB 1: 8 Sovereign Pillars (Quick Scan) */}
+        {/* TAB 1: 8 Core Pillars (Quick Scan) */}
         {activeTab === "pillars" && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -962,7 +962,7 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
                     100% Free
                   </div>
                   <div className="text-xs text-base-content/70 mt-0.5 font-medium">
-                    Apache 2.0 Sovereign License
+                    Apache 2.0 Open Source License
                   </div>
                 </div>
               </div>

@@ -31,7 +31,7 @@ export const ContactForm: React.FC = () => {
           Keep in Touch
         </h2>
         <p className="text-xs text-base-content/70 font-primary">
-          Direct sovereign line to Rex. Every message is cherished.
+          Direct line to Rex. Every message is cherished.
         </p>
       </div>
 

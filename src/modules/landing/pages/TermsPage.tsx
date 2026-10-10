@@ -23,7 +23,7 @@ export const TermsPage: React.FC = () => {
   return (
     <LegalLayout
       title="Terms & Conditions"
-      subtitle="The covenant between Rex9 and our community. Clear rules, sovereign principles, and transparent terms governing the RexOne ecosystem."
+      subtitle="The covenant between Rex9 and our community. Clear rules, architectural principles, and transparent terms governing the RexOne ecosystem."
       lastUpdated="Effective Date: September 21, 2026"
       tableOfContents={TERMS_TOC}
     >
@@ -114,7 +114,7 @@ export const TermsPage: React.FC = () => {
           </h2>
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
-          RexOne is engineered as a sovereign, high-discipline foundation. You
+          RexOne is engineered as a battle-hardened, high-discipline architectural foundation. You
           agree never to use or attempt to use the platform in ways that
           degrade, exploit, or subvert its integrity. Prohibited conduct
           includes:
@@ -248,12 +248,12 @@ export const TermsPage: React.FC = () => {
           <p>
             <strong>RexOne Proprietary Assets:</strong> All software
             architecture, codebases, design tokens, logos, visual trademarks,
-            documentation, and interface layouts are the sovereign property of
+            documentation, and interface layouts are the exclusive property of
             Rex9 and its licensors. Open-source components are provided under
             their respective open-source licenses.
           </p>
           <p>
-            <strong>Your Content Sovereignty:</strong> You retain complete
+            <strong>Your Content Ownership:</strong> You retain complete
             ownership of any media, documents, text, code, or digital assets you
             upload to RexOne. By uploading content, you grant RexOne only the
             limited, non-exclusive license strictly necessary to store, encode,

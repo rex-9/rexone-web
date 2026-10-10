@@ -37,7 +37,7 @@ export const GENERAL_FAQS: IFaqItem[] = [
   {
     question: "How does self-hosted Garage S3 storage work in RexOne?",
     answer:
-      "RexOne natively integrates Garage (port 3100), a lightweight, self-hosted, distributed S3-compatible object store. You achieve 100% data sovereignty and eliminate high AWS S3 storage and egress fees. Universal storage keys (storage_key) ensure deterministic asset retrieval across backend, web, and mobile without proprietary SDK lock-in.",
+      "RexOne natively integrates Garage (port 3100), a lightweight, self-hosted, distributed S3-compatible object store. You achieve complete data ownership and eliminate high AWS S3 storage and egress fees. Universal storage keys (storage_key) ensure deterministic asset retrieval across backend, web, and mobile without proprietary SDK lock-in.",
   },
   {
     question:
@@ -74,7 +74,7 @@ export const COMPARISON_FAQS: IFaqItem[] = [
     question:
       "Why should I choose RexOne over paid boilerplates like ShipFast or Makerkit?",
     answer:
-      "Commercial boilerplates charge $169 to $799 for single-framework templates (usually web-only Next.js) that require external BaaS subscriptions (Supabase, Firebase) and lack native mobile apps, relational offline sync, or background queue infrastructure. RexOne gives you a sovereign, Tri-Platform foundation (Rails 8 API + React 19 Web + Flutter 3 Native Mobile) for $0 free under the Apache 2.0 license, backed by an immutable engineering constitution (LAW.md).",
+      "Commercial boilerplates charge $169 to $799 for single-framework templates (usually web-only Next.js) that require external BaaS subscriptions (Supabase, Firebase) and lack native mobile apps, relational offline sync, or background queue infrastructure. RexOne gives you a battle-hardened, Tri-Platform foundation (Rails 8 API + React 19 Web + Flutter 3 Native Mobile) for $0 free under the Apache 2.0 license, backed by an immutable engineering constitution (LAW.md).",
   },
   {
     question:
@@ -109,7 +109,7 @@ export const COMPARISON_FAQS: IFaqItem[] = [
     question:
       "Is there a completely free, open-source alternative to commercial SaaS boilerplates?",
     answer:
-      "Yes. RexOne is 100% free and open-source under the Apache 2.0 license. Unlike commercial boilerplates charging $169 to $795 for basic authentication and Stripe webhooks, RexOne is gifted to the engineering community with zero paywalls, zero 'pro' tiers, and complete code sovereignty.",
+      "Yes. RexOne is 100% free and open-source under the Apache 2.0 license. Unlike commercial boilerplates charging $169 to $795 for basic authentication and Stripe webhooks, RexOne is gifted to the engineering community with zero paywalls, zero 'pro' tiers, and complete code ownership and freedom.",
   },
   {
     question:

@@ -155,7 +155,7 @@ export const ComparisonSection: React.FC = () => {
           Commercial starter kits often offer single-platform setups for{" "}
           <span className="text-white font-bold">$169 to $799</span> that can feel limiting when you need a real
           background queue, enterprise IAM, or a 60fps mobile app.{" "}
-          <strong className="text-primary-light">RexOne gives you a sovereign, Tri-Platform architectural foundation for $0</strong>—because
+          <strong className="text-primary-light">RexOne gives you a battle-hardened, Tri-Platform architectural foundation for $0</strong>—because
           Discipline-Driven Development is about enduring engineering and open craftsmanship.
         </p>
       </div>
@@ -213,7 +213,7 @@ export const ComparisonSection: React.FC = () => {
               <div className="flex items-center justify-between">
                 <span className="font-display font-bold text-lg text-primary-light flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping" />
-                  RexOne Sovereign Trinity
+                  RexOne Architecture Foundation
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-primary/20 text-primary-light border border-primary/40">
                   100% FREE (Apache 2.0)
@@ -242,7 +242,7 @@ export const ComparisonSection: React.FC = () => {
                 <div className="flex items-start gap-2">
                   <span className="text-primary font-bold">✓</span>
                   <div>
-                    <strong className="text-white">Self-Hosted Garage S3:</strong> Sovereign storage on port 3100 with zero egress fees and automated media transcoding.
+                    <strong className="text-white">Self-Hosted Garage S3:</strong> Dedicated storage on port 3100 with zero egress fees and automated media transcoding.
                   </div>
                 </div>
                 <div className="flex items-start gap-2">
