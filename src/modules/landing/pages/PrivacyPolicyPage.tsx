@@ -23,7 +23,7 @@ export const PrivacyPolicyPage: React.FC = () => {
   return (
     <LegalLayout
       title="Privacy Policy"
-      subtitle="At RexOne, sovereign architecture and user trust go hand in hand. This policy describes how we collect, safeguard, and honor your personal data across the RexOne ecosystem."
+      subtitle="At RexOne, disciplined architecture and user trust go hand in hand. This policy describes how we collect, safeguard, and honor your personal data across the RexOne ecosystem."
       lastUpdated="Effective Date: September 21, 2026"
       tableOfContents={PRIVACY_TOC}
     >
@@ -112,7 +112,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             </h3>
             <p className="text-xs text-base-content/75 leading-relaxed">
               Files, documents, audio recordings, or media assets uploaded to
-              your account. Stored under sovereign identifiers using our
+              your account. Stored under deterministic identifiers using our
               self-hosted Garage S3-compatible infrastructure with signed,
               expiring access tokens.
             </p>
@@ -208,7 +208,7 @@ export const PrivacyPolicyPage: React.FC = () => {
 
           <div className="p-4 rounded-xl bg-base-300/20 border border-glass-border/70 space-y-1.5">
             <h4 className="font-bold text-glow-white text-sm">
-              Sovereign Media Storage (Garage S3)
+              Self-Hosted Media Storage (Garage S3)
             </h4>
             <p className="text-xs leading-relaxed text-base-content/75">
               All binary assets, avatars, and user documents are stored in
@@ -346,7 +346,7 @@ export const PrivacyPolicyPage: React.FC = () => {
         </div>
         <p className="text-base-content/80 text-sm sm:text-base leading-relaxed">
           Regardless of your physical jurisdiction, RexOne provides all users
-          with full sovereignty over their data:
+          with full control over their data:
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
           <div className="p-3.5 rounded-xl bg-base-300/25 border border-glass-border/60">

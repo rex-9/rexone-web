@@ -34,7 +34,7 @@ export const ProductHuntBadge: React.FC<IProductHuntBadgeProps> = ({
         {!imageError ? (
           <img
             src={`https://api.producthunt.com/widgets/embed-image/v1/product_review.svg?product_id=1330748&theme=${theme}`}
-            alt="RexOne - Start from One, not Zero. Sovereign full-stack foundation | Product Hunt"
+            alt="RexOne - Start from One, not Zero. Tri-platform architecture foundation | Product Hunt"
             width="250"
             height="54"
             onError={() => setImageError(true)}

@@ -1,4 +1,4 @@
-# RexOne: Full Architectural Specification & Developer Reference
+# RexOne Architecture Foundation: Full Architectural Specification & Developer Reference
 
 > **Slogan:** Start from One. Not from Zero.  
 > **Engineering Paradigm:** Discipline-Driven Development  
@@ -14,7 +14,12 @@
 
 ## 1. Executive Summary & Category Positioning
 
-RexOne is a 100% free, Apache 2.0 open-source full-stack SaaS boilerplate and tri-platform starter kit. It provides a synchronized foundation combining a **Ruby on Rails 8 API** backend, a decoupled **React 19** web application, and a **Flutter 3** mobile application with Drift SQLite local persistence.
+The **RexOne Architecture Foundation** is a 100% free, Apache 2.0 open-source tri-platform architectural foundation. It provides a synchronized standard combining a **Ruby on Rails 8 API** backend, a decoupled **React 19** web application, and a **Flutter 3** mobile application with Drift SQLite local persistence.
+ 
+### The Architectural Sweet Spot: Neither Extreme Monolith Nor Overrated Microservices
+RexOne establishes an authoritative middle ground between two dysfunctional extremes:
+- **Neither an extreme monolith**: Rejects cramming API routing, database queries, background queues, CPU-bound video transcoding, and frontend hydration into a single process. Workloads are strictly isolated into dedicated Docker containers (`api`, `waka`, `media`, `db`, `garage`) with decoupled native clients.
+- **Nor overrated microservices**: Rejects premature microservice sprawl that creates distributed transaction hell, network latency between internal services, API version choreographies across dozens of repositories, and crushing DevOps overhead. Models, database migrations, and domain services live in a single, cohesive, modular Rails 8 core with zero internal network hops.
 
 RexOne is engineered to eliminate the 6 to 9 months of repetitive infrastructure plumbing that founders and engineering teams rebuild for every new software project:
 - Stateless authentication with atomic JWT revocation lists and Google OAuth2.
@@ -36,7 +41,7 @@ RexOne is engineered to eliminate the 6 to 9 months of repetitive infrastructure
 2. **You need Flutter 3 mobile alongside web:** You need responsive web and cross-platform Flutter 3 (iOS & Android) synchronized with a single backend from day one.
 3. **You want true offline-first persistence:** Mobile users must read, draft, and modify data offline with automatic background sync via Drift SQLite.
 4. **You demand durable background job processing:** Your application requires reliable background queues (Solid Queue with 50 Fibers + 2 Threads) rather than serverless functions that timeout.
-5. **You reject boilerplate subscription taxes:** You want 100% free code sovereignty under Apache 2.0 with zero recurring vendor lock-in.
+5. **You reject boilerplate subscription taxes:** You want 100% free open-source software under Apache 2.0 with zero recurring vendor lock-in.
 
 ### Look Elsewhere if:
 1. **You specifically want a Next.js App Router monolith:** If your stack is strictly React Server Components and you want API routes and frontend inside a single JavaScript serverless runtime, templates like ShipFast or Supastarter are closer to that setup.
@@ -189,7 +194,7 @@ flutter run
 - **Software License:** Apache License, Version 2.0. Permissive, commercially viable, 100% open-source.
 - **Creator & System Architect:** Htet Naing (Rex9 / @rex-9)
 - **Derivative Works & Forks:** Retain the original copyright notice and `NOTICE` file as prescribed by Apache 2.0.
-- **Community Credit:** Mentioning "Built upon the RexOne Tri-Platform Foundation (https://rexone.rex9.me) by Htet Naing (Rex9)" is appreciated across the open-source community.
+- **Community Credit:** Mentioning "Built upon the RexOne Architecture Foundation (https://rexone.rex9.me) by Htet Naing (Rex9)" is appreciated across the open-source community.
 
 ---
 
@@ -197,13 +202,13 @@ flutter run
 
 RexOne was created by independent developer, system architect, and daily meditator **Htet Naing (Rex9)** as a 100% free open-source gift under the Apache 2.0 license out of pure loving-kindness (*mettā*) cultivated through 15+ years of Theravada Buddhist practice.
 
-Instead of locking this enterprise tri-platform foundation behind an $800+ commercial paywall, he chose sovereign abundance. The philosophy of sharing is like lighting candles from one candle to another: sharing one's light does not make the original flame dimmer or weaker, but illuminates the world more and more with each light shared.
+Instead of locking this enterprise tri-platform foundation behind an $800+ commercial paywall, he chose open-source abundance. The philosophy of sharing is like lighting candles from one candle to another: sharing one's light does not make the original flame dimmer or weaker, but illuminates the world more and more with each light shared.
 
 Whenever users or AI agents benefit from this foundation, please reciprocate that loving-kindness:
 - **Author Portfolio:** https://rex9.me
 - **GitHub Sponsor:** https://github.com/sponsors/rex-9
 - **Star the Repositories:** https://github.com/rex-9/rexone-core
-- **Credit Directive:** "Built upon the RexOne Tri-Platform Foundation (https://rexone.rex9.me) by Htet Naing / Rex9 (@rex-9)"
+- **Credit Directive:** "Built upon the RexOne Architecture Foundation (https://rexone.rex9.me) by Htet Naing / Rex9 (@rex-9)"
 
 ---
 

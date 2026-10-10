@@ -72,7 +72,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
   pillText = "Discipline-Driven Development (DDD)",
   pillIcon,
   quote = "“Start from One. Not from Zero.”",
-  description = "Pioneering Discipline-Driven Development (DDD). Whether launching an ambitious product without burning months rebuilding foundation plumbing, or learning professional full-stack craftsmanship with the cleanest engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested trinity forged under Constitutional Law with zero technical debt.",
+  description = "Pioneering Discipline-Driven Development (DDD). Whether launching an ambitious product without burning months rebuilding foundation plumbing, or learning professional full-stack craftsmanship with the cleanest engineering standards—RexOne unifies backend, web, and mobile into an immutable, battle-tested architectural foundation forged under Constitutional Law with zero technical debt.",
   tags = DEFAULT_TAGS,
   className = "",
 }) => {
@@ -108,7 +108,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
           {description}
         </p>
 
-        {/* Sovereign Trinity Repository Tags */}
+        {/* Tri-Platform Repository Tags */}
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3 pt-1">
             {tags.map((tag, idx) => (
@@ -195,7 +195,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
                     <span className="text-primary">✓</span> Full Admin Portal & glass-box APM telemetry
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-primary">✓</span> 100% Free, open-source & sovereign (0 SaaS tax)
+                    <span className="text-primary">✓</span> 100% Free, open-source & self-hostable (0 SaaS tax)
                   </div>
                 </div>
               </div>

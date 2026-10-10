@@ -87,7 +87,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({
       <div className="relative z-10 py-5 space-y-4">
         <p className="text-sm sm:text-base text-base-content/80 leading-relaxed">
           Directly back independent open-source engineering. Your sponsorship
-          powers continuous architectural refinement, sovereign tooling, and
+          powers continuous architectural refinement, first-class tooling, and
           guarantees a zero-technical-debt foundation for developers and
           autonomous AI agents.
         </p>

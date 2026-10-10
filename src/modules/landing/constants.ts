@@ -129,7 +129,7 @@ export const LANDING_DATA = {
         "Docker",
       ],
       details: [
-        "Sovereign API Engine: identity, 23-resource RBAC, and real-time socket sync",
+        "Core API Engine: identity, 23-resource RBAC, and real-time socket sync",
         "Turnkey Commerce: Stripe subscriptions, one-time checkout, and coupon discounts",
         "Unified Pipeline: transactional email/push delivery and glass-box APM telemetry",
       ],

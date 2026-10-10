@@ -44,7 +44,7 @@ export const ALL_COMPETITORS: ICompetitorInfo[] = [
       "No AI agent coding rules (Unguided vibe coding)",
     ],
     whyRexOneWins:
-      "RexOne provides a true sovereign Tri-Platform foundation (Rails 8 API + React 19 Web + Flutter 3 Mobile with Drift SQLite offline sync) for $0 free, governed by immutable constitutional laws (LAW.md).",
+      "RexOne provides a true battle-hardened Tri-Platform architecture foundation (Rails 8 API + React 19 Web + Flutter 3 Mobile with Drift SQLite offline sync) for $0 free, governed by immutable constitutional laws (LAW.md).",
   },
   {
     id: "makerkit",
@@ -65,7 +65,7 @@ export const ALL_COMPETITORS: ICompetitorInfo[] = [
       "No native mobile app",
     ],
     whyRexOneWins:
-      "RexOne is 100% free under Apache 2.0 with zero SaaS subscription paywalls, includes a 60fps Flutter mobile app, and runs sovereign PostgreSQL 18 with Solid Queue and self-hosted Garage S3.",
+      "RexOne is 100% free under Apache 2.0 with zero SaaS subscription paywalls, includes a 60fps Flutter mobile app, and runs pure PostgreSQL 18 with Solid Queue and self-hosted Garage S3.",
   },
   {
     id: "supastarter",
@@ -127,7 +127,7 @@ export const ALL_COMPETITORS: ICompetitorInfo[] = [
       "Redis hosting overhead",
     ],
     whyRexOneWins:
-      "RexOne provides full native mobile coverage (Flutter 3), zero-Redis concurrency via Solid Queue on Postgres 18, self-hosted Garage S3 storage, and Apache 2.0 open-source sovereignty.",
+      "RexOne provides full native mobile coverage (Flutter 3), zero-Redis concurrency via Solid Queue on Postgres 18, self-hosted Garage S3 storage, and Apache 2.0 open-source freedom.",
   },
   {
     id: "bulletTrain",
@@ -220,7 +220,7 @@ export const COMPARISON_DATA: IComparisonRow[] = [
   },
   {
     feature: "Pricing & License",
-    category: "Cost & Sovereignty",
+    category: "Cost & Freedom",
     rexone: "100% Free & Open-Source (Apache 2.0)",
     rexoneHighlight: true,
     shipfast: "$169 – $299 Paid (Proprietary)",
@@ -410,7 +410,7 @@ export const VsPage: React.FC = () => {
   const categories = [
     "All",
     "Architecture",
-    "Cost & Sovereignty",
+    "Cost & Freedom",
     "Mobile",
     "AI Governance",
     "Infrastructure",
@@ -613,7 +613,7 @@ export const VsPage: React.FC = () => {
             </h1>
 
             <p className="text-sm sm:text-base text-base-content/90 max-w-3xl mx-auto leading-relaxed font-primary">
-              Looking for a sovereign, open-source{" "}
+              Looking for a battle-hardened, open-source{" "}
               <strong>ShipFast alternative</strong>?{" "}
               <strong className="text-primary-light font-bold">RexOne</strong>{" "}
               is the premier 100% free, Apache 2.0 open-source alternative to
@@ -623,7 +623,7 @@ export const VsPage: React.FC = () => {
               single-framework templates is like comparing a loaded aircraft
               carrier to a speedboat: while they charge hundreds of dollars for
               single-framework templates, RexOne equips you with a complete
-              sovereign tri-platform foundation spanning{" "}
+              tri-platform architecture foundation spanning{" "}
               <strong className="text-white">
                 Rails 8 API, React 19 Web, and Flutter 3 Mobile
               </strong>{" "}
@@ -922,7 +922,7 @@ export const VsPage: React.FC = () => {
             </h2>
             <p className="text-base-content/90 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
               Bypass 6 to 9 months of repetitive infrastructure slog. Fork
-              RexOne today to maintain your sovereign codebase while receiving
+              RexOne today to maintain your independent codebase while receiving
               upstream architectural updates and framework enhancements directly
               into your downstream repo.
             </p>
