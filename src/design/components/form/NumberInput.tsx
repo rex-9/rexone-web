@@ -226,18 +226,18 @@ export const NumberInput: React.FC<INumberInputProps> = ({
             "w-full transition-all duration-200 ease-out focus:outline-none font-mono",
             isGlass
               ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-2.5 text-base font-primary focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
-              : "px-4 py-2.5 rounded-lg border-2 bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-primary",
+              : "px-4 py-2.5 rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md text-base-content placeholder:text-base-content/40 hover:border-glass-border-hover focus:ring-1 focus:ring-primary focus:border-primary",
             prefix ? "pl-8" : "",
             suffix || showSteppers ? "pr-14" : "",
             hasError &&
               (isGlass
                 ? "border-b-error focus:border-b-error"
                 : "border-error focus:ring-error focus:border-error"),
-            !hasError && !isGlass && "border-base-300",
+            !hasError && !isGlass && "border-glass-border",
             disabled &&
               (isGlass
                 ? "opacity-50 cursor-not-allowed"
-                : "opacity-50 cursor-not-allowed bg-base-200"),
+                : "opacity-40 cursor-not-allowed bg-glass-card-hover"),
             className,
           )}
         />
@@ -249,11 +249,11 @@ export const NumberInput: React.FC<INumberInputProps> = ({
         )}
 
         {showSteppers && !disabled && (
-          <div className="absolute right-1 flex flex-col border-l border-base-300 h-8 justify-center">
+          <div className="absolute right-1 flex flex-col border-l border-glass-border h-8 justify-center">
             <button
               type="button"
               onClick={() => handleStep(1)}
-              className="px-2 hover:bg-base-200 text-base-content/60 hover:text-base-content transition-colors flex items-center justify-center text-xs"
+              className="px-2 hover:bg-glass-card-hover text-base-content/60 hover:text-base-content transition-colors flex items-center justify-center text-xs"
               tabIndex={-1}
             >
               <iconsLib.chevronUp className="h-3 w-3" />
@@ -261,7 +261,7 @@ export const NumberInput: React.FC<INumberInputProps> = ({
             <button
               type="button"
               onClick={() => handleStep(-1)}
-              className="px-2 hover:bg-base-200 text-base-content/60 hover:text-base-content transition-colors flex items-center justify-center text-xs"
+              className="px-2 hover:bg-glass-card-hover text-base-content/60 hover:text-base-content transition-colors flex items-center justify-center text-xs"
               tabIndex={-1}
             >
               <iconsLib.chevronDown className="h-3 w-3" />

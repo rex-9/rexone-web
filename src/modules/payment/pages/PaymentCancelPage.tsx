@@ -15,7 +15,7 @@ export const PaymentCancelPage: React.FC = () => {
   }, [info, t]);
 
   return (
-    <div className="max-w-md mx-auto w-full bg-base-100/70 border border-base-300 rounded-2xl p-8 shadow-xl backdrop-blur-md text-center space-y-4">
+    <div className="max-w-md mx-auto w-full bg-glass-card border border-glass-border rounded-2xl p-8 shadow-glass-card backdrop-blur-md text-center space-y-4">
       <div className="text-5xl">😅</div>
       <h1 className="text-2xl font-bold font-primary text-base-content">
         {t(AppLocales.Payment.CancelTitle)}

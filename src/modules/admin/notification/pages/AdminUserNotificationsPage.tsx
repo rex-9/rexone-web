@@ -605,7 +605,7 @@ export const AdminUserNotificationsPage: React.FC<
       )}
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row gap-4 items-center rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md">
         <div className="w-full sm:w-64">
           <SearchInput
             placeholder={t(
@@ -718,58 +718,56 @@ export const AdminUserNotificationsPage: React.FC<
       )}
 
       {/* Table & Pagination */}
-      <div className="bg-base-100 rounded-xl border border-base-200 overflow-hidden">
-        {notifications.length > 0 ? (
-          <>
-            <AdminTable
-              columns={columns}
-              records={notifications}
-              getRowKey={(item) => item.id}
-              sortBy={sortBy}
-              sortOrder={sortOrder}
-              onSort={handleSort}
-              onRowClick={(item) =>
-                navigate(
-                  AppRoutes.withId(
-                    AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL,
-                    item.id,
-                  ),
-                )
-              }
-              selectable={canDelete}
-              selectedRowKeys={selectedIds}
-              onSelectRow={(id, selected) => {
-                setSelectedIds((prev) =>
-                  selected ? [...prev, id] : prev.filter((item) => item !== id),
-                );
-              }}
-              onSelectAll={(selected) => {
-                setSelectedIds(
-                  selected ? notifications.map((item) => item.id) : [],
-                );
-              }}
-            />
-            {pagination && (
-              <AdminPagination
-                pagination={pagination}
-                onPageChange={(nextPage) =>
-                  updateSearchParams({ page: String(nextPage) })
-                }
-              />
-            )}
-          </>
-        ) : (
-          <AdminState
-            icon={<iconsLib.bell className="w-12 h-12" />}
-            title={t(
-              AppLocales.Admin.Notifications.UserNotifications.EmptyTitle,
-            )}
-            message={t(
-              AppLocales.Admin.Notifications.UserNotifications.EmptyDesc,
-            )}
+      {notifications.length > 0 ? (
+        <>
+          <AdminTable
+            columns={columns}
+            records={notifications}
+            getRowKey={(item) => item.id}
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            onSort={handleSort}
+            onRowClick={(item) =>
+              navigate(
+                AppRoutes.withId(
+                  AppRoutes.client.protected.admin.USER_NOTIFICATION_DETAIL,
+                  item.id,
+                ),
+              )
+            }
+            selectable={canDelete}
+            selectedRowKeys={selectedIds}
+            onSelectRow={(id, selected) => {
+              setSelectedIds((prev) =>
+                selected ? [...prev, id] : prev.filter((item) => item !== id),
+              );
+            }}
+            onSelectAll={(selected) => {
+              setSelectedIds(
+                selected ? notifications.map((item) => item.id) : [],
+              );
+            }}
           />
-        )}
-      </div>
+          {pagination && (
+            <AdminPagination
+              pagination={pagination}
+              onPageChange={(nextPage) =>
+                updateSearchParams({ page: String(nextPage) })
+              }
+            />
+          )}
+        </>
+      ) : (
+        <AdminState
+          icon={<iconsLib.bell className="w-12 h-12" />}
+          title={t(
+            AppLocales.Admin.Notifications.UserNotifications.EmptyTitle,
+          )}
+          message={t(
+            AppLocales.Admin.Notifications.UserNotifications.EmptyDesc,
+          )}
+        />
+      )}
 
       {/* Discard Confirmation Dialog */}
       <ConfirmDialog

@@ -11,6 +11,7 @@ import {
   DateTimePicker,
   NumberInput,
 } from "../../../design/components";
+import { ButtonVariants } from "../../../design/constants";
 import {
   MARKER_TIME_UNITS,
   type TMarkerTimeUnit,
@@ -73,12 +74,12 @@ export const MarkerPopup: React.FC = () => {
   return (
     <div className="w-80 mt-5 flex flex-col items-center justify-center">
       <div className="w-full flex items-center justify-between gap-2">
-        <Button className="w-fit mt-2" variant="tertiary" onClick={playSound}>
+        <Button className="w-fit mt-2" variant={ButtonVariants.FLAT} onClick={playSound}>
           {t(AppLocales.Anapana.TestIntervalSound)}
         </Button>
         <Button
           className="w-fit mt-2"
-          variant="tertiary"
+          variant={ButtonVariants.FLAT}
           onClick={playEndSound}
         >
           {t(AppLocales.Anapana.TestEndingSound)}
@@ -130,13 +131,13 @@ export const MarkerPopup: React.FC = () => {
 
       <Button
         className="w-fit mt-2"
-        variant="primary"
+        variant={ButtonVariants.PRIMARY}
         onClick={handleAddMarker}
       >
         {t(AppLocales.Anapana.Start)}
       </Button>
 
-      <Button className="w-fit mt-2" variant="tertiary" onClick={cleanMarkers}>
+      <Button className="w-fit mt-2" variant={ButtonVariants.FLAT} onClick={cleanMarkers}>
         {t(AppLocales.Anapana.Reset)}
       </Button>
     </div>

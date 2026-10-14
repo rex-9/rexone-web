@@ -21,6 +21,7 @@ const STATUS_VARIANT_MAP: Record<string, BadgeVariant> = {
   ready: BadgeVariants.SUCCESS,
   optimal: BadgeVariants.SUCCESS,
   true: BadgeVariants.SUCCESS,
+  published: BadgeVariants.SUCCESS,
 
   // Warning / In-Progress / Moderate
   pending: BadgeVariants.WARNING,
@@ -35,6 +36,8 @@ const STATUS_VARIANT_MAP: Record<string, BadgeVariant> = {
 
   // Danger / Error / Critical
   inactive: BadgeVariants.SECONDARY,
+  draft: BadgeVariants.SECONDARY,
+  discarded: BadgeVariants.SECONDARY,
   revoked: BadgeVariants.ERROR,
   failed: BadgeVariants.ERROR,
   rejected: BadgeVariants.ERROR,

@@ -35,9 +35,8 @@ export const FormContainer = React.forwardRef<
         onSubmit={onSubmit}
         className={cn(
           "flex flex-col",
-          isGlass
-            ? "bg-glass-form border border-glass-border backdrop-blur-xl shadow-[0_15px_35px_rgba(0,0,0,0.8),0_0_25px_rgba(var(--color-glow-outer-rgb),0.35)] rounded-2xl p-6 sm:p-8 w-full max-w-md"
-            : "bg-base-100 p-4 rounded",
+          isGlass &&
+            "bg-glass-card border border-glass-border backdrop-blur-xl shadow-glass-card rounded-2xl p-6 sm:p-8 w-full max-w-md",
           className,
         )}
       >

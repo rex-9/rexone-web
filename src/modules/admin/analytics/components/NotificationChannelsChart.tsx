@@ -48,7 +48,7 @@ export const NotificationChannelsChart: React.FC<
         : [{ name: "No Data", value: 1 }];
 
   return (
-    <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-5">
+    <div className="rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md md:p-5">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-body-m font-semibold text-base-content">
@@ -82,7 +82,7 @@ export const NotificationChannelsChart: React.FC<
                 if (active && payload && payload.length) {
                   const item = payload[0];
                   return (
-                    <div className="rounded-md border border-base-300 bg-base-100 p-3 shadow-xl">
+                    <div className="rounded-xl border border-glass-border bg-glass-card/95 p-3 shadow-glass-card backdrop-blur-xl">
                       <p className="text-caption font-semibold text-base-content opacity-80">
                         {item.name}
                       </p>

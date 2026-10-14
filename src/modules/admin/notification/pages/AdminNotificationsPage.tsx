@@ -45,9 +45,11 @@ import {
   FormContainer,
   SearchInput,
   StatusBadge,
+  Badge,
 } from "../../../../design/components";
 import {
   BadgeVariants,
+  ComponentSizes,
   ButtonSizes,
   ButtonTypes,
   ButtonVariants,
@@ -577,9 +579,9 @@ export const AdminNotificationsPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
             {/* Left Column: Dispatch Configuration (7 cols) */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="rounded-xl border border-base-300 bg-base-100 p-4 sm:p-5 shadow-sm space-y-4">
+              <div className="rounded-xl border border-glass-border bg-glass-card p-4 sm:p-5 shadow-glass-card backdrop-blur-md space-y-4">
                 {/* Header */}
-                <div className="flex items-center justify-between border-b border-base-200 pb-3">
+                <div className="flex items-center justify-between border-b border-glass-border/40 pb-3">
                   <div>
                     <h2 className="text-body-m font-bold text-base-content flex items-center gap-2">
                       <iconsLib.bellAlert className="h-4 w-4 text-primary" />
@@ -636,9 +638,11 @@ export const AdminNotificationsPage: React.FC = () => {
                   </div>
 
                   {availableTemplates.length === 0 ? (
-                    <div className="p-3 rounded-lg bg-base-200/60 border border-base-300 text-caption text-base-content/70 text-xs">
-                      No broadcast templates available. Create or enable
-                      &quot;Broadcast&quot; on templates in the Templates tab.
+                    <div className="p-3 rounded-lg bg-glass-card/60 border border-glass-border/60 text-caption text-base-content/70 text-xs">
+                      {t(
+                        AppLocales.Admin.Notifications.Labels
+                          .NoTemplatesAvailable,
+                      )}
                     </div>
                   ) : (
                     <Dropdown
@@ -647,15 +651,18 @@ export const AdminNotificationsPage: React.FC = () => {
                         updateValue(NOTIFICATION_FIELDS.EVENT, val)
                       }
                       options={templateOptions}
-                      placeholder="Select a template..."
-                      icon={<iconsLib.bell className="h-4 w-4" />}
+                      placeholder={t(
+                        AppLocales.Admin.Notifications.Labels
+                          .TemplatePlaceholder,
+                      )}
+                      icon={<iconsLib.document className="h-4 w-4" />}
                       size={DropdownSizes.SM}
                     />
                   )}
                 </div>
 
                 {/* Field 2: Audience (Clean Dropdown selector) */}
-                <div className="space-y-2 pt-1 border-t border-base-200">
+                <div className="space-y-2 pt-1 border-t border-glass-border/40">
                   <label className="text-caption font-semibold text-base-content/80 flex items-center gap-1.5">
                     <iconsLib.userGroup className="h-3.5 w-3.5 text-primary" />
                     {t(AppLocales.Admin.Notifications.Labels.Audience)}
@@ -675,7 +682,7 @@ export const AdminNotificationsPage: React.FC = () => {
 
                   {/* Contextual Target Options */}
                   {values.audience_type === NOTIFICATION_AUDIENCE_TYPES.ALL && (
-                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-base-200/50 border border-base-300/50 text-caption text-base-content/70 text-xs">
+                    <div className="flex items-center gap-2 p-2.5 rounded-lg bg-glass-card/60 border border-glass-border/60 text-caption text-base-content/70 text-xs">
                       <iconsLib.info className="h-4 w-4 text-primary shrink-0" />
                       <span>
                         Will be dispatched to all confirmed users across the
@@ -695,7 +702,7 @@ export const AdminNotificationsPage: React.FC = () => {
                         <div className="flex items-center gap-2 text-xs">
                           <Button
                             type="button"
-                            variant={ButtonVariants.TERTIARY}
+                            variant={ButtonVariants.FLAT}
                             onClick={() =>
                               setValues((v) => ({
                                 ...v,
@@ -709,7 +716,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           <span className="opacity-30">•</span>
                           <Button
                             type="button"
-                            variant={ButtonVariants.TERTIARY}
+                            variant={ButtonVariants.FLAT}
                             onClick={() =>
                               setValues((v) => ({ ...v, role_ids: [] }))
                             }
@@ -727,12 +734,12 @@ export const AdminNotificationsPage: React.FC = () => {
                             <Button
                               key={role.id}
                               type="button"
-                              variant={ButtonVariants.TERTIARY}
+                              variant={ButtonVariants.FLAT}
                               onClick={() => toggleRole(role.id)}
                               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-body-s font-medium transition-all ${
                                 isSelected
-                                  ? "bg-primary! text-primary-content! shadow-sm ring-1 ring-primary"
-                                  : "bg-base-200/80 hover:bg-base-200 text-base-content/80 border border-base-300/50"
+                                  ? "bg-primary! text-primary-content! shadow-glass-card ring-1 ring-primary"
+                                  : "bg-glass-card hover:bg-glass-card-hover text-base-content/80 border border-glass-border shadow-glass-card"
                               }`}
                             >
                               {isSelected && (
@@ -777,7 +784,7 @@ export const AdminNotificationsPage: React.FC = () => {
                         />
 
                         {isRecipientFocused && (
-                          <div className="absolute left-0 right-0 top-full mt-1 z-30 max-h-52 overflow-y-auto rounded-lg border border-base-300 bg-base-100 shadow-xl">
+                          <div className="absolute left-0 right-0 top-full mt-1 z-30 max-h-52 overflow-y-auto rounded-lg border border-glass-border bg-glass-card/95 shadow-glass-card backdrop-blur-xl">
                             {isLoading ? (
                               <div className="p-2.5 text-caption text-base-content/60 text-xs">
                                 Searching users...
@@ -791,8 +798,8 @@ export const AdminNotificationsPage: React.FC = () => {
                                 <Button
                                   key={user.id}
                                   type="button"
-                                  variant={ButtonVariants.TERTIARY}
-                                  className="flex! w-full! items-center! justify-between! gap-2! px-3.5! py-2! text-left! text-body-s hover:bg-primary/10 transition-colors rounded-none!"
+                                  variant={ButtonVariants.FLAT}
+                                  className="flex! w-full! items-center! justify-between! gap-2! px-3.5! py-2! text-left! text-body-s hover:bg-glass-card-hover transition-colors rounded-none!"
                                   onMouseDown={(e) => {
                                     e.preventDefault();
                                     addUser(user.id);
@@ -824,14 +831,14 @@ export const AdminNotificationsPage: React.FC = () => {
                           {selectedUsers.map((user) => (
                             <span
                               key={user.id}
-                              className="inline-flex items-center gap-1.5 rounded-md bg-base-200 px-2 py-0.5 text-xs font-medium text-base-content border border-base-300/50 shadow-sm"
+                              className="inline-flex items-center gap-1.5 rounded-md bg-glass-card px-2 py-0.5 text-xs font-medium text-base-content border border-glass-border shadow-glass-card"
                             >
                               <span className="truncate max-w-37.5">
                                 {user.name || user.email || user.username}
                               </span>
                               <Button
                                 type="button"
-                                variant={ButtonVariants.TERTIARY}
+                                variant={ButtonVariants.FLAT}
                                 onClick={() => removeUser(user.id)}
                                 className="p-0! min-h-0! text-base-content/50 hover:text-error"
                                 title="Remove"
@@ -851,7 +858,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 </div>
 
                 {/* Field 3: Delivery Channels (Compact Horizontal Row) */}
-                <div className="space-y-2 pt-1 border-t border-base-200">
+                <div className="space-y-2 pt-1 border-t border-glass-border/40">
                   <div className="flex items-center justify-between">
                     <label className="text-caption font-semibold text-base-content/80 flex items-center gap-1.5">
                       <iconsLib.sparkles className="h-3.5 w-3.5 text-primary" />
@@ -906,7 +913,7 @@ export const AdminNotificationsPage: React.FC = () => {
                           >
                             <Button
                               type="button"
-                              variant={ButtonVariants.TERTIARY}
+                              variant={ButtonVariants.FLAT}
                               disabled={!isConfigured}
                               onClick={() => {
                                 if (isConfigured) {
@@ -915,10 +922,10 @@ export const AdminNotificationsPage: React.FC = () => {
                               }}
                               className={`flex! w-full! items-center! justify-between! px-3! py-2.5! rounded-lg border! text-left transition-all ${
                                 !isConfigured
-                                  ? "opacity-50 cursor-not-allowed bg-base-200/40 border-base-300 text-base-content/40 hover:bg-base-200/40 pointer-events-auto"
+                                  ? "opacity-40 cursor-not-allowed bg-glass-card/30 border-glass-border/40 text-base-content/40 hover:bg-glass-card/30 pointer-events-auto"
                                   : isChecked
-                                    ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content"
-                                    : "border-base-300 bg-base-100 hover:bg-base-200/60 text-base-content/60"
+                                    ? "border-primary/50 bg-primary/10 ring-1 ring-primary/40 font-medium text-base-content shadow-glass-card"
+                                    : "border-glass-border bg-glass-card hover:bg-glass-card-hover text-base-content/70 shadow-glass-card"
                               }`}
                             >
                               <div className="flex items-center gap-2 min-w-0">
@@ -950,10 +957,10 @@ export const AdminNotificationsPage: React.FC = () => {
                               <span
                                 className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 transition-all ${
                                   !isConfigured
-                                    ? "border border-base-300/60 bg-base-200/30 opacity-40"
+                                    ? "border border-glass-border/40 bg-glass-card/20 opacity-40"
                                     : isChecked
                                       ? "bg-primary text-primary-content"
-                                      : "border border-base-300 bg-base-200/50"
+                                      : "border border-glass-border bg-glass-card"
                                 }`}
                               >
                                 {isConfigured && isChecked && (
@@ -988,15 +995,15 @@ export const AdminNotificationsPage: React.FC = () => {
 
             {/* Right Column: Live Preview & Dispatch Panel (5 cols, sticky) */}
             <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-6">
-              <div className="rounded-xl border border-base-300 bg-base-100 p-4 sm:p-5 shadow-sm space-y-4">
-                <div className="flex items-center justify-between border-b border-base-200 pb-3">
+              <div className="rounded-xl border border-glass-border bg-glass-card p-4 sm:p-5 shadow-glass-card backdrop-blur-md space-y-4">
+                <div className="flex items-center justify-between border-b border-glass-border/40 pb-3">
                   <h3 className="text-body-m font-bold text-base-content flex items-center gap-1.5">
                     <iconsLib.eye className="h-4 w-4 text-primary" />
                     {t(AppLocales.Admin.Notifications.Preview.Title)}
                   </h3>
-                  <span className="badge badge-sm badge-neutral font-mono text-[11px]">
+                  <Badge variant={BadgeVariants.DEFAULT} size={ComponentSizes.XS} className="font-mono text-[11px] font-medium">
                     {values.audience_type.toUpperCase()}
-                  </span>
+                  </Badge>
                 </div>
 
                 <AdminNotificationPreview
@@ -1009,7 +1016,7 @@ export const AdminNotificationsPage: React.FC = () => {
                 {selectedTemplate && (
                   <div className="space-y-3">
                     {/* Broadcast Meta Summary */}
-                    <div className="space-y-1.5 text-xs text-base-content/70 bg-base-200/30 rounded-lg p-2.5 border border-base-300/40">
+                    <div className="space-y-1.5 text-xs text-base-content/70 bg-glass-card/40 rounded-lg p-2.5 border border-glass-border/40">
                       <div className="flex items-center justify-between">
                         <span className="text-base-content/50">Event Key:</span>
                         <code className="font-mono text-xs">
@@ -1036,21 +1043,21 @@ export const AdminNotificationsPage: React.FC = () => {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-base-content/50">Channels:</span>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           {values.send_socket && (
-                            <span className="badge badge-xs badge-neutral">
+                            <Badge variant={BadgeVariants.PRIMARY} size={ComponentSizes.XS} className="font-medium">
                               In-App
-                            </span>
+                            </Badge>
                           )}
                           {values.send_push && (
-                            <span className="badge badge-xs badge-warning">
+                            <Badge variant={BadgeVariants.WARNING} size={ComponentSizes.XS} className="font-medium">
                               Push
-                            </span>
+                            </Badge>
                           )}
                           {values.send_email && (
-                            <span className="badge badge-xs badge-info">
+                            <Badge variant={BadgeVariants.INFO} size={ComponentSizes.XS} className="font-medium">
                               Email
-                            </span>
+                            </Badge>
                           )}
                           {selectedChannelsCount === 0 && (
                             <span className="text-error font-medium">None active</span>

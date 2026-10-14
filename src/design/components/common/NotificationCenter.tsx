@@ -16,13 +16,14 @@ import {
   isExternalNotificationLink,
   resolveNotificationRoute,
 } from "../../../modules/notification";
-import socketService, {
+import SocketService, {
   ISocketMessage,
 } from "../../../services/socket.service";
 import { Button } from "../button";
 import { Dialog } from "../overlay/Dialog";
 import { Dropdown, DropdownSizes } from "../form/Dropdown";
-import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../constants";
+import { Badge } from "./Badge";
+import { ButtonTypes, ButtonVariants, ComponentSizes, BadgeVariants } from "../../constants";
 import { cn } from "../../helpers";
 import { getUtcNowIso } from "../../../helpers/date.helper";
 import { DateTime } from "./DateTime";
@@ -229,9 +230,9 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       }
     };
 
-    socketService.addListener(handleSocketMessage);
+    SocketService.addListener(handleSocketMessage);
     return () => {
-      socketService.removeListener(handleSocketMessage);
+      SocketService.removeListener(handleSocketMessage);
     };
   }, [filter]);
 
@@ -344,22 +345,22 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       {/* Bell Trigger Button */}
       <Button
         type={ButtonTypes.BUTTON}
-        variant={ButtonVariants.TERTIARY}
+        variant={ButtonVariants.GLASS}
         size={ComponentSizes.SM}
-        className="relative h-10 w-10 p-0 inline-flex items-center justify-center cursor-pointer"
+        className="relative h-9 w-9 p-0 inline-flex items-center justify-center rounded-lg cursor-pointer"
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label={translate(AppLocales.Notifications.Title)}
         title={translate(AppLocales.Notifications.Title)}
       >
         <iconsLib.bell className="h-5 w-5 text-base-content/80 hover:text-base-content transition-colors" />
-
-        {/* Unread Count Badge */}
-        {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-error px-1 text-[11px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
-            {unreadCount > 99 ? "99+" : unreadCount}
-          </span>
-        )}
       </Button>
+
+      {/* Unread Count Badge - perched on top right corner edge */}
+      {unreadCount > 0 && (
+        <span className="pointer-events-none absolute -top-1.5 -right-1.5 z-10 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      )}
 
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
@@ -378,23 +379,27 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           aria-label={translate(AppLocales.Notifications.Title)}
           className={cn(
             "fixed inset-x-3 top-16 mt-2 z-50 mx-auto max-w-sm sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:mt-1 sm:w-96 sm:max-w-none sm:mx-0",
-            "rounded-2xl border border-base-300 bg-base-100 shadow-2xl overflow-hidden flex flex-col font-primary",
+            "rounded-2xl border border-glass-border bg-[#06150D] dark:bg-[#06150D] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden flex flex-col font-primary",
             "max-h-[calc(100dvh-5rem)] sm:max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-base-200 px-4 py-3 bg-base-100/90 backdrop-blur-sm sticky top-0 z-10">
+          <div className="flex items-center justify-between border-b border-glass-border/50 px-4 py-3 bg-[#091f14] sticky top-0 z-10">
             <div className="flex items-center gap-2">
               <h3 className="text-body-m font-bold text-base-content">
                 {translate(AppLocales.Notifications.Title)}
               </h3>
               {unreadCount > 0 && (
-                <span className="badge badge-primary badge-sm font-semibold">
+                <Badge
+                  variant={BadgeVariants.PRIMARY}
+                  size={ComponentSizes.XS}
+                  className="font-semibold"
+                >
                   {unreadCount}{" "}
                   {translate(
                     AppLocales.Notifications.FilterUnread,
                   ).toLowerCase()}
-                </span>
+                </Badge>
               )}
             </div>
 
@@ -424,7 +429,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
 
           {/* Filter Bar */}
-          <div className="px-4 py-2 border-b border-base-200 bg-base-200/40 flex items-center justify-between gap-2">
+          <div className="px-4 py-2 border-b border-glass-border/40 bg-[#07180F] flex items-center justify-between gap-2">
             <span className="text-caption font-medium text-base-content/60">
               Filter:
             </span>
@@ -440,7 +445,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
 
           {/* Notifications List */}
-          <div className="flex-1 overflow-y-auto divide-y divide-base-200/60 min-h-40 max-h-[calc(100dvh-13rem)] sm:max-h-115">
+          <div className="flex-1 overflow-y-auto divide-y divide-glass-border/40 min-h-40 max-h-[calc(100dvh-13rem)] sm:max-h-115">
             {isLoading ? (
               <div className="p-4 space-y-3">
                 {[1, 2, 3].map((i) => (
@@ -476,8 +481,8 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   className={cn(
                     "group relative flex items-start gap-3 p-3.5 transition-colors cursor-pointer text-left select-none",
                     item.read
-                      ? "hover:bg-base-200/50 bg-base-100"
-                      : "bg-primary/5 hover:bg-primary/10",
+                      ? "hover:bg-[#0b2418] bg-transparent"
+                      : "bg-primary/10 hover:bg-primary/20",
                   )}
                 >
                   {/* Unread dot indicator */}
@@ -521,7 +526,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   <button
                     type="button"
                     onClick={(e) => handleDelete(e, item.id)}
-                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-base-200/80 transition-colors opacity-70 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
+                    className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-glass-card-hover transition-colors opacity-70 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
                     title={translate(AppLocales.Notifications.Delete)}
                     aria-label={translate(AppLocales.Notifications.Delete)}
                   >
@@ -533,7 +538,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
             {/* Load More Button */}
             {pagination?.next_page && (
-              <div className="p-3 text-center border-t border-base-200 bg-base-100">
+              <div className="p-3 text-center border-t border-glass-border bg-glass-card/60">
                 <button
                   type="button"
                   disabled={isLoadingMore}
@@ -566,7 +571,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           <div className="flex items-center justify-end gap-2 w-full">
             <Button
               type={ButtonTypes.BUTTON}
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               size={ComponentSizes.SM}
               onClick={() => setDetailNotification(null)}
             >

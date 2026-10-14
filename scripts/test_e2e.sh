@@ -115,23 +115,26 @@ if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
 fi
 echo "===================================================="
 
+API_CONTAINER=$(docker ps --format "{{.Names}}" | grep -E "core-api" | head -n 1)
+API_CONTAINER=${API_CONTAINER:-"dev-rexone-core-api"}
+
 cleanup_test_data() {
   echo ""
   echo "🧹 Cleaning up test users from database..."
-  docker exec dev-rexone-core-api bin/rails runner "User.where('email LIKE ? OR email LIKE ?', 'e2e-%', '%@rexone.test').destroy_all" 2>/dev/null || true
+  docker exec "$API_CONTAINER" bin/rails runner "User.where('email LIKE ? OR email LIKE ?', 'e2e-%', '%@rexone.test').destroy_all" 2>/dev/null || true
 }
 
 ensure_test_users() {
-  docker exec dev-rexone-core-api bin/rails runner "
-    just = User.find_or_initialize_by(email: 'just@admin.com')
-    just.assign_attributes(name: 'Just Admin User', username: 'justadmin', password: '123456', password_confirmation: '123456')
+  docker exec "$API_CONTAINER" bin/rails runner "
+    just = User.find_by(email: 'just@admin.com') || User.find_by(username: 'justadmin') || User.new
+    just.assign_attributes(email: 'just@admin.com', name: 'Just Admin User', username: 'justadmin', password: '123456', password_confirmation: '123456')
     just.confirmed_at ||= Time.current
     just.save!
     admin_role = Iam::Role.find_by(name: IamConstants::Role::ADMIN) || Iam::Role.find_by(name: IamConstants::Role::USER)
     Iam::UserRole.find_or_create_by!(user: just, role: admin_role) if admin_role
 
-    super_admin = User.find_or_initialize_by(email: 'super@admin.com')
-    super_admin.assign_attributes(name: 'Super Admin User', username: 'superadmin', password: '111111', password_confirmation: '111111')
+    super_admin = User.find_by(email: 'super@admin.com') || User.find_by(username: 'superadmin') || User.new
+    super_admin.assign_attributes(email: 'super@admin.com', name: 'Super Admin User', username: 'superadmin', password: '111111', password_confirmation: '111111')
     super_admin.confirmed_at ||= Time.current
     super_admin.save!
     super_role = Iam::Role.find_by(name: IamConstants::Role::SUPER_ADMIN)

@@ -187,17 +187,17 @@ export const DateTimePicker: React.FC<IDateTimePickerProps> = ({
             "w-full transition-all duration-200 ease-out focus:outline-none",
             isGlass
               ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-2.5 text-base font-primary focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
-              : "px-4 py-2.5 rounded-lg border-2 bg-base-100 text-base-content focus:ring-2 focus:ring-primary focus:border-primary",
+              : "px-4 py-2.5 rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md text-base-content hover:border-glass-border-hover focus:ring-1 focus:ring-primary focus:border-primary",
             clearable && browserValue && !disabled ? "pr-10" : "",
             hasError &&
               (isGlass
                 ? "border-b-error focus:border-b-error"
                 : "border-error focus:ring-error focus:border-error"),
-            !hasError && !isGlass && "border-base-300",
+            !hasError && !isGlass && "border-glass-border",
             disabled &&
               (isGlass
                 ? "opacity-50 cursor-not-allowed"
-                : "opacity-50 cursor-not-allowed bg-base-200"),
+                : "opacity-40 cursor-not-allowed bg-glass-card-hover"),
             className,
           )}
         />
@@ -206,7 +206,7 @@ export const DateTimePicker: React.FC<IDateTimePickerProps> = ({
           <button
             type="button"
             onClick={handleClear}
-            className="absolute right-3 p-1 rounded-full text-base-content/40 hover:text-base-content hover:bg-base-200 transition-colors"
+            className="absolute right-3 p-1 rounded-full text-base-content/40 hover:text-base-content hover:bg-glass-card-hover transition-colors"
             title="Clear date"
             aria-label="Clear date"
           >

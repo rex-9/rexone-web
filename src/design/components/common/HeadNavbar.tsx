@@ -60,7 +60,7 @@ export const HeadNavbarBrand: React.FC<IHeadNavbarBrandProps> = ({
         )}
       />
       {showText && (
-        <div className="min-w-0">
+        <div className="min-w-0 hidden sm:block">
           <div className="truncate text-body-m font-bold tracking-wide text-base-content font-display">
             {AppConfig.APP_NAME}
           </div>
@@ -93,7 +93,7 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
     <>
       <header
         className={cn(
-          "fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-base-300 bg-base-100 px-4 md:px-6",
+          "fixed left-0 right-0 top-0 z-30 flex h-16 items-center justify-between border-b border-glass-border/50 bg-base-100/95 backdrop-blur-xl px-4 md:px-6",
           className,
         )}
       >
@@ -103,18 +103,20 @@ export const HeadNavbar: React.FC<HeadNavbarProps> = ({
               {resolvedLeading}
             </div>
             <div className="flex items-center gap-2">
-              <TimeZoneIndicator />
+              <div className="hidden md:flex">
+                <TimeZoneIndicator />
+              </div>
               {showFeedback && (
                 <Button
                   type={ButtonTypes.BUTTON}
-                  variant={ButtonVariants.TERTIARY}
+                  variant={ButtonVariants.GLASS}
                   size={ComponentSizes.SM}
-                  className="h-10 w-10 p-0 inline-flex items-center justify-center"
+                  className="h-9 w-9 p-0 inline-flex items-center justify-center rounded-lg"
                   onClick={() => setFeedbackOpen(true)}
                   title="Send Feedback"
                   aria-label="Send Feedback"
                 >
-                  <iconsLib.feedback className="h-5 w-5" />
+                  <iconsLib.feedback className="h-5 w-5 text-base-content/80 hover:text-base-content transition-colors" />
                 </Button>
               )}
               {showNotifications && <NotificationCenter />}

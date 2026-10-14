@@ -70,6 +70,4 @@ export class FeedbackService {
     );
   }
 }
-
-export const feedbackService = new FeedbackService();
-export default feedbackService;
+export default new FeedbackService();

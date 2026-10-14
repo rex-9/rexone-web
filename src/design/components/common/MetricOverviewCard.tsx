@@ -17,7 +17,7 @@ export const MetricOverviewCard: React.FC<IMetricOverviewCardProps> = ({
 }) => (
   <div
     className={cn(
-      "grid overflow-hidden rounded-md border border-base-300 bg-base-100 shadow-sm lg:grid-flow-col lg:auto-cols-fr",
+      "grid overflow-hidden rounded-2xl border border-glass-border bg-glass-card backdrop-blur-md shadow-glass-card lg:grid-flow-col lg:auto-cols-fr",
       className,
     )}
   >
@@ -26,7 +26,7 @@ export const MetricOverviewCard: React.FC<IMetricOverviewCardProps> = ({
         key={section.key}
         className={cn(
           "min-w-0 p-4 md:p-5",
-          index > 0 && "border-t border-base-300 lg:border-l lg:border-t-0",
+          index > 0 && "border-t border-glass-border/40 lg:border-l lg:border-t-0",
         )}
       >
         {section.content}

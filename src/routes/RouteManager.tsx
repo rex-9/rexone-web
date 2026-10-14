@@ -168,6 +168,12 @@ const router = createBrowserRouter(
           />
         </Route>
 
+        {/* Sign Out (standalone action route) */}
+        <Route
+          path={AppRoutes.client.protected.SIGN_OUT}
+          element={<SignOutPage />}
+        />
+
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route
@@ -181,10 +187,6 @@ const router = createBrowserRouter(
           <Route
             path={AppRoutes.client.protected.PROFILE}
             element={<UserPage />}
-          />
-          <Route
-            path={AppRoutes.client.protected.SIGN_OUT}
-            element={<SignOutPage />}
           />
           <Route
             path={AppRoutes.client.protected.PAYMENT}

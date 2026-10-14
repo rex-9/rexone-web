@@ -197,7 +197,7 @@ export const ComparisonSection: React.FC = () => {
             <div className="flex items-center gap-3">
               <Button
                 href={AppRoutes.client.public.VS}
-                variant={ButtonVariants.NEON}
+                variant={ButtonVariants.GLASS}
                 size={ComponentSizes.SM}
                 className="font-bold text-xs tracking-wider"
               >
@@ -318,7 +318,7 @@ export const ComparisonSection: React.FC = () => {
               href="https://github.com/rex-9/rexone-core"
               target="_blank"
               rel="noopener noreferrer"
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               size={ComponentSizes.SM}
               className="text-xs border border-glass-border hover:border-primary"
             >

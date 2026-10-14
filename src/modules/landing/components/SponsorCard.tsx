@@ -139,7 +139,7 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({
           href={sponsorUrl}
           target="_blank"
           rel="noopener noreferrer"
-          variant={ButtonVariants.NEON}
+          variant={ButtonVariants.GLASS}
           size={ComponentSizes.LG}
           className="w-full sm:w-auto py-3! px-7! text-sm! sm:text-base! font-bold tracking-wider inline-flex items-center justify-center gap-2.5"
         >

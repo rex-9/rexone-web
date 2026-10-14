@@ -174,8 +174,8 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
       {isCreate ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Guidelines Card (col-span-1) */}
-          <div className="lg:col-span-1 bg-base-100 rounded-xl border border-base-200 p-6 space-y-4 h-fit">
-            <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+          <div className="lg:col-span-1 bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-4 h-fit">
+            <div className="flex items-center gap-2 border-b border-glass-border pb-3">
               <iconsLib.shieldCheck className="h-5 w-5 text-primary" />
               <h3 className="font-semibold text-base-content text-base">
                 Grant Guidelines
@@ -220,8 +220,8 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
           {/* Form Container (col-span-2) */}
           <div className="lg:col-span-2">
             <FormContainer onSubmit={handleSubmit} className="space-y-6">
-              <div className="rounded-xl border border-base-200 bg-base-100 p-6 shadow-sm space-y-5">
-                <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+              <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-6 space-y-5">
+                <div className="flex items-center gap-2 border-b border-glass-border pb-3">
                   <iconsLib.key className="h-5 w-5 text-primary" />
                   <h3 className="font-semibold text-base-content text-base">
                     Entitlement & Access Details
@@ -296,13 +296,13 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
       ) : access ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Entitlement Details Card */}
-          <div className="lg:col-span-1 bg-base-100 rounded-xl border border-base-200 p-6 space-y-4 h-fit">
+          <div className="lg:col-span-1 bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-4 h-fit">
             <h3 className="font-semibold text-base-content text-lg">
               Entitlement Info
             </h3>
 
             <div className="space-y-3 pt-2 text-sm">
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Accesses.Table.User)}
                 </span>
@@ -311,7 +311,7 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Accesses.Table.Product)}
                 </span>
@@ -322,12 +322,12 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                 <span className="text-base-content/60">Status</span>
                 <StatusBadge status={access.status} />
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Accesses.Table.GrantedAt)}
                 </span>
@@ -336,7 +336,7 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Accesses.Table.ExpiresAt)}
                 </span>
@@ -350,7 +350,7 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
               {access.remaining_days !== undefined &&
                 access.remaining_days !== null &&
                 access.remaining_days > 0 && (
-                  <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                     <span className="text-base-content/60">Remaining Days</span>
                     <span className="font-medium text-base-content">
                       {access.remaining_days} days
@@ -372,8 +372,8 @@ export const AdminAccessForm: React.FC<IAdminAccessFormProps> = ({
               </div>
             ) : (
               <FormContainer onSubmit={handleSubmit}>
-                <div className="rounded-xl border border-base-200 bg-base-100 p-6 shadow-sm space-y-5">
-                  <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+                <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-6 space-y-5">
+                  <div className="flex items-center gap-2 border-b border-glass-border pb-3">
                     <iconsLib.clock className="h-5 w-5 text-primary" />
                     <h3 className="font-semibold text-base-content text-base">
                       Extend Duration

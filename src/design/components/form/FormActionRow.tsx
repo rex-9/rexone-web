@@ -23,7 +23,7 @@ export const FormActionRow: React.FC<FormActionRowProps> = ({
     <div className="mt-6 flex flex-col-reverse gap-3 border-t border-base-300 pt-4 sm:flex-row sm:justify-end">
       <Button
         type={ButtonTypes.BUTTON}
-        variant={ButtonVariants.TERTIARY}
+        variant={ButtonVariants.FLAT}
         onClick={onCancel}
         disabled={isSubmitting}
       >

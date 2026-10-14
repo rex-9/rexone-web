@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import FeedbackController from "./feedback.controller";
-import { feedbackService } from "./feedback.service";
+import FeedbackService from "./feedback.service";
 
 vi.mock("./feedback.service", () => ({
-  feedbackService: {
+  default: {
     submitFeedback: vi.fn(),
     getAdminFeedbacks: vi.fn(),
   },
@@ -16,7 +16,7 @@ describe("FeedbackController", () => {
 
   describe("submitFeedback", () => {
     it("submits feedback with telemetry and returns flattened item", async () => {
-      vi.mocked(feedbackService.submitFeedback).mockResolvedValue({
+      vi.mocked(FeedbackService.submitFeedback).mockResolvedValue({
         data: {
           status: { code: 201, success: true, message: "Feedback submitted" },
           data: {
@@ -38,7 +38,7 @@ describe("FeedbackController", () => {
         rating: 5,
       });
 
-      expect(feedbackService.submitFeedback).toHaveBeenCalledWith(
+      expect(FeedbackService.submitFeedback).toHaveBeenCalledWith(
         expect.objectContaining({
           content: "Great app!",
           rating: 5,
@@ -49,7 +49,7 @@ describe("FeedbackController", () => {
     });
 
     it("throws error when submission fails", async () => {
-      vi.mocked(feedbackService.submitFeedback).mockResolvedValue({
+      vi.mocked(FeedbackService.submitFeedback).mockResolvedValue({
         data: {
           status: { code: 422, success: false, message: "Validation error", error: "Content too short" },
           data: null as any,
@@ -64,7 +64,7 @@ describe("FeedbackController", () => {
 
   describe("getAdminFeedbacks", () => {
     it("fetches paginated feedbacks", async () => {
-      vi.mocked(feedbackService.getAdminFeedbacks).mockResolvedValue({
+      vi.mocked(FeedbackService.getAdminFeedbacks).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
           data: [
@@ -85,7 +85,7 @@ describe("FeedbackController", () => {
       });
 
       const result = await FeedbackController.getAdminFeedbacks({ page: 1, limit: 10 });
-      expect(feedbackService.getAdminFeedbacks).toHaveBeenCalledWith({ page: 1, limit: 10 });
+      expect(FeedbackService.getAdminFeedbacks).toHaveBeenCalledWith({ page: 1, limit: 10 });
       expect(result.records.length).toBe(1);
     });
   });

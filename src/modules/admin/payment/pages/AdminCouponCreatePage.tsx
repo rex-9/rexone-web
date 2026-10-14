@@ -279,7 +279,7 @@ export const AdminCouponCreatePage: React.FC = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Creation Mode Toggle */}
-        <div className="bg-base-100 p-4 rounded-xl border border-base-300 flex items-center justify-between">
+        <div className="rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md flex items-center justify-between">
           <div>
             <span className="font-semibold text-base-content block">
               {t(AppLocales.Admin.Coupons.Form.TypeLabel)}
@@ -288,11 +288,11 @@ export const AdminCouponCreatePage: React.FC = () => {
               {t(AppLocales.Admin.Coupons.Form.BatchHelper)}
             </span>
           </div>
-          <div className="flex bg-base-200 p-1 rounded-lg gap-1">
+          <div className="flex bg-glass-card border border-glass-border p-1 rounded-xl shadow-glass-card backdrop-blur-md gap-1">
             <Button
               type="button"
               variant={
-                !isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY
+                !isBatch ? ButtonVariants.PRIMARY : ButtonVariants.FLAT
               }
               size={ComponentSizes.SM}
               onClick={() => setIsBatch(false)}
@@ -302,7 +302,7 @@ export const AdminCouponCreatePage: React.FC = () => {
             <Button
               type="button"
               variant={
-                isBatch ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY
+                isBatch ? ButtonVariants.PRIMARY : ButtonVariants.FLAT
               }
               size={ComponentSizes.SM}
               onClick={() => setIsBatch(true)}
@@ -313,7 +313,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         </div>
 
         {/* Basic Information */}
-        <div className="bg-base-100 p-6 rounded-xl border border-base-300 space-y-4">
+        <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
           <h3 className="font-bold text-base text-base-content font-primary">
             {t(AppLocales.Admin.Coupons.DetailTitle)}
           </h3>
@@ -391,7 +391,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         </div>
 
         {/* Discount Configuration */}
-        <div className="bg-base-100 p-6 rounded-xl border border-base-300 space-y-4">
+        <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
           <h3 className="font-bold text-base text-base-content font-primary">
             {t(AppLocales.Admin.Coupons.Table.Discount)}
           </h3>
@@ -448,7 +448,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         </div>
 
         {/* Usage Limits & Expiration */}
-        <div className="bg-base-100 p-6 rounded-xl border border-base-300 space-y-4">
+        <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
           <h3 className="font-bold text-base text-base-content font-primary">
             {t(AppLocales.Admin.Coupons.Table.Usage)}
           </h3>
@@ -496,7 +496,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         </div>
 
         {/* Targeting Restrictions (Roles & Products) */}
-        <div className="bg-base-100 p-6 rounded-xl border border-base-300 space-y-4">
+        <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
           <div>
             <h3 className="font-bold text-base text-base-content font-primary">
               {t(AppLocales.Admin.Coupons.Detail.TargetingRestrictions)}
@@ -585,7 +585,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         <div className="flex justify-end gap-3 pt-4">
           <Button
             type="button"
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.FLAT}
             size={ComponentSizes.MD}
             onClick={() => navigate(AppRoutes.client.protected.admin.COUPONS)}
             disabled={isLoading}

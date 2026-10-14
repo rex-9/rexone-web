@@ -59,7 +59,7 @@ export const AdminBatchActionBar: React.FC<IAdminBatchActionBarProps> = ({
         </span>
         <Button
           type="button"
-          variant={ButtonVariants.TERTIARY}
+          variant={ButtonVariants.FLAT}
           size={ButtonSizes.XS}
           onClick={onClearSelection}
           className="p-0! min-h-0! text-xs text-base-content/60 hover:text-base-content underline cursor-pointer ml-1"

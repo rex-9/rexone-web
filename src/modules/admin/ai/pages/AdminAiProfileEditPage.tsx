@@ -217,7 +217,7 @@ export const AdminAiProfileEditPage: React.FC = () => {
                 label={t(AppLocales.Admin.Ai.ProfileForm.KeyLabel)}
                 value={profile.key}
                 disabled
-                className="font-mono text-sm bg-base-200 cursor-not-allowed opacity-80"
+                className="font-mono text-sm"
               />
 
               <TextInput

@@ -9,6 +9,9 @@ import {
   DropdownSizes,
   SearchInput,
   StatusBadge,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import {
   SORT_ORDERS,
@@ -147,8 +150,14 @@ export const AdminPurchasesPage: React.FC = () => {
         render: (record) => (
           <div>
             <div className="font-semibold">{record.product_name || "—"}</div>
-            <div className="font-mono text-xs opacity-60 flex items-center gap-1">
-              <span className="badge badge-xs badge-outline uppercase">{record.provider}</span>
+            <div className="font-mono text-xs opacity-60 flex items-center gap-1.5">
+              <Badge
+                variant={BadgeVariants.DEFAULT}
+                size={ComponentSizes.XS}
+                className="uppercase font-mono font-medium"
+              >
+                {record.provider}
+              </Badge>
               <span>{record.provider_payment_id}</span>
             </div>
           </div>
@@ -208,7 +217,7 @@ export const AdminPurchasesPage: React.FC = () => {
         title={t(AppLocales.Admin.Purchases.Title)}
         description={t(AppLocales.Admin.Purchases.Description)}
       />
-      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row gap-4 items-center rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md">
         <div className="w-full sm:w-64">
           <SearchInput
             value={searchInput}

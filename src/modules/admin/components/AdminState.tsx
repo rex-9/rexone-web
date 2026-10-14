@@ -26,7 +26,7 @@ export const AdminState: React.FC<IAdminStateProps> = ({
       return (
         <div
           className={cn(
-            "mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-base-200 text-primary shadow-sm",
+            "mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-glass-card border border-glass-border text-primary shadow-glass-card backdrop-blur-md",
             iconClassName,
           )}
         >
@@ -38,7 +38,7 @@ export const AdminState: React.FC<IAdminStateProps> = ({
     return (
       <div
         className={cn(
-          "mb-3 flex h-12 w-12 items-center justify-center rounded-md bg-base-200 text-primary shadow-sm",
+          "mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-glass-card border border-glass-border text-primary shadow-glass-card backdrop-blur-md",
           iconClassName,
         )}
       >

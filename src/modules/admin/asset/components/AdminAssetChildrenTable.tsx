@@ -193,7 +193,7 @@ export const AdminAssetChildrenTable: React.FC<
 
   if (assets.length === 0) {
     return (
-      <div className="rounded-md border border-base-300 bg-base-100 p-6 text-center text-base-content/60">
+      <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-6 text-center text-base-content/60">
         {t(AppLocales.Admin.Assets.Detail.NoChildren)}
       </div>
     );

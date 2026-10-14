@@ -10,6 +10,9 @@ import {
   DetailHeader,
   DetailSection,
   StatusBadge,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
 import {
@@ -163,7 +166,15 @@ export const AdminPurchaseDetailPage: React.FC = () => {
               )}
               <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Provider)}
-                value={<span className="badge badge-outline uppercase font-mono">{record.provider}</span>}
+                value={
+                  <Badge
+                    variant={BadgeVariants.DEFAULT}
+                    size={ComponentSizes.XS}
+                    className="uppercase font-mono font-medium"
+                  >
+                    {record.provider}
+                  </Badge>
+                }
               />
             </DetailGrid>
           </DetailSection>
@@ -177,9 +188,13 @@ export const AdminPurchaseDetailPage: React.FC = () => {
                 <DetailField
                   label={t(AppLocales.Admin.Coupons.Detail.CouponCode)}
                   value={
-                    <span className="badge badge-primary font-mono font-semibold">
+                    <Badge
+                      variant={BadgeVariants.PRIMARY}
+                      size={ComponentSizes.XS}
+                      className="font-mono font-semibold"
+                    >
                       {record.coupon.code}
-                    </span>
+                    </Badge>
                   }
                   copyable
                 />

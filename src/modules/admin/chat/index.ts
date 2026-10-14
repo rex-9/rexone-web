@@ -1,8 +1,6 @@
-import ChatController from "./chat.controller";
-import ChatService from "./chat.service";
-
 export * from "./types";
 export * from "./constants";
 export * from "./pages";
 
-export { ChatController, ChatService };
+export { default as ChatController } from "./chat.controller";
+export { default as ChatService } from "./chat.service";

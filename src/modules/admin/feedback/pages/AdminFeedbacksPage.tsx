@@ -200,7 +200,7 @@ export const AdminFeedbacksPage: React.FC = () => {
                 {item.app_version && item.version_id ? (
                   <Button
                     type={ButtonTypes.BUTTON}
-                    variant={ButtonVariants.TERTIARY}
+                    variant={ButtonVariants.FLAT}
                     className="h-auto min-h-0 p-0 text-xs font-medium text-primary underline-offset-2 hover:underline"
                     onClick={() => {
                       if (!item.version_id) return;
@@ -257,7 +257,7 @@ export const AdminFeedbacksPage: React.FC = () => {
         description={t(AppLocales.Admin.Feedback.Description)}
       />
 
-      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md">
         <div className="w-full sm:w-48">
           <Dropdown
             size={DropdownSizes.MD}

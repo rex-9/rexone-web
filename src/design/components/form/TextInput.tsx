@@ -73,17 +73,17 @@ export const TextInput: React.FC<ITextInputProps> = ({
             "w-full transition-all duration-200 ease-out focus:outline-none",
             isGlass
               ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-base-content/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
-              : "px-4 py-3 rounded-md border-2 bg-base-100 text-base-content placeholder:text-base-content placeholder:opacity-40 focus:ring-2 focus:ring-primary focus:border-primary",
+              : "px-4 py-3 rounded-xl border bg-glass-card text-base-content placeholder:text-base-content/40 focus:ring-1 focus:ring-primary focus:border-primary",
             !label && tooltip ? "pr-10" : "",
             hasError &&
               (isGlass
                 ? "border-b-error focus:border-b-error"
                 : "border-error focus:ring-error focus:border-error"),
-            !hasError && !isGlass && "border-base-300",
+            !hasError && !isGlass && "border-glass-border",
             disabled &&
               (isGlass
                 ? "opacity-50 cursor-not-allowed"
-                : "opacity-50 cursor-not-allowed bg-base-200"),
+                : "opacity-50 cursor-not-allowed bg-glass-card-hover"),
             className,
           )}
         />

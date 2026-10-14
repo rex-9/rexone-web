@@ -562,7 +562,7 @@ export const VsPage: React.FC = () => {
               </Button>
 
               <Button
-                variant={ButtonVariants.TERTIARY}
+                variant={ButtonVariants.FLAT}
                 aria-label={isMobileMenuOpen ? "Close Menu" : "Open Menu"}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-1! text-base-content bg-transparent! border-0 shadow-none hover:bg-transparent! focus:outline-none"
@@ -941,7 +941,7 @@ export const VsPage: React.FC = () => {
                 href="https://github.com/sponsors/rex-9"
                 target="_blank"
                 rel="noopener noreferrer"
-                variant={ButtonVariants.NEON}
+                variant={ButtonVariants.GLASS}
                 size={ComponentSizes.LG}
                 className="w-full sm:w-auto font-bold px-6 sm:px-8 py-3 text-sm sm:text-base shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)] text-center justify-center"
               >

@@ -62,7 +62,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-28 animate-pulse rounded-md border border-base-300 bg-base-100 p-4"
+              className="h-28 animate-pulse rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-4"
             />
           ))}
         </div>
@@ -73,7 +73,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
   if (error && !stats) {
     return (
       <div
-        className={`rounded-md border border-error/30 bg-base-100 p-4 flex items-center justify-between shadow-sm ${className}`}
+        className={`rounded-xl border border-error/30 bg-glass-card shadow-glass-card p-4 flex items-center justify-between ${className}`}
       >
         <div className="flex items-center gap-2 text-error text-body-s">
           <iconsLib.warning className="w-5 h-5 shrink-0" />
@@ -81,7 +81,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
         </div>
         <Button
           size={ButtonSizes.SM}
-          variant={ButtonVariants.TERTIARY}
+          variant={ButtonVariants.FLAT}
           onClick={() => fetchStats()}
         >
           <iconsLib.arrowPath className="w-4 h-4 mr-1" />
@@ -137,7 +137,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
 
         <Button
           size={ButtonSizes.SM}
-          variant={ButtonVariants.TERTIARY}
+          variant={ButtonVariants.FLAT}
           onClick={() => fetchStats()}
           disabled={isLoading}
           className="text-xs text-base-content/70 hover:text-base-content"

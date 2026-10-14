@@ -85,7 +85,7 @@ export const Toast: React.FC<IToastProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="btn btn-ghost btn-xs btn-square shrink-0 opacity-70 hover:opacity-100"
+            className="inline-flex items-center justify-center h-6 w-6 rounded-md text-base-content hover:bg-base-content/10 transition-colors shrink-0 opacity-70 hover:opacity-100 cursor-pointer"
             aria-label="Close alert"
           >
             <iconsLib.close className="w-4 h-4" />

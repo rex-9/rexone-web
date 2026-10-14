@@ -1,5 +1,5 @@
 // src/design/components/form/SearchInput.tsx
-import React, { useId } from "react";
+import React, { useId, useState } from "react";
 import { iconsLib } from "../../../assets";
 import { cn } from "../../helpers";
 
@@ -30,6 +30,7 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
 }) => {
   const generatedId = useId();
   const inputId = id || generatedId;
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
   const hasValue = Boolean(value && String(value).length > 0);
 
   const keysText =
@@ -60,15 +61,19 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
         className,
       )}
     >
-      <div
-        className={cn(
-          "absolute left-3 flex items-center text-base-content/50 z-10",
-          effectiveTooltip
-            ? "tooltip tooltip-bottom sm:tooltip-right cursor-help pointer-events-auto"
-            : "pointer-events-none",
-        )}
-        data-tip={effectiveTooltip}
-      >
+      {effectiveTooltip && isTooltipOpen && (
+        <div
+          role="tooltip"
+          className="pointer-events-none absolute bottom-full left-0 z-30 mb-1.5 max-w-sm sm:max-w-md animate-in fade-in slide-in-from-bottom-1 duration-150"
+        >
+          <div className="flex items-center gap-1.5 rounded-lg border border-glass-border bg-base-300/95 px-2.5 py-1 text-xs text-base-content shadow-lg backdrop-blur-md">
+            <iconsLib.info className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <span className="font-medium leading-tight">{effectiveTooltip}</span>
+          </div>
+        </div>
+      )}
+
+      <div className="pointer-events-none absolute left-3 z-10 flex items-center text-base-content/50">
         <iconsLib.search className="h-4 w-4" />
       </div>
 
@@ -81,7 +86,7 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
         disabled={disabled}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-md border-2 border-base-300 bg-base-100 py-2.5 pl-9 text-body-m text-base-content",
+          "w-full rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md py-2.5 pl-9 text-body-m text-base-content hover:border-glass-border-hover",
           "[&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden",
           effectiveTooltip && hasValue
             ? "pr-16"
@@ -89,8 +94,8 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
               ? "pr-9"
               : "pr-4",
           "placeholder:text-base-content/40 transition-all duration-200 ease-out",
-          "focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
-          disabled && "cursor-not-allowed bg-base-200 opacity-50",
+          "focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary",
+          disabled && "cursor-not-allowed bg-glass-card-hover opacity-40",
         )}
       />
 
@@ -100,7 +105,7 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
             <button
               type="button"
               onClick={handleClear}
-              className="flex h-5 w-5 items-center justify-center rounded-full text-base-content/40 hover:bg-base-300 hover:text-base-content transition-colors"
+              className="flex h-5 w-5 items-center justify-center rounded-full text-base-content/40 hover:bg-glass-card-hover hover:text-base-content transition-colors"
               aria-label="Clear search"
               title="Clear"
             >
@@ -109,14 +114,18 @@ export const SearchInput: React.FC<ISearchInputProps> = ({
           )}
 
           {effectiveTooltip && (
-            <div className="flex items-center text-base-content/40 hover:text-base-content transition-colors">
-              <div
-                className="tooltip tooltip-top tooltip-end flex items-center"
-                data-tip={effectiveTooltip}
-              >
-                <iconsLib.info className="h-4 w-4 cursor-help" />
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => setIsTooltipOpen((prev) => !prev)}
+              onMouseEnter={() => setIsTooltipOpen(true)}
+              onMouseLeave={() => setIsTooltipOpen(false)}
+              onFocus={() => setIsTooltipOpen(true)}
+              onBlur={() => setIsTooltipOpen(false)}
+              className="flex h-5 w-5 items-center justify-center rounded-full text-base-content/40 hover:text-base-content transition-colors cursor-help focus:outline-none focus:text-base-content"
+              aria-label={effectiveTooltip}
+            >
+              <iconsLib.info className="h-4 w-4" />
+            </button>
           )}
         </div>
       )}

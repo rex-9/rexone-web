@@ -15,6 +15,9 @@ import {
   DetailHeader,
   DetailSection,
   StatusBadge,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import {
   AdminState,
@@ -128,15 +131,15 @@ export const AdminAiProfileDetailPage: React.FC = () => {
               <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Provider)}
                 value={
-                  <span className="badge badge-neutral uppercase font-mono text-xs font-medium">
+                  <Badge variant={BadgeVariants.SECONDARY} size={ComponentSizes.XS} className="uppercase font-medium">
                     {profile.provider}
-                  </span>
+                  </Badge>
                 }
               />
               <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Model)}
                 value={
-                  <span className="font-mono text-xs font-medium bg-base-200 px-2 py-1 rounded select-all">
+                  <span className="font-mono text-xs font-medium rounded-md border border-glass-border bg-glass-card px-2 py-1 select-all">
                     {profile.model}
                   </span>
                 }
@@ -196,7 +199,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                     value={
                       profile.temperature != null
                         ? String(profile.temperature)
-                        : "Default"
+                        : "—"
                     }
                   />
                   <DetailField
@@ -206,7 +209,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                     value={
                       profile.max_output_tokens != null
                         ? profile.max_output_tokens.toLocaleString()
-                        : "Default"
+                        : "—"
                     }
                   />
                   <DetailField
@@ -216,7 +219,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                     value={
                       profile.context_max_tokens != null
                         ? profile.context_max_tokens.toLocaleString()
-                        : "Default"
+                        : "—"
                     }
                   />
                   <DetailField
@@ -226,7 +229,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                     value={
                       profile.history_max_messages != null
                         ? String(profile.history_max_messages)
-                        : "Default"
+                        : "—"
                     }
                   />
                   <DetailField
@@ -234,7 +237,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                     value={
                       profile.timeout_seconds != null
                         ? `${profile.timeout_seconds}s`
-                        : "Default"
+                        : "—"
                     }
                   />
                 </DetailGrid>
@@ -245,7 +248,7 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   title={t(AppLocales.Admin.Ai.ProfileDetail.Settings)}
                   icon={iconsLib.cube}
                 >
-                  <pre className="rounded-lg bg-base-200/80 border border-base-300 p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
+                  <pre className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
                     {JSON.stringify(profile.settings, null, 2)}
                   </pre>
                 </DetailSection>
@@ -260,25 +263,25 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs text-base-content/60">
                     <div className="flex items-center gap-2">
-                      <span className="badge badge-sm badge-ghost font-mono">
+                      <Badge variant={BadgeVariants.DEFAULT} size={ComponentSizes.XS} className="font-mono">
                         {profile.system_prompt.length} chars
-                      </span>
-                      <span className="badge badge-sm badge-ghost font-mono">
+                      </Badge>
+                      <Badge variant={BadgeVariants.DEFAULT} size={ComponentSizes.XS} className="font-mono">
                         {
                           profile.system_prompt
                             .trim()
                             .split(/\s+/)
                             .filter(Boolean).length
                         } words
-                      </span>
+                      </Badge>
                     </div>
                   </div>
-                  <div className="rounded-lg border border-base-300 bg-base-200/50 p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-base-content/90 max-h-96 overflow-y-auto select-text">
+                  <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-4 font-mono text-xs leading-relaxed whitespace-pre-wrap text-base-content/90 max-h-96 overflow-y-auto select-text">
                     {profile.system_prompt}
                   </div>
                 </div>
               ) : (
-                <div className="rounded-lg border border-dashed border-base-300 p-8 text-center text-sm text-base-content/50">
+                <div className="rounded-xl border border-dashed border-glass-border bg-glass-card/40 p-8 text-center text-sm text-base-content/50">
                   {t(AppLocales.Admin.Ai.ProfileDetail.NoSystemPrompt)}
                 </div>
               )}

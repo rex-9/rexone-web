@@ -121,14 +121,14 @@ export const TextArea: React.FC<ITextAreaProps> = ({
           "w-full transition-all duration-200 ease-out focus:outline-none",
           isGlass
             ? "bg-transparent text-base-content border-0 border-b border-glass-border rounded-none px-0 py-3 text-base font-primary placeholder:text-base-content/50 focus:border-b-primary focus:ring-0 focus:shadow-[0_1px_0_0_var(--color-primary)]"
-            : "rounded-md px-4 py-3 text-base border bg-base-100 text-base-content placeholder:text-base-content/40 focus:ring-2 focus:ring-primary focus:border-transparent",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          disabled && !isGlass && "disabled:bg-base-200",
+            : "rounded-xl px-4 py-3 text-base border bg-glass-card text-base-content placeholder:text-base-content/40 focus:ring-1 focus:ring-primary focus:border-primary shadow-glass-card backdrop-blur-md",
+          "disabled:opacity-40 disabled:cursor-not-allowed",
+          disabled && !isGlass && "disabled:bg-glass-card-hover",
           hasError
             ? isGlass
               ? "border-b-error focus:border-b-error"
               : "border-error focus:ring-error"
-            : !isGlass && "border-base-300 hover:border-primary",
+            : !isGlass && "border-glass-border hover:border-glass-border-hover",
           className,
         )}
       />

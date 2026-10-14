@@ -131,6 +131,12 @@ export const AppLocales = {
     SignOut: "auth.sign_out",
   },
   Admin: {
+    Layout: {
+      SignedInAs: "admin.layout.signed_in_as",
+      OpenNav: "admin.layout.open_nav",
+      CloseNav: "admin.layout.close_nav",
+      DefaultAdminUser: "admin.layout.default_admin_user",
+    },
     Nav: {
       Sections: {
         Overview: "admin.nav.sections.overview",
@@ -1119,6 +1125,8 @@ export const AppLocales = {
         CtaTextTooltip: "admin.notifications.labels.cta_text_tooltip",
         CtaTextPlaceholder: "admin.notifications.labels.cta_text_placeholder",
         TemplateNoChannels: "admin.notifications.labels.template_no_channels",
+        TemplatePlaceholder: "admin.notifications.labels.template_placeholder",
+        NoTemplatesAvailable: "admin.notifications.labels.no_templates_available",
         NotConfiguredBadge: "admin.notifications.labels.not_configured_badge",
       },
       Actions: {

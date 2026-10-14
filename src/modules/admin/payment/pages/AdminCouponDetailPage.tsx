@@ -260,7 +260,7 @@ export const AdminCouponDetailPage: React.FC = () => {
 
           {/* Top Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+            <div className="relative overflow-hidden rounded-xl border border-glass-border bg-glass-card p-5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-glass-border-hover">
               <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Table.Discount)}
               </span>
@@ -271,7 +271,7 @@ export const AdminCouponDetailPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+            <div className="relative overflow-hidden rounded-xl border border-glass-border bg-glass-card p-5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-glass-border-hover">
               <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Detail.TotalRedemptions)}
               </span>
@@ -281,7 +281,7 @@ export const AdminCouponDetailPage: React.FC = () => {
                   / {coupon.max_usage === 0 ? "∞" : coupon.max_usage}
                 </span>
               </span>
-              <div className="w-full bg-base-200 rounded-full h-1.5 mt-2 overflow-hidden">
+              <div className="w-full bg-glass-card-hover border border-glass-border/40 rounded-full h-1.5 mt-2 overflow-hidden">
                 <div
                   className="bg-primary h-1.5 rounded-full transition-all duration-300"
                   style={{
@@ -293,7 +293,7 @@ export const AdminCouponDetailPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+            <div className="relative overflow-hidden rounded-xl border border-glass-border bg-glass-card p-5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-glass-border-hover">
               <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Coupons.Form.MaxPerUserLabel)}
               </span>
@@ -302,7 +302,7 @@ export const AdminCouponDetailPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-base-300/80 bg-base-100/90 backdrop-blur-md p-5 shadow-xs transition-all hover:border-primary/40">
+            <div className="relative overflow-hidden rounded-xl border border-glass-border bg-glass-card p-5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-glass-border-hover">
               <span className="text-[11px] font-bold uppercase tracking-wider text-base-content/60 block mb-1">
                 {t(AppLocales.Admin.Products.Table.Status)}
               </span>
@@ -383,7 +383,7 @@ export const AdminCouponDetailPage: React.FC = () => {
                   coupon.target_user_emails && coupon.target_user_emails.length > 0 ? (
                     <div className="flex flex-wrap gap-1.5 mt-0.5">
                       {coupon.target_user_emails.map((email) => (
-                        <span key={email} className="rounded-md border border-base-300 bg-base-300/40 px-2 py-0.5 font-mono text-xs text-base-content">
+                        <span key={email} className="rounded-md border border-glass-border bg-glass-card px-2 py-0.5 font-mono text-xs text-base-content">
                           {email}
                         </span>
                       ))}

@@ -72,7 +72,7 @@ export const ProfileAvatar: React.FC<IProfileAvatarProps> = ({
       ) : (
         <div
           className={cn(
-            "rounded-full flex items-center justify-center font-bold text-primary bg-base-200 hover:bg-base-300 border border-glass-border shadow-sm",
+            "rounded-full flex items-center justify-center font-bold text-primary bg-glass-card hover:bg-glass-card-hover border border-glass-border shadow-glass-card backdrop-blur-md",
             sizeClasses[size],
           )}
         >

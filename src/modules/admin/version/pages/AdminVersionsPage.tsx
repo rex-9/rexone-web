@@ -234,7 +234,7 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
         sortKey: ADMIN_VERSION_SORT_KEYS.INSTALL_COUNT,
         render: (version) => (
           <Button
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.FLAT}
             onClick={() => openVersionDetail(version.id)}
           >
             {version.install_count ?? 0}

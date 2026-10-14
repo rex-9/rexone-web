@@ -6,9 +6,14 @@ import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useDocumentTitle } from "../../../../hooks";
-import { DetailHeader, Dropdown } from "../../../../design";
+import {
+  DetailHeader,
+  Dropdown,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
+} from "../../../../design";
 import AiController from "../ai.controller";
-import type { IAdminAiProfileFormValues } from "../types";
 import {
   AlertDialog,
   FormActionRow,
@@ -23,6 +28,7 @@ import {
   AI_PROFILE_KEY_PRESETS,
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
+import { IAdminAiProfileFormValues } from "..";
 
 export const AdminAiProfileCreatePage: React.FC = () => {
   const t = useTranslate();
@@ -169,9 +175,14 @@ export const AdminAiProfileCreatePage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
                 <span className="text-caption text-base-content/50">Presets:</span>
                 {AI_PROFILE_KEY_PRESETS.map((preset) => (
-                  <button
+                  <Badge
                     key={preset.value}
-                    type="button"
+                    variant={
+                      key === preset.value
+                        ? BadgeVariants.PRIMARY
+                        : BadgeVariants.DEFAULT
+                    }
+                    size={ComponentSizes.XS}
                     onClick={() => {
                       setKey(preset.value);
                       if (!name) {
@@ -181,14 +192,10 @@ export const AdminAiProfileCreatePage: React.FC = () => {
                         setName(friendly);
                       }
                     }}
-                    className={`px-2 py-0.5 rounded text-caption font-mono transition-colors cursor-pointer ${
-                      key === preset.value
-                        ? "bg-primary text-primary-content font-semibold shadow-xs"
-                        : "bg-base-200 text-base-content/70 hover:bg-base-300"
-                    }`}
+                    className="cursor-pointer font-mono font-medium transition-colors"
                   >
                     {preset.value}
-                  </button>
+                  </Badge>
                 ))}
               </div>
             </div>

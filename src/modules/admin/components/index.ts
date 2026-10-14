@@ -41,11 +41,13 @@ export {
   ConfirmDialog,
   Dialog,
 } from "../../../design/components/overlay";
-export { Breadcrumbs, PageHeader, Tabs } from "../../../design/components/common";
+export { Breadcrumbs, PageHeader, Tabs, Badge, StatusBadge } from "../../../design/components/common";
 export type {
   IBreadcrumbItem,
   IBreadcrumbsProps,
   IPageHeaderProps,
   ITabItem,
   ITabsProps,
+  IBadgeProps,
+  IStatusBadgeProps,
 } from "../../../design/components/common";

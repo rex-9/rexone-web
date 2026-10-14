@@ -198,7 +198,7 @@ export const ButtonExamples = () => {
         <Button variant={ButtonVariants.SECONDARY} size={ComponentSizes.MD}>
           Secondary
         </Button>
-        <Button variant={ButtonVariants.TERTIARY} size={ComponentSizes.MD}>
+        <Button variant={ButtonVariants.FLAT} size={ComponentSizes.MD}>
           Tertiary
         </Button>
         <Button

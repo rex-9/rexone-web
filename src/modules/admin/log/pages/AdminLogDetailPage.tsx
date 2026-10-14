@@ -146,13 +146,13 @@ export const AdminLogDetailPage: React.FC = () => {
       ) : log ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Metadata Card */}
-          <div className="lg:col-span-1 bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
+          <div className="lg:col-span-1 rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
             <h3 className="font-semibold text-base-content text-lg">
               {t(AppLocales.Admin.Logs.Detail.Summary)}
             </h3>
 
             <div className="space-y-3 pt-2 text-sm">
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">{t(AppLocales.Admin.Logs.Detail.Severity)}</span>
                 <StatusBadge
                   status={log.severity}
@@ -165,7 +165,7 @@ export const AdminLogDetailPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">{t(AppLocales.Admin.Logs.Detail.Status)}</span>
                 <StatusBadge
                   status={isResolved ? "resolved" : "unresolved"}
@@ -175,7 +175,7 @@ export const AdminLogDetailPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Logs.Table.Occurrences)}
                 </span>
@@ -185,7 +185,7 @@ export const AdminLogDetailPage: React.FC = () => {
               </div>
 
               {log.platform && (
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Logs.Table.Platform)}
                   </span>
@@ -196,7 +196,7 @@ export const AdminLogDetailPage: React.FC = () => {
                 </div>
               )}
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Common.Table.CreatedAt)}
                 </span>
@@ -206,7 +206,7 @@ export const AdminLogDetailPage: React.FC = () => {
               </div>
 
               {log.last_occurred_at && (
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Logs.Table.Timestamp)}
                   </span>
@@ -217,7 +217,7 @@ export const AdminLogDetailPage: React.FC = () => {
               )}
 
               {log.resolved_at && (
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                   <span className="text-base-content/60">{t(AppLocales.Admin.Logs.Detail.ResolvedAt)}</span>
                   <span className="text-success font-medium">
                     <DateTime value={log.resolved_at} format={DateTimeFormats.ADMIN} />
@@ -243,7 +243,7 @@ export const AdminLogDetailPage: React.FC = () => {
                   {log.app_version && log.version_id ? (
                     <Button
                       type={ButtonTypes.BUTTON}
-                      variant={ButtonVariants.TERTIARY}
+                      variant={ButtonVariants.FLAT}
                       className="h-auto min-h-0 p-0 font-mono text-xs font-medium text-primary underline-offset-2 hover:underline"
                       onClick={() => {
                         if (!log.version_id) return;
@@ -269,7 +269,7 @@ export const AdminLogDetailPage: React.FC = () => {
           {/* Diagnostic Details */}
           <div className="lg:col-span-2 space-y-6">
             {/* Error Message */}
-            <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-2">
+            <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-2">
               <label className="block text-caption font-semibold text-base-content opacity-70">
                 {t(AppLocales.Admin.Logs.Drawer.Message)}
               </label>
@@ -280,11 +280,11 @@ export const AdminLogDetailPage: React.FC = () => {
 
             {/* Stack Trace */}
             {log.stack_trace && log.stack_trace.length > 0 && (
-              <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-2">
+              <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-2">
                 <label className="block text-caption font-semibold text-base-content opacity-70">
                   {t(AppLocales.Admin.Logs.Drawer.StackTrace)}
                 </label>
-                <div className="max-h-80 overflow-auto rounded-lg border border-base-300 bg-base-300 p-4 font-mono text-xs text-base-content whitespace-pre leading-relaxed">
+                <div className="max-h-80 overflow-auto rounded-xl border border-glass-border bg-glass-card/90 shadow-glass-card backdrop-blur-md p-4 font-mono text-xs text-base-content whitespace-pre leading-relaxed">
                   {log.stack_trace.join("\n")}
                 </div>
               </div>
@@ -292,11 +292,11 @@ export const AdminLogDetailPage: React.FC = () => {
 
             {/* Context Payload */}
             {log.context && Object.keys(log.context).length > 0 && (
-              <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-2">
+              <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-2">
                 <label className="block text-caption font-semibold text-base-content opacity-70">
                   {t(AppLocales.Admin.Logs.Drawer.StorageSnapshot)}
                 </label>
-                <pre className="max-h-60 overflow-auto rounded-lg border border-base-300 bg-base-200 p-4 font-mono text-xs text-base-content">
+                <pre className="max-h-60 overflow-auto rounded-xl border border-glass-border bg-glass-card/90 shadow-glass-card backdrop-blur-md p-4 font-mono text-xs text-base-content">
                   {JSON.stringify(log.context, null, 2)}
                 </pre>
               </div>

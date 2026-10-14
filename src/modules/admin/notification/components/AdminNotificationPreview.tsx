@@ -6,6 +6,13 @@ import { useTranslate, AppLocales } from "../../../../locales";
 import type { IAdminNotificationTemplate } from "../types";
 import { NOTIFICATION_CHANNELS, type TNotificationChannel } from "../constants";
 import { getTemplateConfiguredChannels } from "../helpers";
+import {
+  Button,
+  ButtonVariants,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
+} from "../../../../design";
 import AppConfig from "../../../../AppConfig";
 
 export interface IAdminNotificationPreviewProps {
@@ -36,14 +43,14 @@ export const AdminNotificationPreview: React.FC<
   return (
     <div className="space-y-3">
       {/* Segmented Channel Switcher Tabs */}
-      <div className="flex items-center justify-between gap-1 p-1 bg-base-200/80 rounded-xl border border-base-300/60">
+      <div className="flex items-center justify-between gap-1 p-1 bg-glass-card/50 rounded-xl border border-glass-border/60 backdrop-blur-md">
         <button
           type="button"
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.IN_APP)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.IN_APP
-              ? "bg-base-100 text-base-content shadow-xs font-semibold"
-              : "text-base-content/60 hover:text-base-content hover:bg-base-100/50"
+              ? "bg-glass-card border border-glass-border text-primary shadow-glass-card font-semibold"
+              : "text-base-content/60 hover:text-base-content hover:bg-glass-card-hover"
           }`}
         >
           <iconsLib.bell className="w-3.5 h-3.5 text-primary" />
@@ -61,8 +68,8 @@ export const AdminNotificationPreview: React.FC<
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.PUSH)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.PUSH
-              ? "bg-base-100 text-base-content shadow-xs font-semibold"
-              : "text-base-content/60 hover:text-base-content hover:bg-base-100/50"
+              ? "bg-glass-card border border-glass-border text-primary shadow-glass-card font-semibold"
+              : "text-base-content/60 hover:text-base-content hover:bg-glass-card-hover"
           }`}
         >
           <iconsLib.devicePhoneMobile className="w-3.5 h-3.5 text-warning" />
@@ -80,8 +87,8 @@ export const AdminNotificationPreview: React.FC<
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.EMAIL)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.EMAIL
-              ? "bg-base-100 text-base-content shadow-xs font-semibold"
-              : "text-base-content/60 hover:text-base-content hover:bg-base-100/50"
+              ? "bg-glass-card border border-glass-border text-primary shadow-glass-card font-semibold"
+              : "text-base-content/60 hover:text-base-content hover:bg-glass-card-hover"
           }`}
         >
           <iconsLib.mail className="w-3.5 h-3.5 text-info" />
@@ -97,9 +104,9 @@ export const AdminNotificationPreview: React.FC<
 
       {/* Visual Preview Content per Active Channel */}
       {activeChannel === NOTIFICATION_CHANNELS.IN_APP && (
-        <div className="rounded-xl bg-base-100 border border-base-300 p-4 space-y-3 shadow-sm">
+        <div className="rounded-xl bg-glass-card border border-glass-border p-4 space-y-3 shadow-glass-card backdrop-blur-md">
           {/* Header with Title and Close X */}
-          <div className="flex items-start justify-between gap-2 border-b border-base-200/80 pb-2.5">
+          <div className="flex items-start justify-between gap-2 border-b border-glass-border/40 pb-2.5">
             <h4 className="font-bold text-xs sm:text-sm text-base-content leading-snug">
               {template.in_app_title || template.name}
             </h4>
@@ -116,25 +123,27 @@ export const AdminNotificationPreview: React.FC<
           </div>
 
           {/* Footer with Timestamp and Action Buttons */}
-          <div className="pt-2 border-t border-base-200/80 flex items-center justify-between gap-2">
+          <div className="pt-2 border-t border-glass-border/40 flex items-center justify-between gap-2">
             <span className="text-[11px] text-base-content/50 font-mono">
               {t(AppLocales.Admin.Notifications.Preview.JustNow)}
             </span>
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="btn btn-xs btn-ghost text-base-content/60 pointer-events-none"
+              <Button
+                variant={ButtonVariants.FLAT}
+                size={ComponentSizes.XS}
+                className="text-base-content/60 pointer-events-none"
                 tabIndex={-1}
               >
                 Cancel
-              </button>
-              <button
-                type="button"
-                className="btn btn-xs btn-primary font-semibold shadow-xs pointer-events-none"
+              </Button>
+              <Button
+                variant={ButtonVariants.PRIMARY}
+                size={ComponentSizes.XS}
+                className="font-semibold shadow-xs pointer-events-none"
                 tabIndex={-1}
               >
                 {template.cta_text || "Open link"}
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -149,7 +158,7 @@ export const AdminNotificationPreview: React.FC<
       )}
 
       {activeChannel === NOTIFICATION_CHANNELS.PUSH && (
-        <div className="rounded-xl bg-base-200/50 border border-base-300/80 p-3.5 space-y-2.5 shadow-xs">
+        <div className="rounded-xl bg-glass-card/60 border border-glass-border/60 p-3.5 space-y-2.5 shadow-glass-card backdrop-blur-md">
           <div className="flex items-center gap-1.5 pb-0.5">
             <iconsLib.devicePhoneMobile className="w-3.5 h-3.5 text-warning" />
             <span className="text-[11px] font-semibold text-base-content/80">
@@ -157,7 +166,7 @@ export const AdminNotificationPreview: React.FC<
             </span>
           </div>
 
-          <div className="rounded-xl bg-base-100 border border-base-300/80 p-3 shadow-xs space-y-2">
+          <div className="rounded-xl bg-glass-card border border-glass-border p-3 shadow-glass-card backdrop-blur-md space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <div className="w-4 h-4 rounded bg-primary text-primary-content flex items-center justify-center text-[9px] font-black">
@@ -184,13 +193,17 @@ export const AdminNotificationPreview: React.FC<
               </div>
             </div>
 
-            <div className="pt-1.5 border-t border-base-200/80 flex items-center justify-between text-[10px] text-base-content/50">
+            <div className="pt-1.5 border-t border-glass-border/40 flex items-center justify-between text-[10px] text-base-content/50">
               <span>{t(AppLocales.Admin.Notifications.Preview.TapToOpen)}</span>
               {template.push_template_id && (
-                <span className="font-mono text-[9px] badge badge-ghost badge-xs">
+                <Badge
+                  variant={BadgeVariants.DEFAULT}
+                  size={ComponentSizes.XS}
+                  className="font-mono text-[9px]"
+                >
                   {t(AppLocales.Admin.Notifications.Preview.OneSignalTemplate)}:{" "}
                   {template.push_template_id}
-                </span>
+                </Badge>
               )}
             </div>
           </div>
@@ -206,7 +219,7 @@ export const AdminNotificationPreview: React.FC<
       )}
 
       {activeChannel === NOTIFICATION_CHANNELS.EMAIL && (
-        <div className="rounded-xl bg-base-200/50 border border-base-300/80 p-3.5 space-y-2.5 shadow-xs">
+        <div className="rounded-xl bg-glass-card/60 border border-glass-border/60 p-3.5 space-y-2.5 shadow-glass-card backdrop-blur-md">
           <div className="flex items-center gap-1.5 pb-0.5">
             <iconsLib.mail className="w-3.5 h-3.5 text-info" />
             <span className="text-[11px] font-semibold text-base-content/80">
@@ -214,9 +227,9 @@ export const AdminNotificationPreview: React.FC<
             </span>
           </div>
 
-          <div className="rounded-xl bg-base-100 border border-base-300/80 overflow-hidden shadow-xs">
+          <div className="rounded-xl bg-glass-card border border-glass-border overflow-hidden shadow-glass-card backdrop-blur-md">
             {/* Window title dots */}
-            <div className="bg-base-200/60 px-3 py-1.5 border-b border-base-300/60 flex items-center justify-between">
+            <div className="bg-glass-card/80 px-3 py-1.5 border-b border-glass-border/40 flex items-center justify-between">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-error/70 inline-block" />
                 <span className="w-2 h-2 rounded-full bg-warning/70 inline-block" />
@@ -231,7 +244,7 @@ export const AdminNotificationPreview: React.FC<
             </div>
 
             {/* Email Meta Bar */}
-            <div className="p-2.5 border-b border-base-200 bg-base-100 space-y-1 text-xs">
+            <div className="p-2.5 border-b border-glass-border/40 bg-glass-card/50 space-y-1 text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] text-base-content/50 w-10 font-medium">
                   {t(AppLocales.Admin.Notifications.Preview.EmailFrom)}:
@@ -264,7 +277,7 @@ export const AdminNotificationPreview: React.FC<
             </div>
 
             {/* Email Body Canvas */}
-            <div className="p-3.5 space-y-2.5 bg-base-100">
+            <div className="p-3.5 space-y-2.5 bg-glass-card/30">
               <div className="text-xs text-base-content/85 whitespace-pre-wrap leading-relaxed">
                 {template.email_body ||
                   template.in_app_body ||
@@ -282,14 +295,18 @@ export const AdminNotificationPreview: React.FC<
 
               {template.email_template_id && (
                 <div className="pt-1">
-                  <span className="font-mono text-[9px] badge badge-ghost badge-xs">
+                  <Badge
+                    variant={BadgeVariants.DEFAULT}
+                    size={ComponentSizes.XS}
+                    className="font-mono text-[9px]"
+                  >
                     {t(AppLocales.Admin.Notifications.Preview.BrevoTemplate)}:{" "}
                     {template.email_template_id}
-                  </span>
+                  </Badge>
                 </div>
               )}
 
-              <div className="pt-2.5 border-t border-base-200 text-[10px] text-base-content/40 leading-normal">
+              <div className="pt-2.5 border-t border-glass-border/40 text-[10px] text-base-content/40 leading-normal">
                 {t(AppLocales.Admin.Notifications.Preview.EmailFooter)}
               </div>
             </div>

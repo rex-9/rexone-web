@@ -40,7 +40,7 @@ export const ConfirmDialog: React.FC<IConfirmDialogProps> = ({
         <div className="flex justify-end gap-2">
           <Button
             type={ButtonTypes.BUTTON}
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.FLAT}
             onClick={onClose}
             disabled={isLoading}
           >

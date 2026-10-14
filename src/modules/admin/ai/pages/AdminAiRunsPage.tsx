@@ -17,6 +17,9 @@ import {
   DateTimeFormats,
   Dropdown,
   SearchInput,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import AiController from "../ai.controller";
 import type { IAdminAiRun } from "../types";
@@ -225,9 +228,13 @@ export const AdminAiRunsPage: React.FC = () => {
         header: t(AppLocales.Admin.Ai.RunsTable.Feature),
         sortKey: ADMIN_AI_RUN_SORT_KEYS.FEATURE,
         render: (run) => (
-          <span className="badge badge-sm badge-outline font-mono">
+          <Badge
+            variant={BadgeVariants.DEFAULT}
+            size={ComponentSizes.XS}
+            className="font-mono font-medium"
+          >
             {run.feature || "chat"}
-          </span>
+          </Badge>
         ),
       },
       {
@@ -244,9 +251,13 @@ export const AdminAiRunsPage: React.FC = () => {
         header: t(AppLocales.Admin.Ai.RunsTable.Provider),
         sortKey: ADMIN_AI_RUN_SORT_KEYS.PROVIDER,
         render: (run) => (
-          <span className="badge badge-sm badge-neutral uppercase">
+          <Badge
+            variant={BadgeVariants.SECONDARY}
+            size={ComponentSizes.XS}
+            className="uppercase font-medium"
+          >
             {run.provider || "-"}
-          </span>
+          </Badge>
         ),
       },
       {
@@ -318,7 +329,7 @@ export const AdminAiRunsPage: React.FC = () => {
         description={t(AppLocales.Admin.Ai.RunsDescription)}
       />
 
-      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-glass-card p-4 rounded-xl border border-glass-border shadow-glass-card backdrop-blur-md">
         <div className="w-full sm:w-64">
           <SearchInput
             value={searchInput}
@@ -371,7 +382,7 @@ export const AdminAiRunsPage: React.FC = () => {
           message={error}
         />
       ) : (
-        <div className="rounded-box border border-base-content/10 bg-base-100 shadow-sm">
+        <>
           <AdminTable
             columns={columns}
             records={runs}
@@ -390,14 +401,12 @@ export const AdminAiRunsPage: React.FC = () => {
           />
 
           {pagination && pagination.total_pages > 1 && (
-            <div className="border-t border-base-content/10 p-4">
-              <AdminPagination
-                pagination={pagination}
-                onPageChange={(nextPage) => updateFilters({ page: nextPage })}
-              />
-            </div>
+            <AdminPagination
+              pagination={pagination}
+              onPageChange={(nextPage) => updateFilters({ page: nextPage })}
+            />
           )}
-        </div>
+        </>
       )}
     </div>
   );

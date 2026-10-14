@@ -20,6 +20,9 @@ import {
   ButtonVariants,
   Dropdown,
   SearchInput,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import { iconsLib } from "../../../../assets";
 import AiController from "../ai.controller";
@@ -222,9 +225,13 @@ export const AdminAiProfilesPage: React.FC = () => {
         header: t(AppLocales.Admin.Ai.ProfilesTable.Provider),
         sortKey: ADMIN_AI_PROFILE_SORT_KEYS.PROVIDER,
         render: (profile) => (
-          <span className="badge badge-sm badge-neutral uppercase">
+          <Badge
+            variant={BadgeVariants.SECONDARY}
+            size={ComponentSizes.XS}
+            className="uppercase font-medium"
+          >
             {profile.provider}
-          </span>
+          </Badge>
         ),
       },
       {
@@ -252,9 +259,19 @@ export const AdminAiProfilesPage: React.FC = () => {
         header: t(AppLocales.Admin.Ai.ProfilesTable.Tokens),
         render: (profile) => (
           <div className="text-xs text-base-content/70">
-            <span>Out: {profile.max_output_tokens ?? "Default"}</span>
+            <span>
+              Out:{" "}
+              {profile.max_output_tokens != null
+                ? profile.max_output_tokens.toLocaleString()
+                : "—"}
+            </span>
             <span className="mx-1">/</span>
-            <span>Ctx: {profile.context_max_tokens ?? "Default"}</span>
+            <span>
+              Ctx:{" "}
+              {profile.context_max_tokens != null
+                ? profile.context_max_tokens.toLocaleString()
+                : "—"}
+            </span>
           </div>
         ),
       },
@@ -333,7 +350,7 @@ export const AdminAiProfilesPage: React.FC = () => {
         }
       />
 
-      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row flex-wrap gap-4 items-center bg-glass-card p-4 rounded-xl border border-glass-border shadow-glass-card backdrop-blur-md">
         <div className="w-full sm:w-64">
           <SearchInput
             value={searchInput}
@@ -379,7 +396,7 @@ export const AdminAiProfilesPage: React.FC = () => {
           message={error}
         />
       ) : (
-        <div className="rounded-box border border-base-content/10 bg-base-100 shadow-sm">
+        <>
           <AdminTable
             columns={columns}
             records={profiles}
@@ -398,14 +415,12 @@ export const AdminAiProfilesPage: React.FC = () => {
           />
 
           {pagination && pagination.total_pages > 1 && (
-            <div className="border-t border-base-content/10 p-4">
-              <AdminPagination
-                pagination={pagination}
-                onPageChange={(nextPage) => updateFilters({ page: nextPage })}
-              />
-            </div>
+            <AdminPagination
+              pagination={pagination}
+              onPageChange={(nextPage) => updateFilters({ page: nextPage })}
+            />
           )}
-        </div>
+        </>
       )}
     </div>
   );

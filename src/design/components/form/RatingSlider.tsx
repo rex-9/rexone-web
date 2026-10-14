@@ -1,6 +1,7 @@
-// src/design/components/form/RatingSlider.tsx
 import React from "react";
 import { cn } from "../../helpers";
+import { Badge } from "../common/Badge";
+import { BadgeVariants, ComponentSizes } from "../../constants";
 
 export interface IRatingSliderProps {
   value: number;
@@ -39,13 +40,17 @@ export const RatingSlider: React.FC<IRatingSliderProps> = ({
             {label}
           </span>
         )}
-        <div className="badge badge-primary badge-outline gap-1 py-3 px-3 font-medium text-xs">
+        <Badge
+          variant={BadgeVariants.PRIMARY}
+          size={ComponentSizes.SM}
+          className="gap-1.5 font-medium py-1.5 px-3"
+        >
           <span>{sentiment.emoji}</span>
           <span className="font-bold">
             {value} / {max}
           </span>
           <span className="opacity-80">({sentiment.text})</span>
-        </div>
+        </Badge>
       </div>
 
       <div className="w-full">

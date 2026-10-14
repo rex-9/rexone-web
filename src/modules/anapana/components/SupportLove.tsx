@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Asset, Button, TextLink } from "../../../design/components";
+import { ButtonVariants } from "../../../design/constants";
 import { iconsLib } from "../../../assets";
 import { AppLocales, useTranslate } from "../../../locales";
 
@@ -9,7 +10,7 @@ export const SupportLove: React.FC = () => {
   return (
     <>
       <Button
-        variant="tertiary"
+        variant={ButtonVariants.FLAT}
         onClick={() => setShowSnackbar(!showSnackbar)}
         className="p-8 !px-8 min-w-10 min-h-10 flex items-center justify-center"
       >
@@ -18,7 +19,7 @@ export const SupportLove: React.FC = () => {
         </span>
       </Button>
       {showSnackbar && (
-        <div className="fixed bottom-1/3 bg-base-200 p-8 rounded-lg shadow-lg flex items-center gap-4">
+        <div className="fixed bottom-1/3 z-50 rounded-xl border border-glass-border bg-glass-card p-8 shadow-glass-card backdrop-blur-xl flex items-center gap-4">
           <div className="w-64 flex flex-col justify-center items-center gap-4">
             <div>{t(AppLocales.Anapana.WelcomeDonations)}</div>
             <TextLink
