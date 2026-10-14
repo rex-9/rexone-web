@@ -1,6 +1,6 @@
 // src/modules/feedback/feedback.controller.ts
 
-import { feedbackService } from "./feedback.service";
+import FeedbackService from "./feedback.service";
 import {
   ICreateFeedbackRequest,
   IFeedback,
@@ -89,7 +89,7 @@ export class FeedbackController {
       },
     };
 
-    const response = await feedbackService.submitFeedback(feedback);
+    const response = await FeedbackService.submitFeedback(feedback);
     if (!response.data?.status?.success) {
       throw new Error(
         response.data?.status?.error ||
@@ -109,7 +109,7 @@ export class FeedbackController {
    * Admin: fetch paginated feedbacks
    */
   static async getAdminFeedbacks(params?: IFeedbackListParams) {
-    const response = await feedbackService.getAdminFeedbacks(params);
+    const response = await FeedbackService.getAdminFeedbacks(params);
     return parsePagyList<IFeedback>(response);
   }
 }

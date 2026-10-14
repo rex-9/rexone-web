@@ -68,7 +68,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-28 animate-pulse rounded-md border border-base-300 bg-base-100 p-4"
+              className="h-28 animate-pulse rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md"
             />
           ))}
         </div>
@@ -78,7 +78,7 @@ export const AdminAnalyticsPage: React.FC = () => {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-80 animate-pulse rounded-md border border-base-300 bg-base-100 p-5"
+              className="h-80 animate-pulse rounded-xl border border-glass-border bg-glass-card p-5 shadow-glass-card backdrop-blur-md"
             />
           ))}
         </div>
@@ -170,7 +170,7 @@ export const AdminAnalyticsPage: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div
           onClick={() => navigate(AppRoutes.client.protected.admin.LOGS)}
-          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-rose-500/50 hover:shadow-md"
+          className="flex cursor-pointer items-center justify-between rounded-xl border border-glass-border bg-glass-card p-3.5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-rose-500/50 hover:shadow-lg"
         >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
@@ -180,14 +180,14 @@ export const AdminAnalyticsPage: React.FC = () => {
               {kpis.unresolved_errors}
             </p>
           </div>
-          <span className="rounded bg-rose-500/10 px-2 py-1 text-caption font-semibold text-rose-500">
+          <span className="rounded-lg bg-rose-500/10 px-2 py-1 text-caption font-semibold text-rose-500">
             {kpis.period_errors}
           </span>
         </div>
 
         <div
           onClick={() => navigate(AppRoutes.client.protected.admin.FEEDBACK)}
-          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-primary hover:shadow-md"
+          className="flex cursor-pointer items-center justify-between rounded-xl border border-glass-border bg-glass-card p-3.5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-primary hover:shadow-lg"
         >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
@@ -197,14 +197,14 @@ export const AdminAnalyticsPage: React.FC = () => {
               {kpis.period_feedbacks}
             </p>
           </div>
-          <span className="rounded bg-base-200 px-2 py-1 text-caption font-semibold text-base-content opacity-70">
+          <span className="rounded-lg border border-glass-border bg-glass-card px-2 py-1 text-caption font-semibold text-base-content opacity-70">
             {t(AppLocales.Admin.Analytics.Kpis.ThisMonth)}
           </span>
         </div>
 
         <div
           onClick={() => navigate(AppRoutes.client.protected.admin.COUPONS)}
-          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-emerald-500/50 hover:shadow-md"
+          className="flex cursor-pointer items-center justify-between rounded-xl border border-glass-border bg-glass-card p-3.5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-emerald-500/50 hover:shadow-lg"
         >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
@@ -214,14 +214,14 @@ export const AdminAnalyticsPage: React.FC = () => {
               {kpis.coupons_used ?? 0}
             </p>
           </div>
-          <span className="rounded bg-emerald-500/10 px-2 py-1 text-caption font-semibold text-emerald-500">
+          <span className="rounded-lg bg-emerald-500/10 px-2 py-1 text-caption font-semibold text-emerald-500">
             -${((kpis.period_discounts ?? 0)).toFixed(2)}
           </span>
         </div>
 
         <div
           onClick={() => navigate(AppRoutes.client.protected.admin.AI_RUNS)}
-          className="flex cursor-pointer items-center justify-between rounded-md border border-base-300 bg-base-100 p-3.5 shadow-sm transition-all hover:border-purple-500/50 hover:shadow-md"
+          className="flex cursor-pointer items-center justify-between rounded-xl border border-glass-border bg-glass-card p-3.5 shadow-glass-card backdrop-blur-md transition-all hover:bg-glass-card-hover hover:border-purple-500/50 hover:shadow-lg"
         >
           <div>
             <p className="text-caption font-medium text-base-content opacity-60">
@@ -233,7 +233,7 @@ export const AdminAnalyticsPage: React.FC = () => {
                 : "100%"}
             </p>
           </div>
-          <span className="rounded bg-purple-500/10 px-2 py-1 text-caption font-semibold text-purple-400">
+          <span className="rounded-lg bg-purple-500/10 px-2 py-1 text-caption font-semibold text-purple-400">
             {t(AppLocales.Admin.Common.Status.Completed)}
           </span>
         </div>

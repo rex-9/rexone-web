@@ -53,7 +53,7 @@ const AdminTableRow: React.FC<{
   tabIndex?: number;
 }> = ({ children, className, onClick, onKeyDown, tabIndex }) => (
   <tr
-    className={cn("border-base-300", className)}
+    className={cn("border-b border-base-300/60 transition-colors", className)}
     onClick={onClick}
     onKeyDown={onKeyDown}
     tabIndex={tabIndex}
@@ -113,7 +113,7 @@ const AdminTableHeaderCell: React.FC<{
   return (
     <th
       className={cn(
-        "bg-base-200 text-body-s font-semibold text-base-content",
+        "bg-base-200/90 text-caption font-bold uppercase tracking-wider text-base-content/80 border-b border-base-300 py-3.5",
         className,
       )}
     >
@@ -162,13 +162,13 @@ export function AdminTable<T>({
     records.every((record) => selectedRowKeys.includes(getRowKey(record)));
 
   return (
-    <div className="overflow-hidden rounded-md border border-base-300 bg-base-100">
+    <div className="overflow-hidden rounded-xl border border-glass-border bg-glass-card backdrop-blur-md shadow-glass-card">
       <div className="overflow-x-auto">
-        <table className="table w-full">
+        <table className="table min-w-full">
           <AdminTableHead>
             <AdminTableRow>
               {selectable && (
-                <th className="bg-base-200 w-12 text-center px-3">
+                <th className="bg-glass-card-hover border-b border-glass-border w-12 text-center px-3 py-3.5">
                   <div className="flex items-center justify-center">
                     <Checkbox
                       checked={!!allSelected}
@@ -201,9 +201,9 @@ export function AdminTable<T>({
                 <AdminTableRow
                   key={rowKey}
                   className={cn(
-                    "transition-colors",
-                    isSelected && "bg-primary/5",
-                    onRowClick && "cursor-pointer hover:bg-base-200/60",
+                    "transition-colors hover:bg-primary/5",
+                    isSelected && "bg-primary/10",
+                    onRowClick && "cursor-pointer",
                   )}
                   onClick={(event) => {
                     if (isInteractiveRowTarget(event.target)) return;

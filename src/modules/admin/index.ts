@@ -3,8 +3,7 @@ import { ChatController, ChatService } from "./chat";
 import { NotificationController, NotificationService } from "./notification";
 import { ProductController, ProductService } from "./product";
 import { RoleController, RoleService } from "./role";
-import UserController from "./user/user.controller";
-import UserService from "./user/user.service";
+import { UserController, UserService } from "./user";
 import { FeedbackController, FeedbackService } from "./feedback";
 import { LogController, LogService } from "./log";
 import { AccessController, AccessService } from "./access";
@@ -29,6 +28,7 @@ export * from "./ai";
 export * from "./components";
 export * from "./helpers/admin.helper";
 export * from "./constants";
+export * from "./hooks";
 
 export const Admin = {
   AnalyticsController,

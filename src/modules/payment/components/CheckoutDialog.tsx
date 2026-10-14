@@ -373,7 +373,7 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
               : t(AppLocales.Payment.CheckoutDialog.Proceed)}
           </Button>
           <Button
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.FLAT}
             fullWidth
             size={ComponentSizes.SM}
             onClick={onClose}

@@ -25,7 +25,7 @@ export const ChatActivityChart: React.FC<IChatActivityChartProps> = ({
   grain = ANALYTICS_GRAINS.DAILY,
 }) => {
   return (
-    <div className="rounded-md border border-base-300 bg-base-100 p-4 shadow-sm md:p-5">
+    <div className="rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md md:p-5">
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="text-body-m font-semibold text-base-content">
@@ -71,7 +71,7 @@ export const ChatActivityChart: React.FC<IChatActivityChartProps> = ({
                     grain,
                   );
                   return (
-                    <div className="rounded-md border border-base-300 bg-base-100 p-3 shadow-xl">
+                    <div className="rounded-xl border border-glass-border bg-glass-card/95 p-3 shadow-glass-card backdrop-blur-xl">
                       <p className="text-caption font-semibold text-base-content opacity-80">
                         {formattedLabel}
                       </p>

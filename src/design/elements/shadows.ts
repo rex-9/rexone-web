@@ -15,6 +15,7 @@ export const shadows = {
   "neon-lg": `0 0 8px ${colors.primary}, 0 0 25px ${colors.primaryDark}, 0 0 50px ${colors.glowOuter}`,
   "glass-card": `0 6px 30px ${colors.shadows.glassCard}`,
   "glass-hover": `0 8px 32px ${colors.shadows.glassHover}`,
+  "glass-card-hover": `0 8px 32px ${colors.shadows.glassHover}`,
 } as const;
 
 export const dropShadows = {

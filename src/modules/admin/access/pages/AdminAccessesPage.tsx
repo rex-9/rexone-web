@@ -204,7 +204,7 @@ export const AdminAccessesPage: React.FC = () => {
               {access.product_name || "Product"}
             </span>
             {access.product_code && (
-              <span className="rounded bg-base-200 px-1.5 py-0.5 font-mono text-[11px] font-medium text-base-content opacity-80">
+              <span className="rounded bg-glass-card border border-glass-border px-1.5 py-0.5 font-mono text-[11px] font-medium text-base-content opacity-80">
                 {access.product_code}
               </span>
             )}
@@ -325,7 +325,7 @@ export const AdminAccessesPage: React.FC = () => {
       />
 
       {/* Filters & Search Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+      <div className="flex flex-col sm:flex-row gap-4 items-center bg-glass-card p-4 rounded-xl border border-glass-border shadow-glass-card">
         <div className="w-full sm:w-64">
           <SearchInput
             placeholder={t(AppLocales.Admin.Accesses.SearchPlaceholder)}

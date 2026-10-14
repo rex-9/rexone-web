@@ -7,6 +7,7 @@ import {
   TextArea,
   Button,
 } from "../../../design/components";
+import { ButtonVariants } from "../../../design/constants";
 import { useToast, useLoading } from "../../../contexts";
 import FeedbackController from "../feedback.controller";
 import { FEEDBACK_RATINGS } from "../constants";
@@ -87,7 +88,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
 
         <div className="flex justify-end gap-2 pt-2">
           <Button
-            variant="tertiary"
+            variant={ButtonVariants.FLAT}
             size="sm"
             onClick={onClose}
             disabled={isLoading}
@@ -96,7 +97,7 @@ export const FeedbackDialog: React.FC<IFeedbackDialogProps> = ({
           </Button>
           <Button
             type="submit"
-            variant="primary"
+            variant={ButtonVariants.PRIMARY}
             size="sm"
             isLoading={isLoading}
             disabled={isLoading || !content.trim()}

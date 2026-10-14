@@ -12,6 +12,9 @@ import {
   DetailHeader,
   DetailSection,
   StatusBadge,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
@@ -87,9 +90,9 @@ export const AdminAiRunDetailPage: React.FC = () => {
               <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Feature)}
                 value={
-                  <span className="badge badge-sm badge-outline font-mono">
+                  <Badge variant={BadgeVariants.DEFAULT} size={ComponentSizes.XS} className="font-mono font-medium">
                     {run.feature || "chat"}
-                  </span>
+                  </Badge>
                 }
               />
               <DetailField
@@ -103,15 +106,15 @@ export const AdminAiRunDetailPage: React.FC = () => {
               <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Provider)}
                 value={
-                  <span className="badge badge-neutral uppercase font-mono text-xs font-medium">
+                  <Badge variant={BadgeVariants.SECONDARY} size={ComponentSizes.XS} className="uppercase font-medium">
                     {run.provider || "-"}
-                  </span>
+                  </Badge>
                 }
               />
               <DetailField
                 label={t(AppLocales.Admin.Ai.RunsTable.Model)}
                 value={
-                  <span className="font-mono text-xs font-medium bg-base-200 px-2 py-1 rounded select-all">
+                  <span className="font-mono text-xs font-medium rounded-md border border-glass-border bg-glass-card px-2 py-1 select-all">
                     {run.model || "-"}
                   </span>
                 }
@@ -273,7 +276,7 @@ export const AdminAiRunDetailPage: React.FC = () => {
                 title={t(AppLocales.Admin.Ai.RunDetail.RequestMetadata)}
                 icon={iconsLib.document}
               >
-                <pre className="rounded-lg bg-base-200/80 border border-base-300 p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
+                <pre className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
                   {JSON.stringify(run.request_metadata, null, 2)}
                 </pre>
               </DetailSection>

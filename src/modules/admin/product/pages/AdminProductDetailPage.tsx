@@ -11,6 +11,9 @@ import {
   DetailSection,
   Image,
   StatusBadge,
+  Badge,
+  BadgeVariants,
+  ComponentSizes,
 } from "../../../../design";
 import {
   AdminState,
@@ -221,9 +224,13 @@ export const AdminProductDetailPage: React.FC = () => {
                               format={DateTimeFormats.ADMIN}
                             />
                           ) : (
-                            <span className="badge badge-ghost badge-sm font-semibold">
+                            <Badge
+                              variant={BadgeVariants.SECONDARY}
+                              size={ComponentSizes.XS}
+                              className="font-semibold"
+                            >
                               Lifetime
-                            </span>
+                            </Badge>
                           )}
                         </td>
                       </tr>

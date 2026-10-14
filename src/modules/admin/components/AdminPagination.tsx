@@ -1,8 +1,12 @@
 import React from "react";
-import { IApiPagination } from "../../../models";
+import type { IApiPagination } from "../../../models";
 import { iconsLib } from "../../../assets";
 import { Button } from "../../../design/components/button";
-import { ButtonSizes, ButtonVariants } from "../../../design/constants";
+import {
+  ButtonTypes,
+  ButtonVariants,
+  ComponentSizes,
+} from "../../../design/constants";
 
 interface IAdminPaginationProps {
   pagination: IApiPagination | null;
@@ -23,28 +27,30 @@ export const AdminPagination: React.FC<IAdminPaginationProps> = ({
       </span>
       <div className="flex items-center gap-2">
         <Button
-          size={ButtonSizes.SM}
-          variant={ButtonVariants.SECONDARY}
-          className="flex items-center gap-1"
+          type={ButtonTypes.BUTTON}
+          variant={ButtonVariants.GLASS}
+          size={ComponentSizes.SM}
           disabled={!pagination.prev_page}
           onClick={() => {
             if (pagination.prev_page) onPageChange(pagination.prev_page);
           }}
+          className="gap-1.5"
         >
-          <iconsLib.chevronLeft className="h-4 w-4" />
+          <iconsLib.chevronLeft className="h-4 w-4 shrink-0" />
           <span>Previous</span>
         </Button>
         <Button
-          size={ButtonSizes.SM}
-          variant={ButtonVariants.SECONDARY}
-          className="flex items-center gap-1"
+          type={ButtonTypes.BUTTON}
+          variant={ButtonVariants.GLASS}
+          size={ComponentSizes.SM}
           disabled={!pagination.next_page}
           onClick={() => {
             if (pagination.next_page) onPageChange(pagination.next_page);
           }}
+          className="gap-1.5"
         >
           <span>Next</span>
-          <iconsLib.chevronRight className="h-4 w-4" />
+          <iconsLib.chevronRight className="h-4 w-4 shrink-0" />
         </Button>
       </div>
     </div>

@@ -33,22 +33,24 @@ export const Button: React.FC<IButtonProps> = ({
   children,
   ...props
 }) => {
-  const isNeon = variant === ButtonVariants.NEON && !disabled && !isLoading;
+  const isGlass = variant === ButtonVariants.GLASS && !disabled && !isLoading;
 
   const variants: Record<ButtonVariant, string> = {
-    // Primary: Normal state has border with coral text -> Hover turns solid coral with bright neon box shadow (Pic 1)
+    // Primary: Normal state has border with emerald text -> Hover turns solid emerald with bright box shadow
     [ButtonVariants.PRIMARY]:
       "border border-glass-border bg-glass-tag-bg text-primary font-bold tracking-wider hover:bg-primary hover:text-primary-content hover:border-primary hover:shadow-neon-lg active:scale-95 transition-all duration-300",
 
-    // Neon: Normal state has frosted glass + running animated laser borders + glowing text (Pic 2) -> Hover turns solid coral with large neon aura (Pic 3)
-    [ButtonVariants.NEON]:
+    // Glass: Frosted emerald glass card button matching the card styling
+    [ButtonVariants.GLASS]:
       "relative overflow-hidden border border-glass-border bg-glass-card backdrop-blur-md text-glow-white font-bold tracking-wider [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark)] hover:bg-primary hover:text-primary-content hover:border-primary hover:shadow-neon-lg hover:[text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] active:scale-95 transition-all duration-400",
 
+    // Secondary: Outlined emerald button
     [ButtonVariants.SECONDARY]:
       "border-2 border-primary text-primary hover:bg-primary/10 active:bg-primary/20 transition-all duration-300",
 
-    [ButtonVariants.TERTIARY]:
-      "text-base-content hover:bg-base-200 active:bg-base-300 transition-all duration-200",
+    // Flat: Borderless subtle button with transparent background
+    [ButtonVariants.FLAT]:
+      "bg-transparent text-base-content/80 hover:text-base-content hover:bg-glass-card/50 active:bg-glass-card transition-all duration-200",
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {
@@ -62,16 +64,16 @@ export const Button: React.FC<IButtonProps> = ({
   const buttonClasses = cn(
     "inline-flex items-center justify-center whitespace-nowrap select-none",
     "font-medium transition-all duration-200 ease-out",
-    "rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
+    "rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
     variants[variant],
     sizes[size] || sizes[ComponentSizes.MD],
     fullWidth && "w-full",
-    (disabled || isLoading) && "opacity-50 cursor-not-allowed",
+    (disabled || isLoading) && "opacity-40 cursor-not-allowed pointer-events-none",
     isLoading && "cursor-wait",
     className,
   );
 
-  const neonBorders = isNeon && (
+  const glassBorders = isGlass && (
     <>
       <span className="absolute top-0 -left-full w-full h-px bg-linear-to-r from-transparent to-primary animate-neon-border-1" />
       <span className="absolute -top-full right-0 w-px h-full bg-linear-to-b from-transparent to-primary animate-neon-border-2" />
@@ -98,7 +100,7 @@ export const Button: React.FC<IButtonProps> = ({
           props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
         }
       >
-        {neonBorders}
+        {glassBorders}
         {innerContent}
       </a>
     );
@@ -111,7 +113,7 @@ export const Button: React.FC<IButtonProps> = ({
       {...props}
       className={buttonClasses}
     >
-      {neonBorders}
+      {glassBorders}
       {innerContent}
     </button>
   );

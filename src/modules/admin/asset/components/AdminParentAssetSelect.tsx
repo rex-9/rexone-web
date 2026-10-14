@@ -180,7 +180,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
           {!disabled && (
             <div className="flex items-center gap-1.5 shrink-0">
               <Button
-                variant={ButtonVariants.TERTIARY}
+                variant={ButtonVariants.FLAT}
                 size={ComponentSizes.XS}
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="text-xs font-medium"
@@ -188,7 +188,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
                 Change
               </Button>
               <Button
-                variant={ButtonVariants.TERTIARY}
+                variant={ButtonVariants.FLAT}
                 size={ComponentSizes.XS}
                 onClick={handleClear}
                 className="text-xs text-error hover:bg-error/10"
@@ -204,11 +204,11 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
             type="button"
             disabled={disabled || isLoading}
             onClick={() => setIsOpen((prev) => !prev)}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-md border text-left text-sm transition-colors ${
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left text-sm transition-colors ${
               error
                 ? "border-error focus:ring-1 focus:ring-error"
-                : "border-base-300 hover:border-base-content/30 focus:border-primary focus:ring-1 focus:ring-primary"
-            } bg-base-100 text-base-content disabled:opacity-50 disabled:cursor-not-allowed`}
+                : "border-glass-border hover:border-glass-border-hover focus:border-primary focus:ring-1 focus:ring-primary shadow-glass-card"
+            } bg-glass-card text-base-content disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             <span className={value ? "text-base-content" : "text-base-content/40"}>
               {isLoading
@@ -223,9 +223,9 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
       {/* Searchable Options Popover */}
       {isOpen && !disabled && (
         <div className="relative z-20">
-          <div className="absolute left-0 right-0 top-1 bg-base-100 border border-base-300 rounded-lg shadow-xl overflow-hidden animate-in fade-in-50 duration-150">
+          <div className="absolute left-0 right-0 top-1 bg-glass-card/95 border border-glass-border rounded-xl shadow-glass-card backdrop-blur-xl overflow-hidden animate-in fade-in-50 duration-150">
             {/* Search Input Filter */}
-            <div className="p-2 border-b border-base-200 bg-base-200/30 flex items-center gap-2">
+            <div className="p-2 border-b border-glass-border/40 bg-glass-card/50 flex items-center gap-2">
               <iconsLib.search className="w-4 h-4 text-base-content/50 ml-1.5 shrink-0" />
               <input
                 type="search"
@@ -249,7 +249,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
             </div>
 
             {/* Results List */}
-            <div className="max-h-60 overflow-y-auto divide-y divide-base-200">
+            <div className="max-h-60 overflow-y-auto divide-y divide-glass-border/40">
               {isLoading ? (
                 <div className="p-4 text-center text-xs text-base-content/60 flex items-center justify-center gap-2">
                   <iconsLib.arrowPath className="w-4 h-4 animate-spin text-primary" />
@@ -273,12 +273,12 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
                       key={parent.id}
                       type="button"
                       onClick={() => handleSelect(parent)}
-                      className={`w-full flex items-center justify-between p-2.5 text-left text-xs transition-colors hover:bg-base-200/60 ${
+                      className={`w-full flex items-center justify-between p-2.5 text-left text-xs transition-colors hover:bg-glass-card-hover ${
                         isSelected ? "bg-primary/10" : ""
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
-                        <div className="w-7 h-7 rounded bg-base-200 flex items-center justify-center shrink-0 text-base-content/60">
+                        <div className="w-7 h-7 rounded bg-glass-card/60 border border-glass-border/40 flex items-center justify-center shrink-0 text-base-content/60">
                           {parent.format === "video" ? (
                             <iconsLib.play className="w-3.5 h-3.5" />
                           ) : parent.format === "audio" ? (

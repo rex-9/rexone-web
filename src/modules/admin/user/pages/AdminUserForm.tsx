@@ -96,8 +96,8 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
   return (
     <FormContainer onSubmit={handleSubmit}>
       {/* Avatar Selection Card */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-base-200 bg-base-100 mb-2">
-        <div className="w-16 h-16 rounded-full overflow-hidden border border-base-300 bg-base-200 shrink-0">
+      <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md mb-2">
+        <div className="w-16 h-16 rounded-full overflow-hidden border border-glass-border bg-glass-card shrink-0">
           <Image
             src={avatarUrl || ""}
             alt={name || username}
@@ -123,7 +123,7 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
           </Button>
           {(avatarUrl || avatarAssetId) && (
             <Button
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               size={ComponentSizes.SM}
               className="text-error hover:bg-error/10"
               onClick={() => {
@@ -173,12 +173,12 @@ export const AdminUserForm: React.FC<IAdminUserFormProps> = ({
         </div>
 
         <div className="md:col-span-2">
-          <div className="rounded-md border border-base-300 bg-base-100 p-4 md:p-6">
+          <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-4 md:p-6">
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-body-m font-semibold text-base-content">
                 {t(AppLocales.Admin.Users.Form.RolesLabel)}
               </h2>
-              <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
+              <span className="rounded-md border border-glass-border bg-glass-card px-2 py-1 text-caption font-medium text-base-content opacity-70">
                 {selectedRoleIds.length}/{roles.length}
               </span>
             </div>

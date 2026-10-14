@@ -113,11 +113,11 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
 
         const categoryStyles: Record<TAdminActionCategory, string> = {
           [ADMIN_ACTION_CATEGORIES.NEUTRAL]:
-            "border border-base-300 bg-base-100 text-base-content/70 hover:text-base-content hover:bg-base-200 hover:border-primary active:bg-base-300",
+            "border border-glass-border bg-glass-card text-base-content/75 hover:text-base-content hover:bg-glass-card-hover hover:border-glass-border-hover shadow-glass-card backdrop-blur-md",
           [ADMIN_ACTION_CATEGORIES.DANGER]:
-            "border border-error/30 bg-error/5 text-error hover:bg-error/15 hover:border-error active:bg-error/25",
+            "border border-error/30 bg-error/10 text-error hover:bg-error/20 hover:border-error shadow-glass-card backdrop-blur-md",
           [ADMIN_ACTION_CATEGORIES.SUCCESS]:
-            "border border-success/30 bg-success/5 text-success hover:bg-success/15 hover:border-success active:bg-success/25",
+            "border border-success/30 bg-success/10 text-success hover:bg-success/20 hover:border-success shadow-glass-card backdrop-blur-md",
         };
 
         const Icon = config.icon;
@@ -128,9 +128,9 @@ export const AdminTableActions: React.FC<IAdminTableActionsProps> = ({
             action={config.action}
             resource={resource}
             size={ButtonSizes.SM}
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.GLASS}
             className={cn(
-              "h-8 w-8 p-0 flex items-center justify-center rounded-lg transition-all duration-150 shadow-none border shrink-0",
+              "h-8 w-8 p-0 flex items-center justify-center rounded-lg transition-all duration-150 shrink-0",
               categoryStyles[config.category],
             )}
             aria-label={label}

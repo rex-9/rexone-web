@@ -134,7 +134,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         </div>
 
         {/* Assets Grid */}
-        <div className="min-h-75 max-h-105 overflow-y-auto border border-base-200 rounded-xl p-3 bg-base-200/30">
+        <div className="min-h-75 max-h-105 overflow-y-auto border border-glass-border/60 rounded-xl p-3 bg-glass-card/40 backdrop-blur-md">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center h-64 gap-3 text-base-content/60">
               <iconsLib.arrowPath className="w-8 h-8 animate-spin text-primary" />
@@ -159,15 +159,15 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                 return (
                   <Button
                     key={asset.id}
-                    variant={ButtonVariants.TERTIARY}
+                    variant={ButtonVariants.FLAT}
                     onClick={() => setSelectedAsset(asset)}
                     className={`flex flex-col text-left p-2 h-auto rounded-xl border transition-all duration-200 ${
                       isSelected
                         ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)] ring-2 ring-primary"
-                        : "border-base-200 bg-base-100 hover:border-primary/50 hover:bg-base-200/50"
+                        : "border-glass-border bg-glass-card hover:border-glass-border-hover hover:bg-glass-card-hover shadow-glass-card"
                     }`}
                   >
-                    <div className="w-full aspect-square rounded-lg overflow-hidden bg-base-200 border border-base-300 relative flex items-center justify-center mb-2">
+                    <div className="w-full aspect-square rounded-lg overflow-hidden bg-glass-card/60 border border-glass-border/60 relative flex items-center justify-center mb-2">
                       <Image
                         src={asset.url}
                         alt={asset.name}
@@ -209,7 +209,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         </div>
 
         {/* Pagination & Footer */}
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-2 border-t border-base-200">
+        <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-2 border-t border-glass-border/40">
           <div className="text-xs text-base-content/70">
             {pagination?.total_count !== undefined && (
               <span>Total: {pagination.total_count} assets</span>

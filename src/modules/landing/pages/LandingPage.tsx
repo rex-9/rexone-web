@@ -237,7 +237,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
         {/* Down Arrow Button */}
         <div className="flex justify-center my-8 animate-down-bounce">
           <Button
-            variant={ButtonVariants.TERTIARY}
+            variant={ButtonVariants.FLAT}
             aria-label="Scroll to skills"
             onClick={() => handleScrollToSection("#Skills")}
             className="w-10! h-10! p-0! rounded-full border border-primary text-primary hover:text-primary-content! hover:border-primary-light! hover:shadow-neon! transition-all duration-300 drop-shadow-[0_0_8px_var(--color-primary)]"
@@ -399,7 +399,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
             {/* Left Carousel Arrow */}
             <Button
               type="button"
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               aria-label="Previous Testimonial"
               onClick={handlePrevTestimonial}
               className="hidden sm:flex absolute -left-2 md:-left-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
@@ -421,7 +421,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
             {/* Right Carousel Arrow */}
             <Button
               type="button"
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               aria-label="Next Testimonial"
               onClick={handleNextTestimonial}
               className="hidden sm:flex absolute -right-2 md:-right-4 z-10 w-11! h-11! p-0! rounded-full! bg-glass-nav border border-glass-border text-white items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:bg-glass-card-hover hover:border-glass-border-hover hover:text-primary-light hover:shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6)] active:scale-95 shadow-[0_4px_20px_rgba(0,0,0,0.5)] cursor-pointer"
@@ -436,7 +436,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
               <Button
                 key={i}
                 type="button"
-                variant={ButtonVariants.TERTIARY}
+                variant={ButtonVariants.FLAT}
                 aria-label={`Go to testimonial ${i + 1}`}
                 onClick={() => handleTestimonialDotClick(i)}
                 className={`h-2! min-h-0! p-0! rounded-full! transition-all duration-300 cursor-pointer ${
@@ -508,7 +508,7 @@ export const LandingPage: React.FC<ILandingPageProps> = ({ hideEnter }) => {
                   href={LANDING_DATA.cvUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  variant={ButtonVariants.NEON}
+                  variant={ButtonVariants.GLASS}
                   size={ComponentSizes.LG}
                   className="py-3! px-7! text-lg! tracking-wide font-bold"
                 >

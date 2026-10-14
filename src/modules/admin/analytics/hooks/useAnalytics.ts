@@ -1,7 +1,7 @@
 // src/modules/admin/analytics/hooks/useAnalytics.ts
 import { useQuery } from "@tanstack/react-query";
 import { ANALYTICS_PERIODS, TAnalyticsPeriod } from "../../constants";
-import analyticsController from "../analytics.controller";
+import AnalyticsController from "../analytics.controller";
 import { IAnalyticsOverview, IAnalyticsParams } from "../types";
 
 const TWO_MINUTES_MS = 2 * 60 * 1000;
@@ -57,7 +57,7 @@ export const useAnalytics = (params?: IAnalyticsParams) => {
       params?.end_date,
     ],
     queryFn: async () => {
-      const result = await analyticsController.getOverview(queryParams);
+      const result = await AnalyticsController.getOverview(queryParams);
       if (!result.success || !result.data) {
         throw new Error(result.error || "Failed to fetch analytics");
       }

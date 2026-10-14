@@ -147,7 +147,7 @@ export const UserPage: React.FC = () => {
         onClose={() => setAlertMessage("")}
       />
 
-      <div className="space-y-6 rounded-2xl border border-base-300 bg-base-100/70 p-6 shadow-xl backdrop-blur-md">
+      <div className="space-y-6 rounded-2xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-xl">
         <div className="flex items-center space-x-5">
           <div className="relative w-fit shrink-0">
             <ProfileAvatar

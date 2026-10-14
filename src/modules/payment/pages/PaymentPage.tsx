@@ -393,7 +393,7 @@ export const PaymentPage: React.FC = () => {
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-base-100/70 border border-base-300 rounded-2xl p-6 shadow-xl backdrop-blur-md flex flex-col justify-between hover:border-primary/40 transition-colors"
+            className="bg-glass-card border border-glass-border rounded-2xl p-6 shadow-glass-card backdrop-blur-md flex flex-col justify-between hover:border-glass-border-hover hover:bg-glass-card-hover transition-colors"
           >
             <div>
               <h3 className="text-xl font-bold font-primary text-base-content">
@@ -444,7 +444,7 @@ export const PaymentPage: React.FC = () => {
             </div>
 
             <div>
-              <div className="border-t border-base-300 my-4" />
+              <div className="border-t border-glass-border/40 my-4" />
               {renderProductActions(product)}
             </div>
           </div>

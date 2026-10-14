@@ -182,13 +182,13 @@ export const AdminFeedbackDetailPage: React.FC = () => {
       ) : feedback ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Feedback Metadata Card */}
-          <div className="lg:col-span-1 bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
+          <div className="lg:col-span-1 rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-4">
             <h3 className="font-semibold text-base-content text-lg">
               {t(AppLocales.Admin.Feedback.Detail.SubmissionInfo)}
             </h3>
 
             <div className="space-y-3 pt-2 text-sm">
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Feedback.Table.User)}
                 </span>
@@ -197,7 +197,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">
                   {t(AppLocales.Admin.Feedback.Table.Category)}
                 </span>
@@ -207,14 +207,14 @@ export const AdminFeedbackDetailPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">{t(AppLocales.Admin.Feedback.Table.Rating)}</span>
                 <span className="text-warning font-semibold">
                   {feedback.rating ? `⭐ ${feedback.rating}/10` : t(AppLocales.Admin.Feedback.Detail.None)}
                 </span>
               </div>
 
-              <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+              <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                 <span className="text-base-content/60">{t(AppLocales.Admin.Common.Detail.Created)}</span>
                 <span className="text-base-content/70">
                   <DateTime value={feedback.created_at} format={DateTimeFormats.ADMIN} />
@@ -222,7 +222,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
               </div>
 
               {feedback.platform && (
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border/40">
                   <span className="text-base-content/60">{t(AppLocales.Admin.Feedback.Detail.Platform)}</span>
                   <StatusBadge
                     status={feedback.platform}
@@ -234,7 +234,7 @@ export const AdminFeedbackDetailPage: React.FC = () => {
               {(feedback.device || feedback.browser || feedback.os) && (
                 <div className="pt-2 text-xs opacity-60 font-mono space-y-1">
                   <div>{t(AppLocales.Admin.Feedback.Detail.DeviceTelemetry)}:</div>
-                  <div className="p-2 rounded bg-base-200 break-all">
+                  <div className="p-2 rounded-lg border border-glass-border bg-glass-card/60 shadow-glass-card break-all">
                     {[
                       feedback.platform,
                       feedback.os,
@@ -251,11 +251,11 @@ export const AdminFeedbackDetailPage: React.FC = () => {
 
           {/* Feedback Content & Triage Form */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-2">
+            <div className="rounded-xl border border-glass-border bg-glass-card p-6 shadow-glass-card backdrop-blur-md space-y-2">
               <label className="block text-caption font-semibold text-base-content opacity-70">
                 {t(AppLocales.Admin.Feedback.Table.Content)}
               </label>
-              <div className="rounded-lg border border-base-300 bg-base-200/50 p-4 text-body-m text-base-content whitespace-pre-wrap leading-relaxed">
+              <div className="rounded-xl border border-glass-border bg-glass-card/40 p-4 text-body-m text-base-content whitespace-pre-wrap leading-relaxed">
                 {feedback.content}
               </div>
             </div>

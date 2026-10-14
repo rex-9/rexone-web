@@ -121,7 +121,7 @@ export const Tabs = <T extends string = string>({
       role="tablist"
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex items-center rounded-lg bg-base-200 border border-base-300/50 select-none",
+        "inline-flex items-center rounded-xl bg-glass-card border border-glass-border shadow-glass-card backdrop-blur-md select-none p-1",
         selectedSize.container,
         className,
       )}
@@ -139,11 +139,11 @@ export const Tabs = <T extends string = string>({
             disabled={tab.disabled}
             onClick={() => onChange(tab.value)}
             className={cn(
-              "inline-flex items-center justify-center gap-1.5 rounded-md font-semibold transition-all duration-150 outline-none",
+              "inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition-all duration-150 outline-none",
               selectedSize.tab,
               isActive
-                ? "bg-base-100 text-primary shadow-sm border border-base-300/60"
-                : "text-base-content/70 hover:text-base-content hover:bg-base-300/40",
+                ? "bg-glass-card-hover text-primary shadow-glass-card border border-primary/40 backdrop-blur-md"
+                : "text-base-content/75 hover:text-base-content hover:bg-glass-card-hover/60",
               tab.disabled && "opacity-40 cursor-not-allowed",
               tabClassName,
               isActive && activeTabClassName,
@@ -158,8 +158,8 @@ export const Tabs = <T extends string = string>({
                 className={cn(
                   "ml-1 rounded-full px-1.5 py-0.2 text-[10px] font-bold",
                   isActive
-                    ? "bg-primary/10 text-primary"
-                    : "bg-base-300 text-base-content/60",
+                    ? "bg-primary/20 text-primary border border-primary/40"
+                    : "bg-glass-card-hover text-base-content/60 border border-glass-border",
                 )}
               >
                 {tab.count}

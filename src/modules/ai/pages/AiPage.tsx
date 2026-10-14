@@ -248,7 +248,7 @@ export const AiPage: React.FC = () => {
 
     return (
       <Button
-        variant={ButtonVariants.TERTIARY}
+        variant={ButtonVariants.FLAT}
         size={ButtonSizes.SM}
         className="min-h-0 h-6 w-6 p-0 rounded-full text-base-content/50 hover:text-base-content hover:bg-base-300/40"
         onClick={() => void handleTtsTap(message)}
@@ -344,7 +344,7 @@ export const AiPage: React.FC = () => {
           <div>
             {messages.length > 1 && (
               <Button
-                variant={ButtonVariants.TERTIARY}
+                variant={ButtonVariants.FLAT}
                 size={ButtonSizes.SM}
                 onClick={() => setIsClearDialogOpen(true)}
                 className="text-xs text-base-content/60 hover:text-error h-8 min-h-0 px-2.5"
@@ -407,7 +407,7 @@ export const AiPage: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      <div className="rounded-2xl rounded-tl-sm px-4 py-3.5 bg-base-200/60 border border-base-200/80 text-base-content">
+                      <div className="rounded-2xl rounded-tl-sm px-4 py-3.5 border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md text-base-content">
                         <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
                           {message.content}
                         </p>
@@ -438,7 +438,7 @@ export const AiPage: React.FC = () => {
               <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-1">
                 <iconsLib.sparkles className="w-3.5 h-3.5 animate-pulse" />
               </div>
-              <div className="rounded-2xl rounded-tl-sm px-4 py-3 bg-base-200/50 border border-base-200/60 flex items-center gap-2 text-sm text-base-content/70">
+              <div className="rounded-2xl rounded-tl-sm px-4 py-3 border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md flex items-center gap-2 text-sm text-base-content/70">
                 <span>{t(AppLocales.Ai.Thinking)}</span>
                 <span className="loading loading-dots loading-xs" />
               </div>
@@ -450,7 +450,7 @@ export const AiPage: React.FC = () => {
 
         {/* Docked Bottom Input Box */}
         <div className="pt-2 pb-4 bg-transparent shrink-0">
-          <div className="relative rounded-2xl border border-base-300 bg-base-100/90 shadow-sm focus-within:border-primary/70 focus-within:shadow-md transition-all p-3">
+          <div className="relative rounded-2xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md focus-within:border-glass-border-hover focus-within:shadow-glass-card transition-all p-3">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -484,7 +484,7 @@ export const AiPage: React.FC = () => {
               </div>
             )}
 
-            <div className="flex items-center justify-between pt-2 border-t border-base-200/60 mt-1">
+            <div className="flex items-center justify-between pt-2 border-t border-glass-border/40 mt-1">
               <div className="flex items-center gap-1.5">
                 {isListenSessionActive ? (
                   <>
@@ -499,7 +499,7 @@ export const AiPage: React.FC = () => {
                       <iconsLib.stop className="h-4 w-4" />
                     </Button>
                     <Button
-                      variant={ButtonVariants.TERTIARY}
+                      variant={ButtonVariants.FLAT}
                       size={ButtonSizes.SM}
                       onClick={() => void handleCancelListening()}
                       aria-label={t(AppLocales.Ai.CancelListening)}
@@ -511,7 +511,7 @@ export const AiPage: React.FC = () => {
                   </>
                 ) : (
                   <Button
-                    variant={ButtonVariants.TERTIARY}
+                    variant={ButtonVariants.FLAT}
                     size={ButtonSizes.SM}
                     onClick={() => void handleStartListening()}
                     disabled={!canListen}

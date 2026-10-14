@@ -62,7 +62,7 @@ export const DetailHeader: React.FC<IDetailHeaderProps> = ({
       </div>
 
       {/* Hero Card Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-base-300/90 bg-base-100/90 backdrop-blur-md p-5 sm:p-6 shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl border border-glass-border bg-glass-card backdrop-blur-md p-5 sm:p-6 shadow-glass-card">
         {/* Top Scarlet Neon Glow Line */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary via-primary-light to-transparent" />
         <div className="absolute -top-16 -left-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
@@ -98,7 +98,7 @@ export const DetailHeader: React.FC<IDetailHeaderProps> = ({
               {(entityId || timestamps || extraMeta) && (
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-base-content/60">
                   {entityId && (
-                    <div className="flex items-center gap-1 font-mono rounded-md bg-base-200/80 px-2 py-0.5 border border-base-300/60">
+                    <div className="flex items-center gap-1 font-mono rounded-md bg-glass-card px-2 py-0.5 border border-glass-border shadow-xs">
                       <span className="text-[10px] uppercase font-bold text-base-content/40 tracking-wider">
                         ID:
                       </span>

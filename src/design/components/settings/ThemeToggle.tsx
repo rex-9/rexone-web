@@ -3,7 +3,7 @@
 import { FC } from "react";
 import { useAtom } from "jotai";
 import { Button } from "../button";
-import { ButtonVariants, ThemeVariants } from "../../constants";
+import { ButtonVariants, ComponentSizes, ThemeVariants } from "../../constants";
 import atoms from "../../../atoms";
 import { iconsLib } from "../../../assets";
 
@@ -23,11 +23,22 @@ export const ThemeToggle: FC = () => {
 
   return (
     <Button
-      variant={ButtonVariants.TERTIARY}
+      variant={ButtonVariants.GLASS}
+      size={ComponentSizes.SM}
       onClick={toggleTheme}
-      className="w-10 h-10 p-0 flex items-center justify-center rounded-full hover:bg-base-200 transition-colors"
+      className="h-9 w-9 p-0 flex items-center justify-center rounded-lg"
+      title={
+        resolvedTheme === ThemeVariants.NIGHT
+          ? "Switch to day mode"
+          : "Switch to night mode"
+      }
+      aria-label={
+        resolvedTheme === ThemeVariants.NIGHT
+          ? "Switch to day mode"
+          : "Switch to night mode"
+      }
     >
-      <span className="w-5 h-5 flex items-center justify-center text-base-content/70">
+      <span className="w-4 h-4 flex items-center justify-center text-base-content/75">
         {resolvedTheme === ThemeVariants.NIGHT ? (
           <iconsLib.sun />
         ) : (

@@ -217,10 +217,10 @@ export const InitialDialog: React.FC<IInitialDialogProps> = ({
         )}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-base-300" />
+            <div className="w-full border-t border-glass-border" />
           </div>
           <div className="relative flex justify-center text-body-s">
-            <span className="px-3 bg-base-100 text-base-content opacity-60">
+            <span className="px-3 bg-glass-card border border-glass-border/60 rounded-full text-base-content/60 text-xs backdrop-blur-md">
               {t(AppLocales.Auth.Initial.Or)}
             </span>
           </div>

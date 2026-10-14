@@ -461,7 +461,7 @@ export const AdminCouponsPage: React.FC = () => {
               ? canDelete && (
                   <>
                     <Button
-                      variant={ButtonVariants.TERTIARY}
+                      variant={ButtonVariants.FLAT}
                       size={ComponentSizes.SM}
                       onClick={() =>
                         setLifecycleTarget({
@@ -474,7 +474,7 @@ export const AdminCouponsPage: React.FC = () => {
                       <iconsLib.arrowPath className="w-4 h-4 text-success" />
                     </Button>
                     <Button
-                      variant={ButtonVariants.TERTIARY}
+                      variant={ButtonVariants.FLAT}
                       size={ComponentSizes.SM}
                       onClick={() =>
                         setLifecycleTarget({
@@ -490,7 +490,7 @@ export const AdminCouponsPage: React.FC = () => {
                 )
               : canDelete && (
                   <Button
-                    variant={ButtonVariants.TERTIARY}
+                    variant={ButtonVariants.FLAT}
                     size={ComponentSizes.SM}
                     onClick={() =>
                       setLifecycleTarget({
@@ -550,7 +550,7 @@ export const AdminCouponsPage: React.FC = () => {
             variant={
               !isDiscardedView
                 ? ButtonVariants.PRIMARY
-                : ButtonVariants.TERTIARY
+                : ButtonVariants.FLAT
             }
             size={ComponentSizes.SM}
             onClick={() => {
@@ -565,7 +565,7 @@ export const AdminCouponsPage: React.FC = () => {
           </Button>
           <Button
             variant={
-              isDiscardedView ? ButtonVariants.PRIMARY : ButtonVariants.TERTIARY
+              isDiscardedView ? ButtonVariants.PRIMARY : ButtonVariants.FLAT
             }
             size={ComponentSizes.SM}
             onClick={() => {

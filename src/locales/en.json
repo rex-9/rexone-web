@@ -331,6 +331,12 @@
   },
 
   "admin": {
+    "layout": {
+      "signed_in_as": "Signed in as",
+      "open_nav": "Open admin navigation",
+      "close_nav": "Close admin navigation",
+      "default_admin_user": "Admin User"
+    },
     "nav": {
       "sections": {
         "overview": "Overview",
@@ -1313,7 +1319,9 @@
         "recipients": "Recipients",
         "selected_roles": "Selected roles",
         "selected_users": "Selected users",
-        "template_no_channels": "This template does not have any delivery channels configured."
+        "template_no_channels": "This template does not have any delivery channels configured.",
+        "template_placeholder": "Select a template...",
+        "no_templates_available": "No broadcast templates available. Create or enable \"Broadcast\" on templates in the Templates tab."
       },
       "actions": {
         "clear_all_roles": "Clear all roles",

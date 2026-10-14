@@ -93,10 +93,10 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
   );
 
   return (
-    <div className="overflow-x-auto rounded-md border border-base-300 bg-base-100">
+    <div className="overflow-x-auto rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md">
       <table className="table w-full text-left text-body-s">
         <thead>
-          <tr className="border-b border-base-300 bg-base-200/50 text-caption font-semibold uppercase tracking-wider text-base-content/70">
+          <tr className="border-b border-glass-border/60 bg-glass-card/60 text-caption font-semibold uppercase tracking-wider text-base-content/70">
             <th className="px-4 py-3 font-semibold">Resource</th>
             {ADMIN_PERMISSION_ACTION_ORDER.map((action) => (
               <th
@@ -111,7 +111,7 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
             )}
           </tr>
         </thead>
-        <tbody className="divide-y divide-base-300">
+        <tbody className="divide-y divide-glass-border/40">
           {permissionGroups.map(([resource, resourcePermissions]) => {
             const resourcePermissionIds = resourcePermissions.map(
               (permission) => permission.id,
@@ -133,12 +133,12 @@ export const AdminPermissionMatrix: React.FC<IAdminPermissionMatrixProps> = ({
             return (
               <tr
                 key={resource}
-                className="transition-colors hover:bg-base-200/30"
+                className="transition-colors hover:bg-glass-card-hover"
               >
                 <td className="px-4 py-3 font-medium capitalize text-base-content">
                   <div className="flex items-center gap-2">
                     <span>{formatLabel(resource)}</span>
-                    <span className="rounded-md bg-base-200 px-2 py-1 text-caption font-medium text-base-content opacity-70">
+                    <span className="rounded-md border border-glass-border bg-glass-card px-2 py-1 text-caption font-medium text-base-content opacity-70">
                       {selectedResourceCount}/{resourcePermissionIds.length}
                     </span>
                   </div>

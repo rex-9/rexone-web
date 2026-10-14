@@ -30,6 +30,9 @@ test.describe("Authentication > Sign out", () => {
     
     // Verify we are back to root/unauthenticated
     await page.waitForURL(`**${AppRoutes.client.public.ROOT}*`, { timeout: 10000 });
-    await expect(page.getByRole("button", { name: /^(Enter|Sign In)$/i }).first()).toBeVisible();
+    const unauthCta = page
+      .getByRole("button", { name: /^(Enter|Sign In|Join Waitlist|Begin)$/i })
+      .or(page.getByRole("link", { name: /^(Enter|Sign In|Join Waitlist|Begin)$/i }));
+    await expect(unauthCta.first()).toBeVisible();
   });
 });

@@ -25,7 +25,7 @@ interface IAdminNavSection {
 
 interface IAdminSidebarNavProps {
   onNavigate: () => void;
-  isSidebarOpen?: boolean;
+  isCollapsed?: boolean;
 }
 
 const navSections: IAdminNavSection[] = [
@@ -191,7 +191,7 @@ const navSections: IAdminNavSection[] = [
 
 export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   onNavigate,
-  isSidebarOpen = false,
+  isCollapsed = false,
 }) => {
   const t = useTranslate();
   const [collapsedSections, setCollapsedSections] = useState<
@@ -228,49 +228,46 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
     <nav
       className={cn(
         "flex-1 overflow-y-auto py-3",
-        isSidebarOpen ? "px-4" : "px-2 lg:px-4",
+        isCollapsed ? "px-2" : "px-4",
       )}
     >
-      <div
-        className={cn("space-y-4", !isSidebarOpen && "space-y-2 lg:space-y-4")}
-      >
+      <div className={cn("space-y-4", isCollapsed && "space-y-2")}>
         {enabledItems.map((section, idx) => {
-          const isCollapsed = collapsedSections[section.id] ?? false;
+          const isSectionCollapsed = collapsedSections[section.id] ?? false;
 
           return (
             <div key={section.id}>
-              {!isSidebarOpen && idx > 0 && (
-                <div className="my-2 border-t border-base-300/40 lg:hidden" />
+              {isCollapsed ? (
+                idx > 0 && (
+                  <div
+                    className="my-2 border-t border-base-300/40 mx-2"
+                    title={t(section.labelKey)}
+                  />
+                )
+              ) : (
+                <button
+                  type="button"
+                  aria-expanded={!isSectionCollapsed}
+                  aria-controls={`admin-nav-section-${section.id}`}
+                  onClick={() => toggleSection(section.id)}
+                  className="mb-2 flex h-7 w-full items-center justify-between rounded-lg px-2 text-caption font-semibold text-base-content/60 transition-colors hover:bg-glass-card/50 hover:text-base-content"
+                >
+                  <span>{t(section.labelKey)}</span>
+                  <iconsLib.chevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      isSectionCollapsed ? "-rotate-90" : "rotate-0",
+                    )}
+                  />
+                </button>
               )}
-              <button
-                type="button"
-                aria-expanded={!isCollapsed}
-                aria-controls={`admin-nav-section-${section.id}`}
-                onClick={() => toggleSection(section.id)}
-                className={cn(
-                  "mb-2 h-7 w-full items-center justify-between rounded-md px-2 text-caption font-semibold text-base-content opacity-60 transition-colors hover:bg-base-200 hover:opacity-100",
-                  isSidebarOpen ? "flex" : "hidden lg:flex",
-                )}
-              >
-                <span>{t(section.labelKey)}</span>
-                <iconsLib.chevronDown
-                  className={cn(
-                    "h-4 w-4 transition-transform",
-                    isCollapsed ? "-rotate-90" : "rotate-0",
-                  )}
-                />
-              </button>
               <div
                 id={`admin-nav-section-${section.id}`}
                 className={cn(
                   "grid transition-[grid-template-rows,opacity] duration-200 ease-out",
-                  isSidebarOpen
-                    ? isCollapsed
-                      ? "grid-rows-[0fr] opacity-0"
-                      : "grid-rows-[1fr] opacity-100"
-                    : isCollapsed
-                      ? "grid-rows-[1fr] opacity-100 lg:grid-rows-[0fr] lg:opacity-0"
-                      : "grid-rows-[1fr] opacity-100",
+                  !isCollapsed && isSectionCollapsed
+                    ? "grid-rows-[0fr] opacity-0"
+                    : "grid-rows-[1fr] opacity-100",
                 )}
               >
                 <div className="min-h-0 overflow-hidden">
@@ -285,26 +282,34 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                           onClick={onNavigate}
                           title={label}
                           aria-label={label}
+                          data-tip={isCollapsed ? label : undefined}
                           className={({ isActive }) =>
                             cn(
-                              "flex items-center rounded-md font-medium transition-colors",
-                              isSidebarOpen
-                                ? "h-11 gap-3 px-3 text-body-m justify-start"
-                                : "h-10 w-10 p-0 mx-auto justify-center lg:h-11 lg:w-full lg:px-3 lg:gap-3 lg:justify-start text-body-m",
+                              "group flex items-center rounded-xl font-medium transition-all duration-200",
+                              isCollapsed
+                                ? "h-10 w-10 mx-auto justify-center p-0 tooltip tooltip-right"
+                                : "h-11 w-full gap-3 px-3 text-body-m justify-start",
                               isActive
-                                ? "bg-primary text-primary-content shadow-sm"
-                                : "text-base-content opacity-70 hover:bg-base-200 hover:opacity-100",
+                                ? "border border-primary/50 bg-glass-card-hover text-primary font-bold shadow-glass-card backdrop-blur-md ring-1 ring-primary/20"
+                                : "border border-glass-border/50 bg-glass-card text-base-content/80 shadow-xs backdrop-blur-md hover:border-glass-border-hover hover:bg-glass-card-hover hover:text-base-content hover:shadow-glass-card",
                             )
                           }
                         >
-                          <Icon className="h-5 w-5 shrink-0" />
-                          <span
-                            className={
-                              isSidebarOpen ? "inline" : "hidden lg:inline"
-                            }
-                          >
-                            {label}
-                          </span>
+                          {({ isActive }) => (
+                            <>
+                              <Icon
+                                className={cn(
+                                  "h-5 w-5 shrink-0 transition-colors",
+                                  isActive
+                                    ? "text-primary"
+                                    : "text-base-content/70 group-hover:text-primary",
+                                )}
+                              />
+                              {!isCollapsed && (
+                                <span className="truncate">{label}</span>
+                              )}
+                            </>
+                          )}
                         </NavLink>
                       );
                     })}

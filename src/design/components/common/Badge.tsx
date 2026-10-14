@@ -31,29 +31,29 @@ export const Badge: React.FC<IBadgeProps> = ({
 }) => {
   const variants: Record<BadgeVariant, string> = {
     [BadgeVariants.DEFAULT]:
-      "bg-base-200 text-base-content border border-base-300",
+      "bg-glass-card text-base-content border border-glass-border shadow-glass-card backdrop-blur-md font-medium",
     [BadgeVariants.NEON]:
       "border border-glass-tag bg-glass-tag-bg text-base-content font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-primary-content hover:shadow-neon",
     [BadgeVariants.PRIMARY]:
-      "bg-primary/10 text-primary border border-primary/30",
+      "bg-primary/15 text-primary border border-primary/35 font-medium",
     [BadgeVariants.SECONDARY]:
-      "bg-secondary/10 text-secondary border border-secondary/30",
+      "bg-secondary/15 text-secondary border border-secondary/35 font-medium",
     [BadgeVariants.SUCCESS]:
-      "bg-success/15 text-success border border-success/30 font-medium",
+      "bg-success/15 text-success border border-success/35 font-medium",
     [BadgeVariants.WARNING]:
-      "bg-warning/15 text-warning border border-warning/30 font-medium",
+      "bg-warning/15 text-warning border border-warning/35 font-medium",
     [BadgeVariants.ERROR]:
-      "bg-error/15 text-error border border-error/30 font-medium",
+      "bg-error/15 text-error border border-error/35 font-medium",
     [BadgeVariants.INFO]:
-      "bg-info/15 text-info border border-info/30 font-medium",
+      "bg-info/15 text-info border border-info/35 font-medium",
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {
-    [ComponentSizes.XS]: "px-2 py-1 text-xs rounded-sm",
-    [ComponentSizes.SM]: "px-2 py-1 text-sm rounded",
-    [ComponentSizes.MD]: "px-3 py-1 text-base rounded-md",
-    [ComponentSizes.LG]: "px-4 py-2 text-lg rounded-lg",
-    [ComponentSizes.XL]: "px-5 py-2 text-xl rounded-xl",
+    [ComponentSizes.XS]: "px-2.5 py-0.5 text-xs rounded-full font-medium",
+    [ComponentSizes.SM]: "px-3 py-0.5 text-xs rounded-full font-medium",
+    [ComponentSizes.MD]: "px-3.5 py-1 text-sm rounded-full font-medium",
+    [ComponentSizes.LG]: "px-4 py-1.5 text-base rounded-full font-medium",
+    [ComponentSizes.XL]: "px-5 py-2 text-lg rounded-full font-medium",
   };
 
   const badgeClassName = cn(

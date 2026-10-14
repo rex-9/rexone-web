@@ -1,4 +1,4 @@
-import analyticsService from "./analytics.service";
+import AnalyticsService from "./analytics.service";
 import { IAnalyticsOverview, IAnalyticsParams } from "./types";
 import { getApiError } from "../../../services/api.service";
 
@@ -11,7 +11,7 @@ export interface IAnalyticsResult {
 class AnalyticsController {
   async getOverview(params?: IAnalyticsParams): Promise<IAnalyticsResult> {
     try {
-      const response = await analyticsService.getOverview(params);
+      const response = await AnalyticsService.getOverview(params);
 
       if (response.data?.data && response.data?.status?.success) {
         return {

@@ -10,7 +10,7 @@ export const TimeZoneIndicator: React.FC = () => {
 
   return (
     <div
-      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-base-300 bg-base-100 px-2 text-caption font-semibold text-base-content/70 sm:px-2.5"
+      className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg border border-glass-border bg-glass-card px-2.5 text-caption font-semibold text-base-content/75 shadow-glass-card backdrop-blur-md"
       title={`${label}: ${timeZone} (${utcOffset})`}
       aria-label={`${label}: ${timeZone}, ${utcOffset}`}
     >

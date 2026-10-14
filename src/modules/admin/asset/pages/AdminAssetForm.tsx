@@ -303,8 +303,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
           {/* Left Column (lg:col-span-1): Guidelines, Batch Summary & Optimization Tools */}
           <div className="lg:col-span-1 space-y-5 h-fit">
             {/* Upload Guidelines Card */}
-            <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
-              <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+            <div className="bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-4">
+              <div className="flex items-center gap-2 border-b border-glass-border pb-3">
                 <iconsLib.upload className="h-5 w-5 text-primary" />
                 <h3 className="font-semibold text-base-content text-base">
                   {t(AppLocales.Admin.Assets.UploadDialog.BulkNoticeTitle)}
@@ -369,18 +369,18 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
             {/* Current Batch Summary Card (when files are selected) */}
             {fileItems.length > 0 && (
-              <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-3">
+              <div className="bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-3">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-base-content/70">
                   Batch Summary
                 </h4>
                 <div className="space-y-2 text-xs">
-                  <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                     <span className="text-base-content/60">Selected Files</span>
                     <span className="font-semibold text-base-content">
                       {fileItems.length} / {UPLOAD_SIZE_LIMITS.MAX_FILE_COUNT}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                     <span className="text-base-content/60">
                       Total Batch Size
                     </span>
@@ -388,7 +388,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       {formatAssetFileSize(totalSize)}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                  <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                     <span className="text-base-content/60">Assigned Type</span>
                     <Badge>{uploadType}</Badge>
                   </div>
@@ -397,7 +397,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
             )}
 
             {/* Optimization Tools Card */}
-            <div className="bg-base-100 rounded-xl border border-base-200 p-6 space-y-3">
+            <div className="bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-3">
               <div className="flex items-center gap-2">
                 <iconsLib.sparkles className="w-4 h-4 text-warning shrink-0" />
                 <h4 className="text-xs font-bold uppercase tracking-wider text-base-content/70">
@@ -410,9 +410,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               </p>
               <div className="flex flex-col gap-2 pt-1">
                 <Button
-                  variant={ButtonVariants.TERTIARY}
+                  variant={ButtonVariants.FLAT}
                   size={ComponentSizes.XS}
-                  className="bg-base-200/80 hover:bg-base-300 text-primary border border-base-300 px-3 py-2 text-xs justify-between rounded-lg font-medium"
+                  className="bg-white/[0.04] hover:bg-white/[0.08] text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
                   onClick={() =>
                     window.open(
                       "https://tinypng.com",
@@ -427,9 +427,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   <span className="text-xs opacity-70">↗</span>
                 </Button>
                 <Button
-                  variant={ButtonVariants.TERTIARY}
+                  variant={ButtonVariants.FLAT}
                   size={ComponentSizes.XS}
-                  className="bg-base-200/80 hover:bg-base-300 text-primary border border-base-300 px-3 py-2 text-xs justify-between rounded-lg font-medium"
+                  className="bg-white/[0.04] hover:bg-white/[0.08] text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
                   onClick={() =>
                     window.open(
                       "https://www.freeconvert.com/video-compressor",
@@ -471,8 +471,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               )}
 
               {/* Form Fields Card */}
-              <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm space-y-5">
-                <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+              <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-6 space-y-5">
+                <div className="flex items-center gap-2 border-b border-glass-border pb-3">
                   <iconsLib.photo className="h-5 w-5 text-primary" />
                   <h3 className="text-body-m font-bold text-base-content">
                     Upload Configuration
@@ -549,8 +549,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
                 {/* Selected Files Tray */}
                 {fileItems.length > 0 && (
-                  <div className="border border-base-200 rounded-xl p-4 bg-base-200/40 space-y-3">
-                    <div className="flex items-center justify-between text-xs font-medium text-base-content/80 pb-2 border-b border-base-200">
+                  <div className="border border-glass-border rounded-xl p-4 bg-white/[0.04] space-y-3">
+                    <div className="flex items-center justify-between text-xs font-medium text-base-content/80 pb-2 border-b border-glass-border">
                       <span>
                         {t(AppLocales.Admin.Assets.UploadDialog.SelectedFiles)}{" "}
                         ({fileItems.length} /{" "}
@@ -559,7 +559,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       </span>
                       {!isLoading && (
                         <Button
-                          variant={ButtonVariants.TERTIARY}
+                          variant={ButtonVariants.FLAT}
                           size={ComponentSizes.SM}
                           onClick={handleClearAllFiles}
                           className="text-error hover:bg-error/10 h-7 px-2.5 text-xs"
@@ -573,11 +573,11 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       {fileItems.map((item, index) => (
                         <div
                           key={`${item.file.name}-${index}`}
-                          className="flex items-center justify-between gap-3 p-2 rounded-lg bg-base-100 border border-base-200 text-xs"
+                          className="flex items-center justify-between gap-3 p-2 rounded-lg bg-glass-card border border-glass-border text-xs"
                         >
                           <div className="flex items-center gap-2.5 min-w-0 flex-1">
                             {item.previewUrl ? (
-                              <div className="w-10 h-10 rounded-md shrink-0 overflow-hidden border border-base-300">
+                              <div className="w-10 h-10 rounded-md shrink-0 overflow-hidden border border-glass-border">
                                 <Image
                                   src={item.previewUrl}
                                   alt={item.file.name}
@@ -585,7 +585,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                                 />
                               </div>
                             ) : (
-                              <div className="w-10 h-10 rounded-md shrink-0 bg-base-200 flex items-center justify-center border border-base-300">
+                              <div className="w-10 h-10 rounded-md shrink-0 bg-glass-card flex items-center justify-center border border-glass-border">
                                 <iconsLib.document className="w-5 h-5 text-base-content/60" />
                               </div>
                             )}
@@ -601,7 +601,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
                           {!isLoading && (
                             <Button
-                              variant={ButtonVariants.TERTIARY}
+                              variant={ButtonVariants.FLAT}
                               size={ComponentSizes.SM}
                               onClick={() => handleRemoveFile(index)}
                               className="p-1 h-auto text-base-content/50 hover:text-error"
@@ -649,12 +649,12 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Asset Preview and Details Card */}
-            <div className="lg:col-span-1 h-fit bg-base-100 rounded-xl border border-base-200 p-6 space-y-4">
+            <div className="lg:col-span-1 h-fit bg-glass-card rounded-xl border border-glass-border shadow-glass-card p-6 space-y-4">
               <h3 className="font-semibold text-base-content text-lg">
                 {t(AppLocales.Admin.Assets.Table.Preview)}
               </h3>
 
-              <div className="w-full aspect-video rounded-lg overflow-hidden bg-base-200 flex items-center justify-center border border-base-300">
+              <div className="w-full aspect-video rounded-lg overflow-hidden bg-glass-card flex items-center justify-center border border-glass-border">
                 {isImageAsset(asset) || getAssetThumbnail(asset)?.url ? (
                   <Image
                     src={getAssetThumbnail(asset)?.url || asset.url}
@@ -681,14 +681,14 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
               </div>
 
               <div className="space-y-3 pt-2 text-sm">
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Assets.Table.Type)}
                   </span>
                   <Badge>{asset.type}</Badge>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Assets.Table.Format)}
                   </span>
@@ -697,7 +697,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Assets.Table.Size)}
                   </span>
@@ -706,14 +706,14 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Assets.Detail.Status)}
                   </span>
                   <StatusBadge status={asset.status || ASSET_STATUSES.READY} />
                 </div>
 
-                <div className="flex justify-between items-center py-1.5 border-b border-base-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
                   <span className="text-base-content/60">
                     {t(AppLocales.Admin.Assets.Table.Created)}
                   </span>
@@ -730,8 +730,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
             {/* Edit Form */}
             <div className="lg:col-span-2 space-y-4">
               <FormContainer onSubmit={handleEditSubmit}>
-                <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm space-y-5">
-                  <div className="flex items-center gap-2 border-b border-base-200 pb-3">
+                <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-6 space-y-5">
+                  <div className="flex items-center gap-2 border-b border-glass-border pb-3">
                     <iconsLib.pencilSquare className="h-5 w-5 text-primary" />
                     <h3 className="text-body-m font-bold text-base-content">
                       {t(AppLocales.Admin.Assets.Detail.Title)}
@@ -798,8 +798,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 />
               </FormContainer>
 
-              <div className="rounded-xl border border-base-300 bg-base-100 p-5 shadow-sm space-y-3">
-                <div className="flex items-center justify-between border-b border-base-200 pb-2.5">
+              <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-5 space-y-3">
+                <div className="flex items-center justify-between border-b border-glass-border pb-2.5">
                   <div className="flex items-center gap-2">
                     <iconsLib.cube className="h-5 w-5 text-primary" />
                     <h4 className="text-body-s font-bold uppercase tracking-wider text-base-content">
@@ -814,9 +814,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 <div className="flex flex-wrap items-center gap-2.5">
                   {onDownload && (
                     <Button
-                      variant={ButtonVariants.TERTIARY}
+                      variant={ButtonVariants.FLAT}
                       size={ComponentSizes.SM}
-                      className="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                      className="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                       onClick={onDownload}
                     >
                       <iconsLib.download className="w-4 h-4 text-base-content/70" />
@@ -827,9 +827,9 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                   {asset.format === ASSET_FORMATS.VIDEO &&
                     onRegenerateThumbnail && (
                       <Button
-                        variant={ButtonVariants.TERTIARY}
+                        variant={ButtonVariants.FLAT}
                         size={ComponentSizes.SM}
-                        className="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        className="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onClick={onRegenerateThumbnail}
                         isLoading={isUpdatingThumbnail}
                         disabled={isUpdatingThumbnail}
@@ -847,8 +847,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                         disabled={isUpdatingThumbnail}
                         fullWidth={false}
                         size={ComponentSizes.SM}
-                        variant={ButtonVariants.TERTIARY}
-                        buttonClassName="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        variant={ButtonVariants.FLAT}
+                        buttonClassName="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (file) void onUploadThumbnail(file);
                         }}
@@ -875,8 +875,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                         disabled={isUpdatingSubtitle}
                         fullWidth={false}
                         size={ComponentSizes.SM}
-                        variant={ButtonVariants.TERTIARY}
-                        buttonClassName="border border-base-300 bg-base-200/50 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        variant={ButtonVariants.FLAT}
+                        buttonClassName="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (!file) return;
                           if (!isSrtSubtitleFile(file)) {
@@ -934,8 +934,8 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
             </div>
           </div>
 
-          <div className="rounded-xl border border-base-300 bg-base-100 p-6 shadow-sm">
-            <div className="mb-4 flex items-center gap-2 border-b border-base-200 pb-3">
+          <div className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card p-6">
+            <div className="mb-4 flex items-center gap-2 border-b border-glass-border pb-3">
               <iconsLib.document className="h-5 w-5 text-primary" />
               <h3 className="text-body-m font-bold text-base-content">
                 {t(AppLocales.Admin.Assets.Detail.Children)}

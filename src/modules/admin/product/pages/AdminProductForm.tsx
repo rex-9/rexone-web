@@ -189,8 +189,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
   return (
     <FormContainer onSubmit={handleSubmit}>
       {/* Thumbnail Selection Card */}
-      <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl border border-base-200 bg-base-100 mb-2">
-        <div className="w-28 h-20 rounded-lg overflow-hidden border border-base-300 bg-base-200 shrink-0 flex items-center justify-center">
+      <div className="flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md mb-2">
+        <div className="w-28 h-20 rounded-xl overflow-hidden border border-glass-border bg-glass-card shrink-0 flex items-center justify-center">
           <Image
             src={thumbnailUrl || ""}
             alt={values.name || "Product Thumbnail"}
@@ -216,7 +216,7 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
           </Button>
           {(thumbnailUrl || thumbnailAssetId) && (
             <Button
-              variant={ButtonVariants.TERTIARY}
+              variant={ButtonVariants.FLAT}
               size={ComponentSizes.SM}
               className="text-error hover:bg-error/10"
               onClick={() => {
@@ -291,8 +291,8 @@ export const AdminProductForm: React.FC<IAdminProductFormProps> = ({
                   onChange={() => updatePriceMode(option)}
                   containerClassName={
                     isDisabled
-                      ? "min-h-10 bg-base-200 opacity-50 cursor-not-allowed"
-                      : "min-h-10 bg-base-100"
+                      ? "min-h-10 opacity-50 cursor-not-allowed"
+                      : "min-h-10"
                   }
                 >
                   {option === PRODUCT_TYPE.PREMIUM

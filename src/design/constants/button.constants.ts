@@ -6,9 +6,9 @@
 
 export const ButtonVariants = {
   PRIMARY: "primary",
-  NEON: "neon",
   SECONDARY: "secondary",
-  TERTIARY: "tertiary",
+  FLAT: "flat",
+  GLASS: "glass",
 } as const;
 
 export type ButtonVariant =

@@ -25,13 +25,13 @@ export const GoogleButton: React.FC<IGoogleButtonProps> = ({
       disabled={disabled || isLoading}
       {...props}
       className={cn(
-        "px-4 py-2 rounded-md",
+        "px-4 py-2.5 rounded-xl",
         "font-medium text-body-m transition-all duration-200 ease-out",
-        "bg-base-200 text-base-content border-2 border-base-300",
-        "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/40",
+        "bg-glass-card text-base-content border border-glass-border shadow-glass-card backdrop-blur-md",
+        "focus:outline-none focus:ring-1 focus:ring-primary",
         "flex items-center justify-center gap-3",
-        "hover:bg-base-300 active:scale-95",
-        (isLoading || disabled) && "opacity-50 cursor-not-allowed",
+        "hover:bg-glass-card-hover hover:border-glass-border-hover active:scale-95",
+        (isLoading || disabled) && "opacity-40 cursor-not-allowed",
         fullWidth && "w-full",
         className,
       )}

@@ -34,7 +34,7 @@ export const AdminKpiCard: React.FC<IAdminKpiCardProps> = ({
     <div
       onClick={onClick}
       className={cn(
-        "rounded-md border border-base-300 bg-base-100 p-4 shadow-sm transition-all hover:border-primary md:p-5",
+        "rounded-xl border border-glass-border bg-glass-card p-4 backdrop-blur-md shadow-glass-card transition-all duration-300 hover:border-glass-border-hover hover:bg-glass-card-hover md:p-5",
         onClick && "cursor-pointer hover:shadow-md",
         className,
       )}
@@ -48,7 +48,7 @@ export const AdminKpiCard: React.FC<IAdminKpiCardProps> = ({
           {Icon && (
             <div
               className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-md bg-base-200 text-primary",
+                "flex h-9 w-9 items-center justify-center rounded-xl bg-glass-card border border-glass-border text-primary shadow-glass-card backdrop-blur-md",
                 iconClassName,
               )}
             >
@@ -66,12 +66,12 @@ export const AdminKpiCard: React.FC<IAdminKpiCardProps> = ({
         {typeof deltaPct === "number" && (
           <div
             className={cn(
-              "flex items-center gap-1 rounded px-2 py-0.5 text-caption font-semibold",
+              "flex items-center gap-1 rounded-md px-2 py-0.5 text-caption font-semibold",
               isPositive
-                ? "bg-emerald-500/10 text-emerald-500"
+                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20"
                 : isNegative
-                  ? "bg-rose-500/10 text-rose-500"
-                  : "bg-base-200 text-base-content opacity-60",
+                  ? "bg-rose-500/15 text-rose-400 border border-rose-500/20"
+                  : "bg-glass-card border border-glass-border text-base-content/70",
             )}
           >
             <span>

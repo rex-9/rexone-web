@@ -537,7 +537,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
             getAssetThumbnail(asset)?.url || (isImg ? asset.url : null);
 
           return (
-            <div className="w-10 h-10 rounded overflow-hidden bg-base-200 flex items-center justify-center">
+            <div className="w-10 h-10 rounded overflow-hidden bg-glass-card border border-glass-border flex items-center justify-center">
               {previewUrl ? (
                 <Image
                   src={previewUrl}
@@ -805,7 +805,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
       {isActive && isSuperAdmin && <AdminAssetStorageStats />}
 
       {isActive && (
-        <div className="flex flex-col sm:flex-row gap-4 items-center bg-base-100 p-4 rounded-xl border border-base-200">
+        <div className="flex flex-col sm:flex-row gap-4 items-center bg-glass-card p-4 rounded-xl border border-glass-border shadow-glass-card">
           <div className="w-full sm:w-64">
             <SearchInput
               placeholder={t(AppLocales.Admin.Assets.SearchPlaceholder)}

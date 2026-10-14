@@ -35,7 +35,7 @@ export const Radio: React.FC<RadioProps> = ({
   return (
     <label
       className={cn(
-        "flex cursor-pointer select-none items-center gap-2 rounded-md border border-base-300 px-3 text-body-s font-medium text-base-content hover:bg-base-200/30 transition-colors",
+        "flex cursor-pointer select-none items-center gap-2 rounded-xl border border-glass-border bg-glass-card hover:bg-glass-card-hover shadow-glass-card backdrop-blur-md px-3 py-2 text-body-s font-medium text-base-content transition-colors",
         containerClassName,
       )}
     >
