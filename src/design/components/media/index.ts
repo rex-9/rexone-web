@@ -3,7 +3,6 @@ export type { IImageProps, IImageAsset } from "./Image";
 export { Player } from "./Player";
 export type {
   IPlayerProps,
-  IPlayerAsset,
   IPlayerTrack,
   TPlayerView,
   TPlayerTrackKind,

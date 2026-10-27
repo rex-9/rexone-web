@@ -11,8 +11,6 @@ import {
   ASSET_STATUSES,
   formatAssetFileSize,
   getAssetChildren,
-  getAssetThumbnail,
-  isImageAsset,
   isSrtSubtitleFile,
   isChildAssetType,
 } from "../constants";
@@ -27,6 +25,7 @@ import {
 import {
   AdminAssetChildrenTable,
   AdminParentAssetSelect,
+  AdminAssetMediaViewer,
 } from "../components";
 import {
   Badge,
@@ -654,31 +653,10 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 {t(AppLocales.Admin.Assets.Table.Preview)}
               </h3>
 
-              <div className="w-full aspect-video rounded-lg overflow-hidden bg-glass-card flex items-center justify-center border border-glass-border">
-                {isImageAsset(asset) || getAssetThumbnail(asset)?.url ? (
-                  <Image
-                    src={getAssetThumbnail(asset)?.url || asset.url}
-                    alt={asset.name}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-contain"
-                    fallback={
-                      <div className="flex flex-col items-center gap-2 text-base-content/60">
-                        <iconsLib.photo className="w-12 h-12" />
-                        <span className="text-xs uppercase font-medium">
-                          {asset.format || "Media"}
-                        </span>
-                      </div>
-                    }
-                  />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-base-content/60">
-                    <iconsLib.photo className="w-12 h-12" />
-                    <span className="text-xs uppercase font-medium">
-                      {asset.format || "Media"}
-                    </span>
-                  </div>
-                )}
-              </div>
+              <AdminAssetMediaViewer
+                asset={asset}
+                showDownload={false}
+              />
 
               <div className="space-y-3 pt-2 text-sm">
                 <div className="flex justify-between items-center py-1.5 border-b border-glass-border">
