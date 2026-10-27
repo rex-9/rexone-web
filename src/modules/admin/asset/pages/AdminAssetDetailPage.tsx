@@ -3,16 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
 import {
-  Button,
   ConfirmDialog,
   DetailField,
   DetailGrid,
   DetailHeader,
   DetailSection,
-  Image,
   StatusBadge,
 } from "../../../../design";
-import { ButtonVariants } from "../../../../design/constants";
 import { useToast } from "../../../../contexts/ToastContext";
 import {
   AdminState,
@@ -20,8 +17,8 @@ import {
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AssetController from "../asset.controller";
-import { formatAssetFileSize, getAssetChildren, getAssetThumbnail } from "../constants";
-import { AdminAssetChildrenTable } from "../components";
+import { formatAssetFileSize, getAssetChildren } from "../constants";
+import { AdminAssetChildrenTable, AdminAssetMediaViewer } from "../components";
 import type { IAdminAsset } from "../types";
 import type { IAssetChild } from "../../../../models";
 
@@ -40,11 +37,6 @@ export const AdminAssetDetailPage: React.FC = () => {
   const [childToDiscard, setChildToDiscard] = useState<IAssetChild | null>(null);
   const [childToUndiscard, setChildToUndiscard] = useState<IAssetChild | null>(null);
   const [childToDestroy, setChildToDestroy] = useState<IAssetChild | null>(null);
-
-  const preview =
-    asset?.format?.toLowerCase() === "image"
-      ? asset.url
-      : getAssetThumbnail(asset)?.url;
 
   const handleDownload = async (target: IAdminAsset | IAssetChild) => {
     const result = await AssetController.getDownloadUrl(target.id);
@@ -124,30 +116,10 @@ export const AdminAssetDetailPage: React.FC = () => {
             icon={iconsLib.photo}
             accent
           >
-            {preview ? (
-              <div className="overflow-hidden rounded-xl border border-base-200 bg-base-200/50 p-2 shadow-inner">
-                <Image
-                  src={preview}
-                  alt={asset.title || asset.name}
-                  className="max-h-80 w-full rounded-lg object-contain"
-                />
-              </div>
-            ) : (
-              <div className="flex aspect-video items-center justify-center rounded-xl bg-base-200/50 border border-base-200">
-                <iconsLib.photo className="h-12 w-12 text-base-content/25" />
-              </div>
-            )}
-            <div className="pt-4">
-              <Button
-                variant={ButtonVariants.SECONDARY}
-                fullWidth
-                onClick={() => void handleDownload(asset)}
-                className="gap-2 font-semibold"
-              >
-                <iconsLib.download className="h-4 w-4 text-primary" />
-                {t(AppLocales.Admin.Assets.Download.Action)}
-              </Button>
-            </div>
+            <AdminAssetMediaViewer
+              asset={asset}
+              onDownload={() => void handleDownload(asset)}
+            />
           </DetailSection>
           <DetailSection
             title={t(AppLocales.Admin.Assets.Detail.Metadata)}

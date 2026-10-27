@@ -37,20 +37,13 @@ export interface IPlayerTrack {
   type?: TPlayerTrackFormat;
 }
 
-export interface IPlayerAsset {
+export interface IPlayerProps {
+  view: TPlayerView;
   src: string;
   alt?: string;
   title?: string;
   type?: string;
-}
-
-export interface IPlayerProps {
-  view: TPlayerView;
-  asset?: IPlayerAsset;
-  src?: string;
-  alt?: string;
-  title?: string;
-  type?: string;
+  poster?: string;
   tracks?: IPlayerTrack[];
   controls?: boolean;
   autoplay?: boolean;
@@ -183,11 +176,11 @@ export function srtToVtt(content: string, maxGapMs = 800): string {
 
 export const Player: React.FC<IPlayerProps> = ({
   view,
-  asset,
   src,
-  alt,
+  alt = "",
   title,
   type,
+  poster,
   tracks = [],
   controls = true,
   autoplay = false,
@@ -196,12 +189,9 @@ export const Player: React.FC<IPlayerProps> = ({
   preload = "metadata",
   className = "",
 }) => {
-  const finalSrc = asset?.src ?? src ?? "";
-  const finalAlt = alt ?? asset?.alt ?? "";
-  const finalTitle = title ?? asset?.title ?? finalAlt;
-  const finalType = type ?? asset?.type;
+  const finalTitle = title || alt;
   const playerSrc = (
-    finalType ? { src: finalSrc, type: finalType } : finalSrc
+    type ? { src, type } : src
   ) as MediaPlayerProps["src"];
 
   const handleProviderChange = React.useCallback(
@@ -249,7 +239,7 @@ export const Player: React.FC<IPlayerProps> = ({
       .filter((t) => Boolean(t.src));
   }, [tracks]);
 
-  if (!finalSrc) return null;
+  if (!src) return null;
 
   return (
     <MediaPlayer
@@ -257,12 +247,13 @@ export const Player: React.FC<IPlayerProps> = ({
       style={{ ["--video-volume-slider-max-width" as string]: "7.5rem" }}
       title={finalTitle}
       src={playerSrc}
+      poster={poster}
       autoPlay={autoplay}
       loop={loop}
       playsInline
       preload={preload}
       viewType={view}
-      aria-label={finalAlt || finalTitle}
+      aria-label={alt || finalTitle}
       onProviderChange={handleProviderChange}
       {...(muted ? { muted: true } : {})}
     >
