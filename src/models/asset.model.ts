@@ -1,5 +1,19 @@
 // src/models/asset.model.ts
 
+export interface IAssetMetadata {
+  width?: number;
+  height?: number;
+  duration_secs?: number;
+  bitrate?: number;
+  channels?: number;
+  sample_rate?: number;
+  original_filename?: string;
+  format?: string;
+  bytes?: number;
+  content?: string;
+  [key: string]: unknown;
+}
+
 export interface IChildAsset {
   id: string;
   url: string;
@@ -12,7 +26,7 @@ export interface IAsset {
   name: string;
   title?: string | null;
   description?: string | null;
-  metadata?: Record<string, unknown>;
+  metadata?: IAssetMetadata;
   url: string;
   type: string;
   format?: string | null;
@@ -38,7 +52,7 @@ export interface IAssetChild {
   name: IAsset["name"];
   title?: string | null;
   description?: string | null;
-  metadata?: Record<string, unknown>;
+  metadata?: IAssetMetadata;
   url: IAsset["url"];
   type: IAsset["type"];
   format?: IAsset["format"];

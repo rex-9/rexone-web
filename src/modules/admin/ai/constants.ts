@@ -14,6 +14,7 @@ export const ADMIN_AI_RUN_SORT_KEYS = {
   CREATED_AT: "created_at",
   LATENCY_MS: "latency_ms",
   TOTAL_TOKENS: "total_tokens",
+  COST: "cost",
   FEATURE: "feature",
   STATUS: "status",
   MODEL: "model",
@@ -25,6 +26,12 @@ export const ADMIN_AI_RUN_STATUS = {
   PROCESSING: "processing",
   COMPLETED: "completed",
   FAILED: "failed",
+} as const;
+
+export const AI_PRICING_CONSTANTS = {
+  DECIMALS: 6,
+  CURRENCY: "usd",
+  CURRENCY_SYMBOL: "$",
 } as const;
 
 export type TAdminAiRunStatus =

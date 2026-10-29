@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import AppRoutes from "../../../AppRoutes";
 import { iconsLib } from "../../../assets";
-import { TextLink } from "../../../design";
+import { Button, ButtonVariants, TextLink } from "../../../design";
 
 export interface IFaqItem {
   question: string;
@@ -177,10 +177,11 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
             key={i}
             className="rounded-2xl bg-glass-card/90 border border-glass-border backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-glass-border-hover hover:bg-glass-card-hover"
           >
-            <button
+            <Button
               type="button"
+              variant={ButtonVariants.GLASS}
               onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-white hover:text-primary-light transition-colors cursor-pointer"
+              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-white hover:text-primary-light transition-colors cursor-pointer rounded-none border-none bg-transparent hover:bg-transparent"
               aria-expanded={activeFaq === i}
             >
               <span>{faq.question}</span>
@@ -189,7 +190,7 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
                   activeFaq === i ? "rotate-180 text-primary" : "text-base-content/50"
                 }`}
               />
-            </button>
+            </Button>
             {activeFaq === i && (
               <div className="px-6 pb-5 pt-1 text-sm text-base-content/90 leading-relaxed border-t border-glass-border/40 font-primary">
                 {faq.answer}

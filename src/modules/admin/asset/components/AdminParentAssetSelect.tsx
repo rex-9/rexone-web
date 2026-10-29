@@ -3,8 +3,9 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
-import { Badge, Button, ConfirmDialog } from "../../../../design";
+import { Badge, Button, ConfirmDialog, ListTile, SearchInput } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
+import { useLoading } from "../../../../contexts";
 import type { IAdminAsset } from "../types";
 import { ASSET_TYPES, formatAssetFileSize } from "../constants";
 import { Admin } from "../..";
@@ -27,8 +28,8 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
   error,
 }) => {
   const t = useTranslate();
+  const { isLoading, setLoading } = useLoading();
   const [parentAssets, setParentAssets] = useState<IAdminAsset[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingReplaceParent, setPendingReplaceParent] =
@@ -40,7 +41,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
   useEffect(() => {
     let isMounted = true;
     const loadParents = async () => {
-      setIsLoading(true);
+      setLoading(true);
       try {
         const result = await Admin.AssetController.getAssets({
           record_scope: "parents",
@@ -50,14 +51,14 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
           setParentAssets(result.assets);
         }
       } finally {
-        if (isMounted) setIsLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
     void loadParents();
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [setLoading]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -200,15 +201,23 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
         </div>
       ) : (
         <div className="relative">
-          <button
-            type="button"
-            disabled={disabled || isLoading}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left text-sm transition-colors ${
+          <div
+            role="button"
+            tabIndex={disabled || isLoading ? -1 : 0}
+            onClick={() => {
+              if (!disabled && !isLoading) setIsOpen((prev) => !prev);
+            }}
+            onKeyDown={(e) => {
+              if ((e.key === "Enter" || e.key === " ") && !disabled && !isLoading) {
+                e.preventDefault();
+                setIsOpen((prev) => !prev);
+              }
+            }}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl border text-left text-sm transition-colors cursor-pointer select-none ${
               error
                 ? "border-error focus:ring-1 focus:ring-error"
                 : "border-glass-border hover:border-glass-border-hover focus:border-primary focus:ring-1 focus:ring-primary shadow-glass-card"
-            } bg-glass-card text-base-content disabled:opacity-50 disabled:cursor-not-allowed`}
+            } bg-glass-card text-base-content ${disabled || isLoading ? "opacity-50 cursor-not-allowed pointer-events-none" : ""}`}
           >
             <span className={value ? "text-base-content" : "text-base-content/40"}>
               {isLoading
@@ -216,7 +225,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
                 : t(AppLocales.Admin.Assets.Form.ParentAssetPlaceholder)}
             </span>
             <iconsLib.chevronDown className="w-4 h-4 text-base-content/40 ml-2 shrink-0" />
-          </button>
+          </div>
         </div>
       )}
 
@@ -225,27 +234,17 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
         <div className="relative z-20">
           <div className="absolute left-0 right-0 top-1 bg-glass-card/95 border border-glass-border rounded-xl shadow-glass-card backdrop-blur-xl overflow-hidden animate-in fade-in-50 duration-150">
             {/* Search Input Filter */}
-            <div className="p-2 border-b border-glass-border/40 bg-glass-card/50 flex items-center gap-2">
-              <iconsLib.search className="w-4 h-4 text-base-content/50 ml-1.5 shrink-0" />
-              <input
-                type="search"
+            <div className="p-2 border-b border-glass-border/40 bg-glass-card/50">
+              <SearchInput
                 autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onClear={() => setSearchQuery("")}
                 placeholder={t(
                   AppLocales.Admin.Assets.Form.ParentAssetSearchPlaceholder,
                 )}
-                className="w-full bg-transparent border-0 text-sm focus:outline-none placeholder:text-base-content/40 text-base-content py-1 [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+                className="text-xs"
               />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="p-1 text-base-content/40 hover:text-base-content rounded"
-                >
-                  <iconsLib.close className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
 
             {/* Results List */}
@@ -269,15 +268,14 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
                   const isSelected = parent.id === value;
 
                   return (
-                    <button
+                    <ListTile
                       key={parent.id}
-                      type="button"
                       onClick={() => handleSelect(parent)}
-                      className={`w-full flex items-center justify-between p-2.5 text-left text-xs transition-colors hover:bg-glass-card-hover ${
+                      contentPadding="p-2.5"
+                      className={`text-xs transition-colors hover:bg-glass-card-hover rounded-none ${
                         isSelected ? "bg-primary/10" : ""
                       }`}
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+                      leading={
                         <div className="w-7 h-7 rounded bg-glass-card/60 border border-glass-border/40 flex items-center justify-center shrink-0 text-base-content/60">
                           {parent.format === "video" ? (
                             <iconsLib.play className="w-3.5 h-3.5" />
@@ -287,41 +285,43 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
                             <iconsLib.photo className="w-3.5 h-3.5" />
                           )}
                         </div>
-
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-semibold text-base-content truncate">
-                              {parent.title || parent.name}
-                            </span>
-                            {parent.format && (
-                              <Badge className="text-[10px] px-1 py-0 uppercase">
-                                {parent.format}
-                              </Badge>
-                            )}
-                          </div>
-                          <span className="text-[11px] text-base-content/50 truncate font-mono block">
-                            {parent.name}
-                            {parent.size_bytes != null &&
-                              parent.size_bytes > 0 &&
-                              ` • ${formatAssetFileSize(parent.size_bytes)}`}
+                      }
+                      title={
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-semibold text-base-content truncate">
+                            {parent.title || parent.name}
                           </span>
+                          {parent.format && (
+                            <Badge className="text-[10px] px-1 py-0 uppercase">
+                              {parent.format}
+                            </Badge>
+                          )}
                         </div>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {hasThumb && (
-                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">
-                            {t(
-                              AppLocales.Admin.Assets.Form
-                                .ParentAssetAlreadyHasThumbnail,
-                            )}
-                          </span>
-                        )}
-                        {isSelected && (
-                          <iconsLib.check className="w-4 h-4 text-primary shrink-0" />
-                        )}
-                      </div>
-                    </button>
+                      }
+                      subtitle={
+                        <span className="text-[11px] text-base-content/50 truncate font-mono block">
+                          {parent.name}
+                          {parent.size_bytes != null &&
+                            parent.size_bytes > 0 &&
+                            ` • ${formatAssetFileSize(parent.size_bytes)}`}
+                        </span>
+                      }
+                      trailing={
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {hasThumb && (
+                            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">
+                              {t(
+                                AppLocales.Admin.Assets.Form
+                                  .ParentAssetAlreadyHasThumbnail,
+                              )}
+                            </span>
+                          )}
+                          {isSelected && (
+                            <iconsLib.check className="w-4 h-4 text-primary shrink-0" />
+                          )}
+                        </div>
+                      }
+                    />
                   );
                 })
               )}

@@ -1,6 +1,6 @@
 // src/design/components/button/index.ts
 
-export { Button } from "./Button";
+export { Button, Button as AppButton } from "./Button";
 export type { IButtonProps } from "./Button";
-export { GoogleButton } from "./GoogleButton";
-export { SignOutButton } from "./SignOutButton";
+export { GoogleButton, GoogleButton as AppGoogleButton } from "./GoogleButton";
+export { SignOutButton, SignOutButton as AppSignOutButton } from "./SignOutButton";

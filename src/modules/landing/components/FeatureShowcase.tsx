@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { iconsLib } from "../../../assets";
+import { Button, ButtonVariants, ComponentSizes, SearchInput } from "../../../design";
 
 export interface IFeaturePillar {
   id: string;
@@ -832,13 +833,15 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
         {/* View Switcher Tabs */}
         <div className="flex justify-center mb-8">
           <div className="inline-flex p-1.5 rounded-2xl bg-glass-card/90 border border-glass-border backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-            <button
+            <Button
               type="button"
+              variant={activeTab === "pillars" ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
+              size={ComponentSizes.MD}
               onClick={() => setActiveTab("pillars")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
                 activeTab === "pillars"
-                  ? "bg-primary text-white shadow-[0_0_15px_var(--color-primary)] font-extrabold"
-                  : "text-base-content/70 hover:text-white hover:bg-glass-card-hover"
+                  ? "shadow-[0_0_15px_var(--color-primary)] font-extrabold"
+                  : "text-base-content/70 hover:text-white"
               }`}
             >
               <span>⚡ 8 Core Pillars</span>
@@ -851,15 +854,17 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
               >
                 Quick Scan
               </span>
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="button"
+              variant={activeTab === "matrix" ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
+              size={ComponentSizes.MD}
               onClick={() => setActiveTab("matrix")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
                 activeTab === "matrix"
-                  ? "bg-primary text-white shadow-[0_0_15px_var(--color-primary)] font-extrabold"
-                  : "text-base-content/70 hover:text-white hover:bg-glass-card-hover"
+                  ? "shadow-[0_0_15px_var(--color-primary)] font-extrabold"
+                  : "text-base-content/70 hover:text-white"
               }`}
             >
               <span>🏛️ Master Feature Matrix</span>
@@ -872,7 +877,7 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
               >
                 {MASTER_FEATURES.length} Features
               </span>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -978,40 +983,32 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
               {/* Category Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
                 {categories.map((cat) => (
-                  <button
+                  <Button
                     key={cat}
                     type="button"
+                    variant={selectedCategory === cat ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
+                    size={ComponentSizes.XS}
                     onClick={() => setSelectedCategory(cat)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                       selectedCategory === cat
-                        ? "bg-primary text-black font-bold shadow-[0_0_10px_var(--color-primary)]"
-                        : "bg-glass-card border border-glass-border text-base-content/80 hover:border-primary/40 hover:text-white"
+                        ? "shadow-[0_0_10px_var(--color-primary)]"
+                        : "hover:border-primary/40"
                     }`}
                   >
                     {cat}
-                  </button>
+                  </Button>
                 ))}
               </div>
 
               {/* Real-Time Search Box */}
               <div className="relative min-w-60">
-                <iconsLib.search className="w-4 h-4 text-base-content/50 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
+                <SearchInput
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onClear={() => setSearchQuery("")}
                   placeholder="Search any capability or feature..."
-                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-glass-card border border-glass-border text-xs text-white placeholder-base-content/40 focus:outline-none focus:border-primary focus:shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)] transition-all"
+                  className="text-xs"
                 />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-white text-xs cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                )}
               </div>
             </div>
 

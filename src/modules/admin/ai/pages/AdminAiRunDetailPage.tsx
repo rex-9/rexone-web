@@ -19,6 +19,7 @@ import {
 import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
+import { formatAiCost } from "../helpers/aiCost.helper";
 import AiController from "../ai.controller";
 import type { IAdminAiRun } from "../types";
 
@@ -138,6 +139,14 @@ export const AdminAiRunDetailPage: React.FC = () => {
                 }
               />
               <DetailField
+                label={t(AppLocales.Admin.Ai.RunsTable.Cost)}
+                value={
+                  <span className="font-mono text-sm font-semibold text-emerald-500">
+                    {formatAiCost(run.cost)}
+                  </span>
+                }
+              />
+              <DetailField
                 label={t(AppLocales.Admin.Common.Detail.Created)}
                 value={
                   run.created_at ? (
@@ -213,6 +222,14 @@ export const AdminAiRunDetailPage: React.FC = () => {
                       : "-"
                   }
                 />
+                <DetailField
+                  label={t(AppLocales.Admin.Ai.RunsTable.Cost)}
+                  value={
+                    <span className="font-mono font-semibold text-emerald-500">
+                      {formatAiCost(run.cost, { showCurrency: true })}
+                    </span>
+                  }
+                />
               </DetailGrid>
             </DetailSection>
 
@@ -270,14 +287,14 @@ export const AdminAiRunDetailPage: React.FC = () => {
             </DetailSection>
           )}
 
-          {run.request_metadata &&
-            Object.keys(run.request_metadata).length > 0 && (
+          {run.metadata &&
+            Object.keys(run.metadata).length > 0 && (
               <DetailSection
                 title={t(AppLocales.Admin.Ai.RunDetail.RequestMetadata)}
                 icon={iconsLib.document}
               >
                 <pre className="rounded-xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md p-4 font-mono text-xs overflow-x-auto text-base-content/90 max-h-60">
-                  {JSON.stringify(run.request_metadata, null, 2)}
+                  {JSON.stringify(run.metadata, null, 2)}
                 </pre>
               </DetailSection>
             )}

@@ -6,6 +6,7 @@ import {
   ConfirmDialog,
   DateTime,
   DateTimeFormats,
+  TextArea,
 } from "../../../design/components";
 import { useToast, useLoading } from "../../../contexts";
 import { AppLocales, useTranslate } from "../../../locales";
@@ -451,7 +452,7 @@ export const AiPage: React.FC = () => {
         {/* Docked Bottom Input Box */}
         <div className="pt-2 pb-4 bg-transparent shrink-0">
           <div className="relative rounded-2xl border border-glass-border bg-glass-card shadow-glass-card backdrop-blur-md focus-within:border-glass-border-hover focus-within:shadow-glass-card transition-all p-3">
-            <textarea
+            <TextArea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}

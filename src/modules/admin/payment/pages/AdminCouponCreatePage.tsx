@@ -15,6 +15,7 @@ import {
   Checkbox,
   DateTimePicker,
   NumberInput,
+  FormContainer,
 } from "../../../../design/components/form";
 import { useLoading } from "../../../../contexts";
 import { useDocumentTitle, usePermissions } from "../../../../hooks";
@@ -277,7 +278,7 @@ export const AdminCouponCreatePage: React.FC = () => {
         }
       />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <FormContainer onSubmit={handleSubmit} className="space-y-6">
         {/* Creation Mode Toggle */}
         <div className="rounded-xl border border-glass-border bg-glass-card p-4 shadow-glass-card backdrop-blur-md flex items-center justify-between">
           <div>
@@ -603,7 +604,7 @@ export const AdminCouponCreatePage: React.FC = () => {
               : t(AppLocales.Admin.Coupons.Form.SubmitSingle)}
           </Button>
         </div>
-      </form>
+      </FormContainer>
 
       {/* Post-Batch Generation Results Modal */}
       <Dialog

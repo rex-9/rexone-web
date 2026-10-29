@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "../../../design/components/overlay";
 import { Button, Badge } from "../../../design/components";
-import { TextInput } from "../../../design/components/form";
+import { FormContainer, TextInput } from "../../../design/components/form";
 import {
   ButtonVariants,
   BadgeVariants,
@@ -257,17 +257,19 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
                   )
                 </span>
               </div>
-              <button
+              <Button
                 type="button"
+                variant={ButtonVariants.GLASS}
+                size={ComponentSizes.XS}
                 onClick={handleRemoveCoupon}
-                className="text-xs text-error hover:underline flex items-center gap-1"
+                className="text-xs text-error hover:underline flex items-center gap-1 p-1 bg-transparent hover:bg-transparent"
               >
                 <iconsLib.close className="w-3.5 h-3.5" />
                 {t(AppLocales.Payment.CheckoutDialog.Remove)}
-              </button>
+              </Button>
             </div>
           ) : (
-            <form
+            <FormContainer
               onSubmit={handleApplyCoupon}
               className="flex items-center gap-2"
             >
@@ -294,7 +296,7 @@ export const CheckoutDialog: React.FC<ICheckoutDialogProps> = ({
                   ? t(AppLocales.Payment.CheckoutDialog.Checking)
                   : t(AppLocales.Payment.CheckoutDialog.Apply)}
               </Button>
-            </form>
+            </FormContainer>
           )}
 
           {displayedError && (

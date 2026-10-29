@@ -122,7 +122,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
           multiple={multiple}
           className={cn(
             "select select-bordered w-full rounded-xl font-medium",
-            "bg-[#06150D]/90 dark:bg-[#06150D]/90 text-base-content",
+            "bg-base-200/90 text-base-content",
             "border border-glass-border shadow-glass-card backdrop-blur-md",
             "hover:border-glass-border-hover focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
             "transition-colors duration-150",
@@ -134,20 +134,20 @@ export const Dropdown: React.FC<IDropdownProps> = ({
           )}
         >
           {placeholder && !hasEmptyOption && (
-            <option value="" disabled className="bg-[#06150D] text-base-content/60">
+            <option value="" disabled className="bg-base-200 text-base-content/60">
               {placeholder}
             </option>
           )}
           {groupedOptions
             ? groupedOptions.map(([groupName, groupOpts]) =>
                 groupName ? (
-                  <optgroup key={groupName} label={groupName} className="bg-[#06150D] text-base-content font-semibold">
+                  <optgroup key={groupName} label={groupName} className="bg-base-200 text-base-content font-semibold">
                     {groupOpts.map((opt) => (
                       <option
                         key={opt.value}
                         value={opt.value}
                         disabled={opt.disabled}
-                        className="bg-[#06150D] text-base-content py-1.5"
+                        className="bg-base-200 text-base-content py-1.5"
                       >
                         {opt.label}
                       </option>
@@ -159,7 +159,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
                       key={opt.value}
                       value={opt.value}
                       disabled={opt.disabled}
-                      className="bg-[#06150D] text-base-content py-1.5"
+                      className="bg-base-200 text-base-content py-1.5"
                     >
                       {opt.label}
                     </option>
@@ -171,7 +171,7 @@ export const Dropdown: React.FC<IDropdownProps> = ({
                   key={option.value}
                   value={option.value}
                   disabled={option.disabled}
-                  className="bg-[#06150D] text-base-content py-1.5"
+                  className="bg-base-200 text-base-content py-1.5"
                 >
                   {option.label}
                 </option>

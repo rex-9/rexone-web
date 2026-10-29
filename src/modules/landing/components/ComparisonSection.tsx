@@ -163,18 +163,20 @@ export const ComparisonSection: React.FC = () => {
       {/* Competitor Selector: Balanced 4x2 Grid (4 Columns x 2 Rows) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 max-w-4xl mx-auto px-4">
         {COMPETITORS.map((c) => (
-          <button
+          <Button
             key={c.id}
             type="button"
+            variant={selectedCompetitorId === c.id ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
+            size={ComponentSizes.SM}
             onClick={() => setSelectedCompetitorId(c.id)}
             className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wide text-center flex items-center justify-center transition-all duration-300 cursor-pointer ${
               selectedCompetitorId === c.id
-                ? "bg-primary text-white border border-primary shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)] scale-[1.02]"
-                : "bg-glass-card/90 text-white/80 border border-glass-border hover:border-primary/50 hover:bg-glass-card-hover hover:text-white"
+                ? "shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)] scale-[1.02]"
+                : "hover:border-primary/50"
             }`}
           >
             vs {c.name}
-          </button>
+          </Button>
         ))}
       </div>
 

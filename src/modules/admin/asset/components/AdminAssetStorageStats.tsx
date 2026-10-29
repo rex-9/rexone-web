@@ -15,6 +15,7 @@ import {
   ProgressBarVariants,
 } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
+import { useLoading } from "../../../../contexts";
 import { formatAssetFileSize, STORAGE_PARTITION_VALUES } from "../constants";
 import type { IStorageStats } from "../types";
 import { Admin } from "../..";
@@ -27,12 +28,12 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
   className = "",
 }) => {
   const t = useTranslate();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setLoading } = useLoading();
   const [stats, setStats] = useState<IStorageStats | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchStats = useCallback(async () => {
-    setIsLoading(true);
+    setLoading(true);
     setError(null);
 
     const result = await Admin.AssetController.getStorageStats();
@@ -42,8 +43,8 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
       setError(result.error || "Failed to load storage statistics");
     }
 
-    setIsLoading(false);
-  }, []);
+    setLoading(false);
+  }, [setLoading]);
 
   useEffect(() => {
     // Initial remote synchronization intentionally drives this component's loading state.

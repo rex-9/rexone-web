@@ -30,6 +30,13 @@ export interface INotificationMetadata extends Record<string, unknown> {
   operation_id?: string;
   operation_type?: TAsyncOperationType;
   operation_status?: TAsyncOperationStatus;
+  link?: string;
+  asset_id?: string;
+  status?: string;
+  size_bytes?: number;
+  url?: string;
+  message_id?: string;
+  room_id?: string;
 }
 
 export interface INotificationListParams {

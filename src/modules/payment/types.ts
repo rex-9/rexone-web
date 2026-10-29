@@ -178,6 +178,37 @@ export interface ICheckoutResponse {
 
 export type { TCouponType } from "./constants";
 
+export interface ICouponMetadata {
+  status?: string;
+  sync_error?: string;
+  failed_at?: string;
+  synced_at?: string;
+  [key: string]: unknown;
+}
+
+export interface IPaymentMethodDetails {
+  brand?: string;
+  last4?: string;
+  exp_month?: number;
+  exp_year?: number;
+  country?: string;
+  funding?: string;
+  order_id?: string;
+  purchase_token?: string;
+  package_name?: string;
+  transaction_id?: string;
+  original_transaction_id?: string;
+  bundle_id?: string;
+  [key: string]: unknown;
+}
+
+export interface IPaymentMetadata {
+  user_id?: string;
+  product_id?: string;
+  coupon_id?: string;
+  [key: string]: unknown;
+}
+
 export interface ICoupon {
   id: string;
   title: string;
@@ -201,7 +232,7 @@ export interface ICoupon {
   created_at: string;
   updated_at: string;
   discarded_at?: string | null;
-  metadata?: Record<string, unknown> | null;
+  metadata?: ICouponMetadata | null;
 }
 
 export type { TPaymentType } from "./constants";

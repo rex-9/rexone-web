@@ -753,7 +753,7 @@ export const VsPage: React.FC = () => {
                     </div>
 
                     {/* Critical Flaws Box */}
-                    <div className="rounded-xl bg-[#16050a]/90 border border-rose-500/25 p-3 space-y-1.5 min-h-26.25 flex flex-col justify-start">
+                    <div className="rounded-xl bg-error/10 border border-error/25 p-3 space-y-1.5 min-h-26.25 flex flex-col justify-start">
                       <div className="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5 shrink-0">
                         <span className="text-xs">⚠️</span>
                         <span>Critical Flaws</span>
@@ -809,18 +809,20 @@ export const VsPage: React.FC = () => {
                   Filter by Category:
                 </span>
                 {categories.map((cat) => (
-                  <button
+                  <Button
                     key={cat}
                     type="button"
+                    variant={filterCategory === cat ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
+                    size={ComponentSizes.XS}
                     onClick={() => setFilterCategory(cat)}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all cursor-pointer ${
                       filterCategory === cat
-                        ? "bg-primary text-white font-bold shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6)] border border-primary-light scale-[1.02]"
-                        : "bg-primary/15 text-primary-light/90 border border-primary/30 hover:bg-primary/25 hover:text-white hover:border-primary/50"
+                        ? "font-bold shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6)] scale-[1.02]"
+                        : "hover:border-primary/50"
                     }`}
                   >
                     {cat}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -829,10 +831,10 @@ export const VsPage: React.FC = () => {
               <table className="w-full text-left text-xs sm:text-sm min-w-[2760px] border-separate border-spacing-0">
                 <thead className="bg-glass-card backdrop-blur-xl border-b border-glass-border font-mono text-xs uppercase tracking-wider text-base-content/80">
                   <tr>
-                    <th className="py-4 px-4 sm:px-6 w-48 sm:w-60 min-w-48 sm:min-w-60 max-w-48 sm:max-w-60 sticky left-0 z-40 bg-[#16050a] border-r border-b border-glass-border text-white">
+                    <th className="py-4 px-4 sm:px-6 w-48 sm:w-60 min-w-48 sm:min-w-60 max-w-48 sm:max-w-60 sticky left-0 z-40 bg-base-100 border-r border-b border-glass-border text-white">
                       Capability
                     </th>
-                    <th className="py-4 px-4 sm:px-6 w-70 min-w-70 max-w-70 md:sticky md:left-59.5 z-40 text-primary-light font-bold bg-[#260811] border-r border-b border-glass-border shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
+                    <th className="py-4 px-4 sm:px-6 w-70 min-w-70 max-w-70 md:sticky md:left-59.5 z-40 text-primary-light font-bold bg-base-200 border-r border-b border-glass-border shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
                       🛡️ RexOne (100% Free)
                     </th>
                     <th className="py-4 px-4 sm:px-6 w-70 min-w-70 max-w-70 border-b border-glass-border">
@@ -867,7 +869,7 @@ export const VsPage: React.FC = () => {
                       key={idx}
                       className="hover:bg-primary/10 transition-colors group"
                     >
-                      <td className="py-4 px-4 sm:px-6 w-48 sm:w-60 min-w-48 sm:min-w-60 max-w-48 sm:max-w-60 sticky left-0 z-30 bg-[#16050a] border-r border-b border-glass-border/40 group-hover:bg-[#1f070e] transition-colors">
+                      <td className="py-4 px-4 sm:px-6 w-48 sm:w-60 min-w-48 sm:min-w-60 max-w-48 sm:max-w-60 sticky left-0 z-30 bg-base-100 border-r border-b border-glass-border/40 group-hover:bg-base-200 transition-colors">
                         <div className="font-semibold text-white">
                           {row.feature}
                         </div>
@@ -875,7 +877,7 @@ export const VsPage: React.FC = () => {
                           {row.category}
                         </span>
                       </td>
-                      <td className="py-4 px-4 sm:px-6 w-70 min-w-70 max-w-70 md:sticky md:left-59.5 z-30 bg-[#22070f] border-r border-b border-glass-border/40 font-semibold text-white group-hover:bg-[#2b0a14] transition-colors shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
+                      <td className="py-4 px-4 sm:px-6 w-70 min-w-70 max-w-70 md:sticky md:left-59.5 z-30 bg-base-200 border-r border-b border-glass-border/40 font-semibold text-white group-hover:bg-base-300 transition-colors shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
                         <div className="flex items-start gap-1.5">
                           <span className="text-primary font-bold">✓</span>
                           <span>{row.rexone}</span>

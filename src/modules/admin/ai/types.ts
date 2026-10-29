@@ -44,6 +44,13 @@ export interface IAdminAiProfileListParams {
   search?: string;
 }
 
+export interface IAdminAiRunMetadata {
+  endpoint?: string;
+  room_id?: string;
+  language?: string;
+  analysis_type?: string;
+}
+
 export interface IAdminAiRun {
   id: string;
   ai_profile_id?: string | null;
@@ -60,9 +67,10 @@ export interface IAdminAiRun {
   prompt_tokens?: number | null;
   completion_tokens?: number | null;
   total_tokens?: number | null;
+  cost?: number | null;
   latency_ms?: number | null;
   error?: string | null;
-  request_metadata?: Record<string, unknown> | null;
+  metadata?: IAdminAiRunMetadata | null;
   created_at?: string;
   updated_at?: string;
 }

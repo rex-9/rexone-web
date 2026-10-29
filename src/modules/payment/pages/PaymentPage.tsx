@@ -417,8 +417,10 @@ export const PaymentPage: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <button
+                  <Button
                     type="button"
+                    variant={ButtonVariants.GLASS}
+                    size={ComponentSizes.XS}
                     onClick={() =>
                       success(
                         `useAccess verified: Entitlement active for ${product.name}`,
@@ -427,7 +429,7 @@ export const PaymentPage: React.FC = () => {
                     className="text-xs font-bold text-success hover:underline px-2.5 py-1 rounded bg-success/15 hover:bg-success/25 transition-colors cursor-pointer"
                   >
                     Verify
-                  </button>
+                  </Button>
                 </div>
               )}
 

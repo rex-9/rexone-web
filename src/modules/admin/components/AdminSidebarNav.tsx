@@ -5,6 +5,7 @@ import { usePermissions } from "../../../hooks";
 import type { AdminResource } from "../role";
 import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../constants";
 import { cn } from "../../../design/helpers";
+import { Button, ButtonVariants, ComponentSizes } from "../../../design";
 import { iconsLib } from "../../../assets";
 import { useTranslate, AppLocales } from "../../../locales";
 
@@ -245,12 +246,14 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                   />
                 )
               ) : (
-                <button
+                <Button
                   type="button"
+                  variant={ButtonVariants.GLASS}
+                  size={ComponentSizes.SM}
                   aria-expanded={!isSectionCollapsed}
                   aria-controls={`admin-nav-section-${section.id}`}
                   onClick={() => toggleSection(section.id)}
-                  className="mb-2 flex h-7 w-full items-center justify-between rounded-lg px-2 text-caption font-semibold text-base-content/60 transition-colors hover:bg-glass-card/50 hover:text-base-content"
+                  className="mb-2 flex h-7 w-full items-center justify-between rounded-lg px-2 text-caption font-semibold text-base-content/60 transition-colors hover:text-base-content bg-transparent hover:bg-transparent"
                 >
                   <span>{t(section.labelKey)}</span>
                   <iconsLib.chevronDown
@@ -259,7 +262,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
                       isSectionCollapsed ? "-rotate-90" : "rotate-0",
                     )}
                   />
-                </button>
+                </Button>
               )}
               <div
                 id={`admin-nav-section-${section.id}`}
