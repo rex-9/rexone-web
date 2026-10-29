@@ -1124,6 +1124,7 @@
         "model": "Model",
         "status": "Status",
         "tokens": "Tokens",
+        "cost": "Cost Display",
         "latency": "Latency",
         "created": "Created"
       },

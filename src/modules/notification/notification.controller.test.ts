@@ -9,14 +9,14 @@ vi.mock("./notification.service", () => ({
     getUnreadCount: vi.fn(),
     markAsRead: vi.fn(),
     markAllAsRead: vi.fn(),
-    deleteNotification: vi.fn(),
+    discardNotification: vi.fn(),
   },
   NotificationService: {
     getNotifications: vi.fn(),
     getUnreadCount: vi.fn(),
     markAsRead: vi.fn(),
     markAllAsRead: vi.fn(),
-    deleteNotification: vi.fn(),
+    discardNotification: vi.fn(),
   },
 }));
 
@@ -139,23 +139,23 @@ describe("UserNotificationController", () => {
     });
   });
 
-  describe("deleteNotification", () => {
-    it("calls service to delete notification", async () => {
-      vi.mocked(NotificationService.deleteNotification).mockResolvedValue({
+  describe("discardNotification", () => {
+    it("calls service to discard notification", async () => {
+      vi.mocked(NotificationService.discardNotification).mockResolvedValue({
         data: {
           status: {
             code: 200,
             success: true,
-            message: "Notification deleted",
+            message: "Notification discarded",
           },
           data: null,
         },
       } as never);
 
       await expect(
-        NotificationController.deleteNotification("noti-1"),
+        NotificationController.discardNotification("noti-1"),
       ).resolves.toBeUndefined();
-      expect(NotificationService.deleteNotification).toHaveBeenCalledWith(
+      expect(NotificationService.discardNotification).toHaveBeenCalledWith(
         "noti-1",
       );
     });

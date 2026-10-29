@@ -29,15 +29,17 @@ export const SponsorCard: React.FC<ISponsorCardProps> = ({
         {/* Avatar with Glowing Ring & Heart Badge */}
         <div className="relative shrink-0">
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full p-0.5 border-2 border-primary shadow-[0_0_18px_var(--color-primary)] bg-base-300/40 overflow-hidden">
-            <img
+            <Asset
               src="https://github.com/rex-9.png"
               alt="Rex (rex-9)"
               className="w-full h-full object-cover rounded-full"
               loading="lazy"
-              onError={(e) => {
-                // Fallback to github icon if offline or image error
-                (e.target as HTMLImageElement).src = icons.github.src;
-              }}
+              fallback={
+                <Asset
+                  asset={icons.github}
+                  className="w-full h-full object-cover rounded-full"
+                />
+              }
             />
           </div>
           <div

@@ -89,6 +89,8 @@ import {
   TagIcon,
   DevicePhoneMobileIcon,
   ArrowTopRightOnSquareIcon,
+  WifiIcon,
+  SignalSlashIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -230,4 +232,6 @@ export const iconsLib = {
   copy: DocumentDuplicateIcon,
   devicePhoneMobile: DevicePhoneMobileIcon,
   externalLink: ArrowTopRightOnSquareIcon,
+  wifi: WifiIcon,
+  wifiOff: SignalSlashIcon,
 } as const;

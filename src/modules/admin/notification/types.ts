@@ -3,6 +3,7 @@ import type {
   NotificationDeliveryChannel,
   NotificationEventCategory,
 } from "./constants";
+import type { INotificationMetadata } from "../../notification/types";
 
 export interface IAdminNotificationFormValues {
   event: string;
@@ -88,7 +89,7 @@ export interface IAdminUserNotification {
   message: string;
   link?: string | null;
   clients: string[];
-  metadata: Record<string, unknown>;
+  metadata: INotificationMetadata;
   operation_id?: string | null;
   operation_type?: string | null;
   operation_status?: string | null;

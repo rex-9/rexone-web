@@ -61,15 +61,15 @@ export class NotificationController {
   }
 
   /**
-   * Delete an individual notification
+   * Discard an individual notification
    */
-  static async deleteNotification(id: string): Promise<void> {
-    const response = await NotificationService.deleteNotification(id);
+  static async discardNotification(id: string): Promise<void> {
+    const response = await NotificationService.discardNotification(id);
     if (!response.data?.status?.success) {
       throw new Error(
         response.data?.status?.error ||
           response.data?.status?.message ||
-          "Failed to delete notification",
+          "Failed to discard notification",
       );
     }
   }

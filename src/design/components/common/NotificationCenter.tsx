@@ -23,12 +23,18 @@ import { Button } from "../button";
 import { Dialog } from "../overlay/Dialog";
 import { Dropdown, DropdownSizes } from "../form/Dropdown";
 import { Badge } from "./Badge";
-import { ButtonTypes, ButtonVariants, ComponentSizes, BadgeVariants } from "../../constants";
+import {
+  ButtonTypes,
+  ButtonVariants,
+  ComponentSizes,
+  BadgeVariants,
+} from "../../constants";
 import { cn } from "../../helpers";
 import { getUtcNowIso } from "../../../helpers/date.helper";
 import { DateTime } from "./DateTime";
 import type { IApiPagination } from "../../../models";
 import { AnalyticsService } from "../../../services";
+import { useLoading } from "../../../contexts";
 
 export interface INotificationCenterProps {
   className?: string;
@@ -46,7 +52,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   const [filter, setFilter] = useState<NotificationFilter>(
     NOTIFICATION_FILTERS.ALL,
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setLoading } = useLoading();
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [detailNotification, setDetailNotification] =
     useState<IUserNotification | null>(null);
@@ -78,7 +84,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
   const fetchNotifications = useCallback(
     async (page: number = 1, currentFilter: NotificationFilter = filter) => {
       if (page === 1) {
-        setIsLoading(true);
+        setLoading(true);
       } else {
         setIsLoadingMore(true);
       }
@@ -97,11 +103,11 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
       } catch (err) {
         console.error("Failed to fetch notifications:", err);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
         setIsLoadingMore(false);
       }
     },
-    [filter],
+    [filter, setLoading],
   );
 
   // Initial load of unread count
@@ -305,8 +311,8 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
     }
   };
 
-  // Delete an individual notification
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
+  // Discard an individual notification
+  const handleDiscard = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
 
     const target = notifications.find((n) => n.id === id);
@@ -317,9 +323,9 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
     }
 
     try {
-      await NotificationController.deleteNotification(id);
+      await NotificationController.discardNotification(id);
     } catch (err) {
-      console.error("Failed to delete notification:", err);
+      console.error("Failed to discard notification:", err);
       fetchNotifications(1, filter);
     }
   };
@@ -357,7 +363,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
 
       {/* Unread Count Badge - perched on top right corner edge */}
       {unreadCount > 0 && (
-        <span className="pointer-events-none absolute -top-1.5 -right-1.5 z-10 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
+        <span className="pointer-events-none absolute -top-1.5 -right-1.5 z-10 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-content shadow-sm ring-2 ring-base-100 animate-pulse">
           {unreadCount > 99 ? "99+" : unreadCount}
         </span>
       )}
@@ -379,12 +385,12 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           aria-label={translate(AppLocales.Notifications.Title)}
           className={cn(
             "fixed inset-x-3 top-16 mt-2 z-50 mx-auto max-w-sm sm:absolute sm:inset-auto sm:right-0 sm:top-12 sm:mt-1 sm:w-96 sm:max-w-none sm:mx-0",
-            "rounded-2xl border border-glass-border bg-[#06150D] dark:bg-[#06150D] shadow-[0_20px_50px_rgba(0,0,0,0.7)] backdrop-blur-2xl overflow-hidden flex flex-col font-primary",
+            "rounded-2xl border border-glass-border bg-base-200 shadow-2xl backdrop-blur-2xl overflow-hidden flex flex-col font-primary",
             "max-h-[calc(100dvh-5rem)] sm:max-h-[85vh] animate-in fade-in-0 zoom-in-95 duration-150",
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-glass-border/50 px-4 py-3 bg-[#091f14] sticky top-0 z-10">
+          <div className="flex items-center justify-between border-b border-glass-border/50 px-4 py-3 bg-base-300/80 sticky top-0 z-10">
             <div className="flex items-center gap-2">
               <h3 className="text-body-m font-bold text-base-content">
                 {translate(AppLocales.Notifications.Title)}
@@ -429,7 +435,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
           </div>
 
           {/* Filter Bar */}
-          <div className="px-4 py-2 border-b border-glass-border/40 bg-[#07180F] flex items-center justify-between gap-2">
+          <div className="px-4 py-2 border-b border-glass-border/40 bg-base-300/50 flex items-center justify-between gap-2">
             <span className="text-caption font-medium text-base-content/60">
               Filter:
             </span>
@@ -481,7 +487,7 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                   className={cn(
                     "group relative flex items-start gap-3 p-3.5 transition-colors cursor-pointer text-left select-none",
                     item.read
-                      ? "hover:bg-[#0b2418] bg-transparent"
+                      ? "hover:bg-glass-card-hover bg-transparent"
                       : "bg-primary/10 hover:bg-primary/20",
                   )}
                 >
@@ -522,10 +528,10 @@ export const NotificationCenter: React.FC<INotificationCenterProps> = ({
                     </div>
                   </div>
 
-                  {/* Delete Button */}
+                  {/* Discard Button */}
                   <button
                     type="button"
-                    onClick={(e) => handleDelete(e, item.id)}
+                    onClick={(e) => handleDiscard(e, item.id)}
                     className="absolute right-2.5 top-3 p-1.5 rounded-lg text-base-content/40 hover:text-error hover:bg-glass-card-hover transition-colors opacity-70 hover:opacity-100 sm:opacity-0 sm:group-hover:opacity-100 cursor-pointer"
                     title={translate(AppLocales.Notifications.Delete)}
                     aria-label={translate(AppLocales.Notifications.Delete)}

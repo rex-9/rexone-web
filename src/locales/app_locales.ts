@@ -929,6 +929,7 @@ export const AppLocales = {
         Model: "admin.ai.runs_table.model",
         Status: "admin.ai.runs_table.status",
         Tokens: "admin.ai.runs_table.tokens",
+        Cost: "admin.ai.runs_table.cost",
         Latency: "admin.ai.runs_table.latency",
         Created: "admin.ai.runs_table.created",
       },

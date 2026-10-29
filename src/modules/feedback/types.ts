@@ -5,6 +5,15 @@ import {
   TFeedbackStatus,
 } from "./constants";
 
+export interface IFeedbackMetadata {
+  app_version?: string;
+  screen?: string;
+  route?: string;
+  locale?: string;
+  user_agent?: string;
+  [key: string]: unknown;
+}
+
 export interface IFeedback {
   id: string;
   content: string;
@@ -18,7 +27,7 @@ export interface IFeedback {
   device?: string | null;
   browser?: string | null;
   page?: string | null;
-  metadata?: Record<string, unknown>;
+  metadata?: IFeedbackMetadata;
   admin_notes?: string | null;
   user_id?: string | null;
   user_name?: string | null;
@@ -37,7 +46,7 @@ export interface ICreateFeedbackRequest {
   device?: string;
   browser?: string;
   page?: string;
-  metadata?: Record<string, unknown>;
+  metadata?: IFeedbackMetadata;
 }
 
 export interface IUpdateAdminFeedbackRequest {

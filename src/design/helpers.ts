@@ -35,7 +35,7 @@ export function cn(...inputs: ClassValue[]) {
 
 /**
  * Get brand color value
- * @example getBrandColor('primary') => '#F8D57E'
+ * @example getBrandColor('primary') => colors.primary
  */
 export function getBrandColor(brand: BrandColorKey): string {
   return colors[brand];
@@ -43,7 +43,7 @@ export function getBrandColor(brand: BrandColorKey): string {
 
 /**
  * Get a semantic color value
- * @example getSemanticColor('success') => '#10B981'
+ * @example getSemanticColor('success') => colors.semantic.success
  */
 export function getSemanticColor(color: SemanticColorKey): string {
   return colors.semantic[color];

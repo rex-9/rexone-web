@@ -7,7 +7,7 @@ import {
   ButtonTypes,
   ComponentSizes,
 } from "../../../constants";
-import { Button, FormContainer } from "../../../design";
+import { Button, FormContainer, TextInput, TextArea } from "../../../design";
 import { iconsLib } from "../../../assets";
 import { LANDING_DATA } from "../constants";
 
@@ -40,14 +40,12 @@ export const ContactForm: React.FC = () => {
         <label className="text-[11px] font-mono font-semibold uppercase tracking-wider text-base-content/75 flex items-center gap-1.5">
           <span>Your Full Name</span>
         </label>
-        <input
-          type="text"
+        <TextInput
           name="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Satoshi Nakamoto"
           required
-          className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-black/40 border border-glass-border hover:border-primary/40 focus:border-primary focus:ring-1 focus:ring-primary/40 text-sm sm:text-base text-white placeholder:text-base-content/40 transition-all duration-200 outline-none font-primary"
         />
       </div>
 
@@ -56,14 +54,13 @@ export const ContactForm: React.FC = () => {
         <label className="text-[11px] font-mono font-semibold uppercase tracking-wider text-base-content/75 flex items-center gap-1.5">
           <span>Your Email</span>
         </label>
-        <input
+        <TextInput
           type="email"
           name="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@domain.com"
           required
-          className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-black/40 border border-glass-border hover:border-primary/40 focus:border-primary focus:ring-1 focus:ring-primary/40 text-sm sm:text-base text-white placeholder:text-base-content/40 transition-all duration-200 outline-none font-primary"
         />
       </div>
 
@@ -72,14 +69,13 @@ export const ContactForm: React.FC = () => {
         <label className="text-[11px] font-mono font-semibold uppercase tracking-wider text-base-content/75 flex items-center gap-1.5">
           <span>How May I Kindly Help You?</span>
         </label>
-        <textarea
+        <TextArea
           name="details"
           value={details}
           onChange={(e) => setDetails(e.target.value)}
           placeholder="Write your note, proposal, or feedback here..."
           required
           rows={3}
-          className="w-full px-4 py-2.5 sm:py-3 rounded-xl bg-black/40 border border-glass-border hover:border-primary/40 focus:border-primary focus:ring-1 focus:ring-primary/40 text-sm sm:text-base text-white placeholder:text-base-content/40 transition-all duration-200 outline-none resize-none font-primary leading-relaxed"
         />
       </div>
 

@@ -44,8 +44,10 @@ export const AdminNotificationPreview: React.FC<
     <div className="space-y-3">
       {/* Segmented Channel Switcher Tabs */}
       <div className="flex items-center justify-between gap-1 p-1 bg-glass-card/50 rounded-xl border border-glass-border/60 backdrop-blur-md">
-        <button
+        <Button
           type="button"
+          variant={ButtonVariants.GLASS}
+          size={ComponentSizes.SM}
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.IN_APP)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.IN_APP
@@ -61,10 +63,12 @@ export const AdminNotificationPreview: React.FC<
               title={t(AppLocales.Admin.Notifications.Preview.ActiveInDispatch)}
             />
           )}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant={ButtonVariants.GLASS}
+          size={ComponentSizes.SM}
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.PUSH)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.PUSH
@@ -80,10 +84,12 @@ export const AdminNotificationPreview: React.FC<
               title={t(AppLocales.Admin.Notifications.Preview.ActiveInDispatch)}
             />
           )}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant={ButtonVariants.GLASS}
+          size={ComponentSizes.SM}
           onClick={() => setActiveChannel(NOTIFICATION_CHANNELS.EMAIL)}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg text-xs font-medium transition-all ${
             activeChannel === NOTIFICATION_CHANNELS.EMAIL
@@ -99,7 +105,7 @@ export const AdminNotificationPreview: React.FC<
               title={t(AppLocales.Admin.Notifications.Preview.ActiveInDispatch)}
             />
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Visual Preview Content per Active Channel */}

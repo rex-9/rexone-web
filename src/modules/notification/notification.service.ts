@@ -57,9 +57,9 @@ class NotificationService {
   }
 
   /**
-   * Soft-delete an individual notification
+   * Discard an individual notification
    */
-  async deleteNotification(
+  async discardNotification(
     id: string,
   ): Promise<IApiResponse<IApiEnvelope<null>>> {
     return await api.delete<null>(

@@ -118,9 +118,16 @@ const AdminTableHeaderCell: React.FC<{
       )}
     >
       {sortKey && onSort ? (
-        <button
-          type="button"
+        <div
+          role="button"
+          tabIndex={0}
           onClick={() => onSort(sortKey)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onSort(sortKey);
+            }
+          }}
           className={cn(
             "group inline-flex items-center gap-1.5 cursor-pointer select-none rounded hover:text-primary transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
             className?.includes("text-center") && "justify-center",
@@ -130,7 +137,7 @@ const AdminTableHeaderCell: React.FC<{
         >
           <span>{children}</span>
           {renderSortIcon()}
-        </button>
+        </div>
       ) : (
         children
       )}

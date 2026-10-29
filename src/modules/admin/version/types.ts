@@ -7,6 +7,13 @@ export type AdminVersionStatus =
 export type AdminUserVersionPlatform =
   (typeof VERSION_PLATFORMS)[keyof typeof VERSION_PLATFORMS];
 
+export interface IClientVersionMetadata {
+  release_notes?: string;
+  min_os_version?: string;
+  force_update?: boolean;
+  [key: string]: unknown;
+}
+
 export interface IAdminVersion {
   id: string;
   number: string;
@@ -22,7 +29,7 @@ export interface IAdminVersion {
   discarded_at?: Date | string | null;
   undiscarded_at?: Date | string | null;
   install_count?: number;
-  metadata?: Record<string, unknown> | null;
+  metadata?: IClientVersionMetadata | null;
 }
 
 export interface IAdminVersionFormValues {

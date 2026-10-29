@@ -5,6 +5,7 @@ import {
   ADMIN_FEEDBACK_STATUS,
 } from "./constants";
 import type { TSortOrder } from "../../../hooks/useSort";
+import type { IFeedbackMetadata } from "../../feedback/types";
 
 export type AdminFeedbackCategory =
   (typeof ADMIN_FEEDBACK_CATEGORY)[keyof typeof ADMIN_FEEDBACK_CATEGORY];
@@ -28,7 +29,7 @@ export interface IAdminFeedback {
   device?: string | null;
   browser?: string | null;
   page?: string | null;
-  metadata?: Record<string, unknown> | null;
+  metadata?: IFeedbackMetadata | null;
   admin_notes?: string | null;
   user_id?: string | null;
   user_name?: string | null;

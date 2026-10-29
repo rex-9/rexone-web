@@ -42,6 +42,7 @@ import {
   AI_PROVIDER_OPTIONS,
   AI_PROVIDER_MODELS,
 } from "../constants";
+import { formatAiCost } from "../helpers/aiCost.helper";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminAiRunsPage: React.FC = () => {
@@ -295,6 +296,16 @@ export const AdminAiRunsPage: React.FC = () => {
               </span>
             )}
           </div>
+        ),
+      },
+      {
+        key: "cost",
+        header: t(AppLocales.Admin.Ai.RunsTable.Cost),
+        sortKey: ADMIN_AI_RUN_SORT_KEYS.COST,
+        render: (run) => (
+          <span className="font-mono text-xs font-semibold text-emerald-500">
+            {formatAiCost(run.cost)}
+          </span>
         ),
       },
       {
