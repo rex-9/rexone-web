@@ -832,52 +832,48 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
 
         {/* View Switcher Tabs */}
         <div className="flex justify-center mb-8">
-          <div className="inline-flex p-1.5 rounded-2xl bg-glass-card/90 border border-glass-border backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-            <Button
+          <div className="inline-flex items-center p-1 rounded-full bg-glass-card/90 border border-primary/30 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+            <button
               type="button"
-              variant={activeTab === "pillars" ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
-              size={ComponentSizes.MD}
               onClick={() => setActiveTab("pillars")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
+              className={`flex items-center gap-2 px-5 sm:px-6 py-2 rounded-full font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
                 activeTab === "pillars"
-                  ? "shadow-[0_0_15px_var(--color-primary)] font-extrabold"
-                  : "text-base-content/70 hover:text-white"
+                  ? "bg-primary/20 border border-primary text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)]"
+                  : "border border-transparent text-base-content/70 hover:text-white"
               }`}
             >
               <span>⚡ 8 Core Pillars</span>
               <span
-                className={`text-[10px] px-2 py-0.5 rounded-full ${
+                className={`text-[10px] px-2 py-0.5 rounded-full transition-colors duration-200 ${
                   activeTab === "pillars"
-                    ? "bg-primary-dark/50 text-white font-bold"
-                    : "bg-white/10 text-base-content/80"
+                    ? "bg-primary/40 text-white font-bold"
+                    : "bg-white/10 text-base-content/70"
                 }`}
               >
                 Quick Scan
               </span>
-            </Button>
+            </button>
 
-            <Button
+            <button
               type="button"
-              variant={activeTab === "matrix" ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
-              size={ComponentSizes.MD}
               onClick={() => setActiveTab("matrix")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
+              className={`flex items-center gap-2 px-5 sm:px-6 py-2 rounded-full font-bold text-xs sm:text-sm tracking-wide transition-all duration-300 cursor-pointer ${
                 activeTab === "matrix"
-                  ? "shadow-[0_0_15px_var(--color-primary)] font-extrabold"
-                  : "text-base-content/70 hover:text-white"
+                  ? "bg-primary/20 border border-primary text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)]"
+                  : "border border-transparent text-base-content/70 hover:text-white"
               }`}
             >
               <span>🏛️ Master Feature Matrix</span>
               <span
-                className={`text-[10px] px-2 py-0.5 rounded-full ${
+                className={`text-[10px] px-2 py-0.5 rounded-full transition-colors duration-200 ${
                   activeTab === "matrix"
-                    ? "bg-primary-dark/50 text-white font-bold"
-                    : "bg-white/10 text-base-content/80"
+                    ? "bg-primary/40 text-white font-bold"
+                    : "bg-white/10 text-base-content/70"
                 }`}
               >
                 {MASTER_FEATURES.length} Features
               </span>
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -982,22 +978,25 @@ export const FeatureShowcase: React.FC<{ id?: string }> = ({
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-5 border-b border-glass-border/60">
               {/* Category Filter Pills */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full scrollbar-none">
-                {categories.map((cat) => (
-                  <Button
-                    key={cat}
-                    type="button"
-                    variant={selectedCategory === cat ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
-                    size={ComponentSizes.XS}
-                    onClick={() => setSelectedCategory(cat)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                      selectedCategory === cat
-                        ? "shadow-[0_0_10px_var(--color-primary)]"
-                        : "hover:border-primary/40"
-                    }`}
-                  >
-                    {cat}
-                  </Button>
-                ))}
+                {categories.map((cat) => {
+                  const isSelected = selectedCategory === cat;
+                  return (
+                    <Button
+                      key={cat}
+                      type="button"
+                      variant={isSelected ? ButtonVariants.PRIMARY : ButtonVariants.FLAT}
+                      size={ComponentSizes.XS}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "border-primary bg-primary/20 text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.4)]"
+                          : "border border-glass-border bg-glass-card/60 text-base-content/75 hover:text-white hover:border-glass-border-hover hover:bg-glass-card"
+                      }`}
+                    >
+                      {cat}
+                    </Button>
+                  );
+                })}
               </div>
 
               {/* Real-Time Search Box */}

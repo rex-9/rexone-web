@@ -808,22 +808,25 @@ export const VsPage: React.FC = () => {
                 <span className="text-xs font-mono uppercase tracking-wider text-base-content/60 mr-1 hidden sm:inline">
                   Filter by Category:
                 </span>
-                {categories.map((cat) => (
-                  <Button
-                    key={cat}
-                    type="button"
-                    variant={filterCategory === cat ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
-                    size={ComponentSizes.XS}
-                    onClick={() => setFilterCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all cursor-pointer ${
-                      filterCategory === cat
-                        ? "font-bold shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.6)] scale-[1.02]"
-                        : "hover:border-primary/50"
-                    }`}
-                  >
-                    {cat}
-                  </Button>
-                ))}
+                {categories.map((cat) => {
+                  const isSelected = filterCategory === cat;
+                  return (
+                    <Button
+                      key={cat}
+                      type="button"
+                      variant={isSelected ? ButtonVariants.PRIMARY : ButtonVariants.FLAT}
+                      size={ComponentSizes.XS}
+                      onClick={() => setFilterCategory(cat)}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-mono transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "font-bold border-primary bg-primary/20 text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.5)] scale-[1.02]"
+                          : "border border-glass-border bg-glass-card/60 text-base-content/75 hover:text-white hover:border-glass-border-hover hover:bg-glass-card"
+                      }`}
+                    >
+                      {cat}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 

@@ -162,50 +162,40 @@ export const ComparisonSection: React.FC = () => {
 
       {/* Competitor Selector: Balanced 4x2 Grid (4 Columns x 2 Rows) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 max-w-4xl mx-auto px-4">
-        {COMPETITORS.map((c) => (
-          <Button
-            key={c.id}
-            type="button"
-            variant={selectedCompetitorId === c.id ? ButtonVariants.PRIMARY : ButtonVariants.GLASS}
-            size={ComponentSizes.SM}
-            onClick={() => setSelectedCompetitorId(c.id)}
-            className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wide text-center flex items-center justify-center transition-all duration-300 cursor-pointer ${
-              selectedCompetitorId === c.id
-                ? "shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.5)] scale-[1.02]"
-                : "hover:border-primary/50"
-            }`}
-          >
-            vs {c.name}
-          </Button>
-        ))}
+        {COMPETITORS.map((c) => {
+          const isSelected = selectedCompetitorId === c.id;
+          return (
+            <Button
+              key={c.id}
+              type="button"
+              variant={isSelected ? ButtonVariants.PRIMARY : ButtonVariants.FLAT}
+              size={ComponentSizes.SM}
+              onClick={() => setSelectedCompetitorId(c.id)}
+              className={`w-full py-2.5 px-3 rounded-xl text-xs font-semibold tracking-wide text-center flex items-center justify-center transition-all duration-200 cursor-pointer ${
+                isSelected
+                  ? "border-primary bg-primary/20 text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.4)] scale-[1.02]"
+                  : "border border-glass-border bg-glass-card/60 text-base-content/75 hover:text-white hover:border-glass-border-hover hover:bg-glass-card"
+              }`}
+            >
+              vs {c.name}
+            </Button>
+          );
+        })}
       </div>
 
       {/* Active Competitor Faceoff Card */}
       <div className="max-w-6xl mx-auto px-4">
         <div className="rounded-3xl bg-glass-card/90 backdrop-blur-xl border border-glass-border p-6 sm:p-8 md:p-10 shadow-[0_16px_48px_rgba(0,0,0,0.6)] space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-glass-border/70 pb-6">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-primary font-bold">
-                Direct Head-to-Head Comparison
-              </span>
-              <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-glow-white mt-1">
-                RexOne (100% Free) vs {selectedCompetitor.name} ({selectedCompetitor.price})
-              </h3>
-              <p className="text-xs sm:text-sm text-base-content/70 mt-1">
-                {selectedCompetitor.tagline} · {selectedCompetitor.stack}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button
-                href={AppRoutes.client.public.VS}
-                variant={ButtonVariants.GLASS}
-                size={ComponentSizes.SM}
-                className="font-bold text-xs tracking-wider"
-              >
-                View Master Matrix on VS Page ↗
-              </Button>
-            </div>
+          <div className="border-b border-glass-border/70 pb-6 w-full">
+            <span className="text-xs font-mono uppercase tracking-widest text-primary font-bold">
+              Direct Head-to-Head Comparison
+            </span>
+            <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-glow-white mt-1">
+              RexOne (100% Free) vs {selectedCompetitor.name} ({selectedCompetitor.price})
+            </h3>
+            <p className="text-xs sm:text-sm text-base-content/70 mt-1">
+              {selectedCompetitor.tagline} · {selectedCompetitor.stack}
+            </p>
           </div>
 
           {/* Side-by-Side Comparison Grid */}

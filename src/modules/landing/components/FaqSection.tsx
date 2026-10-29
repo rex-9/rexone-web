@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import AppRoutes from "../../../AppRoutes";
 import { iconsLib } from "../../../assets";
-import { Button, ButtonVariants, TextLink } from "../../../design";
+import { TextLink } from "../../../design";
 
 export interface IFaqItem {
   question: string;
@@ -83,7 +83,8 @@ export const COMPARISON_FAQS: IFaqItem[] = [
       "Users spend over 80% of mobile digital time in native apps, not browser tabs. Webview wrappers (like Capacitor or Turbo Native) suffer from sluggish gestures, DOM jank, and lack real offline database sync. RexOne compiles pure Dart into native ARM machine code with 60fps animations, hardware media focus, and Drift SQLite offline-first local persistence.",
   },
   {
-    question: "How does RexOne handle background jobs without Redis hosting costs?",
+    question:
+      "How does RexOne handle background jobs without Redis hosting costs?",
     answer:
       "RexOne leverages Solid Queue directly on PostgreSQL 18 with 50 concurrent Fibers and 2 isolated OS Threads. It provides workload elasticity across payments, notifications, and AI streaming while dedicating a quarantined media container for CPU-heavy tasks (libvips and FFmpeg) with zero Redis broker bills.",
   },
@@ -155,14 +156,14 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
       aria-label={headingText}
     >
       <div className="text-center space-y-3 max-w-3xl mx-auto px-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-primary/40 bg-primary/15 text-primary-light backdrop-blur-md shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.3)]">
-          <iconsLib.sparkles className="w-4 h-4 text-primary drop-shadow-[0_0_6px_var(--color-primary)]" />
-          <span className="text-xs font-bold tracking-wider uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-primary/40 bg-primary/15 text-primary-light backdrop-blur-md">
+          <iconsLib.sparkles className="w-4 h-4 text-primary" />
+          <span className="text-xs font-bold tracking-wider uppercase">
             {badgeText}
           </span>
         </div>
 
-        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold tracking-wide text-glow-white [text-shadow:0_0_8px_var(--color-glow-white),0_0_20px_var(--color-primary),0_0_40px_var(--color-primary-dark)]">
+        <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-normal tracking-wide text-white">
           {headingText}
         </h2>
         <p className="text-sm sm:text-base text-base-content/80">
@@ -177,22 +178,23 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
             key={i}
             className="rounded-2xl bg-glass-card/90 border border-glass-border backdrop-blur-xl overflow-hidden transition-all duration-300 hover:border-glass-border-hover hover:bg-glass-card-hover"
           >
-            <Button
+            <button
               type="button"
-              variant={ButtonVariants.GLASS}
               onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-white hover:text-primary-light transition-colors cursor-pointer rounded-none border-none bg-transparent hover:bg-transparent"
+              className="w-full py-4 px-6 text-left flex items-center justify-between gap-4 font-semibold text-sm sm:text-base text-white hover:text-primary-light transition-colors cursor-pointer outline-none focus:outline-none bg-transparent"
               aria-expanded={activeFaq === i}
             >
               <span>{faq.question}</span>
               <iconsLib.chevronDown
-                className={`w-5 h-5 shrink-0 transition-transform duration-300 ${
-                  activeFaq === i ? "rotate-180 text-primary" : "text-base-content/50"
+                className={`w-5 h-5 shrink-0 transition-transform duration-300 origin-center ${
+                  activeFaq === i
+                    ? "rotate-180 text-primary"
+                    : "text-base-content/50"
                 }`}
               />
-            </Button>
+            </button>
             {activeFaq === i && (
-              <div className="px-6 pb-5 pt-1 text-sm text-base-content/90 leading-relaxed border-t border-glass-border/40 font-primary">
+              <div className="px-6 pb-5 pt-3 text-sm text-base-content/90 leading-relaxed border-t border-glass-border/40 font-primary">
                 {faq.answer}
               </div>
             )}
@@ -202,9 +204,9 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
         {/* Cross-Link / Redirect Banner between Landing FAQs and VS FAQs */}
         <div className="pt-3">
           {isComparison ? (
-            <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/40 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl shadow-[0_0_25px_rgba(var(--color-primary-rgb),0.2)]">
+            <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/30 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl">
               <div className="flex items-center gap-3.5 text-left">
-                <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.4)]">
+                <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center shrink-0">
                   <iconsLib.sparkles className="w-5 h-5 text-primary-light" />
                 </div>
                 <div>
@@ -212,22 +214,23 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
                     Looking for General Platform &amp; Architecture FAQs?
                   </h3>
                   <p className="text-xs sm:text-sm text-base-content/80 mt-0.5">
-                    Explore Rails 8, React 19, Flutter 3, Garage S3, and Discipline-Driven Development details.
+                    Explore Rails 8, React 19, Flutter 3, Garage S3, and
+                    Discipline-Driven Development details.
                   </p>
                 </div>
               </div>
               <TextLink
                 to={`${AppRoutes.client.public.ROOT}#FAQ`}
-                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
               >
                 <span>View General FAQs</span>
                 <iconsLib.chevronRight className="w-4 h-4" />
               </TextLink>
             </div>
           ) : (
-            <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/40 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl shadow-[0_0_25px_rgba(var(--color-primary-rgb),0.2)]">
+            <div className="rounded-2xl bg-linear-to-r from-primary/15 via-primary/10 to-transparent border border-primary/30 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl">
               <div className="flex items-center gap-3.5 text-left">
-                <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/50 flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.4)]">
+                <div className="w-11 h-11 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center shrink-0">
                   <iconsLib.chartBar className="w-5 h-5 text-primary-light" />
                 </div>
                 <div>
@@ -235,13 +238,14 @@ export const FaqSection: React.FC<IFaqSectionProps> = ({
                     Looking for Starter Kit &amp; Boilerplate Comparisons?
                   </h3>
                   <p className="text-xs sm:text-sm text-base-content/80 mt-0.5">
-                    Comparing RexOne against ShipFast, Makerkit, Supastarter, Jumpstart Pro, SaaS Pegasus, and more?
+                    Comparing RexOne against ShipFast, Makerkit, Supastarter,
+                    Jumpstart Pro, SaaS Pegasus, and more?
                   </p>
                 </div>
               </div>
               <TextLink
                 to={`${AppRoutes.client.public.VS}#faq`}
-                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)] hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold text-xs sm:text-sm hover:bg-primary-dark transition-all hover:scale-105 inline-flex items-center gap-2 no-underline cursor-pointer"
               >
                 <span>View Comparison FAQs</span>
                 <iconsLib.chevronRight className="w-4 h-4" />
