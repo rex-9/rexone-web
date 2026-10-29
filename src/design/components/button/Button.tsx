@@ -14,6 +14,7 @@ export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   size?: ComponentSize;
   fullWidth?: boolean;
   isLoading?: boolean;
+  hasRunningLight?: boolean;
   href?: string;
   target?: string;
   rel?: string;
@@ -25,6 +26,7 @@ export const Button: React.FC<IButtonProps> = ({
   fullWidth = false,
   isLoading = false,
   disabled = false,
+  hasRunningLight,
   type = "button",
   href,
   target,
@@ -33,16 +35,19 @@ export const Button: React.FC<IButtonProps> = ({
   children,
   ...props
 }) => {
-  const isGlass = variant === ButtonVariants.GLASS && !disabled && !isLoading;
+  const showRunningLight =
+    hasRunningLight !== undefined
+      ? hasRunningLight
+      : variant === ButtonVariants.GLASS && !disabled && !isLoading;
 
   const variants: Record<ButtonVariant, string> = {
     // Primary: Normal state has border with emerald text -> Hover turns solid emerald with bright box shadow
     [ButtonVariants.PRIMARY]:
       "border border-glass-border bg-glass-tag-bg text-primary font-bold tracking-wider hover:bg-primary hover:text-primary-content hover:border-primary hover:shadow-neon-lg active:scale-95 transition-all duration-300",
 
-    // Glass: Frosted emerald glass card button matching the card styling
+    // Glass: Frosted glass button with running neon light borders
     [ButtonVariants.GLASS]:
-      "relative overflow-hidden border border-glass-border bg-glass-card backdrop-blur-md text-glow-white font-bold tracking-wider [text-shadow:0_0_6px_var(--color-glow-white),0_0_12px_var(--color-primary),0_0_20px_var(--color-primary-dark)] hover:bg-primary hover:text-primary-content hover:border-primary hover:shadow-neon-lg hover:[text-shadow:0_0_8px_var(--color-glow-white),0_0_16px_var(--color-primary)] active:scale-95 transition-all duration-400",
+      "relative overflow-hidden border border-glass-border bg-glass-card backdrop-blur-md text-glow-white font-bold tracking-wider hover:bg-primary hover:text-primary-content hover:border-primary hover:shadow-neon-lg active:scale-95 transition-all duration-300",
 
     // Secondary: Outlined emerald button
     [ButtonVariants.SECONDARY]:
@@ -73,12 +78,12 @@ export const Button: React.FC<IButtonProps> = ({
     className,
   );
 
-  const glassBorders = isGlass && (
+  const glassBorders = showRunningLight && (
     <>
-      <span className="absolute top-0 -left-full w-full h-px bg-linear-to-r from-transparent to-primary animate-neon-border-1" />
-      <span className="absolute -top-full right-0 w-px h-full bg-linear-to-b from-transparent to-primary animate-neon-border-2" />
-      <span className="absolute bottom-0 -right-full w-full h-px bg-linear-to-l from-transparent to-primary animate-neon-border-3" />
-      <span className="absolute -bottom-full left-0 w-px h-full bg-linear-to-t from-transparent to-primary animate-neon-border-4" />
+      <span className="absolute top-0 -left-full w-full h-px bg-linear-to-r from-transparent to-primary animate-neon-border-1 pointer-events-none" />
+      <span className="absolute -top-full right-0 w-px h-full bg-linear-to-b from-transparent to-primary animate-neon-border-2 pointer-events-none" />
+      <span className="absolute bottom-0 -right-full w-full h-px bg-linear-to-l from-transparent to-primary animate-neon-border-3 pointer-events-none" />
+      <span className="absolute -bottom-full left-0 w-px h-full bg-linear-to-t from-transparent to-primary animate-neon-border-4 pointer-events-none" />
     </>
   );
 

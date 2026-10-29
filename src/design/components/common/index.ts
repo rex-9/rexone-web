@@ -1,11 +1,11 @@
 export { HeadNavbar, HeadNavbarBrand } from "./HeadNavbar";
 export type { HeadNavbarProps } from "./HeadNavbar";
-export { ProfileAvatar, ProfileAvatar as AppAvatar } from "./ProfileAvatar";
-export { TextLink } from "./TextLink.tsx";
-export { Typography } from "./Typography.tsx";
-export { Badge, Badge as AppBadge } from "./Badge";
+export { ProfileAvatar } from "./ProfileAvatar";
+export { TextLink } from "./TextLink";
+export { Typography } from "./Typography";
+export { Badge } from "./Badge";
 export type { IBadgeProps } from "./Badge";
-export { StatusBadge, StatusBadge as AppStatusBadge } from "./StatusBadge";
+export { StatusBadge } from "./StatusBadge";
 export type { IStatusBadgeProps } from "./StatusBadge";
 export { PageHeader } from "./PageHeader";
 export type { IPageHeaderProps } from "./PageHeader";

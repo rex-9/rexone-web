@@ -33,7 +33,7 @@ export const Badge: React.FC<IBadgeProps> = ({
     [BadgeVariants.DEFAULT]:
       "bg-glass-card text-base-content border border-glass-border shadow-glass-card backdrop-blur-md font-medium",
     [BadgeVariants.NEON]:
-      "border border-glass-tag bg-glass-tag-bg text-base-content font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-primary-content hover:shadow-neon",
+      "border border-primary/70 bg-glass-tag-bg text-white font-semibold font-primary transition-all duration-200 hover:bg-glass-tag-bg-hover hover:border-primary hover:text-white hover:shadow-neon",
     [BadgeVariants.PRIMARY]:
       "bg-primary/20 text-secondary border border-primary/35 font-medium",
     [BadgeVariants.SECONDARY]:
@@ -49,11 +49,11 @@ export const Badge: React.FC<IBadgeProps> = ({
   };
 
   const sizes: Partial<Record<ComponentSize, string>> = {
-    [ComponentSizes.XS]: "px-2.5 py-0.5 text-xs rounded-full font-medium",
-    [ComponentSizes.SM]: "px-3 py-0.5 text-xs rounded-full font-medium",
-    [ComponentSizes.MD]: "px-3.5 py-1 text-sm rounded-full font-medium",
-    [ComponentSizes.LG]: "px-4 py-1.5 text-base rounded-full font-medium",
-    [ComponentSizes.XL]: "px-5 py-2 text-lg rounded-full font-medium",
+    [ComponentSizes.XS]: "px-2.5 py-0.5 text-xs rounded-lg font-medium",
+    [ComponentSizes.SM]: "px-3 py-1 text-xs rounded-lg font-medium",
+    [ComponentSizes.MD]: "px-3.5 py-1 text-sm rounded-lg font-medium",
+    [ComponentSizes.LG]: "px-4 py-1.5 text-base rounded-lg font-medium",
+    [ComponentSizes.XL]: "px-5 py-2 text-lg rounded-lg font-medium",
   };
 
   const badgeClassName = cn(
