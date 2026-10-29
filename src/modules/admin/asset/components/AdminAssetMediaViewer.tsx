@@ -10,10 +10,11 @@ import AssetController from "../../../asset/asset.controller";
 import type { IAdminAsset } from "../types";
 import type { IAssetPlaybackResponse } from "../../../../models";
 import {
-  ASSET_FORMATS,
   formatAssetFileSize,
   getAssetThumbnail,
   isImageAsset,
+  isVideoAsset,
+  isAudioAsset,
 } from "../constants";
 
 export interface IAdminAssetMediaViewerProps {
@@ -31,17 +32,8 @@ export const AdminAssetMediaViewer: React.FC<IAdminAssetMediaViewerProps> = ({
 }) => {
   const t = useTranslate();
 
-  const formatLower = (asset.format || "").toLowerCase();
-  const extLower = (asset.extension || "").toLowerCase();
-
-  const isVideo =
-    formatLower === ASSET_FORMATS.VIDEO ||
-    ["mp4", "webm", "mkv", "mov", "m4v"].includes(extLower);
-
-  const isAudio =
-    formatLower === ASSET_FORMATS.AUDIO ||
-    ["mp3", "m4a", "wav", "aac", "ogg", "flac"].includes(extLower);
-
+  const isVideo = isVideoAsset(asset);
+  const isAudio = isAudioAsset(asset);
   const isImage = isImageAsset(asset);
 
   const [playback, setPlayback] = useState<IAssetPlaybackResponse | null>(null);

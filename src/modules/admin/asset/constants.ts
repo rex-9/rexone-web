@@ -99,6 +99,34 @@ export const IMAGE_ASSET_TYPES: readonly string[] = [
   ASSET_TYPES.THUMBNAIL,
 ];
 
+export const VIDEO_EXTENSIONS: readonly string[] = [
+  "mp4",
+  "mov",
+  "avi",
+  "webm",
+  "mkv",
+  "m4v",
+];
+
+export const AUDIO_EXTENSIONS: readonly string[] = [
+  "mp3",
+  "wav",
+  "m4a",
+  "aac",
+  "ogg",
+  "flac",
+  "amr",
+];
+
+export const IMAGE_EXTENSIONS: readonly string[] = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "webp",
+  "svg",
+];
+
 export const isSrtSubtitleFile = (file: File): boolean =>
   /\.srt$/i.test(file.name);
 
@@ -120,16 +148,62 @@ export const isImageAsset = (
   asset?: {
     format?: string | null;
     type?: string | null;
+    extension?: string | null;
     url?: string | null;
   } | null,
 ): boolean => {
   if (!asset) return false;
-  if (asset.format === ASSET_FORMATS.IMAGE) return true;
+  const format = (asset.format || "").toLowerCase();
+  const ext = (asset.extension || "").toLowerCase().replace(/^\./, "");
+  if (format === ASSET_FORMATS.IMAGE) return true;
   if (asset.type && IMAGE_ASSET_TYPES.includes(asset.type)) return true;
+  if (ext && IMAGE_EXTENSIONS.includes(ext)) return true;
   if (
     asset.url &&
     (asset.url.includes("googleusercontent.com") ||
       /\.(jpe?g|png|gif|webp|svg|bmp|ico)($|\?)/i.test(asset.url))
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const isVideoAsset = (
+  asset?: {
+    format?: string | null;
+    extension?: string | null;
+    url?: string | null;
+  } | null,
+): boolean => {
+  if (!asset) return false;
+  const format = (asset.format || "").toLowerCase();
+  const ext = (asset.extension || "").toLowerCase().replace(/^\./, "");
+  if (format === ASSET_FORMATS.VIDEO) return true;
+  if (ext && VIDEO_EXTENSIONS.includes(ext)) return true;
+  if (
+    asset.url &&
+    /\.(mp4|webm|mkv|mov|m4v|avi)($|\?)/i.test(asset.url)
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const isAudioAsset = (
+  asset?: {
+    format?: string | null;
+    extension?: string | null;
+    url?: string | null;
+  } | null,
+): boolean => {
+  if (!asset) return false;
+  const format = (asset.format || "").toLowerCase();
+  const ext = (asset.extension || "").toLowerCase().replace(/^\./, "");
+  if (format === ASSET_FORMATS.AUDIO) return true;
+  if (ext && AUDIO_EXTENSIONS.includes(ext)) return true;
+  if (
+    asset.url &&
+    /\.(mp3|m4a|wav|aac|ogg|flac|amr)($|\?)/i.test(asset.url)
   ) {
     return true;
   }
