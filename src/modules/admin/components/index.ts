@@ -2,6 +2,12 @@ export { AdminActionButton } from "./AdminActionButton";
 export { AdminTableActions } from "./AdminTableActions";
 export type { IAdminTableAction } from "./AdminTableActions";
 export { AdminLayout } from "./AdminLayout";
+export {
+  AdminSidebarNav,
+  ADMIN_NAV_SECTIONS,
+  ADMIN_NAV_ITEMS,
+} from "./AdminSidebarNav";
+export type { IAdminNavItem, IAdminNavSection } from "./AdminSidebarNav";
 export { CopyButton } from "../../../design";
 export {  AdminState } from "./AdminState";
 export { AdminPagination } from "./AdminPagination";

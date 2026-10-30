@@ -9,7 +9,7 @@ import { Button, ButtonVariants, ComponentSizes } from "../../../design";
 import { iconsLib } from "../../../assets";
 import { useTranslate, AppLocales } from "../../../locales";
 
-interface IAdminNavItem {
+export interface IAdminNavItem {
   labelKey: string;
   to: string;
   resource: AdminResource;
@@ -18,7 +18,7 @@ interface IAdminNavItem {
   superAdminOnly?: boolean;
 }
 
-interface IAdminNavSection {
+export interface IAdminNavSection {
   id: string;
   labelKey: string;
   items: IAdminNavItem[];
@@ -29,7 +29,7 @@ interface IAdminSidebarNavProps {
   isCollapsed?: boolean;
 }
 
-const navSections: IAdminNavSection[] = [
+export const ADMIN_NAV_SECTIONS: IAdminNavSection[] = [
   {
     id: "overview",
     labelKey: AppLocales.Admin.Nav.Sections.Overview,
@@ -190,6 +190,10 @@ const navSections: IAdminNavSection[] = [
   },
 ];
 
+export const ADMIN_NAV_ITEMS: IAdminNavItem[] = ADMIN_NAV_SECTIONS.flatMap(
+  (section) => section.items,
+);
+
 export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
   onNavigate,
   isCollapsed = false,
@@ -202,7 +206,7 @@ export const AdminSidebarNav: React.FC<IAdminSidebarNavProps> = ({
 
   const enabledItems = useMemo(
     () =>
-      navSections
+      ADMIN_NAV_SECTIONS
         .map((section) => ({
           ...section,
           items: section.items.filter((item) =>

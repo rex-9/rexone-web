@@ -6,12 +6,12 @@ import {
   parseRecord,
 } from "../../../services/api.service";
 import { ASSET_STATUSES } from "./constants";
-import { IAdminAsset, IStorageStats } from "./types";
+import { IStorageStats } from "./types";
 
 class AssetController {
   async getAssets(params?: Record<string, string | number>): Promise<{
     success: boolean;
-    assets: IAdminAsset[];
+    assets: IAsset[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
@@ -19,7 +19,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(response);
+      const { records, pagination } = parsePagyList<IAsset>(response);
       return { success: true, assets: records, pagination };
     }
 
@@ -36,7 +36,7 @@ class AssetController {
 
   async getAsset(id: string): Promise<{
     success: boolean;
-    asset?: IAdminAsset;
+    asset?: IAsset;
     error?: string;
   }> {
     const response = await Admin.AssetService.getAsset(id);
@@ -45,7 +45,7 @@ class AssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord<IAdminAsset>(data),
+        asset: parseRecord<IAsset>(data),
       };
     }
 
@@ -57,7 +57,7 @@ class AssetController {
 
   async getDiscardedAssets(params?: Record<string, string | number>): Promise<{
     success: boolean;
-    assets: IAdminAsset[];
+    assets: IAsset[];
     pagination: IApiPagination | null;
     error?: string;
   }> {
@@ -65,7 +65,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(response);
+      const { records, pagination } = parsePagyList<IAsset>(response);
       return { success: true, assets: records, pagination };
     }
 
@@ -127,7 +127,7 @@ class AssetController {
     >,
   ): Promise<{
     success: boolean;
-    asset?: IAdminAsset;
+    asset?: IAsset;
     message?: string;
     error?: string;
   }> {
@@ -137,7 +137,7 @@ class AssetController {
     if (status?.success && data) {
       return {
         success: true,
-        asset: parseRecord<IAdminAsset>(data),
+        asset: parseRecord<IAsset>(data),
         message: status.message,
       };
     }
@@ -213,7 +213,7 @@ class AssetController {
 
   async compressAsset(id: string): Promise<{
     success: boolean;
-    asset?: IAdminAsset;
+    asset?: IAsset;
     isOptimal?: boolean;
     message?: string;
     error?: string;
@@ -222,7 +222,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const asset = parseRecord<IAdminAsset>(data);
+      const asset = parseRecord<IAsset>(data);
       return {
         success: true,
         asset,
@@ -233,7 +233,7 @@ class AssetController {
 
     const err = getApiError(response, "Failed to compress asset");
     const rawAsset = data;
-    const parsedAsset = rawAsset ? parseRecord<IAdminAsset>(rawAsset) : undefined;
+    const parsedAsset = rawAsset ? parseRecord<IAsset>(rawAsset) : undefined;
     const isOptimal =
       parsedAsset?.status === ASSET_STATUSES.OPTIMAL ||
       err?.toLowerCase().includes("optimal") ||
@@ -267,7 +267,7 @@ class AssetController {
       ? {
           success: true,
           asset: data
-            ? parseRecord<IAdminAsset>(data)
+            ? parseRecord<IAsset>(data)
             : undefined,
           message: status.message,
         }
@@ -284,7 +284,7 @@ class AssetController {
       ? {
           success: true,
           asset: data
-            ? parseRecord<IAdminAsset>(data)
+            ? parseRecord<IAsset>(data)
             : undefined,
           message: status.message,
         }
@@ -301,7 +301,7 @@ class AssetController {
       ? {
           success: true,
           asset: data
-            ? parseRecord<IAdminAsset>(data)
+            ? parseRecord<IAsset>(data)
             : undefined,
           message: status.message,
         }

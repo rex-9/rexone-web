@@ -6,7 +6,7 @@ import { useTranslate, AppLocales } from "../../../../locales";
 import { Badge, Button, ConfirmDialog, ListTile, SearchInput } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { useLoading } from "../../../../contexts";
-import type { IAdminAsset } from "../types";
+import type { IAsset } from "../../../../models";
 import { ASSET_TYPES, formatAssetFileSize } from "../constants";
 import { Admin } from "../..";
 
@@ -29,11 +29,11 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
 }) => {
   const t = useTranslate();
   const { isLoading, setLoading } = useLoading();
-  const [parentAssets, setParentAssets] = useState<IAdminAsset[]>([]);
+  const [parentAssets, setParentAssets] = useState<IAsset[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [pendingReplaceParent, setPendingReplaceParent] =
-    useState<IAdminAsset | null>(null);
+    useState<IAsset | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -97,7 +97,7 @@ export const AdminParentAssetSelect: React.FC<IAdminParentAssetSelectProps> = ({
     return eligibleParents.find((p) => p.id === value);
   }, [eligibleParents, value]);
 
-  const handleSelect = (parent: IAdminAsset) => {
+  const handleSelect = (parent: IAsset) => {
     const isThumbnail = targetType === ASSET_TYPES.THUMBNAIL;
     const hasExistingThumbnail =
       isThumbnail &&

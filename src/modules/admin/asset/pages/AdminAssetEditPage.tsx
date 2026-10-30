@@ -10,8 +10,7 @@ import { iconsLib } from "../../../../assets";
 import { Button } from "../../../../design";
 import { ButtonVariants, ButtonSizes } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
-import type { IAdminAsset } from "../types";
-import type { IAssetChild } from "../../../../models";
+import type { IAsset, IAssetChild } from "../../../../models";
 import SocketService, {
   ISocketMessage,
 } from "../../../../services/socket.service";
@@ -34,7 +33,7 @@ export const AdminAssetEditPage: React.FC = () => {
   const toast = useToast();
   const { setLoading } = useLoading();
 
-  const [asset, setAsset] = useState<IAdminAsset | null>(null);
+  const [asset, setAsset] = useState<IAsset | null>(null);
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
   const [isCompressing, setIsCompressing] = useState(false);
@@ -76,7 +75,7 @@ export const AdminAssetEditPage: React.FC = () => {
         const thumbnail =
           eventType === NOTIFICATION_SOCKET_TYPES.ASSET_THUMBNAIL_GENERATED &&
           event.data?.thumbnail
-            ? (event.data.thumbnail as NonNullable<IAdminAsset["children"]>["thumbnail"])
+            ? (event.data.thumbnail as NonNullable<IAsset["children"]>["thumbnail"])
             : prev.children?.thumbnail;
         return {
           ...prev,

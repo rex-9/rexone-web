@@ -63,7 +63,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           size={ComponentSizes.SM}
           onClick={toggleCollapse}
           className={cn(
-            "!h-9 !w-9 !p-0 !min-h-0 text-base-content opacity-70 hover:opacity-100 hover:bg-glass-card/60 rounded-lg transition-colors hidden lg:inline-flex items-center justify-center shrink-0 shadow-none border-0",
+            "h-9! w-9! p-0! min-h-0! text-base-content opacity-70 hover:opacity-100 hover:bg-glass-card/60 rounded-lg transition-colors hidden lg:inline-flex items-center justify-center shrink-0 shadow-none border-0",
           )}
           title={
             isCollapsed
@@ -85,7 +85,7 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
           variant={ButtonVariants.GLASS}
           size={ComponentSizes.SM}
           onClick={closeMobile}
-          className="!h-9 !w-9 !p-0 !min-h-0 text-base-content opacity-70 hover:opacity-100 hover:bg-glass-card/60 rounded-lg transition-colors lg:hidden flex items-center justify-center shrink-0 shadow-none border-0"
+          className="h-9! w-9! p-0! min-h-0! text-base-content opacity-70 hover:opacity-100 hover:bg-glass-card/60 rounded-lg transition-colors lg:hidden flex items-center justify-center shrink-0 shadow-none border-0"
           aria-label={t(AppLocales.Admin.Layout.CloseNav)}
         >
           <iconsLib.close className="h-5 w-5" />

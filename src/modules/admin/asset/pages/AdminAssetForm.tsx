@@ -2,8 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { useLoading } from "../../../../contexts/LoadingContext";
-import type { IAssetChild } from "../../../../models";
-import type { IAdminAsset } from "../types";
+import type { IAsset, IAssetChild } from "../../../../models";
 import {
   ASSET_TYPE_OPTIONS,
   ASSET_TYPES,
@@ -56,7 +55,7 @@ export interface IFileItem {
 
 export interface IAdminAssetFormProps {
   mode: typeof ADMIN_ACTIONS.CREATE | typeof ADMIN_ACTIONS.EDIT;
-  asset?: IAdminAsset;
+  asset?: IAsset;
   onUploadBatch?: (
     files: File[],
     type: string,
@@ -404,7 +403,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 <Button
                   variant={ButtonVariants.FLAT}
                   size={ComponentSizes.XS}
-                  className="bg-white/[0.04] hover:bg-white/[0.08] text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
+                  className="bg-white/4 hover:bg-white/8 text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
                   onClick={() =>
                     window.open(
                       "https://tinypng.com",
@@ -421,7 +420,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                 <Button
                   variant={ButtonVariants.FLAT}
                   size={ComponentSizes.XS}
-                  className="bg-white/[0.04] hover:bg-white/[0.08] text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
+                  className="bg-white/4 hover:bg-white/8 text-primary border border-glass-border px-3 py-2 text-xs justify-between rounded-lg font-medium"
                   onClick={() =>
                     window.open(
                       "https://www.freeconvert.com/video-compressor",
@@ -541,7 +540,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
 
                 {/* Selected Files Tray */}
                 {fileItems.length > 0 && (
-                  <div className="border border-glass-border rounded-xl p-4 bg-white/[0.04] space-y-3">
+                  <div className="border border-glass-border rounded-xl p-4 bg-white/4 space-y-3">
                     <div className="flex items-center justify-between text-xs font-medium text-base-content/80 pb-2 border-b border-glass-border">
                       <span>
                         {t(AppLocales.Admin.Assets.UploadDialog.SelectedFiles)}{" "}
@@ -787,7 +786,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     <Button
                       variant={ButtonVariants.FLAT}
                       size={ComponentSizes.SM}
-                      className="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                      className="border border-glass-border bg-white/4 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                       onClick={onDownload}
                     >
                       <iconsLib.download className="w-4 h-4 text-base-content/70" />
@@ -800,7 +799,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                       <Button
                         variant={ButtonVariants.FLAT}
                         size={ComponentSizes.SM}
-                        className="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        className="border border-glass-border bg-white/4 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onClick={onRegenerateThumbnail}
                         isLoading={isUpdatingThumbnail}
                         disabled={isUpdatingThumbnail}

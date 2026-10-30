@@ -35,6 +35,7 @@ export interface IAsset {
   duration_secs?: number | null;
   source: string;
   status?: string | null;
+  storage_key?: string | null;
   assetable_type?: string | null;
   assetable_id?: string | null;
   parent_asset_id?: string | null;
@@ -42,7 +43,7 @@ export interface IAsset {
     thumbnail?: IAssetChild | null;
     subtitles?: IAssetChild[];
   };
-  created_by_id?: string | null;
+  discarded_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -62,7 +63,6 @@ export interface IAssetChild {
   duration_secs?: IAsset["duration_secs"];
   parent_asset_id?: IAsset["parent_asset_id"];
   discarded_at?: string | null;
-  undiscarded_at?: string | null;
   created_at: IAsset["created_at"];
   /**
    * Pre-fetched raw subtitle text content (FAST PATH).

@@ -12,7 +12,7 @@ export const SupportLove: React.FC = () => {
       <Button
         variant={ButtonVariants.FLAT}
         onClick={() => setShowSnackbar(!showSnackbar)}
-        className="p-8 !px-8 min-w-10 min-h-10 flex items-center justify-center"
+        className="p-8 px-8! min-w-10 min-h-10 flex items-center justify-center"
       >
         <span className="w-5 h-5 flex items-center justify-center">
           {!showSnackbar ? <iconsLib.heart /> : <iconsLib.error />}

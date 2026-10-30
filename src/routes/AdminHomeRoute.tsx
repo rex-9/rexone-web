@@ -1,47 +1,8 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import AppRoutes from "../AppRoutes";
 import { NotFoundPage } from "../design/pages";
 import { usePermissions } from "../hooks";
-import type { AdminResource } from "../modules/admin/role";
-import { ADMIN_ACTIONS, ADMIN_RESOURCES } from "../modules/admin";
-
-const adminEntryRoutes: Array<{
-  action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
-  resource: AdminResource;
-  path: string;
-  superAdminOnly?: boolean;
-}> = [
-  {
-    resource: ADMIN_RESOURCES.ANALYTICS,
-    path: AppRoutes.client.protected.admin.ANALYTICS,
-  },
-  {
-    resource: ADMIN_RESOURCES.USERS,
-    path: AppRoutes.client.protected.admin.USERS,
-  },
-  {
-    resource: ADMIN_RESOURCES.CLIENT_VERSIONS,
-    path: AppRoutes.client.protected.admin.VERSIONS,
-    superAdminOnly: true,
-  },
-  {
-    resource: ADMIN_RESOURCES.NOTIFICATIONS,
-    path: AppRoutes.client.protected.admin.NOTIFICATIONS,
-  },
-  {
-    resource: ADMIN_RESOURCES.PAYMENT_PRODUCTS,
-    path: AppRoutes.client.protected.admin.PRODUCTS,
-  },
-  {
-    resource: ADMIN_RESOURCES.CHAT_ROOMS,
-    path: AppRoutes.client.protected.admin.CHAT_ROOMS,
-  },
-  {
-    resource: ADMIN_RESOURCES.CHAT_MESSAGES,
-    path: AppRoutes.client.protected.admin.CHAT_MESSAGES,
-  },
-];
+import { ADMIN_ACTIONS, ADMIN_NAV_ITEMS } from "../modules/admin";
 
 export const AdminHomeRoute: React.FC = () => {
   const { can, isAdmin, isLoading, isSuperAdmin } = usePermissions();
@@ -54,14 +15,13 @@ export const AdminHomeRoute: React.FC = () => {
     );
   }
 
-  const entry =
-    isAdmin
-      ? adminEntryRoutes.find((item) =>
-          item.superAdminOnly
-            ? isSuperAdmin
-            : can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
-        )
-      : null;
+  const entry = isAdmin
+    ? ADMIN_NAV_ITEMS.find((item) =>
+        item.superAdminOnly
+          ? isSuperAdmin
+          : can(item.action ?? ADMIN_ACTIONS.READ, item.resource),
+      )
+    : null;
 
-  return entry ? <Navigate to={entry.path} replace /> : <NotFoundPage />;
+  return entry ? <Navigate to={entry.to} replace /> : <NotFoundPage />;
 };
