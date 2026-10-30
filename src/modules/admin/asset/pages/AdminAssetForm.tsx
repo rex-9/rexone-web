@@ -133,14 +133,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
       setEditParentAssetId(asset.parent_asset_id ?? "");
       setParentAssetError("");
     }
-  }, [
-    asset?.id,
-    asset?.name,
-    asset?.title,
-    asset?.description,
-    asset?.type,
-    asset?.parent_asset_id,
-  ]);
+  }, [asset]);
 
   const [alertMessage, setAlertMessage] = useState("");
   const isChildAsset = Boolean(asset?.parent_asset_id);
@@ -826,7 +819,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                         fullWidth={false}
                         size={ComponentSizes.SM}
                         variant={ButtonVariants.FLAT}
-                        buttonClassName="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        buttonClassName="border border-glass-border bg-white/4 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (file) void onUploadThumbnail(file);
                         }}
@@ -849,12 +842,12 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     asset.format === ASSET_FORMATS.AUDIO) &&
                     onUploadSubtitle && (
                       <FileInput
-                        accept=".srt"
+                        accept=".srt,.vtt"
                         disabled={isUpdatingSubtitle}
                         fullWidth={false}
                         size={ComponentSizes.SM}
                         variant={ButtonVariants.FLAT}
-                        buttonClassName="border border-glass-border bg-white/[0.04] hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
+                        buttonClassName="border border-glass-border bg-white/4 hover:border-primary/40 hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1.5"
                         onChange={(file) => {
                           if (!file) return;
                           if (!isSrtSubtitleFile(file)) {

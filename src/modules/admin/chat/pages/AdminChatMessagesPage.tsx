@@ -125,7 +125,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
     void loadMessages();
   }, [loadMessages]);
 
-  const handleUndiscard = async (message: IAdminChatMessage) => {
+  const handleUndiscard = useCallback(async (message: IAdminChatMessage) => {
     setLoading(true);
     const result = await ChatController.undiscardMessage(message.id);
     setLoading(false);
@@ -136,7 +136,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Chat.Errors.UpdateMessage));
     }
-  };
+  }, [loadMessages, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
     () => [
@@ -216,7 +216,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
         ),
       },
     ],
-    [navigate, t, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {

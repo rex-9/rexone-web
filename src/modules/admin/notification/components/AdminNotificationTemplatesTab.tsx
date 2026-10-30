@@ -29,6 +29,7 @@ import {
 import { useTranslate, AppLocales } from "../../../../locales";
 import NotificationController from "../notification.controller";
 import type { IAdminNotificationTemplate } from "../types";
+import type { IApiPagination } from "../../../../models";
 import { useToast } from "../../../../contexts/ToastContext";
 import { useLoading } from "../../../../contexts/LoadingContext";
 import { NOTIFICATION_CATEGORIES } from "../constants";
@@ -39,7 +40,7 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading, setLoading } = useLoading();
   const [templates, setTemplates] = useState<IAdminNotificationTemplate[]>([]);
-  const [pagination, setPagination] = useState<any>(null);
+  const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
@@ -61,13 +62,15 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
 
         if (res.success) {
           setTemplates(res.templates);
-          setPagination(res.pagination);
+          setPagination(res.pagination ?? null);
           setCurrentPage(page);
         } else {
           toast.error(res.error || "Failed to load templates");
         }
-      } catch (err: any) {
-        toast.error(err.message || "Failed to load templates");
+      } catch (err: unknown) {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to load templates",
+        );
       } finally {
         setLoading(false, { overlay: true });
       }
@@ -95,8 +98,10 @@ export const AdminNotificationTemplatesTab: React.FC = () => {
       } else {
         toast.error(res.error || "Failed to delete template");
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to delete template");
+    } catch (err: unknown) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete template",
+      );
     } finally {
       setLoading(false, { overlay: false });
     }

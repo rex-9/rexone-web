@@ -95,7 +95,16 @@ export const useSocket = () => {
       SocketService.removeListener(handleNotification);
       // Don't disconnect here - let the effect handle it
     };
-  }, [token, isAuthenticated, success, error, info, warning]);
+  }, [
+    token,
+    isAuthenticated,
+    refreshCurrentUser,
+    signout,
+    success,
+    error,
+    info,
+    warning,
+  ]);
 
   const sendMessage = useCallback(
     (channel: string, message: string, data: Record<string, unknown> = {}) => {

@@ -146,7 +146,6 @@ export const AdminRedemptionsTable: React.FC<IAdminRedemptionsTableProps> = ({
   ]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadRedemptions();
   }, [loadRedemptions]);
 

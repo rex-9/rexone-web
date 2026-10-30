@@ -114,7 +114,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
     void loadRooms();
   }, [loadRooms]);
 
-  const handleUndiscard = async (room: IAdminChatRoom) => {
+  const handleUndiscard = useCallback(async (room: IAdminChatRoom) => {
     setLoading(true);
     const result = await ChatController.undiscardRoom(room.id);
     setLoading(false);
@@ -125,7 +125,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Chat.Errors.UpdateRoom));
     }
-  };
+  }, [loadRooms, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
     () => [
@@ -203,7 +203,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
         ),
       },
     ],
-    [navigate, t, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {

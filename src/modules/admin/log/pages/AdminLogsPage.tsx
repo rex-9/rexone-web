@@ -175,7 +175,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     }
   }, [loadLogs, permissionsLoading]);
 
-  const handleUndiscard = async (log: IAdminLog) => {
+  const handleUndiscard = useCallback(async (log: IAdminLog) => {
     setLoading(true);
     const result = await Admin.LogController.undiscardLog(log.id);
     setLoading(false);
@@ -188,7 +188,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         result.error || t(AppLocales.Admin.Logs.Errors.RestoreFailed),
       );
     }
-  };
+  }, [loadLogs, setLoading, t, toast]);
 
   const handleDiscard = async () => {
     if (!discardTarget) return;
@@ -319,7 +319,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         ),
       },
     ],
-    [t, view],
+    [handleUndiscard, t, view],
   );
 
   return (

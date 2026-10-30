@@ -181,7 +181,7 @@ export const AdminUserNotificationsPage: React.FC<
 
       if (res.success) {
         setNotifications(res.notifications);
-        setPagination(res.pagination);
+        setPagination(res.pagination ?? null);
       } else {
         toast.error(
           res.error || t(AppLocales.Admin.Notifications.Errors.LoadTemplates),

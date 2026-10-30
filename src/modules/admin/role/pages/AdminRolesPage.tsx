@@ -86,7 +86,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     void fetchRoles();
   }, [fetchRoles]);
 
-  const handleUndiscard = async (role: IAdminRole) => {
+  const handleUndiscard = useCallback(async (role: IAdminRole) => {
     setLoading(true);
     const result = await RoleController.undiscardRole(role.id);
     setLoading(false);
@@ -97,7 +97,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Roles.Errors.Update));
     }
-  };
+  }, [fetchRoles, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminRole>[]>(
     () => [
@@ -189,7 +189,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
         ),
       },
     ],
-    [navigate, t, toast, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {

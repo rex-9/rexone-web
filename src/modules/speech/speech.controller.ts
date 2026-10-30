@@ -23,11 +23,11 @@ export class SpeechController {
     try {
       await SpeechService.playText(text, voiceName);
       return { success: true };
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
         error:
-          err?.message ||
+          (err instanceof Error ? err.message : undefined) ||
           translate(AppLocales.Speech.PlaybackFailed) ||
           translate(AppLocales.Speech.TtsFailed),
       };

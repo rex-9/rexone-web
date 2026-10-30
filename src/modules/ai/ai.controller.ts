@@ -199,43 +199,55 @@ class AiController {
     }
 
     const response = await AiService.chat(request);
-    const envelope = response.data || {};
-    const { status, data, meta } = envelope as {
+    const envelope = (response.data || {}) as {
       status?: IApiResponseStatus;
-      data?: any;
-      meta?: any;
+      data?: Record<string, unknown> | Array<IJsonApiResource<IMessage>>;
+      meta?: Record<string, unknown>;
+      messages?: Array<IJsonApiResource<IMessage>>;
+      room_id?: string;
     };
+    const { status, data, meta } = envelope;
 
     if (status?.success && data) {
-      const envelopeAny = envelope as Record<string, any>;
+      const dataObj = !Array.isArray(data) ? data : {};
+      const dataMeta =
+        dataObj.meta && typeof dataObj.meta === "object"
+          ? (dataObj.meta as Record<string, unknown>)
+          : undefined;
       const rawList =
-        data.messages ||
+        dataObj.messages ||
         meta?.messages ||
-        data.meta?.messages ||
-        envelopeAny.messages;
+        dataMeta?.messages ||
+        envelope.messages;
       let parsedMessages: IMessage[] = [];
 
       if (Array.isArray(rawList) && rawList.length > 0) {
-        parsedMessages = rawList.map((m: any) => parseRecord<IMessage>(m));
+        parsedMessages = rawList.map((m) =>
+          parseRecord<IMessage>(m as IJsonApiResource<IMessage>),
+        );
       } else if (Array.isArray(data)) {
-        parsedMessages = data.map((m: any) => parseRecord<IMessage>(m));
-      } else if (data.data) {
-        const single = parseRecord<IMessage>(data.data);
+        parsedMessages = data.map((m) => parseRecord<IMessage>(m));
+      } else if (dataObj.data && typeof dataObj.data === "object") {
+        const single = parseRecord<IMessage>(
+          dataObj.data as IJsonApiResource<IMessage>,
+        );
         if (single) {
           parsedMessages = [single];
         }
       } else {
-        const single = parseRecord<IMessage>(data);
+        const single = parseRecord<IMessage>(
+          dataObj as unknown as IJsonApiResource<IMessage>,
+        );
         if (single) {
           parsedMessages = [single];
         }
       }
 
       const resolvedRoomId =
-        meta?.room_id ||
-        data.meta?.room_id ||
-        data.room_id ||
-        envelopeAny.room_id ||
+        (typeof meta?.room_id === "string" ? meta.room_id : undefined) ||
+        (typeof dataMeta?.room_id === "string" ? dataMeta.room_id : undefined) ||
+        (typeof dataObj.room_id === "string" ? dataObj.room_id : undefined) ||
+        envelope.room_id ||
         parsedMessages[0]?.room_id ||
         roomId ||
         this.currentRoomId ||

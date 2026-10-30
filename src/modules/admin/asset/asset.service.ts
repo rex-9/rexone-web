@@ -11,8 +11,8 @@ import type { IAdminAsset, IStorageStats } from "./types";
 class AssetService {
   async getAssets(
     params?: Record<string, string | number>,
-  ): Promise<IApiResponse<IApiEnvelope<{ assets: IAdminAsset[] }>>> {
-    return api.get<{ assets: IAdminAsset[] }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>[]>>> {
+    return api.get<IJsonApiResource<IAdminAsset>[]>(
       AppRoutes.server.protected.admin.ASSETS,
       params,
     );
@@ -28,8 +28,8 @@ class AssetService {
 
   async getDiscardedAssets(
     params?: Record<string, string | number>,
-  ): Promise<IApiResponse<IApiEnvelope<{ assets: IAdminAsset[] }>>> {
-    return api.get<{ assets: IAdminAsset[] }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAsset>[]>>> {
+    return api.get<IJsonApiResource<IAdminAsset>[]>(
       AppRoutes.server.protected.admin.ASSETS,
       { ...params, discarded: "true" },
     );
