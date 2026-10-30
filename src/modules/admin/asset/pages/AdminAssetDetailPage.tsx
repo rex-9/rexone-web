@@ -19,8 +19,7 @@ import { AppLocales, useTranslate } from "../../../../locales";
 import AssetController from "../asset.controller";
 import { formatAssetFileSize, getAssetChildren } from "../constants";
 import { AdminAssetChildrenTable, AdminAssetMediaViewer } from "../components";
-import type { IAdminAsset } from "../types";
-import type { IAssetChild } from "../../../../models";
+import type { IAsset, IAssetChild } from "../../../../models";
 
 const loadAsset = async (id: string) => {
   const result = await AssetController.getAsset(id);
@@ -31,14 +30,14 @@ export const AdminAssetDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const toast = useToast();
   const t = useTranslate();
-  const { record: asset, error, reload } = useAdminDetail<IAdminAsset>(id, loadAsset);
+  const { record: asset, error, reload } = useAdminDetail<IAsset>(id, loadAsset);
   const listPath = AppRoutes.client.protected.admin.ASSETS;
 
   const [childToDiscard, setChildToDiscard] = useState<IAssetChild | null>(null);
   const [childToUndiscard, setChildToUndiscard] = useState<IAssetChild | null>(null);
   const [childToDestroy, setChildToDestroy] = useState<IAssetChild | null>(null);
 
-  const handleDownload = async (target: IAdminAsset | IAssetChild) => {
+  const handleDownload = async (target: IAsset | IAssetChild) => {
     const result = await AssetController.getDownloadUrl(target.id);
     if (!result.success || !result.url) return;
 

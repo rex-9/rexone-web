@@ -127,6 +127,14 @@ export const IMAGE_EXTENSIONS: readonly string[] = [
   "svg",
 ];
 
+export const DEFAULT_ASSET_PICKER_ACCEPT = "image/*,video/*,audio/*";
+
+export const ASSET_PICKER_ACCEPT_BY_FORMAT: Record<string, string> = {
+  [ASSET_FORMATS.AUDIO]: "audio/*,.m4a,.mp3,.wav,.aac,.ogg",
+  [ASSET_FORMATS.IMAGE]: "image/*",
+  [ASSET_FORMATS.VIDEO]: "video/*",
+};
+
 export const isSrtSubtitleFile = (file: File): boolean =>
   /\.(srt|vtt)$/i.test(file.name);
 

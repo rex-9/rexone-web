@@ -7,8 +7,7 @@ import { ButtonVariants } from "../../../../design/constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AppConfig from "../../../../AppConfig";
 import AssetController from "../../../asset/asset.controller";
-import type { IAdminAsset } from "../types";
-import type { IAssetPlaybackResponse } from "../../../../models";
+import type { IAsset, IAssetPlaybackResponse } from "../../../../models";
 import {
   formatAssetFileSize,
   getAssetThumbnail,
@@ -18,7 +17,7 @@ import {
 } from "../constants";
 
 export interface IAdminAssetMediaViewerProps {
-  asset: IAdminAsset;
+  asset: IAsset;
   onDownload?: () => void;
   showDownload?: boolean;
   className?: string;

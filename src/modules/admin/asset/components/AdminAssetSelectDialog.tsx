@@ -1,20 +1,27 @@
 // src/modules/admin/asset/components/AdminAssetSelectDialog.tsx
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Dialog, Button, SearchInput, Image, Badge } from "../../../../design";
 import { ButtonVariants, ComponentSizes } from "../../../../design/constants";
 import { iconsLib } from "../../../../assets";
 import { useTranslate, AppLocales } from "../../../../locales";
 import { useLoading } from "../../../../contexts/LoadingContext";
-import type { IAdminAsset } from "../types";
-import { formatAssetFileSize } from "../constants";
-import type { IApiPagination } from "../../../../models";
+import { useToast } from "../../../../contexts/ToastContext";
+import {
+  ASSET_PICKER_ACCEPT_BY_FORMAT,
+  ASSET_TYPES,
+  DEFAULT_ASSET_PICKER_ACCEPT,
+  formatAssetFileSize,
+  getAssetThumbnail,
+  isAudioAsset,
+} from "../constants";
+import type { IApiPagination, IAsset } from "../../../../models";
 import { Admin } from "../..";
 
 export interface IAdminAssetSelectDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (asset: IAdminAsset) => void;
+  onSelect: (asset: IAsset) => void;
   assetType?: string;
   format?: string;
   title?: string;
@@ -31,12 +38,15 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
   selectedAssetId,
 }) => {
   const t = useTranslate();
+  const toast = useToast();
   const { isLoading, setLoading } = useLoading();
-  const [assets, setAssets] = useState<IAdminAsset[]>([]);
+  const [assets, setAssets] = useState<IAsset[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [selectedAsset, setSelectedAsset] = useState<IAdminAsset | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<IAsset | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const limit = 12;
 
@@ -96,6 +106,38 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const result = await Admin.AssetController.uploadAsset(file, {
+        type: assetType || ASSET_TYPES.GENERAL,
+        title: file.name.replace(/\.[^/.]+$/, ""),
+      });
+
+      if (result.success && result.asset) {
+        toast.success(t(AppLocales.Admin.Assets.Toasts.UploadSuccess));
+        setSelectedAsset(result.asset);
+        await fetchAssets(1, search);
+      } else {
+        toast.error(
+          result.error || t(AppLocales.Admin.Assets.Errors.UploadFailed),
+        );
+      }
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const acceptAttribute =
+    (format && ASSET_PICKER_ACCEPT_BY_FORMAT[format]) ||
+    DEFAULT_ASSET_PICKER_ACCEPT;
+
   const totalPages =
     pagination?.total_pages ??
     (pagination?.total_count ? Math.ceil(pagination.total_count / limit) : 1);
@@ -129,14 +171,42 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
               }}
             />
           </div>
-          {assetType && (
-            <div className="flex items-center gap-2 text-xs text-base-content/70">
-              <span>{t(AppLocales.Admin.Assets.Table.Type)}:</span>
-              <Badge variant="primary" className="capitalize">
-                {assetType}
-              </Badge>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {assetType && (
+              <div className="flex items-center gap-1.5 text-xs text-base-content/70">
+                <span>{t(AppLocales.Admin.Assets.Table.Type)}:</span>
+                <Badge variant="primary" className="capitalize">
+                  {assetType}
+                </Badge>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={acceptAttribute}
+              onChange={(e) => void handleFileUpload(e)}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant={ButtonVariants.PRIMARY}
+              size={ComponentSizes.SM}
+              disabled={isUploading}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {isUploading ? (
+                <>
+                  <iconsLib.arrowPath className="w-4 h-4 mr-1.5 animate-spin" />
+                  {t(AppLocales.Admin.Assets.UploadDialog.Uploading)}
+                </>
+              ) : (
+                <>
+                  <iconsLib.upload className="w-4 h-4 mr-1.5" />
+                  {t(AppLocales.Admin.Assets.UploadButton)}
+                </>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Assets Grid */}
@@ -174,11 +244,20 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     }`}
                   >
                     <div className="w-full aspect-square rounded-lg overflow-hidden bg-glass-card/60 border border-glass-border/60 relative flex items-center justify-center mb-2">
-                      <Image
-                        src={asset.url}
-                        alt={asset.name}
-                        className="w-full h-full object-cover"
-                      />
+                      {isAudioAsset(asset) ? (
+                        <div className="flex flex-col items-center justify-center gap-1.5 text-primary/80 p-3">
+                          <iconsLib.speaker className="w-10 h-10" />
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-base-content/70">
+                            {asset.extension || asset.format}
+                          </span>
+                        </div>
+                      ) : (
+                        <Image
+                          src={getAssetThumbnail(asset)?.url || asset.url}
+                          alt={asset.name}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                       {isSelected && (
                         <div className="absolute top-1.5 right-1.5 bg-primary text-primary-content rounded-full p-1 shadow-md">
                           <iconsLib.checkr className="w-3 h-3 stroke-3" />

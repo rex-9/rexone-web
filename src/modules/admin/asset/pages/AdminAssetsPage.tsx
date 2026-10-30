@@ -24,7 +24,6 @@ import {
   ButtonVariants,
 } from "../../../../design";
 import { AppLocales, useTranslate } from "../../../../locales";
-import type { IAdminAsset } from "../types";
 import SocketService, {
   ISocketMessage,
 } from "../../../../services/socket.service";
@@ -104,12 +103,12 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
 
-  const [assets, setAssets] = useState<IAdminAsset[]>([]);
+  const [assets, setAssets] = useState<IAsset[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
 
   // Active view state
   const [isDiscardOpen, setIsDiscardOpen] = useState(false);
-  const [assetToDiscard, setAssetToDiscard] = useState<IAdminAsset | null>(
+  const [assetToDiscard, setAssetToDiscard] = useState<IAsset | null>(
     null,
   );
   const [compressingId, setCompressingId] = useState<string | null>(null);
@@ -127,11 +126,11 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
 
   // Discarded view state
   const [isUndiscardOpen, setIsUndiscardOpen] = useState(false);
-  const [assetToUndiscard, setAssetToUndiscard] = useState<IAdminAsset | null>(
+  const [assetToUndiscard, setAssetToUndiscard] = useState<IAsset | null>(
     null,
   );
   const [isDestroyOpen, setIsDestroyOpen] = useState(false);
-  const [assetToDestroy, setAssetToDestroy] = useState<IAdminAsset | null>(
+  const [assetToDestroy, setAssetToDestroy] = useState<IAsset | null>(
     null,
   );
 
@@ -497,7 +496,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     ];
   }, [isActive, t]);
 
-  const handleCompress = useCallback(async (asset: IAdminAsset) => {
+  const handleCompress = useCallback(async (asset: IAsset) => {
     setCompressingId(asset.id);
     try {
       const result = await Admin.AssetController.compressAsset(asset.id);
@@ -525,8 +524,8 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     }
   }, [t, toast]);
 
-  const columns: IAdminTableColumn<IAdminAsset>[] = useMemo(() => {
-    const base: IAdminTableColumn<IAdminAsset>[] = [
+  const columns: IAdminTableColumn<IAsset>[] = useMemo(() => {
+    const base: IAdminTableColumn<IAsset>[] = [
       {
         key: ADMIN_ASSET_COLUMNS.PREVIEW,
         header: t(AppLocales.Admin.Assets.Table.Preview),
