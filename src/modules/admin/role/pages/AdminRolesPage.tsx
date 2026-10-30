@@ -155,7 +155,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
         className: "text-right",
         render: (role) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.ROLES}
+            resource={ADMIN_RESOURCES.IAM_ROLES}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -209,7 +209,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     }
   };
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ROLES);
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.IAM_ROLES);
 
   return (
     <div className="space-y-6">
@@ -237,7 +237,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
           ) : null
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ROLES) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.IAM_ROLES) && (
           <Tabs
             value={view}
             onChange={(tab) => {

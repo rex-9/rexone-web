@@ -46,7 +46,7 @@ export const ADMIN_PRODUCT_PAGE_META: Record<string, IAdminPageMeta> = {
     title: ADMIN_PRODUCT_PAGE_TITLES.LIST,
     actionLabel: "Create product",
     actionTo: AppRoutes.client.protected.admin.PRODUCT_CREATE,
-    actionResource: ADMIN_RESOURCES.PRODUCTS,
+    actionResource: ADMIN_RESOURCES.PAYMENT_PRODUCTS,
     hasRecycleBin: true,
   },
   [AppRoutes.client.protected.admin.PRODUCTS_RECYCLE_BIN]: {

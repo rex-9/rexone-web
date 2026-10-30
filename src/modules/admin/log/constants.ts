@@ -72,6 +72,6 @@ export const ADMIN_LOG_PAGE_META: Record<string, IAdminPageMeta> = {
     title: ADMIN_LOG_PAGE_TITLES.LIST,
     description:
       "Monitor client runtime exceptions, inspect stack traces, and manage crash reports across Web and Mobile.",
-    actionResource: ADMIN_RESOURCES.CLIENTS,
+    actionResource: ADMIN_RESOURCES.CLIENT_LOGS,
   },
 };

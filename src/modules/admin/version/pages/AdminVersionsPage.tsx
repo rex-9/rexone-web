@@ -87,13 +87,13 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
   const { isLoading, setLoading } = useLoading();
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
-  const canReadVersions = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.VERSIONS);
+  const canReadVersions = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CLIENT_VERSIONS);
   const canReadUserVersions = can(
     ADMIN_ACTIONS.READ,
-    ADMIN_RESOURCES.USER_VERSIONS,
+    ADMIN_RESOURCES.CLIENT_USER_VERSIONS,
   );
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.VERSIONS);
-  const canDelete = can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.VERSIONS);
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.CLIENT_VERSIONS);
+  const canDelete = can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENT_VERSIONS);
 
   const [versions, setVersions] = useState<IAdminVersion[]>([]);
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
@@ -272,7 +272,7 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
         className: "text-right",
         render: (version) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.VERSIONS}
+            resource={ADMIN_RESOURCES.CLIENT_VERSIONS}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -316,7 +316,7 @@ export const AdminVersionsPage: React.FC<IAdminVersionsPageProps> = ({
   const handleLifecycleAction = async () => {
     if (
       !lifecycleTarget ||
-      !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.VERSIONS)
+      !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENT_VERSIONS)
     )
       return;
 

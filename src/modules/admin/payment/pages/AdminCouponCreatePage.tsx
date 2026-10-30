@@ -44,7 +44,7 @@ export const AdminCouponCreatePage: React.FC = () => {
   const { isLoading, setLoading } = useLoading();
   const { can, isLoading: permissionsLoading } = usePermissions();
 
-  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
+  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.IAM_ROLES);
 
   const [isBatch, setIsBatch] = useState(false);
   const [createdBatchCoupons, setCreatedBatchCoupons] = useState<

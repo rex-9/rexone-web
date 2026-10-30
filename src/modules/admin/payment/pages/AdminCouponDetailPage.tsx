@@ -54,7 +54,7 @@ export const AdminCouponDetailPage: React.FC = () => {
   const { isLoading, setLoading } = useLoading();
   const { can } = usePermissions();
 
-  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
+  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.IAM_ROLES);
 
   const [coupon, setCoupon] = useState<ICoupon | null>(null);
   const [error, setError] = useState("");

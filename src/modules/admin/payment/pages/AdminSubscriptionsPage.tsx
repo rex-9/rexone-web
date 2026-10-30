@@ -99,7 +99,7 @@ export const AdminSubscriptionsPage: React.FC = () => {
   const loadSubscriptions = useCallback(async () => {
     if (
       permissionsLoading ||
-      !can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.SUBSCRIPTIONS)
+      !can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PAYMENT_SUBSCRIPTIONS)
     )
       return;
 

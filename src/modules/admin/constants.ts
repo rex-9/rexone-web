@@ -51,10 +51,11 @@ export const ADMIN_RESOURCES = {
   SPEECH: "speech",
 
   // Module-namespaced resources
-  CHAT_ROOMS: "chat_rooms",
-  CHAT_MESSAGES: "chat_messages",
   AI_PROFILES: "ai_profiles",
   AI_RUNS: "ai_runs",
+  AI_PRICES: "ai_prices",
+  CHAT_ROOMS: "chat_rooms",
+  CHAT_MESSAGES: "chat_messages",
   CLIENT_LOGS: "client_logs",
   CLIENT_VERSIONS: "client_versions",
   CLIENT_USER_VERSIONS: "client_user_versions",
@@ -67,22 +68,6 @@ export const ADMIN_RESOURCES = {
   PAYMENT_PURCHASES: "payment_purchases",
   PAYMENT_COUPONS: "payment_coupons",
   PAYMENT_USER_COUPONS: "payment_user_coupons",
-
-  // Aliases for seamless component compatibility
-  ROOMS: "chat_rooms",
-  MESSAGES: "chat_messages",
-  LOGS: "client_logs",
-  CLIENTS: "client_logs",
-  VERSIONS: "client_versions",
-  USER_VERSIONS: "client_user_versions",
-  ROLES: "iam_roles",
-  PERMISSIONS: "iam_permissions",
-  PRODUCTS: "payment_products",
-  PAYMENTS: "payment_payments",
-  SUBSCRIPTIONS: "payment_subscriptions",
-  PURCHASES: "payment_purchases",
-  COUPONS: "payment_coupons",
-  USER_COUPONS: "payment_user_coupons",
 } as const;
 
 export type TAdminResourceName =

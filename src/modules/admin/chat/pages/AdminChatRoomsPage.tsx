@@ -88,7 +88,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
   );
 
   const loadRooms = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROOMS)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CHAT_ROOMS)) return;
 
     setLoading(true);
     setError("");
@@ -169,7 +169,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
         className: "text-right",
         render: (room) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.ROOMS}
+            resource={ADMIN_RESOURCES.CHAT_ROOMS}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -253,7 +253,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
             : t(AppLocales.Admin.Chat.RoomsRecycleDescription)
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ROOMS) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CHAT_ROOMS) && (
           <Tabs
             value={view}
             onChange={(tab) => {
