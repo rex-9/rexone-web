@@ -1,6 +1,7 @@
 // src/modules/admin/notification/notification.controller.ts
 
 import NotificationService from "./notification.service";
+import type { IApiPagination, IJsonApiResource } from "../../../models";
 import {
   getApiError,
   parsePagyList,
@@ -21,7 +22,7 @@ class NotificationController {
   async getTemplates(params?: IAdminTemplateListParams): Promise<{
     success: boolean;
     templates: IAdminNotificationTemplate[];
-    pagination?: any;
+    pagination?: IApiPagination | null;
     error?: string;
   }> {
     const response = await NotificationService.getTemplates(params);
@@ -29,8 +30,10 @@ class NotificationController {
 
     if (status?.success && data) {
       if (Array.isArray(data)) {
-        const templates = data.map((item: any) =>
-          parseRecord<IAdminNotificationTemplate>(item),
+        const templates = data.map((item) =>
+          parseRecord<IAdminNotificationTemplate>(
+            item as IJsonApiResource<IAdminNotificationTemplate>,
+          ),
         );
         return {
           success: true,
@@ -69,7 +72,9 @@ class NotificationController {
     if (status?.success && data) {
       return {
         success: true,
-        template: parseRecord<IAdminNotificationTemplate>(data as any),
+        template: parseRecord<IAdminNotificationTemplate>(
+          data as IJsonApiResource<IAdminNotificationTemplate>,
+        ),
       };
     }
 
@@ -93,7 +98,9 @@ class NotificationController {
     if (status?.success && data) {
       return {
         success: true,
-        template: parseRecord<IAdminNotificationTemplate>(data as any),
+        template: parseRecord<IAdminNotificationTemplate>(
+          data as IJsonApiResource<IAdminNotificationTemplate>,
+        ),
       };
     }
 
@@ -117,7 +124,9 @@ class NotificationController {
     if (status?.success && data) {
       return {
         success: true,
-        template: parseRecord<IAdminNotificationTemplate>(data as any),
+        template: parseRecord<IAdminNotificationTemplate>(
+          data as IJsonApiResource<IAdminNotificationTemplate>,
+        ),
       };
     }
 
@@ -193,7 +202,7 @@ class NotificationController {
   async getUserNotifications(params?: IAdminUserNotificationListParams): Promise<{
     success: boolean;
     notifications: IAdminUserNotification[];
-    pagination?: any;
+    pagination?: IApiPagination | null;
     error?: string;
   }> {
     const response = await NotificationService.getUserNotifications(params);
@@ -201,8 +210,10 @@ class NotificationController {
 
     if (status?.success && data) {
       if (Array.isArray(data)) {
-        const notifications = data.map((item: any) =>
-          parseRecord<IAdminUserNotification>(item),
+        const notifications = data.map((item) =>
+          parseRecord<IAdminUserNotification>(
+            item as IJsonApiResource<IAdminUserNotification>,
+          ),
         );
         return {
           success: true,
@@ -237,7 +248,9 @@ class NotificationController {
     if (status?.success && data) {
       return {
         success: true,
-        notification: parseRecord<IAdminUserNotification>(data as any),
+        notification: parseRecord<IAdminUserNotification>(
+          data as IJsonApiResource<IAdminUserNotification>,
+        ),
       };
     }
 

@@ -128,7 +128,7 @@ export const IMAGE_EXTENSIONS: readonly string[] = [
 ];
 
 export const isSrtSubtitleFile = (file: File): boolean =>
-  /\.srt$/i.test(file.name);
+  /\.(srt|vtt)$/i.test(file.name);
 
 export const FILE_SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
 

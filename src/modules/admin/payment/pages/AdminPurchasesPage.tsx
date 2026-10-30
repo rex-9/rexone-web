@@ -98,7 +98,7 @@ export const AdminPurchasesPage: React.FC = () => {
   const loadPurchases = useCallback(async () => {
     if (
       permissionsLoading ||
-      !can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PURCHASES)
+      !can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PAYMENT_PURCHASES)
     )
       return;
 

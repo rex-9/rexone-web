@@ -47,9 +47,7 @@ export const AdminAssetStorageStats: React.FC<IAdminAssetStorageStatsProps> = ({
   }, [setLoading]);
 
   useEffect(() => {
-    // Initial remote synchronization intentionally drives this component's loading state.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchStats();
+    void fetchStats();
   }, [fetchStats]);
 
   if (isLoading && !stats) {

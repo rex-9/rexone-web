@@ -99,7 +99,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
   );
 
   const loadMessages = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.MESSAGES)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CHAT_MESSAGES)) return;
 
     setLoading(true);
     setError("");
@@ -125,7 +125,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
     void loadMessages();
   }, [loadMessages]);
 
-  const handleUndiscard = async (message: IAdminChatMessage) => {
+  const handleUndiscard = useCallback(async (message: IAdminChatMessage) => {
     setLoading(true);
     const result = await ChatController.undiscardMessage(message.id);
     setLoading(false);
@@ -136,7 +136,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Chat.Errors.UpdateMessage));
     }
-  };
+  }, [loadMessages, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatMessage>[]>(
     () => [
@@ -182,7 +182,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
         className: "text-right",
         render: (message) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.MESSAGES}
+            resource={ADMIN_RESOURCES.CHAT_MESSAGES}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -216,7 +216,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
         ),
       },
     ],
-    [navigate, t, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {
@@ -267,7 +267,7 @@ export const AdminChatMessagesPage: React.FC<IAdminChatMessagesPageProps> = ({
             : t(AppLocales.Admin.Chat.MessagesRecycleDescription)
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.MESSAGES) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CHAT_MESSAGES) && (
           <Tabs
             value={view}
             onChange={(tab) => {

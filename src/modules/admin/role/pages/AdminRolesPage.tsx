@@ -86,7 +86,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     void fetchRoles();
   }, [fetchRoles]);
 
-  const handleUndiscard = async (role: IAdminRole) => {
+  const handleUndiscard = useCallback(async (role: IAdminRole) => {
     setLoading(true);
     const result = await RoleController.undiscardRole(role.id);
     setLoading(false);
@@ -97,7 +97,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Roles.Errors.Update));
     }
-  };
+  }, [fetchRoles, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminRole>[]>(
     () => [
@@ -155,7 +155,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
         className: "text-right",
         render: (role) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.ROLES}
+            resource={ADMIN_RESOURCES.IAM_ROLES}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -189,7 +189,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
         ),
       },
     ],
-    [navigate, t, toast, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {
@@ -209,7 +209,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
     }
   };
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.ROLES);
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.IAM_ROLES);
 
   return (
     <div className="space-y-6">
@@ -237,7 +237,7 @@ export const AdminRolesPage: React.FC<IAdminRolesPageProps> = ({
           ) : null
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ROLES) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.IAM_ROLES) && (
           <Tabs
             value={view}
             onChange={(tab) => {

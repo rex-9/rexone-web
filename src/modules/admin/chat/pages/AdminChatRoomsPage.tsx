@@ -88,7 +88,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
   );
 
   const loadRooms = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROOMS)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CHAT_ROOMS)) return;
 
     setLoading(true);
     setError("");
@@ -114,7 +114,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
     void loadRooms();
   }, [loadRooms]);
 
-  const handleUndiscard = async (room: IAdminChatRoom) => {
+  const handleUndiscard = useCallback(async (room: IAdminChatRoom) => {
     setLoading(true);
     const result = await ChatController.undiscardRoom(room.id);
     setLoading(false);
@@ -125,7 +125,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
     } else {
       toast.error(result.error || t(AppLocales.Admin.Chat.Errors.UpdateRoom));
     }
-  };
+  }, [loadRooms, setLoading, t, toast]);
 
   const columns = useMemo<IAdminTableColumn<IAdminChatRoom>[]>(
     () => [
@@ -169,7 +169,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
         className: "text-right",
         render: (room) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.ROOMS}
+            resource={ADMIN_RESOURCES.CHAT_ROOMS}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -203,7 +203,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
         ),
       },
     ],
-    [navigate, t, view],
+    [handleUndiscard, navigate, t, view],
   );
 
   const handleDiscard = async () => {
@@ -253,7 +253,7 @@ export const AdminChatRoomsPage: React.FC<IAdminChatRoomsPageProps> = ({
             : t(AppLocales.Admin.Chat.RoomsRecycleDescription)
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.ROOMS) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CHAT_ROOMS) && (
           <Tabs
             value={view}
             onChange={(tab) => {

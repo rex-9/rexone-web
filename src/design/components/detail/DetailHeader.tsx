@@ -70,7 +70,7 @@ export const DetailHeader: React.FC<IDetailHeaderProps> = ({
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start sm:items-center gap-4 min-w-0 flex-1">
             {Icon && (
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.15)]">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/25 bg-primary/10 text-primary shadow-glow">
                 <Icon className="h-6 w-6" />
               </div>
             )}

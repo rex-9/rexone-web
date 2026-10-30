@@ -89,7 +89,7 @@ export const AdminNotificationsPage: React.FC = () => {
 
   const toast = useToast();
   const { can, isLoading: permissionsLoading } = usePermissions();
-  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.ROLES);
+  const canReadRoles = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.IAM_ROLES);
   const canReadUsers = can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.USERS);
   const canReadUserNotifications = can(
     ADMIN_ACTIONS.READ,

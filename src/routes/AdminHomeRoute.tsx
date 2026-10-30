@@ -21,7 +21,7 @@ const adminEntryRoutes: Array<{
     path: AppRoutes.client.protected.admin.USERS,
   },
   {
-    resource: ADMIN_RESOURCES.VERSIONS,
+    resource: ADMIN_RESOURCES.CLIENT_VERSIONS,
     path: AppRoutes.client.protected.admin.VERSIONS,
     superAdminOnly: true,
   },
@@ -30,15 +30,15 @@ const adminEntryRoutes: Array<{
     path: AppRoutes.client.protected.admin.NOTIFICATIONS,
   },
   {
-    resource: ADMIN_RESOURCES.PRODUCTS,
+    resource: ADMIN_RESOURCES.PAYMENT_PRODUCTS,
     path: AppRoutes.client.protected.admin.PRODUCTS,
   },
   {
-    resource: ADMIN_RESOURCES.ROOMS,
+    resource: ADMIN_RESOURCES.CHAT_ROOMS,
     path: AppRoutes.client.protected.admin.CHAT_ROOMS,
   },
   {
-    resource: ADMIN_RESOURCES.MESSAGES,
+    resource: ADMIN_RESOURCES.CHAT_MESSAGES,
     path: AppRoutes.client.protected.admin.CHAT_MESSAGES,
   },
 ];

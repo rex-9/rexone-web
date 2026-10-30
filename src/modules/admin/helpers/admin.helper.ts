@@ -1,9 +1,13 @@
 import { IAdminPageMeta } from "../constants";
+import { ADMIN_ACCESS_PAGE_META } from "../access/constants";
 import { ADMIN_CHAT_PAGE_META } from "../chat/constants";
+import { ADMIN_FEEDBACK_PAGE_META } from "../feedback/constants";
+import { ADMIN_LOG_PAGE_META } from "../log/constants";
 import { ADMIN_NOTIFICATION_PAGE_META } from "../notification/constants";
 import { ADMIN_PRODUCT_PAGE_META } from "../product/constants";
 import { ADMIN_ROLE_PAGE_META } from "../role/constants";
 import { ADMIN_USER_PAGE_META } from "../user/constants";
+import { ADMIN_VERSION_PAGE_META } from "../version/constants";
 
 export { formatDateTime } from "../../../helpers/date.helper";
 
@@ -13,6 +17,10 @@ const adminPageMeta: Record<string, IAdminPageMeta> = {
   ...ADMIN_NOTIFICATION_PAGE_META,
   ...ADMIN_PRODUCT_PAGE_META,
   ...ADMIN_CHAT_PAGE_META,
+  ...ADMIN_ACCESS_PAGE_META,
+  ...ADMIN_FEEDBACK_PAGE_META,
+  ...ADMIN_VERSION_PAGE_META,
+  ...ADMIN_LOG_PAGE_META,
 };
 
 const escapeRouteSegment = (segment: string): string =>

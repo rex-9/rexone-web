@@ -19,9 +19,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(
-        response as any,
-      );
+      const { records, pagination } = parsePagyList<IAdminAsset>(response);
       return { success: true, assets: records, pagination };
     }
 
@@ -67,9 +65,7 @@ class AssetController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const { records, pagination } = parsePagyList<IAdminAsset>(
-        response as any,
-      );
+      const { records, pagination } = parsePagyList<IAdminAsset>(response);
       return { success: true, assets: records, pagination };
     }
 

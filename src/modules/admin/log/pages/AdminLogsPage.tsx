@@ -127,7 +127,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
   );
 
   const loadLogs = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CLIENTS)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CLIENT_LOGS)) return;
 
     setLoading(true);
     setError("");
@@ -175,7 +175,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
     }
   }, [loadLogs, permissionsLoading]);
 
-  const handleUndiscard = async (log: IAdminLog) => {
+  const handleUndiscard = useCallback(async (log: IAdminLog) => {
     setLoading(true);
     const result = await Admin.LogController.undiscardLog(log.id);
     setLoading(false);
@@ -188,7 +188,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         result.error || t(AppLocales.Admin.Logs.Errors.RestoreFailed),
       );
     }
-  };
+  }, [loadLogs, setLoading, t, toast]);
 
   const handleDiscard = async () => {
     if (!discardTarget) return;
@@ -295,7 +295,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         className: "text-right",
         render: (log) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.CLIENTS}
+            resource={ADMIN_RESOURCES.CLIENT_LOGS}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -319,7 +319,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
         ),
       },
     ],
-    [t, view],
+    [handleUndiscard, t, view],
   );
 
   return (
@@ -336,7 +336,7 @@ export const AdminLogsPage: React.FC<IAdminLogsPageProps> = ({
             : t(AppLocales.Admin.Logs.RecycleDescription)
         }
       >
-        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENTS) && (
+        {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.CLIENT_LOGS) && (
           <Tabs
             value={view}
             onChange={(tab) => {

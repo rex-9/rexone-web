@@ -36,7 +36,7 @@ export const AdminLogDetailPage: React.FC = () => {
   const [error, setError] = useState("");
   const [alertMessage, setAlertMessage] = useState("");
 
-  const canUpdate = can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.CLIENTS);
+  const canUpdate = can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.CLIENT_LOGS);
 
   useEffect(() => {
     if (!id) return;

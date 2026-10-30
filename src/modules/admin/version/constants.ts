@@ -73,7 +73,7 @@ export const ADMIN_VERSION_PAGE_META: Record<string, IAdminPageMeta> = {
     title: ADMIN_VERSION_PAGE_TITLES.LIST,
     actionLabel: "Create version",
     actionTo: AppRoutes.client.protected.admin.VERSION_CREATE,
-    actionResource: ADMIN_RESOURCES.VERSIONS,
+    actionResource: ADMIN_RESOURCES.CLIENT_VERSIONS,
     hasRecycleBin: true,
   },
   [AppRoutes.client.protected.admin.VERSIONS_RECYCLE_BIN]: {

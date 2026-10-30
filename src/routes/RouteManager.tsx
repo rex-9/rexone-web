@@ -285,7 +285,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.ROLES}
+                resource={ADMIN_RESOURCES.IAM_ROLES}
                 superAdminOnly
               />
             }
@@ -303,7 +303,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.ROLES}
+                resource={ADMIN_RESOURCES.IAM_ROLES}
                 superAdminOnly
               />
             }
@@ -317,7 +317,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.CREATE}
-                resource={ADMIN_RESOURCES.ROLES}
+                resource={ADMIN_RESOURCES.IAM_ROLES}
                 superAdminOnly
               />
             }
@@ -331,7 +331,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.UPDATE}
-                resource={ADMIN_RESOURCES.ROLES}
+                resource={ADMIN_RESOURCES.IAM_ROLES}
                 superAdminOnly
               />
             }
@@ -345,7 +345,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.ROOMS}
+                resource={ADMIN_RESOURCES.CHAT_ROOMS}
               />
             }
           >
@@ -358,7 +358,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.ROOMS}
+                resource={ADMIN_RESOURCES.CHAT_ROOMS}
               />
             }
           >
@@ -371,7 +371,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.UPDATE}
-                resource={ADMIN_RESOURCES.ROOMS}
+                resource={ADMIN_RESOURCES.CHAT_ROOMS}
               />
             }
           >
@@ -384,7 +384,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.MESSAGES}
+                resource={ADMIN_RESOURCES.CHAT_MESSAGES}
               />
             }
           >
@@ -401,7 +401,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.MESSAGES}
+                resource={ADMIN_RESOURCES.CHAT_MESSAGES}
               />
             }
           >
@@ -414,7 +414,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.UPDATE}
-                resource={ADMIN_RESOURCES.MESSAGES}
+                resource={ADMIN_RESOURCES.CHAT_MESSAGES}
               />
             }
           >
@@ -568,7 +568,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.PRODUCTS}
+                resource={ADMIN_RESOURCES.PAYMENT_PRODUCTS}
               />
             }
           >
@@ -585,7 +585,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.PRODUCTS}
+                resource={ADMIN_RESOURCES.PAYMENT_PRODUCTS}
               />
             }
           >
@@ -598,7 +598,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.CREATE}
-                resource={ADMIN_RESOURCES.PRODUCTS}
+                resource={ADMIN_RESOURCES.PAYMENT_PRODUCTS}
               />
             }
           >
@@ -611,7 +611,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.UPDATE}
-                resource={ADMIN_RESOURCES.PRODUCTS}
+                resource={ADMIN_RESOURCES.PAYMENT_PRODUCTS}
               />
             }
           >
@@ -641,7 +641,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.PURCHASES}
+                resource={ADMIN_RESOURCES.PAYMENT_PURCHASES}
               />
             }
           >
@@ -658,7 +658,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.SUBSCRIPTIONS}
+                resource={ADMIN_RESOURCES.PAYMENT_SUBSCRIPTIONS}
               />
             }
           >
@@ -770,7 +770,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.CLIENTS}
+                resource={ADMIN_RESOURCES.CLIENT_LOGS}
               />
             }
           >
@@ -783,7 +783,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.CLIENTS}
+                resource={ADMIN_RESOURCES.CLIENT_LOGS}
               />
             }
           >
@@ -796,7 +796,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.CLIENTS}
+                resource={ADMIN_RESOURCES.CLIENT_LOGS}
               />
             }
           >
@@ -865,7 +865,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.VERSIONS}
+                resource={ADMIN_RESOURCES.CLIENT_VERSIONS}
                 superAdminOnly
               />
             }
@@ -883,7 +883,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.DELETE}
-                resource={ADMIN_RESOURCES.VERSIONS}
+                resource={ADMIN_RESOURCES.CLIENT_VERSIONS}
                 superAdminOnly
               />
             }
@@ -897,7 +897,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.CREATE}
-                resource={ADMIN_RESOURCES.VERSIONS}
+                resource={ADMIN_RESOURCES.CLIENT_VERSIONS}
                 superAdminOnly
               />
             }
@@ -911,7 +911,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.UPDATE}
-                resource={ADMIN_RESOURCES.VERSIONS}
+                resource={ADMIN_RESOURCES.CLIENT_VERSIONS}
                 superAdminOnly
               />
             }
@@ -925,7 +925,7 @@ const router = createBrowserRouter(
             element={
               <AdminRootRoute
                 action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.USER_VERSIONS}
+                resource={ADMIN_RESOURCES.CLIENT_USER_VERSIONS}
                 superAdminOnly
               />
             }

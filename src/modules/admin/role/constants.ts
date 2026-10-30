@@ -62,7 +62,7 @@ export const ADMIN_ROLE_PAGE_META: Record<string, IAdminPageMeta> = {
     title: ADMIN_ROLE_PAGE_TITLES.LIST,
     actionLabel: "Create role",
     actionTo: AppRoutes.client.protected.admin.ROLE_CREATE,
-    actionResource: ADMIN_RESOURCES.ROLES,
+    actionResource: ADMIN_RESOURCES.IAM_ROLES,
   },
   [AppRoutes.client.protected.admin.ROLE_CREATE]: {
     title: ADMIN_ROLE_PAGE_TITLES.CREATE,

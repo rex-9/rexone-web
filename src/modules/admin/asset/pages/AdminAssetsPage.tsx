@@ -497,7 +497,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     ];
   }, [isActive, t]);
 
-  const handleCompress = async (asset: IAdminAsset) => {
+  const handleCompress = useCallback(async (asset: IAdminAsset) => {
     setCompressingId(asset.id);
     try {
       const result = await Admin.AssetController.compressAsset(asset.id);
@@ -523,7 +523,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     } finally {
       setCompressingId(null);
     }
-  };
+  }, [t, toast]);
 
   const columns: IAdminTableColumn<IAdminAsset>[] = useMemo(() => {
     const base: IAdminTableColumn<IAdminAsset>[] = [
@@ -732,7 +732,7 @@ export const AdminAssetsPage: React.FC<IAdminAssetsPageProps> = ({
     }
 
     return base;
-  }, [isActive, navigate, t, canUpdate, compressingId]);
+  }, [isActive, navigate, t, canUpdate, compressingId, handleCompress]);
 
   return (
     <div className="space-y-6">

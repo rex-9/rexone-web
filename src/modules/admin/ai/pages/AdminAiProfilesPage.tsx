@@ -123,7 +123,7 @@ export const AdminAiProfilesPage: React.FC = () => {
   );
 
   const modelFilterOptions = useMemo(() => {
-    let models: { value: string; label: string }[] = [];
+    let models: { value: string; label: string }[];
     if (providerFilter && AI_PROVIDER_MODELS[providerFilter]) {
       models = AI_PROVIDER_MODELS[providerFilter];
     } else {

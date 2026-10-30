@@ -507,7 +507,7 @@ export const AdminCouponsPage: React.FC = () => {
         ),
       },
     ],
-    [canDelete, isDiscardedView, navigate, t],
+    [canDelete, isDiscardedView, t],
   );
 
   return (

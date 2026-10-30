@@ -16,6 +16,7 @@ export interface IAdminAssetSelectDialogProps {
   onClose: () => void;
   onSelect: (asset: IAdminAsset) => void;
   assetType?: string;
+  format?: string;
   title?: string;
   selectedAssetId?: string | null;
 }
@@ -25,6 +26,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
   onClose,
   onSelect,
   assetType,
+  format,
   title,
   selectedAssetId,
 }) => {
@@ -51,6 +53,10 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
           params.type = assetType;
         }
 
+        if (format) {
+          params.format = format;
+        }
+
         if (searchTerm.trim()) {
           params.search = searchTerm.trim();
         }
@@ -67,7 +73,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
         setLoading(false, { overlay: false });
       }
     },
-    [assetType, limit, setLoading],
+    [assetType, format, limit, setLoading],
   );
 
   useEffect(() => {
@@ -163,7 +169,7 @@ export const AdminAssetSelectDialog: React.FC<IAdminAssetSelectDialogProps> = ({
                     onClick={() => setSelectedAsset(asset)}
                     className={`flex flex-col text-left p-2 h-auto rounded-xl border transition-all duration-200 ${
                       isSelected
-                        ? "border-primary bg-primary/10 shadow-[0_0_12px_rgba(var(--color-primary-rgb),0.25)] ring-2 ring-primary"
+                        ? "border-primary bg-primary/10 shadow-glow ring-2 ring-primary"
                         : "border-glass-border bg-glass-card hover:border-glass-border-hover hover:bg-glass-card-hover shadow-glass-card"
                     }`}
                   >

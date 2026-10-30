@@ -88,7 +88,7 @@ export const AdminUserVersionsPage: React.FC<IAdminUserVersionsPageProps> = ({
   );
 
   const loadUserVersions = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.USER_VERSIONS)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.CLIENT_USER_VERSIONS)) return;
     if (isVersionScoped && !versionId) return;
 
     setLoading(true);

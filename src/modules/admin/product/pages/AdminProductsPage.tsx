@@ -132,7 +132,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   }, [searchInput, searchQuery, updateFilters]);
 
   const loadProducts = useCallback(async () => {
-    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PRODUCTS)) return;
+    if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.PAYMENT_PRODUCTS)) return;
 
     setLoading(true);
     setError("");
@@ -245,7 +245,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         className: "text-right",
         render: (product) => (
           <AdminTableActions
-            resource={ADMIN_RESOURCES.PRODUCTS}
+            resource={ADMIN_RESOURCES.PAYMENT_PRODUCTS}
             actions={
               view === ADMIN_VIEW_MODES.ACTIVE
                 ? [
@@ -290,7 +290,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
   const handleLifecycleAction = async () => {
     if (
       !lifecycleTarget ||
-      !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS)
+      !can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PAYMENT_PRODUCTS)
     )
       return;
 
@@ -310,7 +310,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
     }
   };
 
-  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.PRODUCTS);
+  const canCreate = can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.PAYMENT_PRODUCTS);
 
   return (
     <div className="space-y-6">
@@ -339,7 +339,7 @@ export const AdminProductsPage: React.FC<IAdminProductsPageProps> = ({
         }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PRODUCTS) ? (
+          {can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.PAYMENT_PRODUCTS) ? (
             <Tabs
               value={view}
               onChange={(tab) => {

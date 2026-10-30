@@ -49,25 +49,25 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Products,
         to: AppRoutes.client.protected.admin.PRODUCTS,
-        resource: ADMIN_RESOURCES.PRODUCTS,
+        resource: ADMIN_RESOURCES.PAYMENT_PRODUCTS,
         icon: iconsLib.cube,
       },
       {
         labelKey: AppLocales.Admin.Nav.Items.Purchases,
         to: AppRoutes.client.protected.admin.PURCHASES,
-        resource: ADMIN_RESOURCES.PURCHASES,
+        resource: ADMIN_RESOURCES.PAYMENT_PURCHASES,
         icon: iconsLib.banknotes,
       },
       {
         labelKey: AppLocales.Admin.Nav.Items.Subscriptions,
         to: AppRoutes.client.protected.admin.SUBSCRIPTIONS,
-        resource: ADMIN_RESOURCES.SUBSCRIPTIONS,
+        resource: ADMIN_RESOURCES.PAYMENT_SUBSCRIPTIONS,
         icon: iconsLib.document,
       },
       {
         labelKey: AppLocales.Admin.Nav.Items.Coupons,
         to: AppRoutes.client.protected.admin.COUPONS,
-        resource: ADMIN_RESOURCES.COUPONS,
+        resource: ADMIN_RESOURCES.PAYMENT_COUPONS,
         icon: iconsLib.tag,
       },
       {
@@ -91,7 +91,7 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Roles,
         to: AppRoutes.client.protected.admin.ROLES,
-        resource: ADMIN_RESOURCES.ROLES,
+        resource: ADMIN_RESOURCES.IAM_ROLES,
         icon: iconsLib.key,
         superAdminOnly: true,
       },
@@ -146,7 +146,7 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Logs,
         to: AppRoutes.client.protected.admin.LOGS,
-        resource: ADMIN_RESOURCES.LOGS,
+        resource: ADMIN_RESOURCES.CLIENT_LOGS,
         icon: iconsLib.document,
       },
     ],
@@ -182,7 +182,7 @@ const navSections: IAdminNavSection[] = [
       {
         labelKey: AppLocales.Admin.Nav.Items.Versions,
         to: AppRoutes.client.protected.admin.VERSIONS,
-        resource: ADMIN_RESOURCES.VERSIONS,
+        resource: ADMIN_RESOURCES.CLIENT_VERSIONS,
         icon: iconsLib.tag,
         superAdminOnly: true,
       },

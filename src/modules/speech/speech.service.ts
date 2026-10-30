@@ -278,10 +278,12 @@ class SpeechService {
         success: false,
         error: response.error || "Failed to synthesize speech",
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to synthesize speech",
+        error:
+          (err instanceof Error ? err.message : undefined) ||
+          "Failed to synthesize speech",
       };
     }
   }
@@ -337,10 +339,12 @@ class SpeechService {
           response.error ||
           "Failed to transcribe audio",
       };
-    } catch (err: any) {
+    } catch (err: unknown) {
       return {
         success: false,
-        error: err?.message || "Failed to transcribe audio",
+        error:
+          (err instanceof Error ? err.message : undefined) ||
+          "Failed to transcribe audio",
       };
     }
   }
