@@ -12,9 +12,15 @@ import { useToast, useLoading } from "../../../contexts";
 import { AppLocales, useTranslate } from "../../../locales";
 import { iconsLib } from "../../../assets";
 import AiController from "../ai.controller";
-import { AI_SOCKET_EVENTS, getMessageAudioUrl, IMessage } from "..";
+import {
+  AI_CHAT_ROLES,
+  AI_LIMITS,
+  AI_MESSAGE_STATUS,
+  AI_SOCKET_EVENTS,
+  getMessageAudioUrl,
+  IMessage,
+} from "..";
 import { SPEECH_LISTEN_RESULTS, useLiveSpeech } from "../../speech";
-import { ADMIN_CHAT_ROLES } from "../../admin";
 import { ButtonSizes, ButtonVariants } from "../../../design";
 import { getUtcNowIso } from "../../../helpers";
 
@@ -60,7 +66,7 @@ export const AiPage: React.FC = () => {
         setMessages([
           {
             id: "welcome",
-            role: ADMIN_CHAT_ROLES.ASSISTANT,
+            role: AI_CHAT_ROLES.ASSISTANT,
             content: greeting,
             created_at: getUtcNowIso(),
           },
@@ -74,7 +80,7 @@ export const AiPage: React.FC = () => {
       setMessages([
         {
           id: "welcome",
-          role: ADMIN_CHAT_ROLES.ASSISTANT,
+          role: AI_CHAT_ROLES.ASSISTANT,
           content: greeting,
           created_at: getUtcNowIso(),
         },
@@ -220,7 +226,7 @@ export const AiPage: React.FC = () => {
 
   const renderTtsControl = (message: IMessage) => {
     if (
-      message.role !== ADMIN_CHAT_ROLES.ASSISTANT ||
+      message.role !== AI_CHAT_ROLES.ASSISTANT ||
       !message.content.trim()
     ) {
       return null;
@@ -312,7 +318,7 @@ export const AiPage: React.FC = () => {
       setMessages([
         {
           id: "welcome",
-          role: ADMIN_CHAT_ROLES.ASSISTANT,
+          role: AI_CHAT_ROLES.ASSISTANT,
           content: greeting,
           created_at: getUtcNowIso(),
         },
@@ -368,8 +374,7 @@ export const AiPage: React.FC = () => {
                 {greeting}
               </h2>
               <p className="text-sm text-base-content/60 max-w-md leading-relaxed">
-                Ask questions, explore mindfulness, meditate on deep concepts,
-                or discuss anything you need.
+                {t(AppLocales.Ai.WelcomeSubtitle)}
               </p>
             </div>
           ) : (
@@ -377,24 +382,24 @@ export const AiPage: React.FC = () => {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.role === ADMIN_CHAT_ROLES.USER
+                  message.role === AI_CHAT_ROLES.USER
                     ? "justify-end"
                     : "justify-start gap-3"
                 }`}
               >
-                {message.role !== ADMIN_CHAT_ROLES.USER && (
+                {message.role !== AI_CHAT_ROLES.USER && (
                   <div className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-1">
                     <iconsLib.sparkles className="w-3.5 h-3.5" />
                   </div>
                 )}
                 <div
                   className={
-                    message.role === ADMIN_CHAT_ROLES.USER
+                    message.role === AI_CHAT_ROLES.USER
                       ? "max-w-[82%] rounded-2xl rounded-tr-sm px-4 py-3 bg-primary text-primary-content shadow-xs"
                       : "max-w-[85%] space-y-1.5"
                   }
                 >
-                  {message.role === ADMIN_CHAT_ROLES.USER ? (
+                  {message.role === AI_CHAT_ROLES.USER ? (
                     <>
                       <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap selection:bg-primary-focus">
                         {message.content}
@@ -412,7 +417,8 @@ export const AiPage: React.FC = () => {
                         <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
                           {message.content}
                         </p>
-                        {message.metadata?.status === "failed" && (
+                        {message.metadata?.status ===
+                          AI_MESSAGE_STATUS.FAILED && (
                           <span className="text-xs text-error mt-2 block font-medium">
                             {t(AppLocales.Ai.Errors.GetResponse)}
                           </span>
@@ -465,7 +471,7 @@ export const AiPage: React.FC = () => {
               className="w-full resize-none border-0 bg-transparent text-sm sm:text-base text-base-content placeholder:text-base-content/40 focus:outline-none focus:ring-0 px-1 py-1"
               disabled={isLoading || isProcessing}
               readOnly={isListenSessionActive}
-              maxLength={20000}
+              maxLength={AI_LIMITS.MAX_INPUT_CHARS}
             />
 
             {isListenSessionActive && (
@@ -524,16 +530,21 @@ export const AiPage: React.FC = () => {
                   </Button>
                 )}
 
-                {input.length > 2000 && (
+                {input.length > AI_LIMITS.CHUNK_SIZE_CHARS && (
                   <span className="text-xs font-medium text-primary ml-2">
-                    {Math.ceil(input.length / 2000)} messages
+                    {t(AppLocales.Ai.ChunkMessages, {
+                      count: Math.ceil(
+                        input.length / AI_LIMITS.CHUNK_SIZE_CHARS,
+                      ),
+                    })}
                   </span>
                 )}
               </div>
 
               <div className="flex items-center gap-2.5">
                 <span className="text-[11px] text-base-content/40">
-                  {input.length.toLocaleString()} / 20,000
+                  {input.length.toLocaleString()} /{" "}
+                  {AI_LIMITS.MAX_INPUT_CHARS.toLocaleString()}
                 </span>
 
                 <Button

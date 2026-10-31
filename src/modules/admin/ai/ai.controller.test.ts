@@ -6,10 +6,13 @@ import type { IAdminAiProfileFormValues } from "./types";
 
 vi.mock("./ai.service", () => ({
   default: {
+    getConfig: vi.fn(),
+    syncPrices: vi.fn(),
     getProfiles: vi.fn(),
     getProfile: vi.fn(),
     createProfile: vi.fn(),
     updateProfile: vi.fn(),
+    destroyProfile: vi.fn(),
     getRuns: vi.fn(),
     getRun: vi.fn(),
   },
@@ -28,8 +31,8 @@ describe("AiController", () => {
           type: "profile",
           attributes: {
             id: "profile_1",
-            key: "chat_default",
-            name: "Default Assistant",
+            key: "chat",
+            name: "Chat",
             enabled: true,
             provider: "gemini",
             model: "gemini-2.5-flash",
@@ -54,7 +57,7 @@ describe("AiController", () => {
       expect(result.success).toBe(true);
       expect(result.profiles).toEqual(
         expect.arrayContaining([
-          expect.objectContaining({ id: "profile_1", name: "Default Assistant" }),
+          expect.objectContaining({ id: "profile_1", name: "Chat" }),
         ]),
       );
       expect(result.pagination).toEqual(
@@ -341,6 +344,48 @@ describe("AiController", () => {
       expect(result.success).toBe(false);
       expect(result.run).toBeUndefined();
       expect(result.error).toBeTruthy();
+    });
+  });
+
+  describe("getConfig & syncPrices & destroyProfile", () => {
+    it("returns config from getConfig", async () => {
+      const mockConfig = {
+        default_provider: "deepseek",
+        default_model: "deepseek-chat",
+        defaults: {
+          temperature: 0.7,
+          max_output_tokens: 2000,
+          context_max_tokens: 8000,
+          history_max_messages: 20,
+          timeout_seconds: 30,
+        },
+        features: ["chat", "summarize", "translate", "analyze"],
+        profile_key_presets: [{ key: "chat", name: "Chat" }],
+        providers: [],
+      };
+      vi.mocked(AiService.getConfig).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "OK" },
+          data: mockConfig,
+        },
+      } as never);
+
+      const result = await AiController.getConfig();
+      expect(result.success).toBe(true);
+      expect(result.config).toEqual(mockConfig);
+    });
+
+    it("destroys custom profile via destroyProfile", async () => {
+      vi.mocked(AiService.destroyProfile).mockResolvedValue({
+        data: {
+          status: { code: 200, success: true, message: "Destroyed" },
+          data: null,
+        },
+      } as never);
+
+      const result = await AiController.destroyProfile("profile_2");
+      expect(AiService.destroyProfile).toHaveBeenCalledWith("profile_2");
+      expect(result.success).toBe(true);
     });
   });
 });

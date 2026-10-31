@@ -104,7 +104,13 @@ describe("AiController", () => {
       vi.mocked(AiService.getRooms).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "OK" },
-          data: { rooms: [mockRoom] },
+          data: [
+            {
+              id: mockRoom.id,
+              type: "room",
+              attributes: mockRoom,
+            },
+          ],
           meta: {
             pagination: {
               current_page: 1,
@@ -141,7 +147,11 @@ describe("AiController", () => {
       vi.mocked(AiService.createRoom).mockResolvedValue({
         data: {
           status: { code: 201, success: true, message: "Created" },
-          data: { room: mockRoom },
+          data: {
+            id: mockRoom.id,
+            type: "room",
+            attributes: mockRoom,
+          },
         },
       });
 
@@ -211,8 +221,22 @@ describe("AiController", () => {
     it("sends message and returns assistant response", async () => {
       vi.mocked(AiService.chat).mockResolvedValue({
         data: {
-          status: { code: 200, success: true, message: "OK" },
-          data: { messages: [mockMessage], room_id: "room-1" } as any,
+          status: { code: 202, success: true, message: "OK" },
+          data: {
+            id: mockMessage.id,
+            type: "message",
+            attributes: mockMessage,
+          },
+          meta: {
+            room_id: "room-1",
+            messages: [
+              {
+                id: mockMessage.id,
+                type: "message",
+                attributes: mockMessage,
+              },
+            ],
+          } as any,
         },
       });
 
@@ -240,7 +264,11 @@ describe("AiController", () => {
       vi.mocked(AiService.renameRoom).mockResolvedValue({
         data: {
           status: { code: 200, success: true, message: "Renamed" },
-          data: { title: "Updated Title" },
+          data: {
+            id: "room-1",
+            type: "room",
+            attributes: { ...mockRoom, title: "Updated Title" },
+          },
         },
       });
 
@@ -351,20 +379,18 @@ describe("AiController", () => {
         data: {
           status: { code: 202, success: true, message: "Queued" },
           data: {
-            data: {
+            id: "msg-queued",
+            type: "message",
+            attributes: {
               id: "msg-queued",
-              type: "message",
-              attributes: {
-                id: "msg-queued",
-                content: "Hello AI",
-                role: "user",
-                status: "queued",
-              },
-            },
-            meta: {
-              room_id: "room-meta-1",
+              content: "Hello AI",
+              role: "user",
               status: "queued",
             },
+          } as any,
+          meta: {
+            room_id: "room-meta-1",
+            status: "queued",
           } as any,
         },
       });

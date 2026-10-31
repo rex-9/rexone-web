@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
+import { useToast } from "../../../../contexts/ToastContext";
 import {
   useDocumentTitle,
   usePermissions,
@@ -18,6 +19,7 @@ import {
   Button,
   ButtonSizes,
   ButtonVariants,
+  ConfirmDialog,
   Dropdown,
   SearchInput,
   Badge,
@@ -26,13 +28,14 @@ import {
 } from "../../../../design";
 import { iconsLib } from "../../../../assets";
 import AiController from "../ai.controller";
-import type { IAdminAiProfile } from "../types";
+import type { IAdminAiConfig, IAdminAiProfile } from "../types";
 import {
   AdminPagination,
   AdminState,
   AdminTableActions,
   AdminTable,
   PageHeader,
+  type IAdminTableAction,
   type IAdminTableColumn,
 } from "../../components";
 import {
@@ -42,9 +45,8 @@ import {
   ADMIN_COMMON_LABELS,
 } from "../../constants";
 import {
+  ADMIN_AI_FILTER,
   ADMIN_AI_PROFILE_SORT_KEYS,
-  AI_PROVIDER_OPTIONS,
-  AI_PROVIDER_MODELS,
 } from "../constants";
 import { useTranslate, AppLocales } from "../../../../locales";
 
@@ -53,6 +55,7 @@ export const AdminAiProfilesPage: React.FC = () => {
   useDocumentTitle(`${t(AppLocales.Admin.Ai.ProfilesTitle)} | Admin`);
 
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const statusFilter = searchParams.get("status") || "";
@@ -67,10 +70,16 @@ export const AdminAiProfilesPage: React.FC = () => {
   });
 
   const { can } = usePermissions();
-  const { setLoading } = useLoading();
+  const { isLoading, setLoading } = useLoading();
   const [profiles, setProfiles] = useState<IAdminAiProfile[]>([]);
+  const [config, setConfig] = useState<IAdminAiConfig | null>(
+    null,
+  );
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
+  const [destroyTarget, setDestroyTarget] = useState<IAdminAiProfile | null>(
+    null,
+  );
 
   const updateFilters = useCallback(
     (updates: {
@@ -111,40 +120,53 @@ export const AdminAiProfilesPage: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [searchInput, searchQuery, updateFilters]);
 
-  const providerFilterOptions = useMemo(
-    () => [
+  const providerFilterOptions = useMemo(() => {
+    const dynamicProviders = (config?.providers || []).map(
+      (providerItem) => ({
+        value: providerItem.key,
+        label: providerItem.label,
+      }),
+    );
+    return [
       {
         value: "",
         label: t(AppLocales.Admin.Ai.Filters.AllProviders),
       },
-      ...AI_PROVIDER_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
-    ],
-    [t],
-  );
+      ...dynamicProviders,
+    ];
+  }, [config, t]);
 
   const modelFilterOptions = useMemo(() => {
-    let models: { value: string; label: string }[];
-    if (providerFilter && AI_PROVIDER_MODELS[providerFilter]) {
-      models = AI_PROVIDER_MODELS[providerFilter];
-    } else {
-      const all: { value: string; label: string }[] = [];
-      Object.values(AI_PROVIDER_MODELS).forEach((list) => {
-        list.forEach((m) => {
-          if (!all.some((existing) => existing.value === m.value)) {
-            all.push(m);
-          }
-        });
+    const providers = config?.providers || [];
+    const targetProviders = providerFilter
+      ? providers.filter((providerItem) => providerItem.key === providerFilter)
+      : providers;
+
+    const allModels: { value: string; label: string }[] = [];
+    targetProviders.forEach((providerItem) => {
+      providerItem.models.forEach((modelItem) => {
+        if (!allModels.some((existing) => existing.value === modelItem.model)) {
+          allModels.push({ value: modelItem.model, label: modelItem.model });
+        }
       });
-      models = all;
-    }
+    });
+
     return [
       {
         value: "",
         label: t(AppLocales.Admin.Ai.Filters.AllModels),
       },
-      ...models,
+      ...allModels,
     ];
-  }, [providerFilter, t]);
+  }, [config, providerFilter, t]);
+
+  const presetKeySet = useMemo(
+    () =>
+      new Set(
+        (config?.profile_key_presets || []).map((item) => item.key),
+      ),
+    [config],
+  );
 
   const statusFilterOptions = useMemo(
     () => [
@@ -152,8 +174,8 @@ export const AdminAiProfilesPage: React.FC = () => {
         value: "",
         label: t(AppLocales.Admin.Ai.Filters.AllStatuses),
       },
-      { value: "active", label: ADMIN_COMMON_LABELS.ACTIVE },
-      { value: "inactive", label: ADMIN_COMMON_LABELS.INACTIVE },
+      { value: ADMIN_AI_FILTER.ACTIVE, label: ADMIN_COMMON_LABELS.ACTIVE },
+      { value: ADMIN_AI_FILTER.INACTIVE, label: ADMIN_COMMON_LABELS.INACTIVE },
     ],
     [t],
   );
@@ -180,6 +202,9 @@ export const AdminAiProfilesPage: React.FC = () => {
     if (result.success) {
       setProfiles(result.profiles);
       setPagination(result.pagination);
+      if (result.config) {
+        setConfig(result.config);
+      }
     } else {
       setError(result.error || t(AppLocales.Admin.Ai.Errors.LoadProfiles));
     }
@@ -199,6 +224,36 @@ export const AdminAiProfilesPage: React.FC = () => {
   useEffect(() => {
     void loadProfiles();
   }, [loadProfiles]);
+
+  const handleSyncPrices = useCallback(async () => {
+    setLoading(true);
+    const result = await AiController.syncPrices();
+    setLoading(false);
+
+    if (result.success) {
+      if (result.config) {
+        setConfig(result.config);
+      }
+      toast.success(t(AppLocales.Admin.Ai.Toasts.SyncPricesSuccess));
+    } else {
+      toast.error(result.error || t(AppLocales.Admin.Ai.Errors.SyncPrices));
+    }
+  }, [setLoading, t, toast]);
+
+  const handleDestroy = useCallback(async () => {
+    if (!destroyTarget) return;
+    setLoading(true);
+    const result = await AiController.destroyProfile(destroyTarget.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success(t(AppLocales.Admin.Ai.Toasts.ProfileDestroySuccess));
+      setDestroyTarget(null);
+      void loadProfiles();
+    } else {
+      toast.error(result.error || t(AppLocales.Admin.Ai.Errors.DestroyProfile));
+    }
+  }, [destroyTarget, loadProfiles, setLoading, t, toast]);
 
   const columns: IAdminTableColumn<IAdminAiProfile>[] = useMemo(
     () => [
@@ -224,15 +279,30 @@ export const AdminAiProfilesPage: React.FC = () => {
         key: "provider",
         header: t(AppLocales.Admin.Ai.ProfilesTable.Provider),
         sortKey: ADMIN_AI_PROFILE_SORT_KEYS.PROVIDER,
-        render: (profile) => (
-          <Badge
-            variant={BadgeVariants.SECONDARY}
-            size={ComponentSizes.XS}
-            className="uppercase font-medium"
-          >
-            {profile.provider}
-          </Badge>
-        ),
+        render: (profile) => {
+          const providerMeta = config?.providers.find(
+            (item) => item.key === profile.provider,
+          );
+          return (
+            <div className="flex items-center gap-1.5">
+              <Badge
+                variant={BadgeVariants.SECONDARY}
+                size={ComponentSizes.XS}
+                className="uppercase font-medium"
+              >
+                {providerMeta?.label || profile.provider}
+              </Badge>
+              {providerMeta && !providerMeta.configured && (
+                <Badge
+                  variant={BadgeVariants.WARNING}
+                  size={ComponentSizes.XS}
+                >
+                  {t(AppLocales.Admin.Ai.ApiKeyMissing)}
+                </Badge>
+              )}
+            </div>
+          );
+        },
       },
       {
         key: "model",
@@ -281,7 +351,11 @@ export const AdminAiProfilesPage: React.FC = () => {
         sortKey: ADMIN_AI_PROFILE_SORT_KEYS.ENABLED,
         render: (profile) => (
           <StatusBadge
-            status={profile.enabled ? "active" : "inactive"}
+            status={
+              profile.enabled
+                ? ADMIN_AI_FILTER.ACTIVE
+                : ADMIN_AI_FILTER.INACTIVE
+            }
             label={
               profile.enabled
                 ? ADMIN_COMMON_LABELS.ACTIVE
@@ -307,26 +381,36 @@ export const AdminAiProfilesPage: React.FC = () => {
       {
         key: "actions",
         header: "",
-        render: (profile) => (
-          <AdminTableActions
-            resource={ADMIN_RESOURCES.AI_PROFILES}
-            actions={[
-              {
-                type: ADMIN_ACTIONS.EDIT,
-                onClick: () =>
-                  navigate(
-                    AppRoutes.withId(
-                      AppRoutes.client.protected.admin.AI_PROFILE_EDIT,
-                      profile.id,
-                    ),
+        render: (profile) => {
+          const isBuiltInPreset = presetKeySet.has(profile.key);
+          const rowActions: IAdminTableAction[] = [
+            {
+              type: ADMIN_ACTIONS.EDIT,
+              onClick: () =>
+                navigate(
+                  AppRoutes.withId(
+                    AppRoutes.client.protected.admin.AI_PROFILE_EDIT,
+                    profile.id,
                   ),
-              },
-            ]}
-          />
-        ),
+                ),
+            },
+          ];
+          if (!isBuiltInPreset) {
+            rowActions.push({
+              type: ADMIN_ACTIONS.DESTROY,
+              onClick: () => setDestroyTarget(profile),
+            });
+          }
+          return (
+            <AdminTableActions
+              resource={ADMIN_RESOURCES.AI_PROFILES}
+              actions={rowActions}
+            />
+          );
+        },
       },
     ],
-    [navigate, t],
+    [config, navigate, presetKeySet, t],
   );
 
   return (
@@ -335,18 +419,33 @@ export const AdminAiProfilesPage: React.FC = () => {
         title={t(AppLocales.Admin.Ai.ProfilesTitle)}
         description={t(AppLocales.Admin.Ai.ProfilesDescription)}
         action={
-          can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.AI_PROFILES) ? (
-            <Button
-              size={ButtonSizes.SM}
-              variant={ButtonVariants.PRIMARY}
-              onClick={() =>
-                navigate(AppRoutes.client.protected.admin.AI_PROFILE_CREATE)
-              }
-            >
-              <iconsLib.plus className="mr-1.5 h-4 w-4" />
-              {t(AppLocales.Admin.Ai.CreateProfile)}
-            </Button>
-          ) : undefined
+          <div className="flex flex-wrap items-center gap-2">
+            {can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.AI_PROFILES) && (
+              <Button
+                size={ButtonSizes.SM}
+                variant={ButtonVariants.SECONDARY}
+                disabled={isLoading}
+                onClick={handleSyncPrices}
+              >
+                <iconsLib.arrowPath className="mr-1.5 h-4 w-4" />
+                {isLoading
+                  ? t(AppLocales.Admin.Ai.SyncingPrices)
+                  : t(AppLocales.Admin.Ai.SyncPrices)}
+              </Button>
+            )}
+            {can(ADMIN_ACTIONS.CREATE, ADMIN_RESOURCES.AI_PROFILES) && (
+              <Button
+                size={ButtonSizes.SM}
+                variant={ButtonVariants.PRIMARY}
+                onClick={() =>
+                  navigate(AppRoutes.client.protected.admin.AI_PROFILE_CREATE)
+                }
+              >
+                <iconsLib.plus className="mr-1.5 h-4 w-4" />
+                {t(AppLocales.Admin.Ai.CreateProfile)}
+              </Button>
+            )}
+          </div>
         }
       />
 
@@ -422,6 +521,18 @@ export const AdminAiProfilesPage: React.FC = () => {
           )}
         </>
       )}
+
+      <ConfirmDialog
+        isOpen={Boolean(destroyTarget)}
+        title={t(AppLocales.Admin.Ai.DestroyProfileTitle)}
+        message={t(AppLocales.Admin.Ai.DestroyProfileMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Destroy)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setDestroyTarget(null)}
+        onConfirm={handleDestroy}
+      />
     </div>
   );
 };

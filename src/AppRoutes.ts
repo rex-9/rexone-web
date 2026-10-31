@@ -315,8 +315,10 @@ class AppRoutes {
         CHAT_MESSAGE_UNDISCARD: AppRoutes.adminApi(
           "/chat/messages/:id/undiscard",
         ), // POST
-        AI_PROFILES: AppRoutes.adminApi("/ai/profiles"), // GET
-        AI_PROFILE_DETAIL: AppRoutes.adminApi("/ai/profiles/:id"), // GET, PUT
+        AI_PROFILES: AppRoutes.adminApi("/ai/profiles"), // GET, POST
+        AI_PROFILES_CONFIG: AppRoutes.adminApi("/ai/profiles/config"), // GET
+        AI_PROFILES_SYNC_PRICES: AppRoutes.adminApi("/ai/profiles/sync_prices"), // POST
+        AI_PROFILE_DETAIL: AppRoutes.adminApi("/ai/profiles/:id"), // GET, PUT, DELETE
         AI_RUNS: AppRoutes.adminApi("/ai/runs"), // GET
         AI_RUN_DETAIL: AppRoutes.adminApi("/ai/runs/:id"), // GET
         FEEDBACKS: AppRoutes.adminApi("/feedbacks"), // GET

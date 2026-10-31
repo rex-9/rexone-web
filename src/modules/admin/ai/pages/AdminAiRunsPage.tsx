@@ -22,7 +22,7 @@ import {
   ComponentSizes,
 } from "../../../../design";
 import AiController from "../ai.controller";
-import type { IAdminAiRun } from "../types";
+import type { IAdminAiConfig, IAdminAiRun } from "../types";
 import {
   AdminPagination,
   AdminState,
@@ -38,9 +38,6 @@ import {
 import {
   ADMIN_AI_RUN_SORT_KEYS,
   ADMIN_AI_RUN_STATUS_OPTIONS,
-  ADMIN_AI_FEATURE_OPTIONS,
-  AI_PROVIDER_OPTIONS,
-  AI_PROVIDER_MODELS,
 } from "../constants";
 import { formatAiCost } from "../helpers/aiCost.helper";
 import { useTranslate, AppLocales } from "../../../../locales";
@@ -67,6 +64,9 @@ export const AdminAiRunsPage: React.FC = () => {
   const { can } = usePermissions();
   const { setLoading } = useLoading();
   const [runs, setRuns] = useState<IAdminAiRun[]>([]);
+  const [config, setConfig] = useState<IAdminAiConfig | null>(
+    null,
+  );
   const [pagination, setPagination] = useState<IApiPagination | null>(null);
   const [error, setError] = useState("");
 
@@ -110,40 +110,45 @@ export const AdminAiRunsPage: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [searchInput, searchQuery, updateFilters]);
 
-  const providerFilterOptions = useMemo(
-    () => [
+  const providerFilterOptions = useMemo(() => {
+    const dynamicProviders = (config?.providers || []).map(
+      (providerItem) => ({
+        value: providerItem.key,
+        label: providerItem.label,
+      }),
+    );
+    return [
       {
         value: "",
         label: t(AppLocales.Admin.Ai.Filters.AllProviders),
       },
-      ...AI_PROVIDER_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
-    ],
-    [t],
-  );
+      ...dynamicProviders,
+    ];
+  }, [config, t]);
 
   const modelFilterOptions = useMemo(() => {
-    let models: { value: string; label: string }[];
-    if (providerFilter && AI_PROVIDER_MODELS[providerFilter]) {
-      models = AI_PROVIDER_MODELS[providerFilter];
-    } else {
-      const all: { value: string; label: string }[] = [];
-      Object.values(AI_PROVIDER_MODELS).forEach((list) => {
-        list.forEach((m) => {
-          if (!all.some((existing) => existing.value === m.value)) {
-            all.push(m);
-          }
-        });
+    const providers = config?.providers || [];
+    const targetProviders = providerFilter
+      ? providers.filter((providerItem) => providerItem.key === providerFilter)
+      : providers;
+
+    const allModels: { value: string; label: string }[] = [];
+    targetProviders.forEach((providerItem) => {
+      providerItem.models.forEach((modelItem) => {
+        if (!allModels.some((existing) => existing.value === modelItem.model)) {
+          allModels.push({ value: modelItem.model, label: modelItem.model });
+        }
       });
-      models = all;
-    }
+    });
+
     return [
       {
         value: "",
         label: t(AppLocales.Admin.Ai.Filters.AllModels),
       },
-      ...models,
+      ...allModels,
     ];
-  }, [providerFilter, t]);
+  }, [config, providerFilter, t]);
 
   const statusFilterOptions = useMemo(
     () =>
@@ -157,17 +162,30 @@ export const AdminAiRunsPage: React.FC = () => {
     [t],
   );
 
-  const featureFilterOptions = useMemo(
-    () =>
-      ADMIN_AI_FEATURE_OPTIONS.map((o) => ({
-        value: o.value,
-        label:
-          o.value === ""
-            ? t(AppLocales.Admin.Ai.Filters.AllFeatures)
-            : o.label,
-      })),
-    [t],
-  );
+  const featureFilterOptions = useMemo(() => {
+    const presetMap = new Map(
+      (config?.profile_key_presets || []).map((item) => [
+        item.key,
+        item.name,
+      ]),
+    );
+    const featureKeys =
+      config?.features ||
+      (config?.profile_key_presets || []).map((item) => item.key);
+    const dynamicFeatures = featureKeys.map((featureKey) => ({
+      value: featureKey,
+      label:
+        presetMap.get(featureKey) ||
+        featureKey.charAt(0).toUpperCase() + featureKey.slice(1),
+    }));
+    return [
+      {
+        value: "",
+        label: t(AppLocales.Admin.Ai.Filters.AllFeatures),
+      },
+      ...dynamicFeatures,
+    ];
+  }, [config, t]);
 
   const loadRuns = useCallback(async () => {
     if (!can(ADMIN_ACTIONS.READ, ADMIN_RESOURCES.AI_RUNS)) return;
@@ -192,6 +210,9 @@ export const AdminAiRunsPage: React.FC = () => {
     if (result.success) {
       setRuns(result.runs);
       setPagination(result.pagination);
+      if (result.config) {
+        setConfig(result.config);
+      }
     } else {
       setError(result.error || t(AppLocales.Admin.Ai.Errors.LoadRuns));
     }
@@ -234,7 +255,7 @@ export const AdminAiRunsPage: React.FC = () => {
             size={ComponentSizes.XS}
             className="font-mono font-medium"
           >
-            {run.feature || "chat"}
+            {run.feature || "-"}
           </Badge>
         ),
       },

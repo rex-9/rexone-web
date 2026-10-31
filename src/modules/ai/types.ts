@@ -1,6 +1,5 @@
 import type { IAsset } from "../../models/asset.model";
 import type { TAiChatRole, TAiMessageStatus } from "./constants";
-
 import type { IJsonApiResource } from "../../models";
 
 export interface IChatRequest {
@@ -9,19 +8,14 @@ export interface IChatRequest {
   profile_key?: string;
 }
 
-export interface IChatResponse {
-  data?: IJsonApiResource<IMessage>;
-  messages?: (IJsonApiResource<IMessage> | IMessage)[];
-  meta?: {
-    room_id: string;
-    status: TAiMessageStatus;
-    operation_id?: string;
-    operation_type?: string;
-    link?: string;
-    job_id?: string;
-    messages?: (IJsonApiResource<IMessage> | IMessage)[];
-  };
+export interface IChatMeta {
   room_id?: string;
+  status?: TAiMessageStatus;
+  operation_id?: string;
+  operation_type?: string;
+  link?: string;
+  job_id?: string;
+  messages?: IJsonApiResource<IMessage>[];
 }
 
 export interface IChatResult {
@@ -63,10 +57,6 @@ export interface IRoom {
   created_at: string;
   updated_at: string;
   processing: boolean;
-}
-
-export interface IRoomsResponse {
-  rooms: IRoom[];
 }
 
 const AUDIO_ASSET_TYPE = "audio";

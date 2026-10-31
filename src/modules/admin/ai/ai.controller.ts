@@ -1,4 +1,4 @@
-import { IApiPagination, IJsonApiResource } from "../../../models";
+import { IApiPagination } from "../../../models";
 import { AppLocales, translate } from "../../../locales";
 import {
   getApiError,
@@ -7,6 +7,7 @@ import {
 } from "../../../services/api.service";
 import AiService from "./ai.service";
 import {
+  IAdminAiConfig,
   IAdminAiProfile,
   IAdminAiProfileFormValues,
   IAdminAiProfileListParams,
@@ -15,24 +16,76 @@ import {
 } from "./types";
 
 class AiController {
+  async getConfig(): Promise<{
+    success: boolean;
+    config?: IAdminAiConfig;
+    error?: string;
+  }> {
+    const response = await AiService.getConfig();
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      return { success: true, config: data };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Admin.Ai.Errors.LoadProviders),
+      ),
+    };
+  }
+
+  async syncPrices(): Promise<{
+    success: boolean;
+    config?: IAdminAiConfig;
+    error?: string;
+  }> {
+    const response = await AiService.syncPrices();
+    const { status, data } = response.data || {};
+
+    if (status?.success && data) {
+      return { success: true, config: data };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Admin.Ai.Errors.SyncPrices),
+      ),
+    };
+  }
+
   async getProfiles(params?: IAdminAiProfileListParams): Promise<{
     success: boolean;
     profiles: IAdminAiProfile[];
     pagination: IApiPagination | null;
+    config: IAdminAiConfig | null;
     error?: string;
   }> {
     const response = await AiService.getProfiles(params);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
+    const config =
+      (meta as { config?: IAdminAiConfig } | undefined)?.config ||
+      null;
 
     if (status?.success && data) {
       const { records, pagination } = parsePagyList<IAdminAiProfile>(response);
-      return { success: true, profiles: records, pagination };
+      return {
+        success: true,
+        profiles: records,
+        pagination,
+        config,
+      };
     }
 
     return {
       success: false,
       profiles: [],
       pagination: null,
+      config: null,
       error: getApiError(
         response,
         translate(AppLocales.Admin.Ai.Errors.LoadProfiles),
@@ -43,21 +96,20 @@ class AiController {
   async getProfile(id: string): Promise<{
     success: boolean;
     profile?: IAdminAiProfile;
+    config?: IAdminAiConfig | null;
     error?: string;
   }> {
     const response = await AiService.getProfile(id);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
+    const config =
+      (meta as { config?: IAdminAiConfig } | undefined)?.config ||
+      null;
 
     if (status?.success && data) {
-      const raw =
-        typeof data === "object" && data !== null && "profile" in data
-          ? (data as { profile: IAdminAiProfile }).profile
-          : data;
       return {
         success: true,
-        profile: parseRecord<IAdminAiProfile>(
-          raw as IJsonApiResource<IAdminAiProfile> | IAdminAiProfile,
-        ),
+        profile: parseRecord<IAdminAiProfile>(data),
+        config,
       };
     }
 
@@ -79,15 +131,9 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw =
-        typeof data === "object" && data !== null && "profile" in data
-          ? (data as { profile: IAdminAiProfile }).profile
-          : data;
       return {
         success: true,
-        profile: parseRecord<IAdminAiProfile>(
-          raw as IJsonApiResource<IAdminAiProfile> | IAdminAiProfile,
-        ),
+        profile: parseRecord<IAdminAiProfile>(data),
       };
     }
 
@@ -112,15 +158,9 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw =
-        typeof data === "object" && data !== null && "profile" in data
-          ? (data as { profile: IAdminAiProfile }).profile
-          : data;
       return {
         success: true,
-        profile: parseRecord<IAdminAiProfile>(
-          raw as IJsonApiResource<IAdminAiProfile> | IAdminAiProfile,
-        ),
+        profile: parseRecord<IAdminAiProfile>(data),
       };
     }
 
@@ -133,24 +173,49 @@ class AiController {
     };
   }
 
+  async destroyProfile(id: string): Promise<{
+    success: boolean;
+    error?: string;
+  }> {
+    const response = await AiService.destroyProfile(id);
+    const { status } = response.data || {};
+
+    if (status?.success) {
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: getApiError(
+        response,
+        translate(AppLocales.Admin.Ai.Errors.DestroyProfile),
+      ),
+    };
+  }
+
   async getRuns(params?: IAdminAiRunListParams): Promise<{
     success: boolean;
     runs: IAdminAiRun[];
     pagination: IApiPagination | null;
+    config: IAdminAiConfig | null;
     error?: string;
   }> {
     const response = await AiService.getRuns(params);
-    const { status, data } = response.data || {};
+    const { status, data, meta } = response.data || {};
+    const config =
+      (meta as { config?: IAdminAiConfig } | undefined)?.config ||
+      null;
 
     if (status?.success && data) {
       const { records, pagination } = parsePagyList<IAdminAiRun>(response);
-      return { success: true, runs: records, pagination };
+      return { success: true, runs: records, pagination, config };
     }
 
     return {
       success: false,
       runs: [],
       pagination: null,
+      config: null,
       error: getApiError(
         response,
         translate(AppLocales.Admin.Ai.Errors.LoadRuns),
@@ -167,15 +232,9 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const raw =
-        typeof data === "object" && data !== null && "run" in data
-          ? (data as { run: IAdminAiRun }).run
-          : data;
       return {
         success: true,
-        run: parseRecord<IAdminAiRun>(
-          raw as IJsonApiResource<IAdminAiRun> | IAdminAiRun,
-        ),
+        run: parseRecord<IAdminAiRun>(data),
       };
     }
 
