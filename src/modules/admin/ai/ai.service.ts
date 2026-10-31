@@ -6,6 +6,7 @@ import {
 } from "../../../models";
 import { api } from "../../../services";
 import {
+  IAdminAiConfig,
   IAdminAiProfile,
   IAdminAiProfileFormValues,
   IAdminAiProfileListParams,
@@ -13,10 +14,20 @@ import {
   IAdminAiRunListParams,
 } from "./types";
 
-type AdminAiProfileResponse = IAdminAiProfile | { profile: IAdminAiProfile };
-type AdminAiRunResponse = IAdminAiRun | { run: IAdminAiRun };
-
 class AiService {
+  async getConfig(): Promise<IApiResponse<IApiEnvelope<IAdminAiConfig>>> {
+    return api.get<IAdminAiConfig>(
+      AppRoutes.server.protected.admin.AI_PROFILES_CONFIG,
+    );
+  }
+
+  async syncPrices(): Promise<IApiResponse<IApiEnvelope<IAdminAiConfig>>> {
+    return api.post<IAdminAiConfig>(
+      AppRoutes.server.protected.admin.AI_PROFILES_SYNC_PRICES,
+      {},
+    );
+  }
+
   async getProfiles(
     params?: IAdminAiProfileListParams,
   ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAiProfile>[]>>> {
@@ -28,16 +39,16 @@ class AiService {
 
   async getProfile(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminAiProfileResponse>>> {
-    return api.get<AdminAiProfileResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAiProfile>>>> {
+    return api.get<IJsonApiResource<IAdminAiProfile>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.AI_PROFILE_DETAIL, id),
     );
   }
 
   async createProfile(
     values: IAdminAiProfileFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<AdminAiProfileResponse>>> {
-    return api.post<AdminAiProfileResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAiProfile>>>> {
+    return api.post<IJsonApiResource<IAdminAiProfile>>(
       AppRoutes.server.protected.admin.AI_PROFILES,
       { profile: values },
     );
@@ -46,10 +57,16 @@ class AiService {
   async updateProfile(
     id: string,
     values: IAdminAiProfileFormValues,
-  ): Promise<IApiResponse<IApiEnvelope<AdminAiProfileResponse>>> {
-    return api.put<AdminAiProfileResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAiProfile>>>> {
+    return api.put<IJsonApiResource<IAdminAiProfile>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.AI_PROFILE_DETAIL, id),
       { profile: values },
+    );
+  }
+
+  async destroyProfile(id: string): Promise<IApiResponse<IApiEnvelope<null>>> {
+    return api.delete<null>(
+      AppRoutes.withId(AppRoutes.server.protected.admin.AI_PROFILE_DETAIL, id),
     );
   }
 
@@ -64,8 +81,8 @@ class AiService {
 
   async getRun(
     id: string,
-  ): Promise<IApiResponse<IApiEnvelope<AdminAiRunResponse>>> {
-    return api.get<AdminAiRunResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IAdminAiRun>>>> {
+    return api.get<IJsonApiResource<IAdminAiRun>>(
       AppRoutes.withId(AppRoutes.server.protected.admin.AI_RUN_DETAIL, id),
     );
   }

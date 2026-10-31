@@ -1,19 +1,13 @@
-// src/controllers/ai.controller.ts
+// src/modules/ai/ai.controller.ts
 import AiService from "./ai.service";
 import {
   getApiError,
   parsePagyList,
   parseRecord,
 } from "../../services/api.service";
-import { IChatRequest, IChatResult, IMessage, IRoom } from "./types";
+import { IChatMeta, IChatRequest, IChatResult, IMessage, IRoom } from "./types";
 import SocketService, { ISocketMessage } from "../../services/socket.service";
-import {
-  IApiEnvelope,
-  IApiPagination,
-  IApiResponse,
-  IApiResponseStatus,
-  IJsonApiResource,
-} from "../../models";
+import { IApiPagination } from "../../models";
 import { AppLocales, translate } from "../../locales";
 import { AI_MESSAGE_STATUS, AI_SOCKET_EVENTS } from "./constants";
 import { SpeechController } from "../speech";
@@ -84,23 +78,8 @@ class AiController {
     const response = await AiService.getRooms(params);
     const { status, data, meta } = response.data || {};
 
-    if (status?.success) {
-      if (
-        data &&
-        "rooms" in data &&
-        Array.isArray((data as { rooms: IRoom[] }).rooms)
-      ) {
-        return {
-          success: true,
-          rooms: (data as { rooms: IRoom[] }).rooms,
-          pagination: meta?.pagination,
-        };
-      }
-      const { records, pagination } = parsePagyList<IRoom>(
-        response as unknown as IApiResponse<
-          IApiEnvelope<IJsonApiResource<IRoom>[]>
-        >,
-      );
+    if (status?.success && data) {
+      const { records, pagination } = parsePagyList<IRoom>(response);
       return {
         success: true,
         rooms: records,
@@ -125,13 +104,7 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const roomRaw =
-        "room" in data && typeof data.room === "object" && data.room !== null
-          ? data.room
-          : data;
-      const parsedRoom = parseRecord<IRoom>(
-        roomRaw as IJsonApiResource<IRoom> | IRoom,
-      );
+      const parsedRoom = parseRecord<IRoom>(data);
       this.currentRoomId = parsedRoom.id;
       return {
         success: true,
@@ -199,55 +172,18 @@ class AiController {
     }
 
     const response = await AiService.chat(request);
-    const envelope = (response.data || {}) as {
-      status?: IApiResponseStatus;
-      data?: Record<string, unknown> | Array<IJsonApiResource<IMessage>>;
-      meta?: Record<string, unknown>;
-      messages?: Array<IJsonApiResource<IMessage>>;
-      room_id?: string;
-    };
-    const { status, data, meta } = envelope;
+    const { status, data, meta } = response.data || {};
+    const chatMeta = meta as IChatMeta | undefined;
 
     if (status?.success && data) {
-      const dataObj = !Array.isArray(data) ? data : {};
-      const dataMeta =
-        dataObj.meta && typeof dataObj.meta === "object"
-          ? (dataObj.meta as Record<string, unknown>)
-          : undefined;
-      const rawList =
-        dataObj.messages ||
-        meta?.messages ||
-        dataMeta?.messages ||
-        envelope.messages;
-      let parsedMessages: IMessage[] = [];
-
-      if (Array.isArray(rawList) && rawList.length > 0) {
-        parsedMessages = rawList.map((m) =>
-          parseRecord<IMessage>(m as IJsonApiResource<IMessage>),
-        );
-      } else if (Array.isArray(data)) {
-        parsedMessages = data.map((m) => parseRecord<IMessage>(m));
-      } else if (dataObj.data && typeof dataObj.data === "object") {
-        const single = parseRecord<IMessage>(
-          dataObj.data as IJsonApiResource<IMessage>,
-        );
-        if (single) {
-          parsedMessages = [single];
-        }
-      } else {
-        const single = parseRecord<IMessage>(
-          dataObj as unknown as IJsonApiResource<IMessage>,
-        );
-        if (single) {
-          parsedMessages = [single];
-        }
-      }
+      const rawMessages = chatMeta?.messages;
+      const parsedMessages =
+        Array.isArray(rawMessages) && rawMessages.length > 0
+          ? rawMessages.map((item) => parseRecord<IMessage>(item))
+          : [parseRecord<IMessage>(data)];
 
       const resolvedRoomId =
-        (typeof meta?.room_id === "string" ? meta.room_id : undefined) ||
-        (typeof dataMeta?.room_id === "string" ? dataMeta.room_id : undefined) ||
-        (typeof dataObj.room_id === "string" ? dataObj.room_id : undefined) ||
-        envelope.room_id ||
+        chatMeta?.room_id ||
         parsedMessages[0]?.room_id ||
         roomId ||
         this.currentRoomId ||
@@ -257,14 +193,12 @@ class AiController {
         this.currentRoomId = resolvedRoomId;
       }
 
-      if (parsedMessages.length > 0) {
-        return {
-          success: true,
-          messages: parsedMessages,
-          roomId: resolvedRoomId,
-          notice: status.message || undefined,
-        };
-      }
+      return {
+        success: true,
+        messages: parsedMessages,
+        roomId: resolvedRoomId,
+        notice: status.message || undefined,
+      };
     }
 
     return {
@@ -308,17 +242,10 @@ class AiController {
     const { status, data } = response.data || {};
 
     if (status?.success && data) {
-      const dataAny = data as Record<string, unknown>;
-      const resolvedTitle =
-        typeof dataAny.title === "string"
-          ? dataAny.title
-          : typeof (dataAny.attributes as Record<string, unknown> | undefined)
-                ?.title === "string"
-            ? ((dataAny.attributes as Record<string, unknown>).title as string)
-            : title;
+      const parsedRoom = parseRecord<IRoom>(data);
       return {
         success: true,
-        title: resolvedTitle,
+        title: parsedRoom.title || title,
       };
     }
 

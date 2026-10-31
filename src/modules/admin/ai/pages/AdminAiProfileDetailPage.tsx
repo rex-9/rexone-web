@@ -1,13 +1,16 @@
 // src/modules/admin/ai/pages/AdminAiProfileDetailPage.tsx
 
-import React from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { iconsLib } from "../../../../assets";
+import { useLoading } from "../../../../contexts/LoadingContext";
+import { useToast } from "../../../../contexts/ToastContext";
 import {
   Button,
   ButtonSizes,
   ButtonVariants,
+  ConfirmDialog,
   DateTime,
   DateTimeFormats,
   DetailField,
@@ -19,10 +22,7 @@ import {
   BadgeVariants,
   ComponentSizes,
 } from "../../../../design";
-import {
-  AdminState,
-} from "../../components";
-import { useAdminDetail } from "../../hooks/useAdminDetail";
+import { AdminState } from "../../components";
 import { usePermissions } from "../../../../hooks";
 import {
   ADMIN_ACTIONS,
@@ -31,25 +31,86 @@ import {
 } from "../../constants";
 import { AppLocales, useTranslate } from "../../../../locales";
 import AiController from "../ai.controller";
-import type { IAdminAiProfile } from "../types";
-
-const loadProfile = async (id: string) => {
-  const result = await AiController.getProfile(id);
-  return { ...result, record: result.profile };
-};
+import { ADMIN_AI_FILTER } from "../constants";
+import { formatAiRatePerMillion } from "../helpers/aiCost.helper";
+import type { IAdminAiConfig, IAdminAiProfile } from "../types";
 
 export const AdminAiProfileDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const t = useTranslate();
+  const toast = useToast();
   const { can } = usePermissions();
+  const { isLoading, setLoading } = useLoading();
 
-  const { record: profile, error } = useAdminDetail<IAdminAiProfile>(
-    id,
-    loadProfile,
+  const [profile, setProfile] = useState<IAdminAiProfile | null>(null);
+  const [config, setConfig] = useState<IAdminAiConfig | null>(
+    null,
   );
+  const [error, setError] = useState<string | null>(null);
+  const [isDestroyDialogOpen, setIsDestroyDialogOpen] = useState(false);
 
   const listPath = AppRoutes.client.protected.admin.AI_PROFILES;
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+
+    const fetchDetail = async () => {
+      setLoading(true);
+      setError(null);
+      const result = await AiController.getProfile(id);
+      if (cancelled) return;
+      setLoading(false);
+
+      if (result.success && result.profile) {
+        setProfile(result.profile);
+        setConfig(result.config || null);
+      } else {
+        setError(result.error || t(AppLocales.Admin.Ai.Errors.LoadProfile));
+      }
+    };
+
+    void fetchDetail();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, setLoading, t]);
+
+  const providerMeta = useMemo(
+    () =>
+      config?.providers.find((item) => item.key === profile?.provider) ||
+      null,
+    [config, profile],
+  );
+
+  const modelMeta = useMemo(
+    () =>
+      providerMeta?.models.find((item) => item.model === profile?.model) ||
+      null,
+    [providerMeta, profile],
+  );
+
+  const isBuiltInPreset = useMemo(() => {
+    if (!profile) return true;
+    return (config?.profile_key_presets || []).some(
+      (item) => item.key === profile.key,
+    );
+  }, [config, profile]);
+
+  const handleDestroy = useCallback(async () => {
+    if (!profile) return;
+    setLoading(true);
+    const result = await AiController.destroyProfile(profile.id);
+    setLoading(false);
+
+    if (result.success) {
+      toast.success(t(AppLocales.Admin.Ai.Toasts.ProfileDestroySuccess));
+      navigate(listPath);
+    } else {
+      toast.error(result.error || t(AppLocales.Admin.Ai.Errors.DestroyProfile));
+    }
+  }, [listPath, navigate, profile, setLoading, t, toast]);
 
   return (
     <div className="space-y-6">
@@ -70,7 +131,13 @@ export const AdminAiProfileDetailPage: React.FC = () => {
         icon={iconsLib.cube}
         statusBadge={
           profile ? (
-            <StatusBadge status={profile.enabled ? "active" : "disabled"} />
+            <StatusBadge
+              status={
+                profile.enabled
+                  ? ADMIN_AI_FILTER.ACTIVE
+                  : ADMIN_AI_FILTER.INACTIVE
+              }
+            />
           ) : undefined
         }
         entityId={profile?.id}
@@ -83,22 +150,38 @@ export const AdminAiProfileDetailPage: React.FC = () => {
             : undefined
         }
         action={
-          profile && can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.AI_PROFILES) ? (
-            <Button
-              size={ButtonSizes.SM}
-              variant={ButtonVariants.PRIMARY}
-              onClick={() =>
-                navigate(
-                  AppRoutes.withId(
-                    AppRoutes.client.protected.admin.AI_PROFILE_EDIT,
-                    profile.id,
-                  ),
-                )
-              }
-            >
-              <iconsLib.pencilSquare className="mr-1.5 h-4 w-4" />
-              {t(AppLocales.Admin.Common.Actions.Edit)}
-            </Button>
+          profile ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {can(ADMIN_ACTIONS.UPDATE, ADMIN_RESOURCES.AI_PROFILES) && (
+                <Button
+                  size={ButtonSizes.SM}
+                  variant={ButtonVariants.PRIMARY}
+                  onClick={() =>
+                    navigate(
+                      AppRoutes.withId(
+                        AppRoutes.client.protected.admin.AI_PROFILE_EDIT,
+                        profile.id,
+                      ),
+                    )
+                  }
+                >
+                  <iconsLib.pencilSquare className="mr-1.5 h-4 w-4" />
+                  {t(AppLocales.Admin.Common.Actions.Edit)}
+                </Button>
+              )}
+              {!isBuiltInPreset &&
+                can(ADMIN_ACTIONS.DELETE, ADMIN_RESOURCES.AI_PROFILES) && (
+                  <Button
+                    size={ButtonSizes.SM}
+                    variant={ButtonVariants.SECONDARY}
+                    className="text-error border-error/30 hover:bg-error/10"
+                    onClick={() => setIsDestroyDialogOpen(true)}
+                  >
+                    <iconsLib.trash className="mr-1.5 h-4 w-4" />
+                    {t(AppLocales.Admin.Common.Actions.Destroy)}
+                  </Button>
+                )}
+            </div>
           ) : undefined
         }
       />
@@ -131,9 +214,29 @@ export const AdminAiProfileDetailPage: React.FC = () => {
               <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Provider)}
                 value={
-                  <Badge variant={BadgeVariants.SECONDARY} size={ComponentSizes.XS} className="uppercase font-medium">
-                    {profile.provider}
-                  </Badge>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <Badge
+                      variant={BadgeVariants.SECONDARY}
+                      size={ComponentSizes.XS}
+                      className="uppercase font-medium"
+                    >
+                      {providerMeta?.label || profile.provider}
+                    </Badge>
+                    {providerMeta && (
+                      <Badge
+                        variant={
+                          providerMeta.configured
+                            ? BadgeVariants.SUCCESS
+                            : BadgeVariants.WARNING
+                        }
+                        size={ComponentSizes.XS}
+                      >
+                        {providerMeta.configured
+                          ? t(AppLocales.Admin.Ai.ApiKeyConfigured)
+                          : t(AppLocales.Admin.Ai.ApiKeyMissing)}
+                      </Badge>
+                    )}
+                  </div>
                 }
               />
               <DetailField
@@ -144,11 +247,58 @@ export const AdminAiProfileDetailPage: React.FC = () => {
                   </span>
                 }
               />
+              {modelMeta &&
+                (modelMeta.input_cost_per_million != null ||
+                  modelMeta.output_cost_per_million != null) && (
+                  <DetailField
+                    label={t(AppLocales.Admin.Ai.ModelPricing)}
+                    value={
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <Badge
+                          variant={BadgeVariants.DEFAULT}
+                          size={ComponentSizes.XS}
+                          className="font-mono"
+                        >
+                          {t(AppLocales.Admin.Ai.InputRate)}:{" "}
+                          {formatAiRatePerMillion(
+                            modelMeta.input_cost_per_million,
+                          )}
+                        </Badge>
+                        {modelMeta.cached_cost_per_million != null && (
+                          <Badge
+                            variant={BadgeVariants.DEFAULT}
+                            size={ComponentSizes.XS}
+                            className="font-mono"
+                          >
+                            {t(AppLocales.Admin.Ai.CachedRate)}:{" "}
+                            {formatAiRatePerMillion(
+                              modelMeta.cached_cost_per_million,
+                            )}
+                          </Badge>
+                        )}
+                        <Badge
+                          variant={BadgeVariants.DEFAULT}
+                          size={ComponentSizes.XS}
+                          className="font-mono"
+                        >
+                          {t(AppLocales.Admin.Ai.OutputRate)}:{" "}
+                          {formatAiRatePerMillion(
+                            modelMeta.output_cost_per_million,
+                          )}
+                        </Badge>
+                      </div>
+                    }
+                  />
+                )}
               <DetailField
                 label={t(AppLocales.Admin.Ai.ProfilesTable.Status)}
                 value={
                   <StatusBadge
-                    status={profile.enabled ? "active" : "inactive"}
+                    status={
+                      profile.enabled
+                        ? ADMIN_AI_FILTER.ACTIVE
+                        : ADMIN_AI_FILTER.INACTIVE
+                    }
                     label={
                       profile.enabled
                         ? ADMIN_COMMON_LABELS.ACTIVE
@@ -289,6 +439,18 @@ export const AdminAiProfileDetailPage: React.FC = () => {
           </div>
         </div>
       ) : null}
+
+      <ConfirmDialog
+        isOpen={isDestroyDialogOpen}
+        title={t(AppLocales.Admin.Ai.DestroyProfileTitle)}
+        message={t(AppLocales.Admin.Ai.DestroyProfileMessage)}
+        confirmLabel={t(AppLocales.Admin.Common.Actions.Destroy)}
+        cancelLabel={t(AppLocales.Admin.Common.Actions.Cancel)}
+        isDestructive={true}
+        isLoading={isLoading}
+        onClose={() => setIsDestroyDialogOpen(false)}
+        onConfirm={handleDestroy}
+      />
     </div>
   );
 };

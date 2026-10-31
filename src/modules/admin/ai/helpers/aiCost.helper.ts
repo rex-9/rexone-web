@@ -19,3 +19,10 @@ export function formatAiCost(
 
   return `${symbol}${formattedNumber}`;
 }
+
+export function formatAiRatePerMillion(rate?: number | null): string {
+  if (rate == null || Number.isNaN(rate)) return "—";
+  const symbol = AI_PRICING_CONSTANTS.CURRENCY_SYMBOL;
+  return `${symbol}${Number(rate).toFixed(rate < 1 ? 3 : 2)} / 1M`;
+}
+

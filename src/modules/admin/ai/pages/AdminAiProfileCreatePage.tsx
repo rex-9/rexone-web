@@ -1,6 +1,6 @@
 // src/modules/admin/ai/pages/AdminAiProfileCreatePage.tsx
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppRoutes from "../../../../AppRoutes";
 import { useLoading } from "../../../../contexts/LoadingContext";
@@ -22,13 +22,10 @@ import {
   TextArea,
   Toggle,
 } from "../../components";
-import {
-  AI_PROVIDER_OPTIONS,
-  AI_PROVIDER_MODELS,
-  AI_PROFILE_KEY_PRESETS,
-} from "../constants";
+import { AI_CUSTOM_MODEL_OPTION } from "../constants";
+import { formatAiRatePerMillion } from "../helpers/aiCost.helper";
 import { useTranslate, AppLocales } from "../../../../locales";
-import { IAdminAiProfileFormValues } from "..";
+import type { IAdminAiConfig, IAdminAiProfileFormValues } from "../types";
 
 export const AdminAiProfileCreatePage: React.FC = () => {
   const t = useTranslate();
@@ -39,41 +36,120 @@ export const AdminAiProfileCreatePage: React.FC = () => {
   const { setLoading } = useLoading();
 
   const [alertMessage, setAlertMessage] = useState("");
+  const [config, setConfig] = useState<IAdminAiConfig | null>(
+    null,
+  );
 
   const [key, setKey] = useState("");
   const [name, setName] = useState("");
-  const [provider, setProvider] = useState<string>("deepseek");
+  const [provider, setProvider] = useState<string>("");
   const [enabled, setEnabled] = useState(true);
-  const [model, setModel] = useState<string>("deepseek-chat");
+  const [model, setModel] = useState<string>("");
   const [isCustomModel, setIsCustomModel] = useState(false);
-  const [temperature, setTemperature] = useState<string>("0.7");
-  const [maxOutputTokens, setMaxOutputTokens] = useState<string>("2000");
-  const [contextMaxTokens, setContextMaxTokens] = useState<string>("8000");
-  const [historyMaxMessages, setHistoryMaxMessages] = useState<string>("20");
-  const [timeoutSeconds, setTimeoutSeconds] = useState<string>("30");
+  const [inputCostPerMillion, setInputCostPerMillion] = useState<string>("");
+  const [cachedCostPerMillion, setCachedCostPerMillion] = useState<string>("");
+  const [outputCostPerMillion, setOutputCostPerMillion] = useState<string>("");
+  const [temperature, setTemperature] = useState<string>("");
+  const [maxOutputTokens, setMaxOutputTokens] = useState<string>("");
+  const [contextMaxTokens, setContextMaxTokens] = useState<string>("");
+  const [historyMaxMessages, setHistoryMaxMessages] = useState<string>("");
+  const [timeoutSeconds, setTimeoutSeconds] = useState<string>("");
   const [systemPrompt, setSystemPrompt] = useState("");
 
+  useEffect(() => {
+    const loadConfig = async () => {
+      setLoading(true);
+      const result = await AiController.getConfig();
+      setLoading(false);
+
+      if (result.success && result.config) {
+        const data = result.config;
+        setConfig(data);
+        setProvider(data.default_provider);
+        setModel(data.default_model);
+        setTemperature(String(data.defaults.temperature));
+        setMaxOutputTokens(String(data.defaults.max_output_tokens));
+        setContextMaxTokens(String(data.defaults.context_max_tokens));
+        setHistoryMaxMessages(String(data.defaults.history_max_messages));
+        setTimeoutSeconds(String(data.defaults.timeout_seconds));
+      } else if (result.error) {
+        setAlertMessage(result.error);
+      }
+    };
+
+    void loadConfig();
+  }, [setLoading]);
+
+  const selectedProvider = useMemo(
+    () =>
+      config?.providers.find((item) => item.key === provider) || null,
+    [config, provider],
+  );
+
+  const selectedModelMeta = useMemo(
+    () =>
+      selectedProvider?.models.find((item) => item.model === model) || null,
+    [selectedProvider, model],
+  );
+
+  useEffect(() => {
+    if (selectedModelMeta) {
+      setInputCostPerMillion(
+        selectedModelMeta.input_cost_per_million != null
+          ? String(selectedModelMeta.input_cost_per_million)
+          : "",
+      );
+      setCachedCostPerMillion(
+        selectedModelMeta.cached_cost_per_million != null
+          ? String(selectedModelMeta.cached_cost_per_million)
+          : "",
+      );
+      setOutputCostPerMillion(
+        selectedModelMeta.output_cost_per_million != null
+          ? String(selectedModelMeta.output_cost_per_million)
+          : "",
+      );
+    } else if (isCustomModel) {
+      setInputCostPerMillion("");
+      setCachedCostPerMillion("");
+      setOutputCostPerMillion("");
+    }
+  }, [selectedModelMeta, isCustomModel]);
+
+  const providerOptions = useMemo(
+    () =>
+      (config?.providers || []).map((item) => ({
+        value: item.key,
+        label: item.label,
+      })),
+    [config],
+  );
+
   const modelOptions = useMemo(() => {
-    const list = AI_PROVIDER_MODELS[provider] || [];
+    const list = selectedProvider?.models || [];
     return [
-      ...list.map((m) => ({ value: m.value, label: m.label })),
+      ...list.map((m) => ({ value: m.model, label: m.model })),
       {
-        value: "__custom__",
+        value: AI_CUSTOM_MODEL_OPTION,
         label: t(AppLocales.Admin.Ai.CustomModel),
       },
     ];
-  }, [provider, t]);
+  }, [selectedProvider, t]);
 
   const handleProviderChange = (newProvider: string) => {
     setProvider(newProvider);
     if (!isCustomModel) {
-      const defaultModel = AI_PROVIDER_MODELS[newProvider]?.[0]?.value || "";
+      const nextProv = config?.providers.find(
+        (item) => item.key === newProvider,
+      );
+      const defaultModel =
+        nextProv?.default_model || nextProv?.models[0]?.model || "";
       setModel(defaultModel);
     }
   };
 
   const handleModelChange = (val: string) => {
-    if (val === "__custom__") {
+    if (val === AI_CUSTOM_MODEL_OPTION) {
       setIsCustomModel(true);
       setModel("");
     } else {
@@ -87,33 +163,54 @@ export const AdminAiProfileCreatePage: React.FC = () => {
 
     const normalizedKey = key.trim().toLowerCase().replace(/\s+/g, "_");
     if (!normalizedKey) {
-      setAlertMessage("Profile Key is required.");
+      setAlertMessage(t(AppLocales.Admin.Ai.ProfileForm.KeyRequired));
       return;
     }
     if (!name.trim()) {
-      setAlertMessage("Profile Name is required.");
+      setAlertMessage(t(AppLocales.Admin.Ai.ProfileForm.NameRequired));
       return;
     }
     if (!model.trim()) {
-      setAlertMessage("Model Identifier is required.");
+      setAlertMessage(t(AppLocales.Admin.Ai.ProfileForm.ModelRequired));
       return;
     }
 
     const values: IAdminAiProfileFormValues = {
       key: normalizedKey,
-      provider: provider.trim() || "deepseek",
+      provider:
+        provider.trim() ||
+        config?.default_provider ||
+        config?.providers[0]?.key ||
+        "",
       name: name.trim(),
       enabled,
       model: model.trim(),
-      temperature: temperature !== "" ? parseFloat(temperature) : 0.7,
+      input_cost_per_million:
+        inputCostPerMillion !== "" ? parseFloat(inputCostPerMillion) : null,
+      cached_cost_per_million:
+        cachedCostPerMillion !== "" ? parseFloat(cachedCostPerMillion) : null,
+      output_cost_per_million:
+        outputCostPerMillion !== "" ? parseFloat(outputCostPerMillion) : null,
+      temperature:
+        temperature !== ""
+          ? parseFloat(temperature)
+          : (config?.defaults.temperature ?? null),
       max_output_tokens:
-        maxOutputTokens !== "" ? parseInt(maxOutputTokens, 10) : 2000,
+        maxOutputTokens !== ""
+          ? parseInt(maxOutputTokens, 10)
+          : (config?.defaults.max_output_tokens ?? null),
       context_max_tokens:
-        contextMaxTokens !== "" ? parseInt(contextMaxTokens, 10) : 8000,
+        contextMaxTokens !== ""
+          ? parseInt(contextMaxTokens, 10)
+          : (config?.defaults.context_max_tokens ?? null),
       history_max_messages:
-        historyMaxMessages !== "" ? parseInt(historyMaxMessages, 10) : 20,
+        historyMaxMessages !== ""
+          ? parseInt(historyMaxMessages, 10)
+          : (config?.defaults.history_max_messages ?? null),
       timeout_seconds:
-        timeoutSeconds !== "" ? parseInt(timeoutSeconds, 10) : 30,
+        timeoutSeconds !== ""
+          ? parseInt(timeoutSeconds, 10)
+          : (config?.defaults.timeout_seconds ?? null),
       system_prompt: systemPrompt.trim() || null,
     };
 
@@ -173,28 +270,30 @@ export const AdminAiProfileCreatePage: React.FC = () => {
                 className="font-mono text-sm"
               />
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-caption text-base-content/50">Presets:</span>
-                {AI_PROFILE_KEY_PRESETS.map((preset) => (
+                <span className="text-caption text-base-content/50">
+                  {t(AppLocales.Admin.Ai.ProfileForm.PresetsLabel)}
+                </span>
+                {(config?.profile_key_presets || []).map((preset) => (
                   <Badge
-                    key={preset.value}
+                    key={preset.key}
                     variant={
-                      key === preset.value
+                      key === preset.key
                         ? BadgeVariants.PRIMARY
                         : BadgeVariants.DEFAULT
                     }
                     size={ComponentSizes.XS}
                     onClick={() => {
-                      setKey(preset.value);
-                      if (!name) {
-                        const friendly =
-                          preset.label.split("(")[1]?.replace(")", "") ||
-                          preset.value;
-                        setName(friendly);
+                      const isPresetName = (
+                        config?.profile_key_presets || []
+                      ).some((item) => item.name === name);
+                      setKey(preset.key);
+                      if (!name || isPresetName) {
+                        setName(preset.name);
                       }
                     }}
                     className="cursor-pointer font-mono font-medium transition-colors"
                   >
-                    {preset.value}
+                    {preset.key}
                   </Badge>
                 ))}
               </div>
@@ -209,33 +308,115 @@ export const AdminAiProfileCreatePage: React.FC = () => {
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
-            <Dropdown
-              label={t(AppLocales.Admin.Ai.ProfileForm.ProviderLabel)}
-              value={provider}
-              options={AI_PROVIDER_OPTIONS.map((o) => ({
-                value: o.value,
-                label: o.label,
-              }))}
-              onValueChange={handleProviderChange}
-            />
+            <div className="space-y-2">
+              <Dropdown
+                label={t(AppLocales.Admin.Ai.ProfileForm.ProviderLabel)}
+                value={provider}
+                options={providerOptions}
+                onValueChange={handleProviderChange}
+              />
+              {selectedProvider && (
+                <div className="flex items-center gap-2 pt-0.5">
+                  <Badge
+                    variant={
+                      selectedProvider.configured
+                        ? BadgeVariants.SUCCESS
+                        : BadgeVariants.WARNING
+                    }
+                    size={ComponentSizes.XS}
+                  >
+                    {selectedProvider.configured
+                      ? t(AppLocales.Admin.Ai.ApiKeyConfigured)
+                      : t(AppLocales.Admin.Ai.ApiKeyMissing)}
+                  </Badge>
+                </div>
+              )}
+            </div>
 
             <div className="space-y-2">
               <Dropdown
                 label={t(AppLocales.Admin.Ai.ProfileForm.ModelLabel)}
-                value={isCustomModel ? "__custom__" : model}
+                value={isCustomModel ? AI_CUSTOM_MODEL_OPTION : model}
                 options={modelOptions}
                 onValueChange={handleModelChange}
               />
               {isCustomModel && (
                 <TextInput
-                  placeholder="Enter custom model identifier (e.g. gpt-4o, claude-3-7-sonnet)"
+                  placeholder={t(
+                    AppLocales.Admin.Ai.ProfileForm.CustomModelPlaceholder,
+                  )}
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
                   required
                   className="font-mono text-sm mt-1"
                 />
               )}
+              {selectedModelMeta &&
+                (selectedModelMeta.input_cost_per_million != null ||
+                  selectedModelMeta.output_cost_per_million != null) && (
+                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                    <Badge
+                      variant={BadgeVariants.DEFAULT}
+                      size={ComponentSizes.XS}
+                      className="font-mono"
+                    >
+                      {t(AppLocales.Admin.Ai.InputRate)}:{" "}
+                      {formatAiRatePerMillion(
+                        selectedModelMeta.input_cost_per_million,
+                      )}
+                    </Badge>
+                    {selectedModelMeta.cached_cost_per_million != null && (
+                      <Badge
+                        variant={BadgeVariants.DEFAULT}
+                        size={ComponentSizes.XS}
+                        className="font-mono"
+                      >
+                        {t(AppLocales.Admin.Ai.CachedRate)}:{" "}
+                        {formatAiRatePerMillion(
+                          selectedModelMeta.cached_cost_per_million,
+                        )}
+                      </Badge>
+                    )}
+                    <Badge
+                      variant={BadgeVariants.DEFAULT}
+                      size={ComponentSizes.XS}
+                      className="font-mono"
+                    >
+                      {t(AppLocales.Admin.Ai.OutputRate)}:{" "}
+                      {formatAiRatePerMillion(
+                        selectedModelMeta.output_cost_per_million,
+                      )}
+                    </Badge>
+                  </div>
+                )}
             </div>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-3">
+            <TextInput
+              label={`${t(AppLocales.Admin.Ai.InputRate)} ($ / 1M)`}
+              type="number"
+              step="0.0001"
+              min="0"
+              value={inputCostPerMillion}
+              onChange={(e) => setInputCostPerMillion(e.target.value)}
+            />
+            <TextInput
+              label={`${t(AppLocales.Admin.Ai.CachedRate)} ($ / 1M)`}
+              type="number"
+              step="0.0001"
+              min="0"
+              value={cachedCostPerMillion}
+              onChange={(e) => setCachedCostPerMillion(e.target.value)}
+            />
+            <TextInput
+              label={`${t(AppLocales.Admin.Ai.OutputRate)} ($ / 1M)`}
+              type="number"
+              step="0.0001"
+              min="0"
+              value={outputCostPerMillion}
+              onChange={(e) => setOutputCostPerMillion(e.target.value)}
+            />
           </div>
 
           <div className="pt-2">
@@ -276,7 +457,7 @@ export const AdminAiProfileCreatePage: React.FC = () => {
             <TextInput
               label={t(AppLocales.Admin.Ai.ProfileForm.HistoryMaxMessagesLabel)}
               type="number"
-              min="0"
+              min="1"
               value={historyMaxMessages}
               onChange={(e) => setHistoryMaxMessages(e.target.value)}
             />

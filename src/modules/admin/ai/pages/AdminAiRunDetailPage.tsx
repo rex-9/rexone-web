@@ -191,6 +191,14 @@ export const AdminAiRunDetailPage: React.FC = () => {
                   }
                 />
                 <DetailField
+                  label={t(AppLocales.Admin.Ai.RunDetail.CachedTokens)}
+                  value={
+                    run.cached_tokens != null
+                      ? run.cached_tokens.toLocaleString()
+                      : "-"
+                  }
+                />
+                <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.CompletionTokens)}
                   value={
                     run.completion_tokens != null

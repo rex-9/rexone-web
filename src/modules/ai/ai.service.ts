@@ -1,25 +1,18 @@
-// src/services/ai.service.ts
+// src/modules/ai/ai.service.ts
 import { IApiEnvelope, IApiResponse, IJsonApiResource } from "../../models";
 import AppRoutes from "../../AppRoutes";
 import { api } from "../../services";
-import {
-  IChatRequest,
-  IChatResponse,
-  IMessage,
-  IRoom,
-  IRoomsResponse,
-} from "./types";
+import { IChatRequest, IMessage, IRoom } from "./types";
 
 class AiService {
   // Chat
   async chat(
     request: IChatRequest,
-  ): Promise<IApiResponse<IApiEnvelope<IChatResponse>>> {
-    const response = await api.post<IChatResponse>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IMessage>>>> {
+    return api.post<IJsonApiResource<IMessage>>(
       AppRoutes.server.protected.AI_CHAT,
       request,
     );
-    return response;
   }
 
   // History
@@ -32,11 +25,10 @@ class AiService {
     };
     if (roomId) queryParams.room_id = roomId;
 
-    const response = await api.get<IJsonApiResource<IMessage>[]>(
+    return api.get<IJsonApiResource<IMessage>[]>(
       AppRoutes.server.protected.AI_HISTORY,
       queryParams,
     );
-    return response;
   }
 
   // Clear
@@ -46,52 +38,44 @@ class AiService {
     const params: Record<string, string> = {};
     if (roomId) params.room_id = roomId;
 
-    const response = await api.delete<null>(
-      AppRoutes.server.protected.AI_CLEAR,
-      params,
-    );
-    return response;
+    return api.delete<null>(AppRoutes.server.protected.AI_CLEAR, params);
   }
 
   // Rename
   async renameRoom(
     roomId: string,
     title: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ title: string }>>> {
-    const response = await api.put<{ title: string }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IRoom>>>> {
+    return api.put<IJsonApiResource<IRoom>>(
       AppRoutes.withId(AppRoutes.server.protected.AI_ROOM, roomId),
       { title },
     );
-    return response;
   }
 
   // Rooms
   async getRooms(params?: {
     page?: number;
-    limit?: number;
-  }): Promise<IApiResponse<IApiEnvelope<IRoomsResponse>>> {
-    const response = await api.get<IRoomsResponse>(
+    limit?: number,
+  }): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IRoom>[]>>> {
+    return api.get<IJsonApiResource<IRoom>[]>(
       AppRoutes.server.protected.AI_ROOMS,
       params,
     );
-    return response;
   }
 
   async createRoom(
     title: string,
-  ): Promise<IApiResponse<IApiEnvelope<{ room: IRoom }>>> {
-    const response = await api.post<{ room: IRoom }>(
+  ): Promise<IApiResponse<IApiEnvelope<IJsonApiResource<IRoom>>>> {
+    return api.post<IJsonApiResource<IRoom>>(
       AppRoutes.server.protected.AI_ROOMS,
       { title },
     );
-    return response;
   }
 
   async deleteRoom(roomId: string): Promise<IApiResponse<IApiEnvelope<null>>> {
-    const response = await api.delete<null>(
+    return api.delete<null>(
       AppRoutes.withId(AppRoutes.server.protected.AI_DELETE_ROOM, roomId),
     );
-    return response;
   }
 }
 

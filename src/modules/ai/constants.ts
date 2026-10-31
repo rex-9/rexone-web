@@ -26,8 +26,7 @@ export const AI_SOCKET_EVENTS = {
   TTS_FAILED: "tts_failed",
 } as const;
 
-
-export const AI_DEFAULTS = {
-  TEMPERATURE: 0.7,
-  MAX_TOKENS: 2000,
+export const AI_LIMITS = {
+  CHUNK_SIZE_CHARS: 2000,
+  MAX_INPUT_CHARS: 20000,
 } as const;
