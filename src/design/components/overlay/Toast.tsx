@@ -44,24 +44,24 @@ export const Toast: React.FC<IToastProps> = ({
 
   const defaultIcons: Record<TToastTypes, React.ReactNode> = {
     success: (
-      <iconsLib.check className="h-6 w-6 text-emerald-600 dark:text-emerald-400 shrink-0" />
+      <iconsLib.check className="h-6 w-6 text-success shrink-0" />
     ),
     info: (
-      <iconsLib.info className="h-6 w-6 text-sky-600 dark:text-sky-400 shrink-0" />
+      <iconsLib.info className="h-6 w-6 text-info shrink-0" />
     ),
     warning: (
-      <iconsLib.warning className="h-6 w-6 text-amber-600 dark:text-amber-400 shrink-0" />
+      <iconsLib.warning className="h-6 w-6 text-warning shrink-0" />
     ),
     error: (
-      <iconsLib.error className="h-6 w-6 text-rose-600 dark:text-rose-400 shrink-0" />
+      <iconsLib.error className="h-6 w-6 text-error shrink-0" />
     ),
   };
 
   const typeColors: Record<TToastTypes, string> = {
-    success: "text-emerald-800 dark:text-emerald-200",
-    info: "text-sky-800 dark:text-sky-200",
-    warning: "text-amber-800 dark:text-amber-200",
-    error: "text-rose-800 dark:text-rose-200",
+    success: "text-success",
+    info: "text-info",
+    warning: "text-warning",
+    error: "text-error",
   };
 
   return (

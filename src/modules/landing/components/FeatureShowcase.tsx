@@ -121,7 +121,7 @@ const PILLARS: IFeaturePillar[] = [
     title: "Native Tri-Platform",
     badge: "1,785+ Tests",
     capabilities: [
-      "Rails 8.1 API + React 19 SPA + pure Flutter 3 60fps native client",
+      "Rails 8.1 API + React 19 Web + pure Flutter 3 60fps native client",
       "Dual-app store architecture: side-by-side Prod & UAT with automated CI/CD",
       "Exact contract synchronization verified across 1,785+ automated tests",
       "Full localization parity in English (en), Spanish (es), and Burmese (my)",

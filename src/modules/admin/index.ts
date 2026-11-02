@@ -25,6 +25,7 @@ export * from "./asset";
 export * from "./version";
 export * from "./payment";
 export * from "./ai";
+export * from "./settings";
 export * from "./components";
 export * from "./helpers/admin.helper";
 export * from "./constants";

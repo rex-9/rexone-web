@@ -91,6 +91,7 @@ import {
   ArrowTopRightOnSquareIcon,
   WifiIcon,
   SignalSlashIcon,
+  Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 
 // Videos
@@ -234,4 +235,5 @@ export const iconsLib = {
   externalLink: ArrowTopRightOnSquareIcon,
   wifi: WifiIcon,
   wifiOff: SignalSlashIcon,
+  settings: Cog6ToothIcon,
 } as const;

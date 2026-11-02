@@ -370,8 +370,36 @@
         "logs": "Client Logs & Telemetry",
         "assets": "Assets",
         "versions": "Versions",
-        "user_versions": "User Versions"
+        "user_versions": "User Versions",
+        "settings": "Settings"
       }
+    },
+    "settings": {
+      "title": "Control Center Settings",
+      "description": "Manage your administrator account, visual comfort preferences, workspace localization, and session controls.",
+      "account_section_title": "Administrator Account & Session",
+      "account_section_desc": "Your active administrator identity, assigned IAM roles, and workspace navigation shortcuts.",
+      "edit_profile": "Edit Profile",
+      "appearance_section_title": "Appearance & Visual Comfort",
+      "appearance_section_desc": "Tailor contrast and lighting for long administrative and review sessions.",
+      "theme_label": "Control Center Theme",
+      "theme_desc": "Switch between dark mode and high-contrast daylight mode.",
+      "theme_night_title": "Night Studio (Dark)",
+      "theme_night_desc": "Deep obsidian surfaces with crisp contrast",
+      "theme_day_title": "Daylight Studio (Light)",
+      "theme_day_desc": "Bright surfaces with high-contrast ink for easy reading",
+      "workspace_section_title": "Workspace & Localization",
+      "workspace_section_desc": "Configure interface language and regional display settings.",
+      "language_label": "Interface Language",
+      "language_desc": "Select the display language for menus, labels, and system messages.",
+      "system_info_title": "Environment & Access Diagnostics",
+      "system_info_desc": "Live telemetry status, browser time zone offset, and active IAM privilege scope.",
+      "socket_status_label": "Realtime Socket",
+      "socket_connected": "Connected",
+      "socket_disconnected": "Disconnected",
+      "access_scope_label": "Privilege Scope",
+      "super_admin_scope": "Super Admin (Full System Access)",
+      "permissions_count_scope": "{{count}} Active Permissions"
     },
     "common": {
       "search_by": "Search by {{keys}}",

@@ -11,7 +11,7 @@
 
 The web application is packaged into a high-performance, minimal static container using `nginx:alpine`:
 
-- Static React SPA assets are served directly from `/usr/share/nginx/html`.
+- Static React Web assets are served directly from `/usr/share/nginx/html`.
 - SPA deep links fallback cleanly to `/index.html` via `try_files $uri $uri/ /index.html;`.
 - Static assets (`.js`, `.css`, fonts, images) are compressed with `gzip` and cached for 1 year with immutable cache headers.
 - Total memory footprint: **~15MB RAM** (versus 300MB+ for Node.js development server).
