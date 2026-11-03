@@ -127,16 +127,21 @@ export const IMAGE_EXTENSIONS: readonly string[] = [
   "svg",
 ];
 
+export const SUBTITLE_EXTENSIONS: readonly string[] = ["srt", "vtt"];
+
 export const DEFAULT_ASSET_PICKER_ACCEPT = "image/*,video/*,audio/*";
 
 export const ASSET_PICKER_ACCEPT_BY_FORMAT: Record<string, string> = {
   [ASSET_FORMATS.AUDIO]: "audio/*,.m4a,.mp3,.wav,.aac,.ogg",
   [ASSET_FORMATS.IMAGE]: "image/*",
   [ASSET_FORMATS.VIDEO]: "video/*",
+  [ASSET_FORMATS.SUBTITLE]: SUBTITLE_EXTENSIONS.map((ext) => `.${ext}`).join(","),
 };
 
-export const isSrtSubtitleFile = (file: File): boolean =>
-  /\.(srt|vtt)$/i.test(file.name);
+export const isSrtSubtitleFile = (file: File): boolean => {
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  return SUBTITLE_EXTENSIONS.includes(ext);
+};
 
 export const FILE_SIZE_UNITS = ["B", "KB", "MB", "GB", "TB"] as const;
 

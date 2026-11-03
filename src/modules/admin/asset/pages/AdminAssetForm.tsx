@@ -7,6 +7,7 @@ import {
   ASSET_TYPE_OPTIONS,
   ASSET_TYPES,
   ASSET_FORMATS,
+  ASSET_PICKER_ACCEPT_BY_FORMAT,
   ASSET_STATUSES,
   formatAssetFileSize,
   getAssetChildren,
@@ -813,7 +814,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     asset.format === ASSET_FORMATS.AUDIO) &&
                     onUploadThumbnail && (
                       <FileInput
-                        accept="image/*"
+                        accept={ASSET_PICKER_ACCEPT_BY_FORMAT[ASSET_FORMATS.IMAGE]}
                         disabled={isUpdatingThumbnail}
                         fullWidth={false}
                         size={ComponentSizes.SM}
@@ -841,7 +842,7 @@ export const AdminAssetForm: React.FC<IAdminAssetFormProps> = ({
                     asset.format === ASSET_FORMATS.AUDIO) &&
                     onUploadSubtitle && (
                       <FileInput
-                        accept=".srt,.vtt"
+                        accept={ASSET_PICKER_ACCEPT_BY_FORMAT[ASSET_FORMATS.SUBTITLE]}
                         disabled={isUpdatingSubtitle}
                         fullWidth={false}
                         size={ComponentSizes.SM}
