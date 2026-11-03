@@ -11,7 +11,7 @@ class AppRoutes {
     return `${this.API_VERSION}/admin${path}`;
   }
 
-  private static admin(path: string): string {
+  private static admin(path = ""): string {
     return `/admin${path}`;
   }
 
@@ -45,7 +45,8 @@ class AppRoutes {
 
       // Client Admin Dashboard
       admin: {
-        HOME: AppRoutes.admin("/"),
+        HOME: AppRoutes.admin(),
+        SETTINGS: AppRoutes.admin("/settings"),
         ANALYTICS: AppRoutes.admin("/analytics"),
         USERS: AppRoutes.admin("/users"),
         USER_DETAIL: AppRoutes.admin("/users/:id"),

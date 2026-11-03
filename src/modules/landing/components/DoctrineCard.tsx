@@ -181,7 +181,7 @@ export const DoctrineCard: React.FC<IDoctrineCardProps> = ({
                     Starting from RexOne (1 – 3 Weeks to Launch)
                   </div>
                   <p className="text-xs text-base-content/80 leading-relaxed mb-3">
-                    Every foundation problem solved on Day One: Rails 8 core, React 19 SPA, Flutter 3 native mobile, self-hosted Garage S3, and Solid Queue—governed under Constitutional Law.
+                    Every foundation problem solved on Day One: Rails 8 core, React 19 Web, Flutter 3 native mobile, self-hosted Garage S3, and Solid Queue—governed under Constitutional Law.
                   </p>
                 </div>
                 <div className="text-[11px] text-primary-light font-mono space-y-1.5 bg-primary/15 p-3 rounded-lg border border-primary/30">

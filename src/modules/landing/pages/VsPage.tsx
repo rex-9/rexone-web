@@ -102,11 +102,11 @@ export const ALL_COMPETITORS: ICompetitorInfo[] = [
     ],
     cons: [
       "Turbo Native is just webviews in a frame, not compiled native reactive UI",
-      "Monolithic server-rendered views without modern React SPA",
+      "Monolithic server-rendered views without modern React web app",
       "Closed-source paid seat license",
     ],
     whyRexOneWins:
-      "RexOne separates concerns cleanly: an API-first Rails 8 Core + modern React 19 SPA + pure compiled Flutter 3 mobile app (not a sluggish webview). Plus, RexOne is 100% free and open-source.",
+      "RexOne separates concerns cleanly: an API-first Rails 8 Core + modern React 19 Web + pure compiled Flutter 3 mobile app (not a sluggish webview). Plus, RexOne is 100% free and open-source.",
   },
   {
     id: "saasPegasus",
@@ -168,7 +168,7 @@ export const ALL_COMPETITORS: ICompetitorInfo[] = [
       "Redis queue requirement",
     ],
     whyRexOneWins:
-      "RexOne provides a modern polyglot triad (Rails 8 API + React 19 SPA + Flutter 3 Mobile) with self-hosted S3 and zero external queue dependencies.",
+      "RexOne provides a modern polyglot triad (Rails 8 API + React 19 Web + Flutter 3 Mobile) with self-hosted S3 and zero external queue dependencies.",
   },
   {
     id: "openSaas",

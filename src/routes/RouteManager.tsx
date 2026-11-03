@@ -9,7 +9,6 @@ import {
   Outlet,
 } from "react-router-dom";
 import AppRoutes from "../AppRoutes";
-import { AdminHomeRoute } from "./AdminHomeRoute";
 import { AdminRootRoute } from "./AdminRootRoute";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { PublicRoute } from "./PublicRoute";
@@ -101,6 +100,7 @@ import {
   AdminAiProfileEditPage,
   AdminAiRunsPage,
   AdminAiRunDetailPage,
+  AdminSettingsPage,
   ADMIN_VERSION_TABS,
   NOTIFICATION_ADMIN_TABS,
 } from "../modules/admin";
@@ -203,12 +203,12 @@ const router = createBrowserRouter(
           <Route path={AppRoutes.client.protected.AI} element={<AiPage />} />
           <Route
             path={AppRoutes.client.protected.admin.HOME}
-            element={<AdminHomeRoute />}
-          />
-          <Route
-            path={`${AppRoutes.client.protected.admin.HOME}/`}
-            element={<AdminHomeRoute />}
-          />
+            element={<AdminRootRoute />}
+          >
+            <Route
+              path={AppRoutes.client.protected.admin.SETTINGS}
+              element={<AdminSettingsPage />}
+            />
           <Route
             element={
               <AdminRootRoute
@@ -778,15 +778,6 @@ const router = createBrowserRouter(
               path={AppRoutes.client.protected.admin.LOGS}
               element={<AdminLogsPage />}
             />
-          </Route>
-          <Route
-            element={
-              <AdminRootRoute
-                action={ADMIN_ACTIONS.READ}
-                resource={ADMIN_RESOURCES.CLIENT_LOGS}
-              />
-            }
-          >
             <Route
               path={AppRoutes.client.protected.admin.LOG_DETAIL}
               element={<AdminLogDetailPage />}
@@ -939,6 +930,7 @@ const router = createBrowserRouter(
                 />
               }
             />
+          </Route>
           </Route>
         </Route>
 

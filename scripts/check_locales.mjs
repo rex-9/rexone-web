@@ -2,7 +2,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import ts from "typescript";
+import babelParser from "@babel/parser";
 
 const root = process.cwd();
 const sourceRoot = path.join(root, "src");
@@ -89,50 +89,55 @@ if (!fs.existsSync(constantsPath)) {
 }
 
 const constantsSource = fs.readFileSync(constantsPath, "utf8");
-const constantsFile = ts.createSourceFile(
-  constantsPath,
-  constantsSource,
-  ts.ScriptTarget.Latest,
-  true,
-  ts.ScriptKind.TS,
-);
+const constantsAst = babelParser.parse(constantsSource, {
+  sourceType: "module",
+  plugins: ["typescript"],
+});
 
 const constants = new Map(); // "AppLocales.Auth.Shared.EmailLabel" -> "auth.shared.email_label"
 
-const propertyName = (node) =>
-  ts.isIdentifier(node) || ts.isStringLiteral(node) ? node.text : null;
-const unwrap = (node) => (ts.isAsExpression(node) ? node.expression : node);
+const propertyName = (node) => {
+  if (!node) return null;
+  if (node.type === "Identifier") return node.name;
+  if (node.type === "StringLiteral") return node.value;
+  return null;
+};
+const unwrap = (node) =>
+  node && (node.type === "TSAsExpression" || node.type === "TSTypeAssertion")
+    ? unwrap(node.expression)
+    : node;
 
 const collectConstants = (object, prefix = []) => {
   for (const property of object.properties) {
-    if (!ts.isPropertyAssignment(property)) continue;
-    const name = propertyName(property.name);
+    if (property.type !== "ObjectProperty") continue;
+    const name = propertyName(property.key);
     if (!name) continue;
     const next = [...prefix, name];
-    const init = unwrap(property.initializer);
-    if (ts.isObjectLiteralExpression(init)) {
+    const init = unwrap(property.value);
+    if (init && init.type === "ObjectExpression") {
       collectConstants(init, next);
-    } else if (ts.isStringLiteral(init)) {
-      constants.set(`AppLocales.${next.join(".")}`, init.text);
+    } else if (init && init.type === "StringLiteral") {
+      constants.set(`AppLocales.${next.join(".")}`, init.value);
     }
   }
 };
 
-constantsFile.forEachChild((node) => {
-  if (!ts.isVariableStatement(node)) return;
-  for (const declaration of node.declarationList.declarations) {
+for (const stmt of constantsAst.program.body) {
+  const declStmt = stmt.type === "ExportNamedDeclaration" ? stmt.declaration : stmt;
+  if (!declStmt || declStmt.type !== "VariableDeclaration") continue;
+  for (const declaration of declStmt.declarations) {
     if (
-      ts.isIdentifier(declaration.name) &&
-      declaration.name.text === "AppLocales" &&
-      declaration.initializer
+      declaration.id.type === "Identifier" &&
+      declaration.id.name === "AppLocales" &&
+      declaration.init
     ) {
-      const init = unwrap(declaration.initializer);
-      if (ts.isObjectLiteralExpression(init)) {
+      const init = unwrap(declaration.init);
+      if (init && init.type === "ObjectExpression") {
         collectConstants(init);
       }
     }
   }
-});
+}
 
 const constantErrors = [];
 const mappedKeys = new Set(constants.values());
@@ -186,59 +191,63 @@ for (const file of sourceFiles) {
 
   if (developerUiFiles.has(file)) continue;
 
-  const source = ts.createSourceFile(
-    file,
-    content,
-    ts.ScriptTarget.Latest,
-    true,
-    file.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS,
-  );
+  const ast = babelParser.parse(content, {
+    sourceType: "module",
+    plugins: ["typescript", ...(file.endsWith("x") ? ["jsx"] : [])],
+    errorRecovery: true,
+  });
 
-  const inspect = (node) => {
+  const inspect = (node, parent = null) => {
+    if (!node || typeof node !== "object") return;
+
     // Detect t() or translate() calls
-    if (ts.isCallExpression(node)) {
-      const expr = node.expression;
-      const fnName = ts.isIdentifier(expr)
-        ? expr.text
-        : ts.isPropertyAccessExpression(expr)
-          ? expr.name.text
-          : null;
+    if (node.type === "CallExpression") {
+      const expr = node.callee;
+      const fnName =
+        expr.type === "Identifier"
+          ? expr.name
+          : expr.type === "MemberExpression" && expr.property.type === "Identifier"
+            ? expr.property.name
+            : null;
 
       if (fnName === "t" || fnName === "translate") {
-        const { line, character } = source.getLineAndCharacterOfPosition(node.getStart(source));
-        const lineNum = line + 1;
-        const colNum = character + 1;
+        const lineNum = node.loc?.start.line ?? 1;
+        const colNum = (node.loc?.start.column ?? 0) + 1;
         const loc = `${name}:${lineNum}:${colNum}`;
+        const nodeText = content.slice(node.start, node.end);
 
         // 1. Raw string keys: t("some.key")
         const firstArg = node.arguments[0];
-        if (firstArg && ts.isStringLiteral(firstArg)) {
+        if (firstArg && firstArg.type === "StringLiteral") {
           rawKeys.push({
             loc,
-            key: firstArg.text,
-            snippet: node.getText(source),
+            key: firstArg.value,
+            snippet: nodeText,
           });
         }
 
         // 2. Loose fallback: second argument string literal t(key, "fallback")
         if (node.arguments.length > 1) {
           const secondArg = node.arguments[1];
-          if (ts.isStringLiteral(secondArg)) {
+          if (secondArg && secondArg.type === "StringLiteral") {
             looseFallbacks.push({
               loc,
               type: "argument-fallback",
-              snippet: node.getText(source),
-              detail: `Second argument fallback string: "${secondArg.text}"`,
+              snippet: nodeText,
+              detail: `Second argument fallback string: "${secondArg.value}"`,
             });
-          } else if (ts.isObjectLiteralExpression(secondArg)) {
+          } else if (secondArg && secondArg.type === "ObjectExpression") {
             // Check defaultValue in options object
             for (const prop of secondArg.properties) {
-              if (ts.isPropertyAssignment(prop) && propertyName(prop.name) === "defaultValue") {
+              if (
+                prop.type === "ObjectProperty" &&
+                propertyName(prop.key) === "defaultValue"
+              ) {
                 looseFallbacks.push({
                   loc,
                   type: "default-value-fallback",
-                  snippet: node.getText(source),
-                  detail: `defaultValue option fallback: ${prop.initializer.getText(source)}`,
+                  snippet: nodeText,
+                  detail: `defaultValue option fallback: ${content.slice(prop.value.start, prop.value.end)}`,
                 });
               }
             }
@@ -246,49 +255,64 @@ for (const file of sourceFiles) {
         }
 
         // 3. Loose fallback: binary operator t(key) || "fallback" or ?? "fallback"
-        const parent = node.parent;
         if (
           parent &&
-          ts.isBinaryExpression(parent) &&
-          (parent.operatorToken.kind === ts.SyntaxKind.BarBarToken ||
-            parent.operatorToken.kind === ts.SyntaxKind.QuestionQuestionToken) &&
+          parent.type === "LogicalExpression" &&
+          (parent.operator === "||" || parent.operator === "??") &&
           parent.left === node
         ) {
           looseFallbacks.push({
             loc,
             type: "binary-fallback",
-            snippet: parent.getText(source),
-            detail: `Binary fallback operator (${parent.operatorToken.getText(source)}): ${parent.right.getText(source)}`,
+            snippet: content.slice(parent.start, parent.end),
+            detail: `Binary fallback operator (${parent.operator}): ${content.slice(parent.right.start, parent.right.end)}`,
           });
         }
       }
     }
 
     // Detect hardcoded visible text in JSX
-    if (ts.isJsxText(node)) {
-      const text = node.text.replace(/\s+/g, " ").trim();
+    if (node.type === "JSXText") {
+      const text = node.value.replace(/\s+/g, " ").trim();
       if (/[A-Za-z]{2}/.test(text)) {
-        const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-        hardcoded.push({ loc: `${name}:${line + 1}`, text });
+        const line = node.loc?.start.line ?? 1;
+        hardcoded.push({ loc: `${name}:${line}`, text });
       }
     }
-    if (
-      ts.isJsxAttribute(node) &&
-      visibleAttributes.has(node.name.getText(source)) &&
-      node.initializer &&
-      ts.isStringLiteral(node.initializer) &&
-      /[A-Za-z]{2}/.test(node.initializer.text)
-    ) {
-      const { line } = source.getLineAndCharacterOfPosition(node.getStart(source));
-      hardcoded.push({
-        loc: `${name}:${line + 1}`,
-        text: `${node.name.getText(source)}="${node.initializer.text}"`,
-      });
+    if (node.type === "JSXAttribute") {
+      const attrName =
+        node.name.type === "JSXIdentifier"
+          ? node.name.name
+          : content.slice(node.name.start, node.name.end);
+      if (
+        visibleAttributes.has(attrName) &&
+        node.value &&
+        node.value.type === "StringLiteral" &&
+        /[A-Za-z]{2}/.test(node.value.value)
+      ) {
+        const line = node.loc?.start.line ?? 1;
+        hardcoded.push({
+          loc: `${name}:${line}`,
+          text: `${attrName}="${node.value.value}"`,
+        });
+      }
     }
 
-    ts.forEachChild(node, inspect);
+    for (const key of Object.keys(node)) {
+      if (key === "loc" || key === "LeadingComments" || key === "trailingComments" || key === "innerComments" || key === "extra") continue;
+      const child = node[key];
+      if (Array.isArray(child)) {
+        for (const item of child) {
+          if (item && typeof item.type === "string") {
+            inspect(item, node);
+          }
+        }
+      } else if (child && typeof child.type === "string") {
+        inspect(child, node);
+      }
+    }
   };
-  inspect(source);
+  inspect(ast.program);
 }
 
 const unusedConstants = [...constants.keys()].filter(

@@ -70,7 +70,7 @@ export const COMPETITORS: ICompetitorSummary[] = [
     offline: "None (Requires constant server connection)",
     queues: "Solid Queue / Sidekiq",
     aiGovernance: "None (Rails conventions only)",
-    fatalFlaw: "Mobile is just web pages wrapped in a webview; closed-source commercial seat licensing; no modern React SPA.",
+    fatalFlaw: "Mobile is just web pages wrapped in a webview; closed-source commercial seat licensing; no modern React web app.",
   },
   {
     id: "pegasus",

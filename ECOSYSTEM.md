@@ -142,7 +142,7 @@ All tables use **UUID** primary keys (`gen_random_uuid()`), soft deletes via **D
 | **IAM (RBAC)**       | `Iam::Role`, `Iam::Permission`, `Iam::UserRole`, `Iam::RolePermission`                                                              | Granular action-resource permissions (`user.can?(action, resource)`). System roles (`super_admin`, `admin`, default `user`). Dynamic auto-assignment on signup.                                                                |
 | **Commerce**         | `Payment::Product`, `Payment::Subscription`, `Payment::Purchase`, `Payment::Coupon`, `Payment::UserCoupon`, `Payment::WebhookEvent` | Stripe product/price catalog, subscription items snapshot, percentage/fixed coupons with referral generation, targeting restrictions, immutable redemption ledger, purchase receipts, durable webhooks.                        |
 | **Entitlements**     | `Access`                                                                                                                            | Granted, revoked, and expired product access records tied to users and products.                                                                                                                                               |
-| **AI / Chat**        | `Chat::Room`, `Chat::Message`, `Ai::Profile`, `Ai::Run`                                                                             | Flexible chat rooms (`ai`, `direct`, `group`, hybrid), message processing jobs, 2,000-char message chunking (`split_id`, `chunk_index`, `total_chunks`), provider abstraction, execution telemetry.                            |
+| **AI / Chat**        | `Chat::Room`, `Chat::Message`, `Ai::Profile`, `Ai::Run`, `Ai::Price`                                                                 | Flexible chat rooms (`ai`, `direct`, `group`, hybrid), message processing jobs, 2,000-char message chunking (`split_id`, `chunk_index`, `total_chunks`), provider abstraction, execution telemetry, open pricing registry sync. |
 | **Media**            | `Asset`                                                                                                                             | Unified media records, Garage S3 storage keys (`user/{user_id}/...`, `admin/...`), compression telemetry, status (`pending`, `processing`, `ready`, `optimal`), child assets (`parent_asset_id` for thumbnails and subtitles). |
 | **Telemetry**        | `Client::Log`                                                                                                                       | Client error ingest (stack traces, device, OS, browser, URL, severity, cookies, storage keys), linked to optional `version_id`.                                                                                                |
 | **Feedback**         | `Feedback`                                                                                                                          | User rating (1–10), auto-inferred category (`bug`, `feature_request`, `improvement`, `general`), urgency (`low`, `normal`, `high`, `urgent`), device/route telemetry.                                                          |
@@ -157,7 +157,7 @@ Solid Queue operates under a hybrid concurrency architecture configured in `conf
   - Non-blocking Ruby Fibers (`async`) running on Solid Queue with `config.active_support.isolation_level = :fiber`.
   - Runs up to 50 concurrent fibers on a single event loop across prioritized queues:
     - `payments`: Highest priority. Handles Stripe webhook fulfillment (`Payment::ProcessWebhookJob`) with strict idempotency.
-    - `ai`: Handles chat workflows (`Chat::ProcessMessageJob`), provider streaming (DeepSeek, Gemini via OpenAI-compatible endpoints), and text-to-speech jobs (`Speech::ProcessTtsJob`).
+    - `ai`: Handles chat workflows (`Chat::ProcessMessageJob`), provider streaming (DeepSeek, Gemini via OpenAI-compatible endpoints), text-to-speech jobs (`Speech::ProcessTtsJob`), and daily model price sync (`Ai::SyncModelPricesJob`).
     - `notifications`: Fans out Action Cable broadcasts, OneSignal push notifications, and Brevo transactional emails via `Notification::DispatchJob` and `Notification::DeliverJob`.
     - `default`: General asynchronous operations.
 - **Thread Maintenance Worker**:
@@ -210,13 +210,13 @@ Permissions follow a clean, four-level administrative model:
 - **User Management**: `GET/POST /v1/admin/users`, `PATCH /v1/admin/users/:id`, `DELETE /v1/admin/users/:id` (CRUD, soft-delete discard/undiscard, role assignment, confirmation status auditing).
 - **IAM Management**: `GET/PATCH/DELETE /v1/admin/iam/roles`, `GET/POST/PATCH/DELETE /v1/admin/iam/permissions`, bidirectional user role assignments via `GET/POST /v1/admin/iam/users/:user_id/roles`, `DELETE /v1/admin/iam/users/:user_id/roles/:role_id`, and `GET/POST /v1/admin/iam/roles/:role_id/users`, `DELETE /v1/admin/iam/roles/:role_id/users/:user_id`.
 - **Chat Endpoints**: User API: `GET/POST /v1/chat/rooms`, `GET/PUT/DELETE /v1/chat/rooms/:id`, `GET/POST /v1/chat/messages`, `DELETE /v1/chat/messages/destroy_all`. Admin moderation: `GET/PATCH/DELETE /v1/admin/chat/rooms` and `GET/PATCH/DELETE /v1/admin/chat/messages`.
-- **AI Control Plane & Universal TOON Pipeline**: `GET/POST/PUT/DELETE /v1/admin/ai/profiles`, `GET /v1/admin/ai/profiles/catalog`, `POST /v1/admin/ai/profiles/sync_prices` (dynamic provider/model catalog, live per-1M token pricing, API-key health, prompt templates, token limits, multi-attribute sorting and filters), `GET /v1/admin/ai/runs` (execution telemetry, latency, prompt/cached/completion token consumption, and USD cost with baseline rate fallbacks). RexOne enforces a universal **Zero-JSON LLM Pipeline**: Large Language Models never receive or output raw JSON. All inbound JSON (in user messages, assistant history, system prompts, or template values) is automatically converted to compact Token-Oriented Object Notation (TOON via `Ai::ToonService`), compressing context by 30–60% over JSON. Models are instructed to output structured data strictly in TOON format (` ```toon `). On receiving completions, the server transparently converts TOON structures back into standard, formatted JSON before database persistence and client WebSocket broadcasting, maintaining 100% standard JSON compatibility across web, mobile, and REST clients without requiring frontend TOON parsers.
+- **AI Control Plane & Universal TOON Pipeline**: `GET/POST/PUT/DELETE /v1/admin/ai/profiles`, `GET /v1/admin/ai/profiles/config`, `POST /v1/admin/ai/profiles/sync_prices` (dynamic providers, models, live per-1M token pricing, API-key health, prompt templates, token limits, multi-attribute sorting and filters), `GET /v1/admin/ai/runs` (execution telemetry, latency, prompt/cached/completion token consumption, and database-driven USD cost). RexOne enforces a universal **Zero-JSON LLM Pipeline**: Large Language Models never receive or output raw JSON. All inbound JSON (in user messages, assistant history, system prompts, or template values) is automatically converted to compact Token-Oriented Object Notation (TOON via `Ai::ToonService`), compressing context by 30–60% over JSON. Models are instructed to output structured data strictly in TOON format (` ```toon `). On receiving completions, the server transparently converts TOON structures back into standard, formatted JSON before database persistence and client WebSocket broadcasting, maintaining 100% standard JSON compatibility across web, mobile, and REST clients without requiring frontend TOON parsers.
 - **Standardized Permissions Protocol**: Strictly 4 canonical CRUD actions (`read`, `create`, `update`, `delete`). Soft deletes map to `:delete`, restores map to `:delete`. Resources are explicitly prefixed (e.g. `ai_profiles`, `chat_rooms`, `payment_products`).
 - **Product Management**: `GET/POST/PATCH/DELETE /v1/admin/payment/products` (supporting ILIKE multi-attribute search across product name, code, and description, sorting, and lifecycle recycle bin pagination), Stripe catalog sync, active user access inspection (`GET /v1/admin/accesses?product_id=:id`).
 - **App Versions**: Super-admin only. `GET/POST /v1/admin/client/versions`, discard/undiscard, and `GET /v1/admin/client/versions/:id/user_versions`.
 - **User Versions**: Super-admin only. `GET /v1/admin/client/versions/user_versions` lists device snapshots with optional platform filtering.
 - **Asset Management**: `GET /v1/assets` (list assets by type), `POST /v1/assets/upload` (direct upload), `GET /v1/assets/:id/playback` (S3 SigV4 signed playback URL), `GET /v1/assets/:id/subtitles/:subtitle_id` (CORS-enabled raw VTT/SRT text). Admin API: `GET/PUT/DELETE /v1/admin/assets`, `GET /v1/admin/assets/storage_stats` (bucket, object, and host disk capacity), manual secondary compression triggers.
-- **Video Thumbnails & Subtitles**: Core generates WebP thumbnails asynchronously and broadcasts `asset_thumbnail_generated`. Admins can upload thumbnail replacements or attach `.srt` subtitle files (`POST /v1/admin/assets/:id/subtitle/upload`). Subtitles are served inline with pre-fetched text.
+- **Video Thumbnails & Subtitles**: Core generates WebP thumbnails asynchronously and broadcasts `asset_thumbnail_generated`. Admins can upload thumbnail replacements or attach `.srt`/`.vtt` subtitle files (`POST /v1/admin/assets/:id/subtitle/upload`). Subtitles are served inline with pre-fetched text.
 - **Notifications**: `GET/POST /v1/admin/notifications`, `POST /v1/admin/notifications/dispatch` (audience fanout by roles/users/all), and `GET/DELETE /v1/admin/user_notifications` (receipt lifecycle, recycle bin management).
 
 ---
@@ -225,7 +225,7 @@ Permissions follow a clean, four-level administrative model:
 
 ### 🛠️ Tech Stack
 
-- **Core**: React `19`, TypeScript `6`, Vite `8`, Tailwind CSS `4`, DaisyUI, Headless UI, Heroicons, Lucide.
+- **Core**: React `19`, TypeScript `7` (Native Go compiler), Vite `8`, Oxlint (Rust) + ESLint (Tailwind v4 canonical rules), Tailwind CSS `4`, DaisyUI, Headless UI, Heroicons, Lucide.
 - **State Management**: React Contexts (`AuthContext`, `LoadingContext`, `ToastContext`), Jotai atomic stores.
 - **Networking**: Axios instance with centralized auth interceptors; Action Cable JS client for WebSockets.
 - **Localization**: `i18next` with strictly typed keys (`en`, `es`, `my`).
@@ -245,9 +245,9 @@ Permissions follow a clean, four-level administrative model:
 - **AI Workspace**: Queued conversational interface. Displays thinking states, streams responses over WebSocket (`useAiSocket`), and auto-refreshes conversation history.
 - **Speech & Audio**: Streams binary MP3 audio directly from `/v1/speech/tts` without base64 overhead, plays message TTS, and connects live WebSocket audio recognition.
 - **Asset Control Center (`/admin/assets`)**: Live VPS and Garage storage dashboard, multi-file batch uploads with optimistic progress, searchable parent asset picker (`AdminParentAssetSelect`), real-time compression badges, and secondary compression triggers.
-- **Admin AI Control Panel (`/admin/ai`)**: Profiles management (`AdminAiProfileCreatePage`, `AdminAiProfileEditPage`) with provider/model selectors, temperature/token boundaries, and prompt editors; AI execution audit log (`AdminAiRunsPage`) with latency and token breakdowns.
-- **AI Discovery & SEO/GEO**: Standardized `/llms.txt`, `/llms-full.txt` (llmstxt.org standard), comprehensive crawler rules in `robots.txt`, and Schema.org `SoftwareApplication` rich results in `index.html`.
-- **Admin Portal Governance**: Route guards (`AdminRootRoute`), client-side permission checks (`usePermissions`), confirmation status badges (`confirmed` / `unconfirmed`), and operational KPI navigation.
+- **Admin AI Control Panel (`/admin/ai`)**: Profiles management (`AdminAiProfileCreatePage`, `AdminAiProfileEditPage`) with provider/model selectors, temperature/token boundaries, and prompt editors; AI execution audit log (`AdminAiRunsPage`, `AdminAiRunDetailPage`) with latency, token usage, and dynamic cost calculation display ($USD).
+- **AI Discovery & SEO/GEO**: SaaS Boilerplate Master Comparison page (`/vs`), standardized `/llms.txt`, `/llms-full.txt` (llmstxt.org standard), comprehensive crawler rules in `robots.txt`, and Schema.org `SoftwareApplication` rich results in `index.html`.
+- **Admin Portal Governance & Settings (`/admin/settings`)**: Route guards (`AdminRootRoute`, `AdminAccessRoute`), client-side permission checks (`usePermissions`), confirmation status badges (`confirmed` / `unconfirmed`), operational KPI navigation, and dedicated Control Center Settings (`AdminSettingsPage`) for administrator session controls, theme switching, localization, and live environment diagnostics.
 
 ---
 
@@ -273,7 +273,7 @@ Permissions follow a clean, four-level administrative model:
 - **Product Analytics**: Firebase GA4 integration using constantized `action_noun` events (`sign_up`, `sign_in`, `view_product`, `purchase_product`, `open_notification`) tagged with platform (`android`, `ios`).
 - **Stripe & Billing**: In-app Stripe Checkout WebView (`CheckoutPage`), subscription management cards, cancellation confirmation, canonical currency minimum charge limits (`StripeMinimumAmounts`).
 - **AI Assistant**: Persistent multi-room chat, JSON:API response parsing, background thinking indicators, real-time completion toasts over WebSocket.
-- **Media Playback & Lyrics**: Mixed audio/video playlist from `GET /v1/assets`, signed streaming URLs from `GET /v1/assets/:id/playback`, background audio player (`just_audio` + `just_audio_background`), hardware-accelerated inline video (`better_player` with dynamic 16:9 layout helper, audio focus tuning, and 100MB chunk caching), and synced `.srt` subtitles/lyrics with per-track selection and gap bridging.
+- **Media Playback & Lyrics**: Mixed audio/video playlist from `GET /v1/assets`, signed streaming URLs from `GET /v1/assets/:id/playback`, background audio player (`just_audio` + `just_audio_background`), hardware-accelerated inline video (`better_player` with dynamic 16:9 layout helper, audio focus tuning, and 100MB chunk caching), and synced `.srt`/`.vtt` subtitles/lyrics with per-track selection and gap bridging.
 - **Offline Media & SQLite (Drift)**: AES-256-GCM encrypted local application sandbox downloads backed by local Drift SQLite database (`rexone_offline`). Schema parity mirroring backend polymorphic tables (`local_assets`, `local_child_assets`). Local-first playback preferences and offline playlist mode with pre-fetched SRT subtitles and zero network-choke.
 - **Client Telemetry**: Uncaught Flutter and platform dispatcher errors dispatched to Core via `POST /v1/client/logs`.
 - **Localization**: 100% translated in English (`en_US`), Spanish (`es_ES`), and Burmese (`my_MM`). Synchronizes `X-Locale` and `Accept-Language` headers on every HTTP request.
@@ -413,7 +413,7 @@ Permissions follow a clean, four-level administrative model:
 - **Response Flags**:
   - `update_required`: `true` when client version is strictly behind the live published version (triggers non-blocking update prompt).
   - `must_update`: `true` when the live version is flagged as force update and is newer than the client (triggers mandatory blocking modal).
-  - `skip_premium`: `true` when client version is strictly newer than the live published version (e.g. app store review builds).
+  - `skip_premium`: `true` when no live version is published yet in the catalog (initial app store review dark launch) or when client version is strictly newer than the live published version (app store review builds).
   - `store_url`: Platform store URL configured via `IOS_STORE_URL` or `ANDROID_STORE_URL`.
 - **Client Handling**:
   - Mobile: When `must_update` is true, `SplashPage` presents an un-bypassable `PopScope(canPop: false)` blocking screen. Optional updates (`update_required: true && !must_update`) prompt on `HomePage` via `AppDialog.update(...)`. `VersionModel.fromJson` and `ApiService#parseRecord` seamlessly resolve both JSON:API attributes envelopes and flat key structures.
@@ -515,7 +515,7 @@ _Version resolution_: Core maps `app_version` to a matching `Client::Version` re
   - **RED (Rails Error Dashboard)**: Server-side Ruby exceptions and backtraces.
   - **Solid UI**: Background job queue throughput, retry backoffs, recurring cron jobs.
   - **Rails Administrate**: Low-level database table inspection. Super-admin access only for sensitive tables.
-- **Client Admin Panel (React SPA)**:
+- **Client Admin Panel (React)**:
   - Focused strictly on **business operations and end-user governance**:
     - Revenue analytics, subscription metrics, user growth KPIs.
     - RBAC management (users, roles, permissions).
@@ -697,35 +697,59 @@ A unified, tamper-proof protocol across Web and Mobile that preserves user navig
 
 ### 10. Single-Command Multi-Platform Rebrand Engine Specification
 
-RexOne includes a sovereign, zero-friction rebranding engine executed via a single master command from `rexone-core`:
+RexOne includes a built-in, zero-friction rebranding engine executed via a single master command from `rexone-core`:
 
 ```bash
-# Full ecosystem synchronization (Core API, Web SPA, and Mobile Flutter simultaneously):
-./scripts/rebrand.sh "Acme Product" "com.acme.product" "path/to/logo.png" [BrandName] [domain.com]
+# Full ecosystem synchronization (Core, Web, and Mobile simultaneously):
+./scripts/rebrand.sh brand.config.json
 ```
 
+For the comprehensive guide and operational matrix, see **[docs/REBRANDING.md](docs/REBRANDING.md)**.
+
 #### Deterministic Cross-Repository Parameter Contracts (Law U14):
-1. **RexOne Core (Rails API)**:
+1. **RexOne Core (Rails)**:
    - Synchronizes `config/app_config.rb` default parameters (`RAILS_JWT_SECRET_KEY`, `SMTP_DOMAIN`, `FROM_EMAIL`, `S3_BUCKET`).
-   - Updates `docker-compose.yaml` (Production / Coolify) and `docker-compose.dev.yaml` with kebab-case container slugs (`prod-acme-api`, `prod-acme-waka`, `prod-acme-media`, `prod-acme-db`, `acme-garage`).
-   - Synchronizes PostgreSQL database names (`acme_production`, `acme_development`) and Garage S3 bucket names (`acme`).
+   - Updates `docker-compose.yaml` (Production / Coolify) and `docker-compose.dev.yaml` with kebab-case container slugs (`prod-<kebab>-api`, `prod-<kebab>-waka`, `prod-<kebab>-media`, `prod-<kebab>-db`, `<kebab>-garage`).
+   - Synchronizes PostgreSQL database names (`<snake>_production`, `<snake>_development`) and Garage S3 bucket names (`<kebab>`).
    - Updates database backup scripts (`backup_db.sh`, `backup_garage.sh`, `dev_garage.sh`, `prod_garage_init.sh`).
    - Updates checked-in `.env.example` templates with matching parameter examples.
-2. **RexOne Web (React SPA)**:
-   - Synchronizes `package.json` package name and HTML application titles.
+2. **RexOne Web (React)**:
+   - Synchronizes `package.json` package name (`<kebab>-web`) and HTML application titles.
    - Synchronizes branding locales (`src/locales/en.json`, `src/locales/my.json`).
    - Updates public brand assets (`public/brand/logo.png`, `public/favicon.png`) and image alt tokens (`src/assets/index.ts`).
    - Synchronizes `scripts/uat.sh` and `scripts/prod.sh` target API hostnames (`https://api.domain.com`, `https://uat.api.domain.com`).
    - Synchronizes checked-in `.env.example` templates.
-3. **RexOne Mobile (Flutter Client)**:
+3. **RexOne Mobile (Flutter)**:
    - Updates application display names dynamically in Android (`AndroidManifest.xml` via `appName`) and iOS (`Info.plist` via `CFBundleDisplayName`).
-   - Synchronizes native application ID and iOS bundle ID (`com.acme.product` and `com.acme.product.uat`).
-   - Synchronizes release keystore filenames (`acme-upload-keystore.jks`) in `build.gradle.kts`.
+   - Synchronizes native application ID and iOS bundle ID (`com.brand.app` and `com.brand.app.uat`).
+   - Synchronizes release keystore filenames (`<flat>-upload-keystore.jks`) in `build.gradle.kts`.
+   - Synchronizes Dart `pubspec.yaml` package name and updates **all package imports** across `lib/`, `test/`, and `integration_test/`.
    - Synchronizes parameter contracts inside `./scripts/release_android.sh`, `./scripts/release_ios.sh`, and `.github/workflows/build_android.yaml`.
    - Generates native launcher icons across all screen densities from source logo via `flutter_launcher_icons`.
 4. **Secret Isolation Protocol (Rule 5 & Law U16)**:
    - Automation **NEVER** touches live gitignored `.env` files (`.env`, `.env.dev`, `.env.prod`, `.env.uat`).
    - Product creators apply live secret values manually using synchronized `.env.example` reference files.
+
+### 11. Strict JSONB Metadata & Contract Typing Standards (Law U14 & Law U15)
+
+All semi-structured metadata attributes across the ecosystem adhere to deterministic, typed parameter contracts (Law U19). Raw string literals for dictionary keys, lifecycle statuses, and loose parameters are strictly forbidden. Direct hash subscripting (`record.metadata["key"]`), gambling, or `.dig` chains on ActiveRecord metadata columns are completely eradicated in favor of typed sub-models. All metadata schemas are explicitly published in OpenAPI / Swagger specifications, eliminating untyped object placeholders.
+
+1. **Backend Typed Metadata Architecture (`rexone-core`)**:
+   - Built on [`ApplicationMetadata`](app/models/application_metadata.rb) (`ActiveModel::Model` + `ActiveModel::Attributes`) and mounted on ActiveRecord models via the unified `has_metadata` macro (`ActiveRecord::Type::Json`).
+   - **Unified Accessor (`record.metadata`)**: `record.metadata` directly returns the strongly-typed `ApplicationMetadata` sub-model instance. Legacy dual accessors (`typed_metadata`) and parent model delegators (`sync_status`, `app_version`, `component`, `action`, `tts_status`, etc.) are completely eradicated; all metadata fields strictly live inside `record.metadata.*`.
+   - **Strict Whitelisting & Rogue Key Rejection**: `ApplicationMetadata.from_h` dynamically validates all incoming keys against declared model attributes, rejecting unrecognized rogue keys with validation errors on save.
+   - **ActiveJob & Hash Interoperability**: `ApplicationMetadata` provides custom `ActiveJob::Serializers::ObjectSerializer` for seamless background job delivery, along with full hash delegation (`[]`, `[]=`, `key?`, `dig`, `to_h`, `merge`, `symbolize_keys`).
+   - **Format-Discriminated Media Contracts**: Polymorphic media metadata contracts dispatch automatically by format and type (`Asset::VideoMetadata`, `Asset::AudioMetadata`, `Asset::ImageMetadata`, `Asset::SubtitleMetadata`, and general fallback [`Asset::Metadata`](app/models/asset/metadata.rb)).
+   - Domain sub-models govern all JSONB columns: `Client::Log::Metadata`, `Client::Version::Metadata`, `Feedback::Metadata`, `UserNotification::Metadata`, `Notification::Metadata`, `Notification::InAppData`, `Payment::Coupon::Metadata`, `Payment::Purchase::Metadata`, `Payment::PaymentMethodDetails`, `Ai::Run::Metadata`, `Ai::Profile::Settings`, `Chat::Message::Metadata`, `Chat::Room::Metadata`, `Asset::Metadata`.
+   - **Single Source of Truth (SSOT)**: Sub-models declare all typed attributes and introspection (`attribute_names`), completely eliminating redundant duplicate constant dictionaries (`module Metadata`), dual maintenance, and key drift.
+   - Structural validations enforce that metadata payloads are valid key-value objects and numerical dimensions (width, height, bitrate, duration) are non-negative integers.
+
+2. **Frontend Type Contracts (`rexone-web`)**:
+   - Generic `Record<string, unknown>` and `any` types for domain metadata have been replaced with concrete, strongly typed TypeScript interfaces: `IAssetMetadata`, `IAdminAiRunMetadata`, `ICouponMetadata`, `IPaymentMethodDetails`, `IPaymentMetadata`, `INotificationMetadata`, `IFeedbackMetadata`, and `IClientVersionMetadata`.
+   - Form payloads and API client methods strictly consume these typed structures.
+
+3. **Mobile Type Contracts (`rexone_mobile`)**:
+   - Centralized constant keys (`AssetKeys`, `PaymentKeys`, `AiKeys`, `NotificationKeys`, `FeedbackKeys`) govern all serialization and deserialization, matching backend namespaces with 100% key fidelity.
 
 ---
 

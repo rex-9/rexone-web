@@ -1,11 +1,10 @@
 // src/modules/admin/components/AdminLayout.tsx
 
-import React, { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
 
 import AppRoutes from "../../../AppRoutes";
 import { iconsLib } from "../../../assets";
-import { useAuth } from "../../../contexts/AuthContext";
 import { Button } from "../../../design/components/button";
 import { ButtonTypes, ButtonVariants, ComponentSizes } from "../../../design/constants";
 import { HeadNavbarBrand } from "../../../design/components/common";
@@ -20,24 +19,14 @@ interface IAdminLayoutProps {
 
 export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
   const t = useTranslate();
-  const { currentUser } = useAuth();
-  const navigate = useNavigate();
   const { isCollapsed, isMobileOpen, toggleCollapse, closeMobile } =
     useAdminSidebar();
-
-  const displayName = useMemo(
-    () =>
-      currentUser?.name ||
-      currentUser?.username ||
-      currentUser?.email ||
-      t(AppLocales.Admin.Layout.DefaultAdminUser),
-    [currentUser, t],
-  );
+  const settingsLabel = t(AppLocales.Admin.Nav.Items.Settings);
 
   const sidebar = (
     <aside
       className={cn(
-        "fixed bottom-0 left-0 top-0 z-40 flex flex-col border-r border-glass-border/50 bg-base-100/95 backdrop-blur-xl transition-all duration-300 shadow-[0_14px_36px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_40px_rgba(0,0,0,0.55)]",
+        "fixed bottom-0 left-0 top-0 z-40 flex flex-col border-r border-glass-border/50 bg-base-100/95 backdrop-blur-xl transition-all duration-300 shadow-glass-card",
         isMobileOpen ? "translate-x-0 w-72" : "-translate-x-full",
         "lg:translate-x-0",
         isCollapsed ? "lg:w-16" : "lg:w-72",
@@ -101,38 +90,43 @@ export const AdminLayout: React.FC<IAdminLayoutProps> = ({ children }) => {
         <div
           className={cn(
             "border-t border-glass-border transition-all duration-300",
-            isCollapsed ? "p-2" : "p-4",
+            isCollapsed ? "p-2" : "p-3",
           )}
         >
-          {!isCollapsed && (
-            <div className="rounded-xl border border-glass-border bg-glass-card p-3 shadow-glass-card backdrop-blur-md">
-              <div className="text-body-s font-semibold text-base-content">
-                {t(AppLocales.Admin.Layout.SignedInAs)}
-              </div>
-              <div className="mt-1 truncate text-body-s text-base-content/70">
-                {displayName}
-              </div>
-            </div>
-          )}
-          <Button
-            type={ButtonTypes.BUTTON}
-            variant={ButtonVariants.GLASS}
-            className={cn(
-              "mt-2 h-10 w-full transition-all font-semibold rounded-xl border border-glass-border bg-glass-card text-base-content hover:bg-error/15 hover:text-error hover:border-error/40 shadow-glass-card backdrop-blur-md",
-              isCollapsed
-                ? "h-10 w-10 mx-auto justify-center p-0 tooltip tooltip-right"
-                : "gap-2 justify-start px-3",
-            )}
-            title={t(AppLocales.Auth.SignOut)}
-            aria-label={t(AppLocales.Auth.SignOut)}
-            data-tip={isCollapsed ? t(AppLocales.Auth.SignOut) : undefined}
-            onClick={() => navigate(AppRoutes.client.protected.SIGN_OUT)}
+          <NavLink
+            to={AppRoutes.client.protected.admin.SETTINGS}
+            onClick={closeMobile}
+            title={settingsLabel}
+            aria-label={settingsLabel}
+            data-tip={isCollapsed ? settingsLabel : undefined}
+            className={({ isActive }) =>
+              cn(
+                "group flex items-center rounded-xl font-medium transition-all duration-200",
+                isCollapsed
+                  ? "h-10 w-10 mx-auto justify-center p-0 tooltip tooltip-right"
+                  : "h-11 w-full gap-3 px-3 text-body-m justify-start",
+                isActive
+                  ? "bg-glass-card-hover text-primary font-bold shadow-glass-card backdrop-blur-md ring-1 ring-primary/20"
+                  : "bg-glass-card text-base-content/80 shadow-xs backdrop-blur-md hover:border-glass-border-hover hover:bg-glass-card-hover hover:text-base-content hover:shadow-glass-card",
+              )
+            }
           >
-            <iconsLib.logout className="h-5 w-5 shrink-0" />
-            {!isCollapsed && (
-              <span>{t(AppLocales.Auth.SignOut)}</span>
+            {({ isActive }) => (
+              <>
+                <iconsLib.settings
+                  className={cn(
+                    "h-5 w-5 shrink-0 transition-colors",
+                    isActive
+                      ? "text-primary"
+                      : "text-base-content/70 group-hover:text-primary",
+                  )}
+                />
+                {!isCollapsed && (
+                  <span className="truncate">{settingsLabel}</span>
+                )}
+              </>
             )}
-          </Button>
+          </NavLink>
         </div>
       </div>
     </aside>
