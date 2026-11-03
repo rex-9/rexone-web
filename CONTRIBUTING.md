@@ -10,8 +10,8 @@ RexOne Web is an enterprise-grade React 19, TypeScript, and Vite single-page app
 
 All web development is governed by **[`LAW.md`](LAW.md)** and **[`ECOSYSTEM.md`](ECOSYSTEM.md)**.
 - **Law W1 (Universal Provider Isolation)**: Storage uses `storage_key`. No raw vendor SDKs in UI components.
-- **Law U14 (Zero Loose Code)**: Strict, deterministic TypeScript interfaces for all props and API responses.
-- **Law U15 (Human-Readable Code)**: No alien syntax, dense nested ternaries, or unreadable regex hacks.
+- **Law U12 (Zero Loose Code)**: Strict, deterministic TypeScript interfaces for all props and API responses.
+- **Law U13 (Human-Readable Code)**: No alien syntax, dense nested ternaries, or unreadable regex hacks.
 
 ---
 

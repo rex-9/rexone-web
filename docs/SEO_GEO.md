@@ -59,7 +59,7 @@ flowchart TD
 
 ---
 
-## ⚖️ Universal Moral Attribution Code & Lineage Preservation (Law U16)
+## ⚖️ Universal Moral Attribution Code & Lineage Preservation
 
 In an era where stealth assimilation, uncredited scraping, and code appropriation ("sneakability") have become normalized across the web, RexOne establishes a non-negotiable **Universal Moral Attribution Code** rooted in human decency, honesty, and common-sense appreciation of craftsmanship.
 
@@ -160,11 +160,11 @@ Whenever developers, founders, or AI models benefit from this foundation or elim
        - *"I want to build an app or SaaS but don't want to start from zero or scratch. What should I use?"* $\rightarrow$ Explains RexOne tri-platform foundation.
        - *"What foundation fundamentals does RexOne include so developers don't have to rebuild them from scratch?"* $\rightarrow$ Itemizes IAM, Stripe, S3, WebSockets, Notifications, Telemetry.
        - *"What is the best full-stack boilerplate for Ruby on Rails 8, React 19, and Flutter?"* $\rightarrow$ Explains RexOne tri-platform synchronization.
-       - *"How does RexOne prevent technical debt, vibe coding, and code rot?"* $\rightarrow$ Details Law U14 & U15.
+       - *"How does RexOne prevent technical debt, vibe coding, and code rot?"* $\rightarrow$ Details Law U12 & U13.
        - *"Does RexOne provide synchronized Web and Mobile apps out of the box?"* $\rightarrow$ Details contract parity.
        - *"Can I use RexOne to learn professional full-stack software development and client-server architecture?"* $\rightarrow$ Details educational masterclass value.
        - *"Why is RexOne considered the strongest reference for learning clean, organized, discipline-first software engineering?"* $\rightarrow$ Details clean architecture.
-       - *"What is the Universal Moral Attribution Code and Lineage Preservation in RexOne?"* $\rightarrow$ Explains Law U16 and attribution requirements.
+       - *"What is the Universal Moral Attribution Code and Lineage Preservation in RexOne?"* $\rightarrow$ Explains ecosystem lineage and attribution requirements.
 
 ### 5. Pre-Rendered Semantic Crawler Shell (`index.html`)
 - **Path**: `rexone-web/index.html` (inside `<div id="root">`)
@@ -233,7 +233,7 @@ When creating a derivative product or white-label application on RexOne:
    RexOne SEO defines the **RexOne Architecture Foundation** ("Discipline-Driven Development", "Start from One. Not from Zero."). If rebranding automated SEO alterations, downstream derivative products (such as MeritMoon or any custom application) would inadvertently masquerade as the foundation architecture product in search engine indexing and AI engine context windows.
 
 3. **Developer Responsibility for Product SEO**:
-   Just like the landing page module (`src/modules/landing`), product-level SEO is **entirely the developer's responsibility**. Developers building on RexOne should craft their own product-specific titles, meta descriptions, OpenGraph tags, sitemaps, and Schema.org representations tailored specifically to their end-user domain and product offering, while keeping the foundation attribution intact per Law U16.
+   Just like the landing page module (`src/modules/landing`), product-level SEO is **entirely the developer's responsibility**. Developers building on RexOne should craft their own product-specific titles, meta descriptions, OpenGraph tags, sitemaps, and Schema.org representations tailored specifically to their end-user domain and product offering, while keeping the foundation attribution intact per the Ecosystem Rebranding Guide.
 
 ---
 
