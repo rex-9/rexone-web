@@ -2,11 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
-import js from '@eslint/js'
+import babelParser from '@babel/parser'
 import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
@@ -115,33 +112,55 @@ const tailwindCanonicalPlugin = {
   },
 }
 
-export default tseslint.config(
+const babelTsParser = {
+  parseForESLint(code, options = {}) {
+    const filePath = options.filePath || ''
+    const isTsx = filePath.endsWith('.tsx') || !filePath.endsWith('.ts')
+    const ast = babelParser.parse(code, {
+      sourceType: 'module',
+      plugins: ['estree', 'typescript', ...(isTsx ? ['jsx'] : [])],
+      ranges: true,
+      tokens: true,
+      errorRecovery: true,
+    })
+    const program = ast.program
+    program.tokens = (ast.tokens || [])
+      .filter((t) => typeof t.type === 'object' && t.type.label !== 'eof')
+      .map((t) => ({
+        type: t.type.label,
+        value: code.slice(t.start, t.end),
+        range: [t.start, t.end],
+        loc: t.loc,
+      }))
+    program.comments = (ast.comments || []).map((c) => ({
+      type: c.type === 'CommentBlock' ? 'Block' : 'Line',
+      value: c.value,
+      range: [c.start, c.end],
+      loc: c.loc,
+    }))
+    return {
+      ast: program,
+      services: {},
+      scopeManager: null,
+      visitorKeys: null,
+    }
+  },
+}
+
+export default [
   { ignores: ['dist'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
+      parser: babelTsParser,
       ecmaVersion: 2020,
       globals: globals.browser,
     },
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
       tailwindcss: tailwindCanonicalPlugin,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-hooks/set-state-in-effect': 'off',
-      'react-hooks/purity': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      'react-refresh/only-export-components': 'off',
       'tailwindcss/canonical-classes': 'error',
     },
   },
-  {
-    files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-)
+]

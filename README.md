@@ -11,7 +11,8 @@ A production-grade web foundation for authenticated, modern web applications. Id
 Built under the same creed as RexOne Core: **Start from One. Not from Zero. Clear in thought, exact in structure, simple in use, and strong enough to endure what comes after launch.**
 
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Oxlint](https://img.shields.io/badge/Oxlint-Rust_Native-orange?logo=rust&logoColor=white)](https://oxc.rs/)
 [![Vite](https://img.shields.io/badge/Vite-8-646CFF?logo=vite&logoColor=white)](https://vite.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)](https://playwright.dev/)
@@ -154,7 +155,7 @@ It is to provide a **clear client foundation**—strong enough to carry ambitiou
 | Governance    | Constitutional Architecture (LAW.md) & AI Agent Operational Rules (AGENTS.md)                                                                         | [LAW.md](LAW.md) · [AGENTS.md](https://github.com/rex-9/rexone-core/blob/dev/AGENTS.md) |
 | Testing (E2E) | 21 real user journey specs across 6 auth flows via Playwright Page Object Model                                                                       | [End-to-End Testing](#end-to-end-testing-playwright)                                    |
 | AI & GEO      | SaaS Boilerplate Master Comparison page (/vs), crawler pre-rendering, llms.txt, llms-full.txt, robots.txt, Schema.org, JSON-LD, sitemap | [AI Discovery & GEO](docs/SEO_GEO.md)                                                   |
-| Quality       | TypeScript builds, ESLint, Vitest unit tests, Playwright, and production preview                                                                      | [Quality toolchain](#quality-toolchain)                                                 |
+| Quality       | TypeScript 7 builds, Oxlint (Rust) + ESLint (Tailwind v4 canonical rules), Vitest unit tests, Playwright, and production preview | [Quality toolchain](#quality-toolchain)                                                 |
 | Delivery      | Vite production output and a Docker-based development environment                                                                                     | [Delivery](#delivery)                                                                   |
 
 ## Architecture

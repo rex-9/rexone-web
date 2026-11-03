@@ -225,7 +225,7 @@ Permissions follow a clean, four-level administrative model:
 
 ### 🛠️ Tech Stack
 
-- **Core**: React `19`, TypeScript `6`, Vite `8`, Tailwind CSS `4`, DaisyUI, Headless UI, Heroicons, Lucide.
+- **Core**: React `19`, TypeScript `7` (Native Go compiler), Vite `8`, Oxlint (Rust) + ESLint (Tailwind v4 canonical rules), Tailwind CSS `4`, DaisyUI, Headless UI, Heroicons, Lucide.
 - **State Management**: React Contexts (`AuthContext`, `LoadingContext`, `ToastContext`), Jotai atomic stores.
 - **Networking**: Axios instance with centralized auth interceptors; Action Cable JS client for WebSockets.
 - **Localization**: `i18next` with strictly typed keys (`en`, `es`, `my`).
