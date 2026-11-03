@@ -1,5 +1,10 @@
 // src/modules/admin/constants.ts
 
+import type React from "react";
+import AppRoutes from "../../AppRoutes";
+import { iconsLib } from "../../assets";
+import { AppLocales } from "../../locales";
+
 export const ADMIN_PAGE_SIZE = 20;
 
 export const ADMIN_VIEW_MODES = {
@@ -93,6 +98,186 @@ export interface IAdminPageMeta {
   actionResource?: TAdminResourceName;
   hasRecycleBin?: boolean;
 }
+
+export interface IAdminNavItem {
+  labelKey: string;
+  to: string;
+  resource: TAdminResourceName;
+  action?: typeof ADMIN_ACTIONS.READ | typeof ADMIN_ACTIONS.CREATE;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  superAdminOnly?: boolean;
+}
+
+export interface IAdminNavSection {
+  id: string;
+  labelKey: string;
+  items: IAdminNavItem[];
+}
+
+export const ADMIN_NAV_SECTIONS: IAdminNavSection[] = [
+  {
+    id: "overview",
+    labelKey: AppLocales.Admin.Nav.Sections.Overview,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Analytics,
+        to: AppRoutes.client.protected.admin.ANALYTICS,
+        resource: ADMIN_RESOURCES.ANALYTICS,
+        icon: iconsLib.chartBar,
+      },
+    ],
+  },
+  {
+    id: "commerce",
+    labelKey: AppLocales.Admin.Nav.Sections.Commerce,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Products,
+        to: AppRoutes.client.protected.admin.PRODUCTS,
+        resource: ADMIN_RESOURCES.PAYMENT_PRODUCTS,
+        icon: iconsLib.cube,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Purchases,
+        to: AppRoutes.client.protected.admin.PURCHASES,
+        resource: ADMIN_RESOURCES.PAYMENT_PURCHASES,
+        icon: iconsLib.banknotes,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Subscriptions,
+        to: AppRoutes.client.protected.admin.SUBSCRIPTIONS,
+        resource: ADMIN_RESOURCES.PAYMENT_SUBSCRIPTIONS,
+        icon: iconsLib.document,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Coupons,
+        to: AppRoutes.client.protected.admin.COUPONS,
+        resource: ADMIN_RESOURCES.PAYMENT_COUPONS,
+        icon: iconsLib.tag,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Accesses,
+        to: AppRoutes.client.protected.admin.ACCESSES,
+        resource: ADMIN_RESOURCES.ACCESSES,
+        icon: iconsLib.shieldCheck,
+      },
+    ],
+  },
+  {
+    id: "iam",
+    labelKey: AppLocales.Admin.Nav.Sections.Iam,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Users,
+        to: AppRoutes.client.protected.admin.USERS,
+        resource: ADMIN_RESOURCES.USERS,
+        icon: iconsLib.userGroup,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Roles,
+        to: AppRoutes.client.protected.admin.ROLES,
+        resource: ADMIN_RESOURCES.IAM_ROLES,
+        icon: iconsLib.key,
+        superAdminOnly: true,
+      },
+    ],
+  },
+  {
+    id: "media",
+    labelKey: AppLocales.Admin.Nav.Sections.Media,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Assets,
+        to: AppRoutes.client.protected.admin.ASSETS,
+        resource: ADMIN_RESOURCES.ASSETS,
+        icon: iconsLib.photo,
+      },
+    ],
+  },
+  {
+    id: "ai",
+    labelKey: AppLocales.Admin.Nav.Sections.Ai,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiProfiles,
+        to: AppRoutes.client.protected.admin.AI_PROFILES,
+        resource: ADMIN_RESOURCES.AI_PROFILES,
+        icon: iconsLib.sparkles,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.AiRuns,
+        to: AppRoutes.client.protected.admin.AI_RUNS,
+        resource: ADMIN_RESOURCES.AI_RUNS,
+        icon: iconsLib.chartBar,
+      },
+    ],
+  },
+  {
+    id: "support",
+    labelKey: AppLocales.Admin.Nav.Sections.Support,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Feedback,
+        to: AppRoutes.client.protected.admin.FEEDBACK,
+        resource: ADMIN_RESOURCES.FEEDBACKS,
+        icon: iconsLib.mail,
+      },
+    ],
+  },
+  {
+    id: "observability",
+    labelKey: AppLocales.Admin.Nav.Sections.Observability,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Logs,
+        to: AppRoutes.client.protected.admin.LOGS,
+        resource: ADMIN_RESOURCES.CLIENT_LOGS,
+        icon: iconsLib.document,
+      },
+    ],
+  },
+  {
+    id: "communication",
+    labelKey: AppLocales.Admin.Nav.Sections.Communication,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Notifications,
+        to: AppRoutes.client.protected.admin.NOTIFICATIONS,
+        resource: ADMIN_RESOURCES.NOTIFICATIONS,
+        icon: iconsLib.bellAlert,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.ChatRooms,
+        to: AppRoutes.client.protected.admin.CHAT_ROOMS,
+        resource: ADMIN_RESOURCES.CHAT_ROOMS,
+        icon: iconsLib.chatBubbleLeftRight,
+      },
+      {
+        labelKey: AppLocales.Admin.Nav.Items.ChatMessages,
+        to: AppRoutes.client.protected.admin.CHAT_MESSAGES,
+        resource: ADMIN_RESOURCES.CHAT_MESSAGES,
+        icon: iconsLib.inboxStack,
+      },
+    ],
+  },
+  {
+    id: "version-management",
+    labelKey: AppLocales.Admin.Nav.Sections.VersionManagement,
+    items: [
+      {
+        labelKey: AppLocales.Admin.Nav.Items.Versions,
+        to: AppRoutes.client.protected.admin.VERSIONS,
+        resource: ADMIN_RESOURCES.CLIENT_VERSIONS,
+        icon: iconsLib.tag,
+        superAdminOnly: true,
+      },
+    ],
+  },
+];
+
+export const ADMIN_NAV_ITEMS: IAdminNavItem[] = ADMIN_NAV_SECTIONS.flatMap(
+  (section) => section.items,
+);
 
 export const ADMIN_NAV_SECTION_LABELS = {
   OVERVIEW: "Overview",
