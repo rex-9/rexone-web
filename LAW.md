@@ -58,8 +58,7 @@ This application is built upon the **RexOne Ecosystem** (`rex-9`). These are imm
   - [C7. Background Jobs (Solid Queue) \& Dedicated Queues](#c7-background-jobs-solid-queue--dedicated-queues)
   - [C8. Localization \& Message Catalogs (`MessageService::*`)](#c8-localization--message-catalogs-messageservice)
   - [C9. 100% Passing RSpec \& OpenAPI / Swagger Synchronization](#c9-100-passing-rspec--openapi--swagger-synchronization)
-  - [C10. Database Schema Documentation Law (`docs/SCHEMA.md`)](#c10-database-schema-documentation-law-docsschemamd)
-  - [C11. Rails Internal Dashboards vs. Client Admin Portal Boundary](#c11-rails-internal-dashboards-vs-client-admin-portal-boundary)
+  - [C10. Rails Internal Dashboards vs. Client Admin Portal Boundary](#c10-rails-internal-dashboards-vs-client-admin-portal-boundary)
 - [💻 Part II: RexOne Web Architectural Laws (Frontend / React 19)](#-part-ii-rexone-web-architectural-laws-frontend--react-19)
   - [W1. Design System \& Component Law (`src/design/`)](#w1-design-system--component-law-srcdesign)
   - [W2. Automated Theming \& Pure Tailwind v4 Continuous Spacing](#w2-automated-theming--pure-tailwind-v4-continuous-spacing)
@@ -71,7 +70,6 @@ This application is built upon the **RexOne Ecosystem** (`rex-9`). These are imm
   - [W8. Centralized API Response Parsing (`ApiService`)](#w8-centralized-api-response-parsing-apiservice)
   - [W9. End-to-End (E2E) Testing Law (Playwright Page Object Models)](#w9-end-to-end-e2e-testing-law-playwright-page-object-models)
   - [W10. Module Boundary Law (`src/modules/<feature>/`)](#w10-module-boundary-law-srcmodulesfeature)
-  - [W11. Dashboard Separation Law (Infrastructure APM vs. Client Admin)](#w11-dashboard-separation-law-infrastructure-apm-vs-client-admin)
 - [📱 Part III: RexOne Mobile Architectural Laws (Mobile / Flutter)](#-part-iii-rexone-mobile-architectural-laws-mobile--flutter)
   - [M1. Design System \& Layout Doctrine (`lib/design/`)](#m1-design-system--layout-doctrine-libdesign)
   - [M2. Theme-Aware Styling \& Context Extensions (`context.colors.*`)](#m2-theme-aware-styling--context-extensions-contextcolors)
@@ -82,7 +80,6 @@ This application is built upon the **RexOne Ecosystem** (`rex-9`). These are imm
   - [M7. Real-Time ActionCable Resilience \& Offline Recovery](#m7-real-time-actioncable-resilience--offline-recovery)
   - [M8. Testing Law (Unit, Widget \& Integration Tests)](#m8-testing-law-unit-widget--integration-tests)
   - [M9. Module Boundary Law (`lib/modules/<feature>/`)](#m9-module-boundary-law-libmodulesfeature)
-  - [M10. Device Local Timezone Presentation](#m10-device-local-timezone-presentation)
 - [🛡️ Quick-Reference Compliance Matrix \& Enforcement Protocol](#️-quick-reference-compliance-matrix--enforcement-protocol)
 
 ---
@@ -299,12 +296,7 @@ Service Layer (app/services/)
 - **100% Passing Tests**: Full RSpec suite (`bundle exec rspec`) must pass with 0 failures before any commit.
 - **OpenAPI / Swagger Sync**: OpenAPI definitions in `spec/openapi/` and generated docs (`swagger/v1/swagger.yaml`) must be updated and kept in sync with every API change.
 
-### C10. Database Schema Documentation Law (`docs/SCHEMA.md`)
-
-- `docs/SCHEMA.md` MUST be updated synchronously EVERY TIME the database schema is updated or `ApplicationRecord` models are altered.
-- **Omission Rule**: Keep `docs/SCHEMA.md` focused strictly on **Core Application Records**. NEVER include background engine / APM telemetry tables (`solid_queue_*`, `solid_cable_*`, `solid_cache_*`, `rails_pulse_*`, `rails_error_dashboard_*`).
-
-### C11. Rails Internal Dashboards vs. Client Admin Portal Boundary
+### C10. Rails Internal Dashboards vs. Client Admin Portal Boundary
 
 - **Rails Internal Dashboards (`/admin`, `/red`, `/solid_queue`, `/pulse`)**: Reserved **strictly for Super Admins** (`super_admin`) for low-level system infrastructure, raw database inspection, job worker health, cache inspect, and server profiling.
 - **Client Admin Portal (`/v1/admin/*` and Web `/admin/*`)**: The primary business, operational, and customer support portal for all authorized staff and sub-admins (`super_admin`, `admin`, and `*_admin` roles).
@@ -393,11 +385,6 @@ Transport Layer   (src/services/api.service.ts)
   - Flat root files: `<feature>.controller.ts`, `<feature>.service.ts`, `constants.ts`, `types.ts`, `index.ts`.
 - Code outside `src/modules/` is strictly shared infrastructure (`src/design/`, `src/services/`, `src/constants/`, `src/contexts/`, `src/models/`, `src/routes/`, `src/locales/`, `src/helpers/`, `src/hooks/`, `src/atoms.ts`).
 
-### W11. Dashboard Separation Law (Infrastructure APM vs. Client Admin)
-
-- **Rails Infrastructure Dashboards**: Rails Pulse (hardware/latency), RED (Ruby 500s), Solid Queue (jobs), Administrate (DB tables).
-- **Client Admin Panel**: Business KPIs, RBAC governance, catalogue, feedback inbox, client telemetry (`Log::Client` for frontend exceptions). Zero duplication of server infrastructure metrics.
-
 ---
 
 # 📱 Part III: RexOne Mobile Architectural Laws (Mobile / Flutter)
@@ -464,10 +451,6 @@ Transport Layer   (lib/services/api.service.dart)
 
 - Feature domains live inside `lib/modules/<feature_name>/` (`data/`, `controllers/`, `services/`, `pages/`, `widgets/`).
 - Shared foundation code lives in `lib/design/`, `lib/services/`, `lib/constants/`, `lib/models/`, `lib/helpers/`, `lib/locales/`, `lib/routes/`.
-
-### M10. Device Local Timezone Presentation
-
-- Backend operates in UTC. Mobile client sends dates in UTC ISO 8601 strings and formats timestamps into the device's local timezone for display.
 
 ---
 
