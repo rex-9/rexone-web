@@ -247,7 +247,7 @@ Permissions follow a clean, four-level administrative model:
 - **Asset Control Center (`/admin/assets`)**: Live VPS and Garage storage dashboard, multi-file batch uploads with optimistic progress, searchable parent asset picker (`AdminParentAssetSelect`), real-time compression badges, and secondary compression triggers.
 - **Admin AI Control Panel (`/admin/ai`)**: Profiles management (`AdminAiProfileCreatePage`, `AdminAiProfileEditPage`) with provider/model selectors, temperature/token boundaries, and prompt editors; AI execution audit log (`AdminAiRunsPage`, `AdminAiRunDetailPage`) with latency, token usage, and dynamic cost calculation display ($USD).
 - **AI Discovery & SEO/GEO**: SaaS Boilerplate Master Comparison page (`/vs`), standardized `/llms.txt`, `/llms-full.txt` (llmstxt.org standard), comprehensive crawler rules in `robots.txt`, and Schema.org `SoftwareApplication` rich results in `index.html`.
-- **Admin Portal Governance & Settings (`/admin/settings`)**: Route guards (`AdminRootRoute`, `AdminAccessRoute`), client-side permission checks (`usePermissions`), confirmation status badges (`confirmed` / `unconfirmed`), operational KPI navigation, and dedicated Control Center Settings (`AdminSettingsPage`) for administrator session controls, theme switching, localization, and live environment diagnostics.
+- **Admin Portal Governance & Settings (`/admin/settings`)**: Route guard (`AdminRootRoute`), client-side permission checks (`usePermissions`), confirmation status badges (`confirmed` / `unconfirmed`), operational KPI navigation, and dedicated Control Center Settings (`AdminSettingsPage`) for administrator session controls, theme switching, localization, and live environment diagnostics.
 
 ---
 
@@ -372,7 +372,7 @@ Permissions follow a clean, four-level administrative model:
   }
   ```
 
-- **Strict Separation of Primary Entity (`data`) and Auxiliary Metadata (`meta`) (Law C2, Law U14)**:
+- **Strict Separation of Primary Entity (`data`) and Auxiliary Metadata (`meta`) (Law C2, Law U12)**:
   - `data` strictly encapsulates the primary domain entity (`Serializer.record(record)`) or resource collection (`Serializer.collection(collection)`).
   - Redundant nested wrapper keys (`{ user: ... }`, `{ asset: ... }`, `{ role: ... }`, `{ product: ... }`, `{ room: ... }`) inside `data` are strictly forbidden and completely eradicated.
   - `meta` strictly encapsulates all auxiliary metadata and operation context outside of `data`. This includes authentication tokens (`token`), verification states (`otp_sent`, `password_required`, `challenge_token`), rate-limiting feedback (`remaining_attempts`, `cooldown_remaining`), cloud storage upload metrics (`storage_details`), and collection pagination (`pagination`).
@@ -706,7 +706,7 @@ RexOne includes a built-in, zero-friction rebranding engine executed via a singl
 
 For the comprehensive guide and operational matrix, see **[docs/REBRANDING.md](docs/REBRANDING.md)**.
 
-#### Deterministic Cross-Repository Parameter Contracts (Law U14):
+#### Deterministic Cross-Repository Parameter Contracts (Law U12):
 1. **RexOne Core (Rails)**:
    - Synchronizes `config/app_config.rb` default parameters (`RAILS_JWT_SECRET_KEY`, `SMTP_DOMAIN`, `FROM_EMAIL`, `S3_BUCKET`).
    - Updates `docker-compose.yaml` (Production / Coolify) and `docker-compose.dev.yaml` with kebab-case container slugs (`prod-<kebab>-api`, `prod-<kebab>-waka`, `prod-<kebab>-media`, `prod-<kebab>-db`, `<kebab>-garage`).
@@ -726,13 +726,13 @@ For the comprehensive guide and operational matrix, see **[docs/REBRANDING.md](d
    - Synchronizes Dart `pubspec.yaml` package name and updates **all package imports** across `lib/`, `test/`, and `integration_test/`.
    - Synchronizes parameter contracts inside `./scripts/release_android.sh`, `./scripts/release_ios.sh`, and `.github/workflows/build_android.yaml`.
    - Generates native launcher icons across all screen densities from source logo via `flutter_launcher_icons`.
-4. **Secret Isolation Protocol (Rule 5 & Law U16)**:
+4. **Secret Isolation Protocol (AGENTS.md Rule 5)**:
    - Automation **NEVER** touches live gitignored `.env` files (`.env`, `.env.dev`, `.env.prod`, `.env.uat`).
    - Product creators apply live secret values manually using synchronized `.env.example` reference files.
 
-### 11. Strict JSONB Metadata & Contract Typing Standards (Law U14 & Law U15)
+### 11. Strict JSONB Metadata & Contract Typing Standards (Law U12 & Law U13)
 
-All semi-structured metadata attributes across the ecosystem adhere to deterministic, typed parameter contracts (Law U19). Raw string literals for dictionary keys, lifecycle statuses, and loose parameters are strictly forbidden. Direct hash subscripting (`record.metadata["key"]`), gambling, or `.dig` chains on ActiveRecord metadata columns are completely eradicated in favor of typed sub-models. All metadata schemas are explicitly published in OpenAPI / Swagger specifications, eliminating untyped object placeholders.
+All semi-structured metadata attributes across the ecosystem adhere to deterministic, typed parameter contracts (Law U15). Raw string literals for dictionary keys, lifecycle statuses, and loose parameters are strictly forbidden. Direct hash subscripting (`record.metadata["key"]`), gambling, or `.dig` chains on ActiveRecord metadata columns are completely eradicated in favor of typed sub-models. All metadata schemas are explicitly published in OpenAPI / Swagger specifications, eliminating untyped object placeholders.
 
 1. **Backend Typed Metadata Architecture (`rexone-core`)**:
    - Built on [`ApplicationMetadata`](app/models/application_metadata.rb) (`ActiveModel::Model` + `ActiveModel::Attributes`) and mounted on ActiveRecord models via the unified `has_metadata` macro (`ActiveRecord::Type::Json`).

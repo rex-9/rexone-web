@@ -22,7 +22,6 @@ const AI_SOCKET_EVENT_TYPES: readonly string[] = [
 const AI_PROCESSING_MESSAGE_STATUSES: readonly string[] = [
   AI_MESSAGE_STATUS.QUEUED,
   AI_MESSAGE_STATUS.PROCESSING,
-  AI_MESSAGE_STATUS.RETRYING,
 ];
 
 class AiController {
