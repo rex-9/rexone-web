@@ -11,7 +11,6 @@ export type TAiChatRole = (typeof AI_CHAT_ROLES)[keyof typeof AI_CHAT_ROLES];
 export const AI_MESSAGE_STATUS = {
   QUEUED: "queued",
   PROCESSING: "processing",
-  RETRYING: "retrying",
   COMPLETED: "completed",
   FAILED: "failed",
 } as const;
