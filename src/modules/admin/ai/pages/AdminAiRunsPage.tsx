@@ -39,7 +39,10 @@ import {
   ADMIN_AI_RUN_SORT_KEYS,
   ADMIN_AI_RUN_STATUS_OPTIONS,
 } from "../constants";
-import { formatAiCost } from "../helpers/aiCost.helper";
+import {
+  formatAiCost,
+  resolveAiTokenBreakdown,
+} from "../helpers/aiCost.helper";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminAiRunsPage: React.FC = () => {
@@ -301,23 +304,85 @@ export const AdminAiRunsPage: React.FC = () => {
         ),
       },
       {
+        key: "prompt_tokens",
+        header: t(AppLocales.Admin.Ai.RunsTable.InputTokens),
+        sortKey: ADMIN_AI_RUN_SORT_KEYS.PROMPT_TOKENS,
+        render: (run) => {
+          const tokens = resolveAiTokenBreakdown(
+            run.prompt_tokens,
+            run.cached_tokens,
+            run.completion_tokens,
+            run.total_tokens,
+          );
+          if (tokens.prompt == null) {
+            return <span className="font-mono text-xs">-</span>;
+          }
+          return (
+            <div className="flex flex-col gap-0.5 font-mono text-xs">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-base-content">
+                  {tokens.prompt.toLocaleString()}
+                </span>
+                <Badge
+                  variant={
+                    tokens.hasCacheHit
+                      ? BadgeVariants.SUCCESS
+                      : BadgeVariants.SECONDARY
+                  }
+                  size={ComponentSizes.XS}
+                >
+                  {tokens.hasCacheHit
+                    ? t(AppLocales.Admin.Ai.CacheHit)
+                    : t(AppLocales.Admin.Ai.CacheMiss)}
+                </Badge>
+              </div>
+              <span className="text-xs text-base-content/60">
+                {t(AppLocales.Admin.Ai.CacheHitShort)}:{" "}
+                {tokens.cached.toLocaleString()} ·{" "}
+                {t(AppLocales.Admin.Ai.CacheMissShort)}:{" "}
+                {(tokens.uncached ?? 0).toLocaleString()}
+              </span>
+            </div>
+          );
+        },
+      },
+      {
+        key: "completion_tokens",
+        header: t(AppLocales.Admin.Ai.RunsTable.OutputTokens),
+        sortKey: ADMIN_AI_RUN_SORT_KEYS.COMPLETION_TOKENS,
+        render: (run) => {
+          const tokens = resolveAiTokenBreakdown(
+            run.prompt_tokens,
+            run.cached_tokens,
+            run.completion_tokens,
+            run.total_tokens,
+          );
+          return (
+            <span className="font-mono text-xs font-semibold text-base-content">
+              {tokens.completion != null
+                ? tokens.completion.toLocaleString()
+                : "-"}
+            </span>
+          );
+        },
+      },
+      {
         key: "total_tokens",
         header: t(AppLocales.Admin.Ai.RunsTable.Tokens),
         sortKey: ADMIN_AI_RUN_SORT_KEYS.TOTAL_TOKENS,
-        render: (run) => (
-          <div className="text-xs">
-            <span className="font-semibold text-base-content">
-              {run.total_tokens != null
-                ? run.total_tokens.toLocaleString()
-                : "-"}
+        render: (run) => {
+          const tokens = resolveAiTokenBreakdown(
+            run.prompt_tokens,
+            run.cached_tokens,
+            run.completion_tokens,
+            run.total_tokens,
+          );
+          return (
+            <span className="font-mono text-xs font-semibold text-primary">
+              {tokens.total != null ? tokens.total.toLocaleString() : "-"}
             </span>
-            {run.prompt_tokens != null && run.completion_tokens != null && (
-              <span className="ml-1 text-base-content/50">
-                ({run.prompt_tokens} / {run.completion_tokens})
-              </span>
-            )}
-          </div>
-        ),
+          );
+        },
       },
       {
         key: "cost",

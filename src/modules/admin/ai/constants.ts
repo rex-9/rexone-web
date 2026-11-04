@@ -18,6 +18,8 @@ export const ADMIN_AI_PROFILE_SORT_KEYS = {
 export const ADMIN_AI_RUN_SORT_KEYS = {
   CREATED_AT: "created_at",
   LATENCY_MS: "latency_ms",
+  PROMPT_TOKENS: "prompt_tokens",
+  COMPLETION_TOKENS: "completion_tokens",
   TOTAL_TOKENS: "total_tokens",
   COST: "cost",
   FEATURE: "feature",

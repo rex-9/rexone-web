@@ -26,3 +26,49 @@ export function formatAiRatePerMillion(rate?: number | null): string {
   return `${symbol}${Number(rate).toFixed(rate < 1 ? 3 : 2)} / 1M`;
 }
 
+export interface IAiTokenBreakdown {
+  prompt: number | null;
+  cached: number;
+  uncached: number | null;
+  completion: number | null;
+  total: number | null;
+  hasCacheHit: boolean;
+}
+
+export function resolveAiTokenBreakdown(
+  promptTokens?: number | null,
+  cachedTokens?: number | null,
+  completionTokens?: number | null,
+  totalTokens?: number | null,
+): IAiTokenBreakdown {
+  const prompt =
+    promptTokens != null && !Number.isNaN(promptTokens)
+      ? Math.max(promptTokens, 0)
+      : null;
+  const rawCached =
+    cachedTokens != null && !Number.isNaN(cachedTokens)
+      ? Math.max(cachedTokens, 0)
+      : 0;
+  const cached = prompt != null ? Math.min(rawCached, prompt) : rawCached;
+  const uncached = prompt != null ? Math.max(prompt - cached, 0) : null;
+  const completion =
+    completionTokens != null && !Number.isNaN(completionTokens)
+      ? Math.max(completionTokens, 0)
+      : null;
+  const total =
+    totalTokens != null && !Number.isNaN(totalTokens)
+      ? Math.max(totalTokens, 0)
+      : prompt != null || completion != null
+        ? (prompt ?? 0) + (completion ?? 0)
+        : null;
+
+  return {
+    prompt,
+    cached,
+    uncached,
+    completion,
+    total,
+    hasCacheHit: cached > 0,
+  };
+}
+

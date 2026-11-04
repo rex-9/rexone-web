@@ -19,7 +19,10 @@ import {
 import { AdminState } from "../../components";
 import { useAdminDetail } from "../../hooks/useAdminDetail";
 import { AppLocales, useTranslate } from "../../../../locales";
-import { formatAiCost } from "../helpers/aiCost.helper";
+import {
+  formatAiCost,
+  resolveAiTokenBreakdown,
+} from "../helpers/aiCost.helper";
 import AiController from "../ai.controller";
 import type { IAdminAiRun } from "../types";
 
@@ -33,6 +36,12 @@ export const AdminAiRunDetailPage: React.FC = () => {
   const t = useTranslate();
 
   const { record: run, error } = useAdminDetail<IAdminAiRun>(id, loadRun);
+  const tokens = resolveAiTokenBreakdown(
+    run?.prompt_tokens,
+    run?.cached_tokens,
+    run?.completion_tokens,
+    run?.total_tokens,
+  );
 
   const listPath = AppRoutes.client.protected.admin.AI_RUNS;
 
@@ -185,25 +194,83 @@ export const AdminAiRunDetailPage: React.FC = () => {
                 <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.PromptTokens)}
                   value={
-                    run.prompt_tokens != null
-                      ? run.prompt_tokens.toLocaleString()
-                      : "-"
+                    tokens.prompt != null ? (
+                      <div className="flex items-center gap-2 font-mono">
+                        <span className="font-semibold">
+                          {tokens.prompt.toLocaleString()}
+                        </span>
+                        <Badge
+                          variant={
+                            tokens.hasCacheHit
+                              ? BadgeVariants.SUCCESS
+                              : BadgeVariants.SECONDARY
+                          }
+                          size={ComponentSizes.XS}
+                        >
+                          {tokens.hasCacheHit
+                            ? t(AppLocales.Admin.Ai.CacheHit)
+                            : t(AppLocales.Admin.Ai.CacheMiss)}
+                        </Badge>
+                      </div>
+                    ) : (
+                      "-"
+                    )
                   }
                 />
                 <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.CachedTokens)}
                   value={
-                    run.cached_tokens != null
-                      ? run.cached_tokens.toLocaleString()
-                      : "-"
+                    tokens.prompt != null ? (
+                      <span className="font-mono font-semibold text-emerald-500">
+                        {tokens.cached.toLocaleString()}
+                      </span>
+                    ) : (
+                      "-"
+                    )
+                  }
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Ai.RunDetail.UncachedTokens)}
+                  value={
+                    tokens.uncached != null ? (
+                      <span className="font-mono font-semibold">
+                        {tokens.uncached.toLocaleString()}
+                      </span>
+                    ) : (
+                      "-"
+                    )
                   }
                 />
                 <DetailField
                   label={t(AppLocales.Admin.Ai.RunDetail.CompletionTokens)}
                   value={
-                    run.completion_tokens != null
-                      ? run.completion_tokens.toLocaleString()
-                      : "-"
+                    tokens.completion != null ? (
+                      <span className="font-mono font-semibold">
+                        {tokens.completion.toLocaleString()}
+                      </span>
+                    ) : (
+                      "-"
+                    )
+                  }
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Ai.RunsTable.Tokens)}
+                  value={
+                    tokens.total != null ? (
+                      <span className="font-mono font-semibold text-primary">
+                        {tokens.total.toLocaleString()}
+                      </span>
+                    ) : (
+                      "-"
+                    )
+                  }
+                />
+                <DetailField
+                  label={t(AppLocales.Admin.Ai.RunsTable.Cost)}
+                  value={
+                    <span className="font-mono font-semibold text-emerald-500">
+                      {formatAiCost(run.cost, { showCurrency: true })}
+                    </span>
                   }
                 />
                 <DetailField
@@ -228,14 +295,6 @@ export const AdminAiRunDetailPage: React.FC = () => {
                     run.output_chars != null
                       ? run.output_chars.toLocaleString()
                       : "-"
-                  }
-                />
-                <DetailField
-                  label={t(AppLocales.Admin.Ai.RunsTable.Cost)}
-                  value={
-                    <span className="font-mono font-semibold text-emerald-500">
-                      {formatAiCost(run.cost, { showCurrency: true })}
-                    </span>
                   }
                 />
               </DetailGrid>

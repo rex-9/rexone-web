@@ -48,6 +48,7 @@ import {
   ADMIN_AI_FILTER,
   ADMIN_AI_PROFILE_SORT_KEYS,
 } from "../constants";
+import { formatAiRatePerMillion } from "../helpers/aiCost.helper";
 import { useTranslate, AppLocales } from "../../../../locales";
 
 export const AdminAiProfilesPage: React.FC = () => {
@@ -313,6 +314,41 @@ export const AdminAiProfilesPage: React.FC = () => {
             {profile.model}
           </span>
         ),
+      },
+      {
+        key: "pricing",
+        header: t(AppLocales.Admin.Ai.ProfilesTable.Pricing),
+        render: (profile) => {
+          const providerMeta = config?.providers.find(
+            (item) => item.key === profile.provider,
+          );
+          const modelMeta = providerMeta?.models.find(
+            (item) => item.model === profile.model,
+          );
+          if (
+            !modelMeta ||
+            (modelMeta.input_cost_per_million == null &&
+              modelMeta.output_cost_per_million == null)
+          ) {
+            return <span className="font-mono text-xs text-base-content/50">—</span>;
+          }
+          return (
+            <div className="flex flex-col gap-0.5 font-mono text-xs text-base-content/80">
+              <span>
+                {t(AppLocales.Admin.Ai.InputRate)}:{" "}
+                {formatAiRatePerMillion(modelMeta.input_cost_per_million)} ·{" "}
+                {t(AppLocales.Admin.Ai.OutputRate)}:{" "}
+                {formatAiRatePerMillion(modelMeta.output_cost_per_million)}
+              </span>
+              {modelMeta.cached_cost_per_million != null && (
+                <span className="text-base-content/60">
+                  {t(AppLocales.Admin.Ai.CachedRate)}:{" "}
+                  {formatAiRatePerMillion(modelMeta.cached_cost_per_million)}
+                </span>
+              )}
+            </div>
+          );
+        },
       },
       {
         key: "temperature",
